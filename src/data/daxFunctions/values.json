@@ -1,0 +1,54 @@
+{
+  "functionName": "VALUES",
+  "category": "Table",
+  "syntax": "VALUES(<table_or_column>)",
+  "parameters": [
+    {
+      "name": "table_or_column",
+      "required": true,
+      "type": "Table or Column reference",
+      "description": "A column returns a single-column table of distinct visible values in the current filter context. A table name returns the table's visible rows.",
+      "examNote": "Unlike DISTINCT, VALUES includes a blank row if there are unmatched foreign key values in a relationship."
+    }
+  ],
+  "returnType": "Table (single-column of distinct filtered values)",
+  "summary": "VALUES returns a table of unique values from a column, respecting the current filter context. Often paired with SELECTEDVALUE to detect a single slicer selection, or with CALCULATE to apply visible values as a filter.",
+  "examples": [
+    {
+      "label": "Detect single slicer selection",
+      "expression": "Selected Region = SELECTEDVALUE(Sales[Region], \"All Regions\")",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Sales",
+            "columns": ["Region", "Amount"],
+            "rows": [["East", 600], ["West", 400], ["North", 200]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "When East is selected in slicer",
+        "columns": ["Selected Region"],
+        "rows": [["East"]]
+      },
+      "explanation": "SELECTEDVALUE wraps VALUES internally. When exactly one value is visible (East is selected), it returns that value. If multiple or no values are visible, it returns the alternate result 'All Regions'."
+    }
+  ],
+  "filterFlow": {
+    "steps": [
+      "VALUES respects the current filter context from slicers and visuals",
+      "It returns only the distinct values that are currently visible",
+      "A blank row is included if unmatched foreign key values exist (unlike DISTINCT)",
+      "SELECTEDVALUE wraps VALUES and returns a scalar when exactly one value is visible"
+    ]
+  },
+  "iteratorFlow": null,
+  "commonTraps": [
+    "VALUES includes a blank row for unmatched relationship keys — DISTINCT does not. This difference matters when using VALUES in CALCULATE filter arguments.",
+    "SELECTEDVALUE returns the alternate result (second argument) when zero or more than one value is visible — it does not throw an error.",
+    "HASONEVALUE(column) is a Boolean check that returns TRUE when VALUES returns exactly one row — useful in IF conditions."
+  ],
+  "relatedFunctions": ["DISTINCT", "SELECTEDVALUE", "HASONEVALUE", "CALCULATE", "ALL"],
+  "examWeight": "Medium",
+  "difficulty": "Medium"
+}

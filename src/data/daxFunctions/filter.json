@@ -1,0 +1,61 @@
+{
+  "functionName": "FILTER",
+  "category": "Filter",
+  "syntax": "FILTER(<table>, <filter_expression>)",
+  "parameters": [
+    {
+      "name": "table",
+      "required": true,
+      "type": "Table",
+      "description": "The table to filter. Usually a physical table name or ALL(Table) to ignore existing filters.",
+      "examNote": "Using ALL(Table) as the first argument ignores existing filters — common when used inside CALCULATE."
+    },
+    {
+      "name": "filter_expression",
+      "required": true,
+      "type": "Boolean (evaluated per row)",
+      "description": "A condition evaluated for every row. Rows where this evaluates to TRUE are kept.",
+      "examNote": "This runs in row context — it can reference the current row's column values directly."
+    }
+  ],
+  "returnType": "Table (a filtered subset of the input table)",
+  "summary": "FILTER returns a table containing only rows that satisfy a condition. Unlike simple boolean filter arguments in CALCULATE, FILTER can express complex multi-column conditions and is itself an iterator.",
+  "examples": [
+    {
+      "label": "Filter to high-value transactions",
+      "expression": "High Value = CALCULATE(SUM(Sales[Amount]), FILTER(Sales, Sales[Amount] > 300))",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Sales",
+            "columns": ["Product", "Amount"],
+            "rows": [["Bike", 400], ["Helmet", 80], ["Lock", 30], ["Gloves", 350]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "High Value Sales",
+        "columns": ["Result"],
+        "rows": [[750]]
+      },
+      "explanation": "FILTER keeps only rows where Amount > 300 (Bike: 400, Gloves: 350). CALCULATE sums those: 400 + 350 = 750."
+    }
+  ],
+  "filterFlow": {
+    "steps": [
+      "FILTER iterates every row of the input table",
+      "The filter_expression is evaluated in each row's context (row context)",
+      "Rows where the expression evaluates to TRUE are retained",
+      "A new filtered table is returned — not a scalar"
+    ]
+  },
+  "iteratorFlow": null,
+  "commonTraps": [
+    "FILTER returns a TABLE, not a scalar — it cannot be used alone as a measure. Wrap it inside CALCULATE, COUNTROWS, or another table function.",
+    "Prefer simple boolean filter arguments in CALCULATE for single-column conditions — FILTER adds overhead and is needed only for multi-column or complex conditions.",
+    "FILTER(Table, ...) respects the current filter context; FILTER(ALL(Table), ...) ignores it — choose carefully."
+  ],
+  "relatedFunctions": ["CALCULATE", "ALL", "SUMX", "COUNTROWS", "KEEPFILTERS"],
+  "examWeight": "High",
+  "difficulty": "Medium"
+}

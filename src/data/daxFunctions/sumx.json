@@ -1,0 +1,64 @@
+{
+  "functionName": "SUMX",
+  "category": "Iterator",
+  "syntax": "SUMX(<table>, <expression>)",
+  "parameters": [
+    {
+      "name": "table",
+      "required": true,
+      "type": "Table",
+      "description": "The table to iterate over. Can be a physical table or a table expression like FILTER().",
+      "examNote": "Every row of this table is visited once. Use FILTER() here to limit the rows before iteration."
+    },
+    {
+      "name": "expression",
+      "required": true,
+      "type": "Scalar",
+      "description": "Evaluated in the context of each row. Typically arithmetic combining multiple row-level columns.",
+      "examNote": "This expression runs in row context — it can access the current row's column values like a calculated column formula."
+    }
+  ],
+  "returnType": "Decimal (sum of all per-row expression results)",
+  "summary": "SUMX iterates every row of a table, evaluates an expression per row, and sums the results. Use it when the value you need to sum does not already exist as a column — for example, multiplying Qty × UnitPrice per row.",
+  "examples": [
+    {
+      "label": "Revenue = Qty × Unit Price per row",
+      "expression": "Revenue = SUMX(Sales, Sales[Qty] * Sales[UnitPrice])",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Sales",
+            "columns": ["Product", "Qty", "UnitPrice"],
+            "rows": [["Bike", 2, 500], ["Helmet", 3, 80], ["Lock", 1, 30]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "Revenue",
+        "columns": ["Revenue"],
+        "rows": [[1270]]
+      },
+      "explanation": "Row 1: 2 × 500 = 1000. Row 2: 3 × 80 = 240. Row 3: 1 × 30 = 30. Total = 1270."
+    }
+  ],
+  "iteratorFlow": {
+    "description": "SUMX visits each row of the Sales table, computes Qty × UnitPrice in that row's context, then sums all intermediate results.",
+    "columns": ["Product", "Qty", "UnitPrice", "Calculation", "Row Result"],
+    "rows": [
+      ["Bike", 2, 500, "2 × 500", 1000],
+      ["Helmet", 3, 80, "3 × 80", 240],
+      ["Lock", 1, 30, "1 × 30", 30]
+    ],
+    "finalOperation": "SUM of all row results",
+    "finalResult": 1270
+  },
+  "filterFlow": null,
+  "commonTraps": [
+    "SUM(Sales[Revenue]) only works if Revenue is already a stored column. Use SUMX when you need per-row arithmetic that doesn't exist in the model.",
+    "SUM(Sales[Qty]) * SUM(Sales[UnitPrice]) is mathematically wrong — it multiplies totals, not per-row values.",
+    "CALCULATE inside the expression argument triggers context transition, converting each row context into a filter context."
+  ],
+  "relatedFunctions": ["SUM", "AVERAGEX", "MAXX", "MINX", "COUNTX", "FILTER"],
+  "examWeight": "High",
+  "difficulty": "Medium"
+}

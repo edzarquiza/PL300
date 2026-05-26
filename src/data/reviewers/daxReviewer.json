@@ -1,0 +1,278 @@
+[
+  {
+    "id": "dax_calculate",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "CALCULATE",
+    "summary": "CALCULATE evaluates an expression under a modified filter context. It is the cornerstone of DAX — nearly every advanced measure uses it.",
+    "keyInsight": "CALCULATE is the only DAX function capable of modifying filter context. Expect 3–5 PL-300 questions that depend on understanding it directly or indirectly.",
+    "commonTrap": "Confusing row context with filter context. Inside an iterator like SUMX, CALCULATE performs context transition — converting the current row context into an equivalent filter context.",
+    "miniQuiz": {
+      "question": "A measure returns wrong totals because a slicer filter should be ignored. Which function resolves this?",
+      "choices": [
+        "FILTER",
+        "RELATED",
+        "CALCULATE with ALL()",
+        "SUMX"
+      ],
+      "correctAnswer": 2,
+      "explanation": "CALCULATE modifies filter context. Using CALCULATE(..., ALL(Table)) removes the slicer's filter, restoring the full dataset for that expression."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["CALCULATE", "DAX", "Filter Context"]
+  },
+  {
+    "id": "dax_all_removefilters",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "ALL and REMOVEFILTERS",
+    "summary": "ALL returns all rows of a table or all values of a column, ignoring any filters. REMOVEFILTERS explicitly removes filters and is functionally equivalent in most cases.",
+    "keyInsight": "ALL is most commonly used inside CALCULATE to ignore slicer or filter context — for example, calculating a percentage of grand total.",
+    "commonTrap": "ALL used outside CALCULATE does NOT remove filters — it simply returns the full table. Filter removal only happens when ALL is a filter argument inside CALCULATE.",
+    "miniQuiz": {
+      "question": "A measure should return each product's sales as a percentage of total sales, regardless of any slicer. Which pattern is correct?",
+      "choices": [
+        "DIVIDE(SUM(Sales[Amount]), SUM(Sales[Amount]))",
+        "DIVIDE(SUM(Sales[Amount]), CALCULATE(SUM(Sales[Amount]), ALL(Sales)))",
+        "DIVIDE(SUM(Sales[Amount]), FILTER(Sales, Sales[Amount] > 0))",
+        "DIVIDE(SUM(Sales[Amount]), RELATED(Sales[Amount]))"
+      ],
+      "correctAnswer": 1,
+      "explanation": "CALCULATE(SUM(Sales[Amount]), ALL(Sales)) removes all filters from the Sales table, giving the grand total. DIVIDE then computes the percentage for each product."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["ALL", "REMOVEFILTERS", "DAX", "Filter Context"]
+  },
+  {
+    "id": "dax_filter",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "FILTER function",
+    "summary": "FILTER iterates over a table row by row and returns only rows that satisfy a condition. It always returns a table, never a scalar value.",
+    "keyInsight": "FILTER is a table function used inside CALCULATE as a filter argument. It is slower than column-based filter arguments because it iterates row by row.",
+    "commonTrap": "Using FILTER when a simple boolean predicate works. CALCULATE(SUM(Sales[Amount]), Sales[Region] = \"East\") is faster than wrapping the same logic in FILTER.",
+    "miniQuiz": {
+      "question": "Which of the following is the most efficient DAX filter argument inside CALCULATE?",
+      "choices": [
+        "FILTER(Sales, Sales[Amount] > 1000)",
+        "Sales[Amount] > 1000",
+        "FILTER(ALL(Sales), Sales[Amount] > 1000)",
+        "VALUES(Sales[Amount])"
+      ],
+      "correctAnswer": 1,
+      "explanation": "A simple boolean predicate like Sales[Amount] > 1000 is evaluated as a column filter, which is faster than FILTER because it does not iterate the full table row by row."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": ["FILTER", "DAX", "Performance"]
+  },
+  {
+    "id": "dax_iterators",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "Iterator Functions (SUMX, AVERAGEX, COUNTX)",
+    "summary": "Iterator functions evaluate an expression for each row in a table and then aggregate the results. They operate in row context — each row's values are visible during iteration.",
+    "keyInsight": "Iterators are essential when you need to compute row-level expressions before aggregating. SUMX(Sales, Sales[Qty] * Sales[UnitPrice]) multiplies per row, then sums all results.",
+    "commonTrap": "Using SUM when SUMX is needed. SUM(Sales[Revenue]) only works if Revenue is a pre-computed column. If revenue must be calculated (Qty × Price), SUMX is required.",
+    "miniQuiz": {
+      "question": "A table has Quantity and UnitPrice columns but no Revenue column. Which measure correctly calculates total revenue?",
+      "choices": [
+        "SUM(Sales[Quantity]) * SUM(Sales[UnitPrice])",
+        "SUMX(Sales, Sales[Quantity] * Sales[UnitPrice])",
+        "CALCULATE(SUM(Sales[UnitPrice]), ALL(Sales))",
+        "AVERAGE(Sales[UnitPrice]) * COUNT(Sales[Quantity])"
+      ],
+      "correctAnswer": 1,
+      "explanation": "SUMX iterates each row, multiplies Quantity by UnitPrice for that row, then sums all results. SUM(Qty) * SUM(Price) is mathematically wrong — it multiplies totals, not per-row values."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["SUMX", "Iterator Functions", "DAX", "Row Context"]
+  },
+  {
+    "id": "dax_related",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "RELATED and RELATEDTABLE",
+    "summary": "RELATED retrieves a single value from a related table (many-to-one direction). RELATEDTABLE returns all rows from the related table on the many side.",
+    "keyInsight": "RELATED works in row context — it can only be used in calculated columns or inside iterators. You cannot use RELATED in a standalone measure.",
+    "commonTrap": "Using RELATED in a measure context without an iterator. RELATED requires row context to know which row to look up.",
+    "miniQuiz": {
+      "question": "You have a Sales fact table and a Products dimension. You want a calculated column in Sales showing the product category for each row. Which function should you use?",
+      "choices": [
+        "LOOKUPVALUE",
+        "CALCULATE",
+        "RELATED",
+        "VALUES"
+      ],
+      "correctAnswer": 2,
+      "explanation": "RELATED retrieves a column value from a related table using the existing relationship. In a calculated column (row context), RELATED(Products[Category]) returns the category for each sales row."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["RELATED", "DAX", "Relationships", "Row Context"]
+  },
+  {
+    "id": "dax_values_selectedvalue",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "VALUES and SELECTEDVALUE",
+    "summary": "VALUES returns a one-column table of unique values respecting the current filter context. SELECTEDVALUE returns the single selected value, or an alternate result if multiple values exist.",
+    "keyInsight": "SELECTEDVALUE is commonly used for dynamic report titles or to display the active slicer selection. It returns BLANK() when multiple values are in context unless an alternate is specified.",
+    "commonTrap": "Using VALUES when SELECTEDVALUE is safer. If the filter context contains multiple values, VALUES returns multiple rows but SELECTEDVALUE handles ambiguity gracefully.",
+    "miniQuiz": {
+      "question": "A report title should dynamically show the selected year, or 'All Years' when multiple are selected. What is the safest measure?",
+      "choices": [
+        "FIRSTNONBLANK(Date[Year], 1)",
+        "VALUES(Date[Year])",
+        "SELECTEDVALUE(Date[Year], \"All Years\")",
+        "MIN(Date[Year])"
+      ],
+      "correctAnswer": 2,
+      "explanation": "SELECTEDVALUE returns the single selected year or the alternate \"All Years\" when multiple years are selected. VALUES would return a table (not a scalar), and MIN always returns a number regardless of how many years are selected."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["VALUES", "SELECTEDVALUE", "DAX", "Filter Context"]
+  },
+  {
+    "id": "dax_time_intelligence",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "Time Intelligence",
+    "summary": "Time intelligence functions operate on a Date table to shift or accumulate date ranges. Common functions: DATEADD, TOTALYTD, SAMEPERIODLASTYEAR, DATESYTD, PREVIOUSMONTH.",
+    "keyInsight": "Time intelligence requires a marked Date table with continuous dates covering the full range of your fact data. Any gap in dates will produce incorrect results.",
+    "commonTrap": "Using time intelligence without a properly marked Date table. The table must be marked as a Date table in Power BI and must have no gaps across its date range.",
+    "miniQuiz": {
+      "question": "Which function calculates the cumulative year-to-date total of a sales measure?",
+      "choices": [
+        "DATEADD(Date[Date], -1, YEAR)",
+        "TOTALYTD(SUM(Sales[Amount]), Date[Date])",
+        "SAMEPERIODLASTYEAR(Date[Date])",
+        "CALCULATE(SUM(Sales[Amount]), PREVIOUSMONTH(Date[Date]))"
+      ],
+      "correctAnswer": 1,
+      "explanation": "TOTALYTD accumulates a measure from the start of the year to the current date in context. It is equivalent to CALCULATE(SUM(Sales[Amount]), DATESYTD(Date[Date]))."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["Time Intelligence", "DAX", "DATEADD", "TOTALYTD"]
+  },
+  {
+    "id": "dax_measures_vs_columns",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "Measures vs Calculated Columns",
+    "summary": "Measures are evaluated dynamically at query time based on filter context. Calculated columns are computed at data load and stored in the model, consuming memory.",
+    "keyInsight": "Use measures for aggregations that should respond to slicers and filters. Use calculated columns only when you need a value row-by-row for filtering or grouping purposes.",
+    "commonTrap": "Creating calculated columns for values that should be measures. Calculated columns increase model size and do NOT respond to report-time filters or slicer selections.",
+    "miniQuiz": {
+      "question": "A user wants to show total sales that changes dynamically when a region slicer is applied. Should they use a measure or a calculated column?",
+      "choices": [
+        "Calculated column — it is computed during load",
+        "Measure — it responds to filter context at report time",
+        "Calculated column — it is faster at query time",
+        "Either will produce the same result"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Measures are evaluated at query time in the current filter context, so they respond correctly to slicers. A calculated column is fixed at load time and will not change based on slicer selection."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["Measures", "Calculated Columns", "DAX"]
+  },
+  {
+    "id": "dax_row_vs_filter_context",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "Row Context vs Filter Context",
+    "summary": "Row context exists when DAX iterates row by row (calculated columns, iterators). Filter context restricts the data visible to a measure based on slicers, visuals, and CALCULATE arguments.",
+    "keyInsight": "These are the two most fundamental DAX concepts. Confusing them causes incorrect results. CALCULATE converts row context into filter context — this is called context transition.",
+    "commonTrap": "Assuming calculated columns see slicer selections. Calculated columns use row context only — they are computed at load time and do not respond to any report-time filters.",
+    "miniQuiz": {
+      "question": "Inside a SUMX iterator, a nested CALCULATE is used. What does CALCULATE do to the current row context?",
+      "choices": [
+        "It ignores the row context completely",
+        "It converts the row context into an equivalent filter context",
+        "It creates a new row context for each column",
+        "It merges row context with existing filter context without modification"
+      ],
+      "correctAnswer": 1,
+      "explanation": "CALCULATE inside an iterator performs context transition — it converts the current row context into a filter context, adding filter conditions for each column value in the current row."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 75,
+    "tags": ["Row Context", "Filter Context", "DAX", "Context Transition"]
+  },
+  {
+    "id": "dax_rankx",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "RANKX",
+    "summary": "RANKX ranks a value within a table. It requires a table expression, an expression to rank, and optional tie-handling (DENSE, SKIP). Commonly used for product or category rankings.",
+    "keyInsight": "The most frequent RANKX mistake is forgetting ALL(). Without ALL(), each row is the only row in its filtered context and always ranks 1.",
+    "commonTrap": "Using RANKX without ALL() produces a rank of 1 for every item because each item is compared only to itself in the current filter context.",
+    "miniQuiz": {
+      "question": "A measure should rank each product by total sales across all products. Which expression is correct?",
+      "choices": [
+        "RANKX(Sales, SUM(Sales[Amount]))",
+        "RANKX(ALL(Products), [Total Sales])",
+        "RANKX(Products, [Total Sales])",
+        "CALCULATE(RANK(), ALL(Products))"
+      ],
+      "correctAnswer": 1,
+      "explanation": "RANKX(ALL(Products), [Total Sales]) iterates across all products regardless of current filter context, enabling correct ranking. Without ALL, every product would rank 1 against itself."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": ["RANKX", "DAX", "ALL"]
+  },
+  {
+    "id": "dax_var_return",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "VAR and RETURN",
+    "summary": "VAR stores an intermediate result that can be reused in the same expression. RETURN specifies the final output. Variables improve readability and performance by evaluating an expression only once.",
+    "keyInsight": "Variables capture the filter context at the point of declaration. This is especially important when context changes inside an expression — the variable preserves the original context.",
+    "commonTrap": "Expecting a VAR to re-evaluate at each row inside an iterator. Variables are evaluated once when declared — they do not refresh row by row inside SUMX.",
+    "miniQuiz": {
+      "question": "What is the primary benefit of using VAR in a DAX measure?",
+      "choices": [
+        "Variables allow DAX to connect to external data sources",
+        "Variables improve readability and avoid evaluating the same expression multiple times",
+        "Variables automatically remove filter context",
+        "Variables replace the need for CALCULATE"
+      ],
+      "correctAnswer": 1,
+      "explanation": "VAR captures a result once, making complex expressions more readable and efficient. Without VAR, the same sub-expression might be evaluated multiple times in a single measure."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["VAR", "DAX", "Performance"]
+  },
+  {
+    "id": "dax_userelationship",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "USERELATIONSHIP",
+    "summary": "USERELATIONSHIP activates an inactive relationship within a CALCULATE expression. Only one relationship between two tables can be active at a time in the model.",
+    "keyInsight": "Role-playing dimensions use inactive relationships — for example, a Date table connected to both OrderDate and ShipDate. USERELATIONSHIP activates the required one per measure.",
+    "commonTrap": "Expecting inactive relationships to work automatically. Inactive relationships are ignored unless explicitly activated with USERELATIONSHIP inside CALCULATE.",
+    "miniQuiz": {
+      "question": "A Date table is related to Sales by both OrderDate (active) and ShipDate (inactive). How do you create a measure that sums sales by ShipDate?",
+      "choices": [
+        "Create a second Date table dedicated to ShipDate",
+        "CALCULATE(SUM(Sales[Amount]), USERELATIONSHIP(Sales[ShipDate], Date[Date]))",
+        "Mark ShipDate as the active relationship in Model view",
+        "Use RELATED(Date[Date]) on the ShipDate column"
+      ],
+      "correctAnswer": 1,
+      "explanation": "USERELATIONSHIP inside CALCULATE temporarily activates the inactive ShipDate relationship for that expression only, without changing the model's default active relationship."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": ["USERELATIONSHIP", "DAX", "Relationships", "Role-Playing Dimensions"]
+  }
+]

@@ -1,0 +1,186 @@
+[
+  {
+    "id": "viz_choosing_visuals",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Visualization",
+    "concept": "Choosing the Right Visual",
+    "summary": "Visual selection depends on the analysis goal: comparisons use bar/column charts, trends use line charts, composition uses treemaps or pie charts (few categories only), relationships use scatter plots.",
+    "keyInsight": "PL-300 tests visual selection in business scenarios. The exam expects you to choose the most appropriate visual — not just a valid one.",
+    "commonTrap": "Using a pie chart for more than 5–7 categories. With many categories, slices become unreadable. A sorted bar chart is always the better choice for many-category composition.",
+    "miniQuiz": {
+      "question": "A manager wants to see how each of 15 product categories contributes to total revenue. Which visual is most appropriate?",
+      "choices": [
+        "Pie chart",
+        "Donut chart",
+        "Stacked bar chart",
+        "Gauge visual"
+      ],
+      "correctAnswer": 2,
+      "explanation": "With 15 categories, pie and donut charts become unreadable. A stacked bar chart clearly shows proportional contribution while remaining legible for many categories."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["Visualization", "Visual Selection"]
+  },
+  {
+    "id": "viz_slicers_filters",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Visualization",
+    "concept": "Slicers and Filters",
+    "summary": "Slicers are on-canvas filter controls visible to users. Filters pane provides report-level, page-level, and visual-level filtering. Report-level filters apply to all pages; page-level to the current page; visual-level to one visual.",
+    "keyInsight": "Slicers are user-facing and interactive. Filter pane filters can be locked or hidden, useful for developer-controlled restrictions. Sync Slicers connects a slicer across multiple pages.",
+    "commonTrap": "Confusing page-level and report-level filters. A page-level filter only affects the current page. For cross-page filtering, use report-level filters or Sync Slicers.",
+    "miniQuiz": {
+      "question": "A slicer on Page 1 should also filter visuals on Pages 2 and 3. What is the best approach?",
+      "choices": [
+        "Add the same slicer manually to every page",
+        "Use Sync Slicers to synchronize the slicer across selected pages",
+        "Promote the page-level filter to report level",
+        "Use a report-level filter in the Filters pane instead"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Sync Slicers (View menu) configures which pages a slicer filters and whether it is visible on each page — the built-in solution for cross-page slicer synchronization."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Slicers", "Filters", "Visualization"]
+  },
+  {
+    "id": "viz_drillthrough",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Visualization",
+    "concept": "Drillthrough",
+    "summary": "Drillthrough allows users to right-click a data point and navigate to a dedicated detail page pre-filtered to that context. The detail page must have a drillthrough field defined.",
+    "keyInsight": "Drillthrough is for navigating to a detail page with context (e.g., selected product). It differs from drill-down, which expands a visual hierarchy within the same visual.",
+    "commonTrap": "Confusing drillthrough with drill-down. Drill-down navigates within a visual hierarchy (year → quarter → month). Drillthrough navigates to a different page filtered by a selected value.",
+    "miniQuiz": {
+      "question": "Users want to click on a region in a map visual and see a detailed transaction list for that region on a separate page. Which feature should you use?",
+      "choices": [
+        "Drill-down on the map visual hierarchy",
+        "Drillthrough to a detail page with Region as the drillthrough field",
+        "Bookmarks to navigate between pages",
+        "Page navigation buttons"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Drillthrough sends the selected context (Region) to a dedicated detail page. Users right-click a region on the map and select Drillthrough, arriving at a page pre-filtered to that region."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Drillthrough", "Visualization", "Navigation"]
+  },
+  {
+    "id": "viz_bookmarks",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Visualization",
+    "concept": "Bookmarks",
+    "summary": "Bookmarks capture the current state of a report page — filter state, visual visibility, and slicer selections. They enable navigation, view toggling, and guided storytelling.",
+    "keyInsight": "Bookmarks are commonly used to toggle between two views (e.g., chart vs table) using a button, or to create a custom page navigation menu.",
+    "commonTrap": "Expecting bookmarks to capture all page state by default. You can control per bookmark whether data, display (visibility), or current page state is captured.",
+    "miniQuiz": {
+      "question": "A report has a bar chart and a table showing the same data. Users should toggle between them with a button. What is the best implementation?",
+      "choices": [
+        "Create two report pages — one per visual",
+        "Use bookmarks with visibility toggling — one shows the chart (table hidden), one shows the table (chart hidden)",
+        "Use drillthrough to navigate between the two visuals",
+        "Use page navigation buttons to switch pages"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Bookmarks with visibility toggling allow you to show/hide visuals. Assign one bookmark to show the chart and another to show the table. Buttons are linked to each bookmark to trigger the toggle."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Bookmarks", "Visualization", "Navigation"]
+  },
+  {
+    "id": "viz_conditional_formatting",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Visualization",
+    "concept": "Conditional Formatting",
+    "summary": "Conditional formatting applies dynamic visual formatting — changing background color, font color, data bars, or icons based on data values, rules, or measures.",
+    "keyInsight": "Conditional formatting can use field values, threshold rules, or DAX measures. Using a measure allows fully dynamic logic that responds to context — not possible with simple rules.",
+    "commonTrap": "Using a fixed threshold rule when the threshold should vary by row or context. A fixed rule cannot compare against a per-row target — a measure is required.",
+    "miniQuiz": {
+      "question": "A table visual should highlight cells red when sales fall below each region's individual target. The target differs per region. How should conditional formatting be configured?",
+      "choices": [
+        "Use a fixed threshold rule: if sales < 1000, color red",
+        "Create a measure comparing sales to the region target and apply measure-based conditional formatting",
+        "Use icon sets with three categories",
+        "Enable data bars on the sales column"
+      ],
+      "correctAnswer": 1,
+      "explanation": "A measure can compare each region's sales against its specific target dynamically and return 'Red' or 'White'. This is applied in conditional formatting to produce per-region, context-aware color highlighting."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Conditional Formatting", "Visualization"]
+  },
+  {
+    "id": "viz_paginated_reports",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Visualization",
+    "concept": "Paginated Reports",
+    "summary": "Paginated reports are designed for pixel-perfect, print-ready output. They display all data across multiple pages — unlike standard Power BI reports that limit visual data points. Built using Power BI Report Builder.",
+    "keyInsight": "Paginated reports are the correct choice for: invoices, formal statements, regulated disclosures, or any scenario where every data row must appear. Standard reports are better for interactive exploration.",
+    "commonTrap": "Using standard Power BI reports for high-volume printing. Standard visuals truncate data. Paginated reports are required when all data must appear across pages.",
+    "miniQuiz": {
+      "question": "A finance team needs monthly invoices for 5,000 customers, each requiring a separate printable page with precise formatting. Which solution is appropriate?",
+      "choices": [
+        "A standard Power BI report with page navigation",
+        "A paginated report built in Power BI Report Builder",
+        "A Power BI dashboard exported to PDF",
+        "A dataflow with scheduled email delivery"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Paginated reports are designed for pixel-perfect, print-ready output with one record per page. They handle thousands of pages efficiently and support parameters for filtering by customer."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["Paginated Reports", "Visualization"]
+  },
+  {
+    "id": "viz_ai_visuals",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Visualization",
+    "concept": "AI Visuals",
+    "summary": "Power BI AI visuals include: Key Influencers (identifies statistical drivers of a metric), Decomposition Tree (manually breaks down a measure across dimensions), and Q&A (natural language queries).",
+    "keyInsight": "Know when to use each: Key Influencers = 'why is X high/low?'. Decomposition Tree = 'break down X by multiple dimensions interactively'. Q&A = 'let users ask natural language questions'.",
+    "commonTrap": "Using Decomposition Tree when Key Influencers is the right answer. Decomposition Tree explores data manually; Key Influencers automatically identifies statistically significant drivers.",
+    "miniQuiz": {
+      "question": "A business analyst wants to understand which factors most influence customer churn. Which AI visual should be used?",
+      "choices": [
+        "Decomposition Tree",
+        "Q&A visual",
+        "Key Influencers",
+        "Smart Narrative"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Key Influencers analyzes a metric (churn) and automatically identifies which factors (age, plan type, region, etc.) have the most statistical influence on the outcome — the correct fit here."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["AI Visuals", "Key Influencers", "Decomposition Tree", "Visualization"]
+  },
+  {
+    "id": "viz_mobile_design",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Visualization",
+    "concept": "Mobile Layout Design",
+    "summary": "Power BI Desktop allows you to create a dedicated phone layout for each report page. Visuals can be rearranged and resized independently of the desktop layout for optimal mobile viewing.",
+    "keyInsight": "Mobile layouts are configured in View > Mobile Layout. Each page has its own mobile layout. Only visuals placed on the mobile canvas appear on mobile devices.",
+    "commonTrap": "Assuming the desktop layout automatically adapts to mobile. It does not — without a configured mobile layout, Power BI shows a simplified, auto-arranged view that may not look professional.",
+    "miniQuiz": {
+      "question": "A sales report needs a fully custom layout optimized for smartphones. What should you configure?",
+      "choices": [
+        "Enable responsive design in report settings",
+        "Create a separate PBIX file specifically for mobile",
+        "Configure the Mobile Layout for each report page in Power BI Desktop",
+        "Set report page dimensions to 375 × 812 pixels"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Mobile Layout (View tab in Desktop) allows you to design a phone-optimized arrangement of existing visuals for each report page — the built-in, correct solution for mobile-optimized reports."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["Mobile Layout", "Visualization", "Report Design"]
+  }
+]

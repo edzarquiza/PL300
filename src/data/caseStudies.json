@@ -1,0 +1,142 @@
+[
+  {
+    "id": "cs_fabrikam",
+    "title": "Fabrikam Manufacturing Analytics",
+    "scenario": "Fabrikam Industries is a global manufacturing company with 12,000 employees across 8 sales regions. Their BI team built a Power BI solution three years ago that has become the primary reporting tool for regional sales managers and the executive team.",
+    "currentSetup": "The model uses a single denormalized fact table SalesActivity (18.5 million rows, 52 columns) in DirectQuery mode against an on-premises SQL Server 2019. All KPI calculations — Revenue, GrossMargin, YTD_Revenue, YTD_Margin, and QoQ_Growth — are implemented as calculated columns. All model relationships use bidirectional cross-filter. RLS is configured with a 'Region Manager' role: [SalesRegion] = LOOKUPVALUE(RegionAccess[Region], RegionAccess[ManagerEmail], USERPRINCIPALNAME()). Average report load time: 11–14 seconds.",
+    "requirements": [
+      "Reduce report load time to under 3 seconds without losing historical data access",
+      "Ensure regional managers see only data for their assigned region — the current implementation has intermittent security gaps",
+      "CFO requires a rolling 12-month revenue trend compared to the prior year on a monthly basis",
+      "Reports must be accessible to 250 internal Pro-licensed users and 20 external distributors without Power BI licenses"
+    ],
+    "questions": [
+      {
+        "id": "cs_fabrikam_q1",
+        "type": "single",
+        "domain": "Model the data",
+        "subtopic": "Optimize model performance",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_fabrikam",
+        "question": "Performance Analyzer shows YTD_Revenue and YTD_Margin calculated columns account for 9 of the 12 seconds of average load time. These columns are defined on the 18.5M-row SalesActivity table in DirectQuery mode. What is the MOST effective resolution?",
+        "choices": [
+          "Convert SalesActivity to Import mode and rewrite YTD_Revenue and YTD_Margin as DAX time intelligence measures using DATESYTD",
+          "Add non-clustered indexes to the YTD and Margin columns in SQL Server to reduce formula engine computation",
+          "Reduce the slicer date range to 24 months using a report-level filter to limit the rows processed",
+          "Switch to DirectLake storage mode, which handles aggregation columns more efficiently than DirectQuery"
+        ],
+        "correctAnswers": [0],
+        "explanation": "Calculated columns in DirectQuery mode are computed by the Formula Engine on every query — they are not stored in VertiPaq. With 18.5M rows, each YTD calculation iterates the full row set per visual refresh. Converting to Import mode stores data in compressed columnar storage, and rewriting as measures (evaluated on aggregated results at query time) reduces Formula Engine overhead by orders of magnitude. DirectLake requires OneLake/Fabric and cannot connect to on-premises SQL Server.",
+        "trapType": "Import vs DirectQuery",
+        "tags": ["Performance", "DirectQuery", "Import", "Calculated Columns", "Measures"]
+      },
+      {
+        "id": "cs_fabrikam_q2",
+        "type": "single",
+        "domain": "Manage and secure Power BI",
+        "subtopic": "Implement row-level security roles",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_fabrikam",
+        "question": "Regional managers intermittently see sales data from other regions. The RLS filter on SalesActivity is: [SalesRegion] = LOOKUPVALUE(RegionAccess[Region], RegionAccess[ManagerEmail], USERPRINCIPALNAME()). RegionAccess is a standalone table with no model relationships. The issue affects some managers but not others. What is the MOST likely cause?",
+        "choices": [
+          "LOOKUPVALUE returns BLANK when the manager's email is not found in RegionAccess — the expression [SalesRegion] = BLANK() then returns TRUE for rows where SalesRegion is null or empty, exposing those rows to unmatched managers",
+          "USERPRINCIPALNAME() returns different values in Power BI Desktop versus the Power BI Service, causing some managers to bypass the filter",
+          "The RegionAccess table must have a model relationship to SalesActivity for LOOKUPVALUE to evaluate correctly",
+          "The RLS filter should use USERNAME() instead of USERPRINCIPALNAME() when the source is an on-premises database"
+        ],
+        "correctAnswers": [0],
+        "explanation": "This is a critical RLS security trap. When LOOKUPVALUE finds no matching email, it returns BLANK. The expression [SalesRegion] = BLANK() evaluates to TRUE for any row where SalesRegion is empty or null — inadvertently exposing those rows to every manager whose email is absent from RegionAccess. The 'intermittent' pattern (some managers affected, others not) is explained by which managers' emails are missing. The fix: IF(ISBLANK(LOOKUPVALUE(...)), FALSE(), [SalesRegion] = LOOKUPVALUE(...)).",
+        "trapType": "RLS LOOKUPVALUE Blank Vulnerability",
+        "tags": ["RLS", "LOOKUPVALUE", "Security", "USERPRINCIPALNAME", "DAX"]
+      },
+      {
+        "id": "cs_fabrikam_q3",
+        "type": "single",
+        "domain": "Manage and secure Power BI",
+        "subtopic": "Choose a distribution method",
+        "difficulty": "Medium",
+        "caseStudyId": "cs_fabrikam",
+        "question": "Fabrikam needs to distribute the regional sales report to 20 external distributors who do not have Power BI Pro licenses. The report contains commercially sensitive pricing data and distributors must not be able to export or download the underlying data. What is the MOST appropriate approach?",
+        "choices": [
+          "Publish the report to a Premium capacity workspace and distribute via a Power BI App to external Azure AD B2B guest accounts — configure Export and sharing restrictions in workspace settings",
+          "Export the report as a PDF and send it via encrypted email on a monthly basis",
+          "Assign the external distributors Viewer roles on the workspace and issue them free Fabric (free tier) licenses",
+          "Publish the report with anonymous public access enabled and restrict access at the corporate network level"
+        ],
+        "correctAnswers": [0],
+        "explanation": "Power BI Premium capacity allows external Azure AD B2B guest users to consume reports without per-user Pro licenses — the capacity license covers consumption. Distributing via a Power BI App provides controlled access, and Export restrictions can be enforced at workspace and tenant level. Viewer workspace roles (C) require Pro licenses in non-Premium workspaces. Anonymous access (D) bypasses all identity-based security controls. PDF export (B) is not a scalable operational solution.",
+        "tags": ["Distribution", "Premium", "B2B", "Licensing", "Export Restrictions"]
+      }
+    ]
+  },
+  {
+    "id": "cs_northwind",
+    "title": "Northwind Financial Services Dashboard",
+    "scenario": "Northwind Financial Services is a mid-sized investment management firm managing portfolios for 2,400 clients. The BI team is building a consolidated performance dashboard to replace manual Excel-based monthly reporting compiled from three separate source systems.",
+    "currentSetup": "Data sources: (1) Azure SQL Database — client portfolio and transaction data, updated every 15 minutes. (2) SharePoint Online — weekly risk assessment Excel files uploaded by senior analysts. (3) On-premises SQL Server 2016 — legacy trade execution system, read-only BI access via data gateway, updated daily via overnight batch. Finance analysts currently export from all three sources, join in Excel, and email reports monthly. All data is subject to MiFID II compliance — client data must be labelled, audited, and access-controlled.",
+    "requirements": [
+      "Automate data refresh — portfolio data must reflect changes within 2 hours; risk assessments and trade data may refresh daily",
+      "Senior analysts see all client data; junior analysts see only the portfolios assigned to them",
+      "All reports containing client data must carry the 'Highly Confidential' sensitivity label automatically",
+      "The solution must allow the BI team to manage access without IT involvement for routine access changes"
+    ],
+    "questions": [
+      {
+        "id": "cs_northwind_q1",
+        "type": "single",
+        "domain": "Prepare the data",
+        "subtopic": "Choose between DirectLake, DirectQuery, and Import",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_northwind",
+        "question": "Northwind must combine data from Azure SQL Database (updates every 15 minutes), SharePoint Excel (weekly), and on-premises SQL Server (daily batch via gateway). Portfolio data must reflect changes within 2 hours. Which combination of storage modes is MOST appropriate?",
+        "choices": [
+          "Composite model — Import mode for SharePoint and on-premises SQL Server (scheduled daily refresh via on-premises gateway), DirectQuery for Azure SQL Database for near-real-time portfolio data",
+          "Full Import mode for all three sources with a 2-hour scheduled refresh cycle applied to the entire model",
+          "DirectQuery for all three sources to eliminate scheduled refresh dependency and ensure real-time access",
+          "DirectLake for Azure SQL Database and Import mode for the remaining sources — DirectLake provides sub-minute latency for Azure-hosted data"
+        ],
+        "correctAnswers": [0],
+        "explanation": "A composite model allows each table to use the most appropriate storage mode. Azure SQL (frequent updates) benefits from DirectQuery — always current without refresh overhead. SharePoint Excel (weekly) and on-premises SQL (daily batch) are stable enough for scheduled Import refresh via the on-premises data gateway. Full Import with 2-hour refresh (B) continuously stresses all three source systems. DirectLake (D) requires Microsoft Fabric/OneLake and cannot connect to arbitrary external databases or on-premises systems.",
+        "trapType": "Import vs DirectQuery",
+        "tags": ["Composite Model", "DirectQuery", "Import", "Data Gateway", "Storage Mode"]
+      },
+      {
+        "id": "cs_northwind_q2",
+        "type": "single",
+        "domain": "Manage and secure Power BI",
+        "subtopic": "Implement row-level security roles",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_northwind",
+        "question": "Junior analysts must see only client portfolios assigned to them. The model includes a ClientPortfolio fact table (ClientID, Revenue, RiskScore) and a separate PortfolioAssignment mapping table (AnalystUPN, ClientID) with no model relationship. Which RLS DAX filter applied to ClientPortfolio CORRECTLY restricts junior analysts to their assigned clients?",
+        "choices": [
+          "[ClientID] IN SELECTCOLUMNS(FILTER(PortfolioAssignment, [AnalystUPN] = USERPRINCIPALNAME()), \"CID\", [ClientID])",
+          "USERPRINCIPALNAME() = [AnalystUPN]",
+          "[ClientID] = LOOKUPVALUE(PortfolioAssignment[ClientID], PortfolioAssignment[AnalystUPN], USERPRINCIPALNAME())",
+          "CALCULATE(COUNTROWS(FILTER(PortfolioAssignment, [AnalystUPN] = USERPRINCIPALNAME() && [ClientID] = EARLIER([ClientID])))) > 0"
+        ],
+        "correctAnswers": [0],
+        "explanation": "The IN SELECTCOLUMNS(FILTER(...)) pattern correctly handles multi-value RLS from a disconnected mapping table — it returns the full set of ClientIDs assigned to the current user and filters ClientPortfolio to only those rows. LOOKUPVALUE (C) returns only the FIRST matching ClientID, so analysts managing multiple portfolios would see only one. Option B applies to the wrong table — ClientPortfolio has no AnalystUPN column. Option D uses EARLIER which is only valid inside calculated columns, not in RLS filter expressions.",
+        "trapType": "RLS LOOKUPVALUE vs IN for multiple rows",
+        "tags": ["RLS", "Dynamic Security", "USERPRINCIPALNAME", "FILTER", "SELECTCOLUMNS"]
+      },
+      {
+        "id": "cs_northwind_q3",
+        "type": "single",
+        "domain": "Manage and secure Power BI",
+        "subtopic": "Apply sensitivity labels",
+        "difficulty": "Medium",
+        "caseStudyId": "cs_northwind",
+        "question": "Northwind's compliance requirement states all reports containing client financial data must carry the 'Highly Confidential' label. An analyst publishes a new report without applying the label. What is the MOST automated and scalable enforcement approach?",
+        "choices": [
+          "Configure mandatory sensitivity label policies in Microsoft Purview that set 'Highly Confidential' as the default label for Power BI content in the workspace and prevent saving without a label",
+          "Instruct all workspace Admins to manually review and apply labels to newly published content within 24 hours of publication",
+          "Enable downstream sensitivity label inheritance — reports automatically inherit the label from their source semantic model when the model carries 'Highly Confidential'",
+          "Restrict publishing rights to workspace Admins only, who verify labels are applied before publishing on behalf of analysts"
+        ],
+        "correctAnswers": [2],
+        "explanation": "Downstream label inheritance (C) is the most automated approach for this scenario. When the source semantic model is labelled 'Highly Confidential', all reports built from it automatically inherit that label — no analyst action required. This is the standard Power BI + Purview integration pattern. Mandatory Purview policies (A) are the strongest enforcement control but require additional compliance licensing and admin configuration. Manual admin review (B, D) introduces human error and does not scale to a BI team publishing frequently.",
+        "tags": ["Sensitivity Labels", "Purview", "Compliance", "MiFID II", "Label Inheritance"]
+      }
+    ]
+  }
+]

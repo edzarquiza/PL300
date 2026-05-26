@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#2563eb"/>
+  <text x="256" y="300" font-family="system-ui, sans-serif" font-size="220" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="auto">PL</text>
+  <rect x="80" y="330" width="352" height="14" rx="7" fill="white" opacity="0.6"/>
+  <rect x="80" y="364" width="240" height="14" rx="7" fill="white" opacity="0.4"/>
+</svg>

@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(node -e ' *)",
+      "Bash(node add_visual_questions.cjs)",
+      "Bash(del \"d:\\\\CLAUDE Projects\\\\PL300\\\\add_visual_questions.cjs\")",
+      "Bash(node add_dax_questions.cjs)",
+      "Bash(node audit_bank.cjs)",
+      "Bash(node add_balanced_questions.cjs)",
+      "Bash(node add_balanced_questions2.cjs)",
+      "Bash(node add_balanced_questions3.cjs)",
+      "Bash(node add_balanced_questions4.cjs)",
+      "Bash(Remove-Item add_balanced_questions2.cjs, add_balanced_questions3.cjs, add_balanced_questions4.cjs, audit_bank.cjs -ErrorAction SilentlyContinue)",
+      "Bash(Write-Host \"Scripts deleted\")",
+      "Bash(node add_typed_questions.cjs)",
+      "Bash(node -e \"const q=require\\('./src/data/questions.json'\\); const types=[...new Set\\(q.map\\(x=>x.type\\)\\)]; const domains=[...new Set\\(q.map\\(x=>x.domain\\)\\)]; console.log\\('Total questions:',q.length\\); console.log\\('Types:',types\\); console.log\\('Domains:',domains\\); const diff={}; q.forEach\\(x=>{diff[x.difficulty]=\\(diff[x.difficulty]||0\\)+1}\\); console.log\\('Difficulty:',diff\\);\")",
+      "Bash(node --input-type=module)",
+      "Bash(node -e \"const q = require\\('./src/data/questions.json'\\); const byType = {}; const byDomain = {}; const byDiff = {}; q.forEach\\(x => { byType[x.type] = \\(byType[x.type]||0\\)+1; byDomain[x.domain] = \\(byDomain[x.domain]||0\\)+1; byDiff[x.difficulty] = \\(byDiff[x.difficulty]||0\\)+1; }\\); console.log\\('Total:', q.length\\); console.log\\('Types:', JSON.stringify\\(byType, null, 2\\)\\); console.log\\('Domains:', JSON.stringify\\(byDomain, null, 2\\)\\); console.log\\('Difficulties:', JSON.stringify\\(byDiff, null, 2\\)\\);\")",
+      "Bash(node -e \"const q = require\\('./src/data/questions.json'\\); const bySubtopic = {}; q.forEach\\(x => { bySubtopic[x.subtopic] = \\(bySubtopic[x.subtopic]||0\\)+1; }\\); const sorted = Object.entries\\(bySubtopic\\).sort\\(\\(a,b\\)=>b[1]-a[1]\\); console.log\\('Subtopics \\(' + sorted.length + ' total\\):'\\); sorted.forEach\\(\\([k,v]\\) => console.log\\(' ', v, k\\)\\);\")",
+      "Bash(node -e \"const tracks = require\\('./src/data/examTracks.js'\\); console.log\\(JSON.stringify\\(tracks.EXAM_TRACKS.map\\(t => \\({id: t.id, name: t.name, description: t.description, defaultQuestionCount: t.defaultQuestionCount, tagFilter: t.tagFilter}\\)\\), null, 2\\)\\);\")",
+      "Bash(node -e \"const q = require\\('./src/data/questions.json'\\); console.log\\('Last ID:', q[q.length-1].id, '| Total:', q.length\\);\")",
+      "Bash(node -e \"const d = require\\('./src/data/reviewers/daxReviewer.json'\\); console.log\\(JSON.stringify\\(d[0], null, 2\\)\\);\")",
+      "Bash(node add_questions_phase2.cjs)",
+      "Bash(rm add_questions_phase2.cjs)",
+      "Bash(node -e \"const q=require\\('./src/data/questions.json'\\); const byDiff={Easy:0,Medium:0,Hard:0}; q.forEach\\(x=>byDiff[x.difficulty]=\\(byDiff[x.difficulty]||0\\)+1\\); console.log\\('Total:', q.length, '| Diffs:', JSON.stringify\\(byDiff\\)\\);\")"
+    ]
+  }
+}

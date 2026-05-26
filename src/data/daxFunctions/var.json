@@ -1,0 +1,49 @@
+{
+  "functionName": "VAR",
+  "category": "Logical",
+  "syntax": "VAR <name> = <expression>\n...\nRETURN <result_expression>",
+  "parameters": [
+    {
+      "name": "name",
+      "required": true,
+      "type": "Identifier",
+      "description": "A name for the variable. Must start with a letter. Can contain letters, numbers, and underscores.",
+      "examNote": "Variables are evaluated once at the point of declaration, in the filter context present at that moment."
+    },
+    {
+      "name": "expression",
+      "required": true,
+      "type": "Any DAX expression (scalar or table)",
+      "description": "The value to store. Can be a scalar value or an entire table expression.",
+      "examNote": "Variables can store tables, which is useful for avoiding repeated FILTER() expressions."
+    },
+    {
+      "name": "result_expression",
+      "required": true,
+      "type": "Scalar",
+      "description": "The final value returned by the entire VAR/RETURN block. Must follow the RETURN keyword.",
+      "examNote": "RETURN must be the last statement. The measure's output is whatever RETURN evaluates to."
+    }
+  ],
+  "returnType": "Scalar (same type as the RETURN expression)",
+  "summary": "VAR stores intermediate DAX results that can be reused multiple times within a measure. RETURN specifies the final output. Variables improve readability, prevent redundant recalculations, and enable complex conditional logic like IF/SWITCH.",
+  "examples": [
+    {
+      "label": "Year-over-year growth percentage",
+      "expression": "YoY Growth % =\nVAR CurrentSales = SUM(Sales[Amount])\nVAR LastYearSales = CALCULATE(SUM(Sales[Amount]), SAMEPERIODLASTYEAR(DimDate[Date]))\nRETURN DIVIDE(CurrentSales - LastYearSales, LastYearSales, 0)",
+      "sampleData": null,
+      "expectedOutput": null,
+      "explanation": "Each VAR is computed once. RETURN uses both to compute growth cleanly without repeating the SUM(Sales[Amount]) expression twice. The third argument of DIVIDE (0) handles division by zero."
+    }
+  ],
+  "filterFlow": null,
+  "iteratorFlow": null,
+  "commonTraps": [
+    "Variables are evaluated at the point of their declaration, not at RETURN — the filter context is frozen when the VAR line is reached.",
+    "A VAR containing CALCULATE captures the filter context at the point of the VAR, not the RETURN scope.",
+    "Variables are local to the measure — they cannot be shared or reused across different measures."
+  ],
+  "relatedFunctions": ["CALCULATE", "IF", "SWITCH", "DIVIDE"],
+  "examWeight": "Medium",
+  "difficulty": "Medium"
+}

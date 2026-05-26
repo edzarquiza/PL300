@@ -1,0 +1,232 @@
+[
+  {
+    "id": "trap_calc_col_vs_measure",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "Calculated Column vs Measure",
+    "summary": "Calculated columns are computed row-by-row at data refresh and stored in the model. Measures are computed at query time using the current filter context. This distinction affects performance, model size, and correctness.",
+    "keyInsight": "Use measures for any aggregation or filter-context-dependent calculation. Use calculated columns only for row-level values needed as relationship keys, sort columns, or categorical slicers. Calculated columns in DirectQuery are not stored — they are re-evaluated on every query.",
+    "commonTrap": "Implementing Revenue, Margin, and YTD calculations as calculated columns. This inflates model size, slows refresh, and produces wrong totals in matrix visuals because calculated columns cannot react to changing filter context — they store a fixed per-row value.",
+    "miniQuiz": {
+      "question": "A report shows incorrect quarterly totals for a 'Gross Margin' value. The developer implemented Gross Margin as a calculated column. What is the cause?",
+      "choices": [
+        "Calculated columns use row context — the value is fixed per row and cannot aggregate correctly across filter context changes",
+        "Calculated columns cannot be used with financial data",
+        "The calculated column formula is syntactically incorrect",
+        "Calculated columns in Import mode do not support division operations"
+      ],
+      "correctAnswer": 0,
+      "explanation": "A calculated column stores one value per row, computed at refresh time with row context. When a matrix visual aggregates these values, it sums the pre-computed per-row values — it cannot recalculate the ratio in the current filter context. A measure correctly recalculates using the aggregated numerator and denominator in each visual cell's filter context."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["Calculated Columns", "Measures", "DAX", "Filter Context", "Performance"]
+  },
+  {
+    "id": "trap_sum_vs_sumx",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "SUM vs SUMX",
+    "summary": "SUM aggregates a single column reference. SUMX is an iterator — it evaluates an expression for each row of a table, then sums the results. SUMX is required whenever the calculation involves a per-row expression combining multiple columns.",
+    "keyInsight": "SUM(Sales[Revenue]) and SUMX(Sales, Sales[Revenue]) produce identical results. The difference appears with expressions: SUM(Sales[Price] * Sales[Qty]) is a syntax error. SUMX(Sales, Sales[Price] * Sales[Qty]) is correct.",
+    "commonTrap": "Using SUM for multi-column expressions — SUM(Sales[Price] * Sales[Qty]) causes an error. A subtler trap: SUMX iterating a large filtered table inside a complex measure creates significant Formula Engine overhead that a simpler aggregation or pre-computed column could avoid.",
+    "miniQuiz": {
+      "question": "Which expression correctly calculates total revenue when each row has separate UnitPrice and Quantity columns?",
+      "choices": [
+        "SUM(Sales[UnitPrice]) * SUM(Sales[Quantity])",
+        "SUM(Sales[UnitPrice] * Sales[Quantity])",
+        "SUMX(Sales, Sales[UnitPrice] * Sales[Quantity])",
+        "CALCULATE(SUM(Sales[UnitPrice]), SUM(Sales[Quantity]))"
+      ],
+      "correctAnswer": 2,
+      "explanation": "SUMX iterates the Sales table row by row, multiplying UnitPrice × Quantity for each row, then sums the results. Option A gives mathematically wrong results (sum × sum). Option B is a syntax error — SUM cannot evaluate expressions. Option D is invalid DAX syntax."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["SUM", "SUMX", "DAX", "Iterator Functions", "Measures"]
+  },
+  {
+    "id": "trap_row_vs_filter_context",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "Row Context vs Filter Context",
+    "summary": "Row context exists inside calculated columns and iterators (SUMX, FILTER, ADDCOLUMNS) — it represents the current row being processed. Filter context exists in measures and is set by slicers, visual axes, CALCULATE, and report filters.",
+    "keyInsight": "Context transition: when CALCULATE is called inside an iterator (explicitly or implicitly via a measure reference), it converts the current row context into an equivalent filter context. This is why measure references inside SUMX work correctly.",
+    "commonTrap": "Calling RELATED() in a measure (outside a calculated column or iterator) — RELATED requires row context and will return an error or BLANK if no row context exists. Also: using a measure reference inside FILTER() without understanding that measures always use filter context, not row context.",
+    "miniQuiz": {
+      "question": "You write: SUMX(Sales, Sales[UnitPrice] * RELATED(Product[Margin])). In what context does RELATED evaluate?",
+      "choices": [
+        "The current filter context of the containing measure",
+        "The row context of the current Sales row being iterated by SUMX",
+        "No context — RELATED always scans the entire related table",
+        "The filter context of the report page slicer"
+      ],
+      "correctAnswer": 1,
+      "explanation": "RELATED uses row context to navigate a relationship from the current row to a related dimension row. Inside SUMX, each iteration establishes a row context for the current Sales row. RELATED uses that row context to look up the matching Product row and return its Margin value."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 90,
+    "tags": ["Row Context", "Filter Context", "DAX", "CALCULATE", "SUMX", "Context Transition"]
+  },
+  {
+    "id": "trap_import_vs_directquery",
+    "domain": "Prepare the data",
+    "subtopic": "Storage Mode",
+    "concept": "Import vs DirectQuery",
+    "summary": "Import mode loads data into Power BI's in-memory VertiPaq engine — fast queries, data is a snapshot requiring scheduled refresh. DirectQuery sends live queries to the source system — always current, but performance depends on the source and every visual generates a query.",
+    "keyInsight": "Import is almost always faster for analytical queries. DirectQuery is chosen for real-time requirements or datasets too large to import. Key restrictions in DirectQuery: no calculated columns stored in VertiPaq, complex DAX measures may time out, and the source system bears the query load.",
+    "commonTrap": "Choosing DirectQuery to avoid refresh management, then finding that calculated columns cannot be defined on DirectQuery tables, and that complex time intelligence measures (DATESYTD, SAMEPERIODLASTYEAR) perform poorly because VertiPaq acceleration is unavailable.",
+    "miniQuiz": {
+      "question": "A developer adds a calculated column to a DirectQuery table in Power BI Desktop. What happens at query time?",
+      "choices": [
+        "The column is pre-computed and stored in the model like an Import table",
+        "The column formula is sent to the source database as a computed column",
+        "The column is computed by the Formula Engine on every query — it is not stored in VertiPaq",
+        "The column is ignored — DirectQuery does not support calculated columns"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Calculated columns on DirectQuery tables are evaluated by the Power BI Formula Engine on each query — they cannot be stored in VertiPaq because there is no in-memory snapshot to store them in. This is why DirectQuery calculated columns severely impact performance on large tables."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["Import", "DirectQuery", "Storage Mode", "Performance", "Calculated Columns"]
+  },
+  {
+    "id": "trap_merge_vs_append",
+    "domain": "Prepare the data",
+    "subtopic": "Power Query",
+    "concept": "Merge vs Append",
+    "summary": "Append stacks tables vertically — combining rows from tables with the same column structure (equivalent to SQL UNION ALL). Merge joins tables horizontally — matching rows from two tables on a key column (equivalent to SQL JOIN).",
+    "keyInsight": "Append = same structure, more rows. Merge = different structures, more columns. Choosing the wrong operation on monthly sales files (using Merge instead of Append) creates a cartesian join rather than a simple vertical stack.",
+    "commonTrap": "Using Merge to combine 12 monthly sales files with identical columns — this creates a JOIN on the selected key, not a union of rows. Conversely, using Append when you need to enrich one table with lookup attributes from another — you get duplicate rows instead of enriched rows.",
+    "miniQuiz": {
+      "question": "You have 12 monthly sales files with identical columns (Date, Region, Amount). You want one table with all 12 months. Which Power Query operation is correct?",
+      "choices": [
+        "Merge Queries — join all 12 files on the Date key",
+        "Append Queries — stack all rows vertically into one table",
+        "Reference the first query and add a custom step for each subsequent file",
+        "Create a calculated table using UNION in DAX after loading all 12 as separate tables"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Append Queries stacks rows from tables with identical schemas vertically — exactly right for combining monthly files into one dataset. Merge performs a join (horizontal enrichment), which would produce key-matched or cartesian results, not a simple union of all rows."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["Merge", "Append", "Power Query", "M Language", "Data Transformation"]
+  },
+  {
+    "id": "trap_bidirectional_filter",
+    "domain": "Model the data",
+    "subtopic": "Data Modeling",
+    "concept": "Bidirectional Cross-Filter Risks",
+    "summary": "Single cross-filter direction means the dimension filters the fact table (standard, safe). Bidirectional allows the fact table to filter the dimension — useful in specific M:N scenarios but introduces significant model risks when used broadly.",
+    "keyInsight": "Bidirectional filters cause: (1) dimension slicers that silently hide members with no fact data, (2) ambiguous filter paths in complex star schemas, (3) unexpected circular dependency errors. Use CROSSFILTER() in specific measures rather than enabling bidirectional on relationships.",
+    "commonTrap": "Enabling bidirectional on all relationships to 'fix' slicer issues. This solves the immediate problem but creates subtle bugs where customers, products, or dates with no sales disappear from slicers based on unrelated filters — producing misleading analysis.",
+    "miniQuiz": {
+      "question": "A Customer slicer stops showing customers who have no orders in the selected time period. What is the MOST likely cause?",
+      "choices": [
+        "The relationship between Customer and Sales has bidirectional cross-filter, allowing Sales to filter Customer",
+        "The Customer table is in DirectQuery mode and cannot show unmatched rows",
+        "The slicer is configured to show only items with data — this is by design",
+        "RLS is incorrectly restricting the Customer table"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Bidirectional cross-filter allows Sales to filter Customer. When a date range filter is applied, only customers who have sales in that period remain visible in the slicer. Setting the relationship to Single direction (Customer → Sales only) restores all customers regardless of their sales activity."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["Bidirectional", "Cross-Filter", "Relationships", "Data Modeling", "Slicers"]
+  },
+  {
+    "id": "trap_all_vs_removefilters",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "ALL vs REMOVEFILTERS",
+    "summary": "ALL() has a dual role: as a table function it returns all rows regardless of filter context; as a CALCULATE modifier it removes filters. REMOVEFILTERS() is a dedicated CALCULATE modifier — it only removes filters and cannot be used as a table function.",
+    "keyInsight": "REMOVEFILTERS is semantically unambiguous — its sole purpose is removing filters inside CALCULATE. Prefer it for clarity. ALL() as a CALCULATE modifier achieves the same result but can confuse code reviewers who expect a table function. Never use REMOVEFILTERS outside of CALCULATE.",
+    "commonTrap": "Using REMOVEFILTERS as a table argument: FILTER(REMOVEFILTERS(Sales), condition) causes an error because REMOVEFILTERS is not a table function. ALL(Sales) is correct in this context. Conversely, CALCULATE([Revenue], REMOVEFILTERS(Product)) is correct and preferred.",
+    "miniQuiz": {
+      "question": "Which expression is SYNTACTICALLY valid and correctly calculates total sales ignoring all Product filters?",
+      "choices": [
+        "CALCULATE([Total Sales], REMOVEFILTERS(Product))",
+        "SUMX(REMOVEFILTERS(Sales), Sales[Amount])",
+        "FILTER(REMOVEFILTERS(Product), Product[Category] = \"Electronics\")",
+        "CALCULATE([Total Sales], Product = ALL)"
+      ],
+      "correctAnswer": 0,
+      "explanation": "REMOVEFILTERS(Product) used as a CALCULATE modifier is correct — it removes all filters on the Product table within the CALCULATE scope. REMOVEFILTERS cannot be used as a table function (B, C are invalid). Option D is not valid DAX syntax."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 75,
+    "tags": ["ALL", "REMOVEFILTERS", "DAX", "CALCULATE", "Filter Context"]
+  },
+  {
+    "id": "trap_workspace_roles_vs_rls",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Security",
+    "concept": "Workspace Roles vs Row-Level Security",
+    "summary": "Workspace roles (Admin, Member, Contributor, Viewer) control what actions users can take on Power BI artifacts — creating, editing, and sharing. Row-Level Security (RLS) controls which data rows a user can see in a report. These are independent, complementary security layers.",
+    "keyInsight": "A workspace Admin is not exempt from RLS by default — their workspace role does not grant additional data row visibility. Exception: semantic model owners and users with Edit permission on the dataset bypass RLS and see all data in Desktop and Service.",
+    "commonTrap": "Assuming the Viewer workspace role restricts data to relevant rows. A Viewer can see ALL rows in a report unless RLS is explicitly configured and the user is assigned to an RLS role. Workspace roles protect the artifact, not the data within it.",
+    "miniQuiz": {
+      "question": "A regional manager is assigned Viewer role in a workspace. No RLS is configured. What data does the manager see in the report?",
+      "choices": [
+        "Only data for their region — Viewer role limits data visibility",
+        "All data in the report — workspace roles do not restrict row-level data access",
+        "No data — Viewers cannot query semantic model data directly",
+        "Aggregated totals only — Viewers cannot see row-level detail"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Workspace roles control artifact access (can they open, edit, share the report?) — not data access. Without RLS, all users including Viewers see all rows in the semantic model. RLS must be explicitly configured with DAX filters and users assigned to roles to restrict data visibility."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["Workspace Roles", "RLS", "Security", "Viewer", "Row-Level Security"]
+  },
+  {
+    "id": "trap_lookupvalue_rls_blank",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "RLS",
+    "concept": "LOOKUPVALUE in RLS — BLANK Security Gap",
+    "summary": "LOOKUPVALUE returns BLANK when no match is found. In an RLS filter expression, [Column] = BLANK() evaluates to TRUE for any row where the column is null or empty — silently exposing those rows to users who have no entry in the access mapping table.",
+    "keyInsight": "Always guard LOOKUPVALUE in RLS with an explicit BLANK check: IF(ISBLANK(LOOKUPVALUE(...)), FALSE(), [Column] = LOOKUPVALUE(...)). This ensures an unmatched user sees NO rows rather than blank-value rows from the fact table.",
+    "commonTrap": "Deploying [Region] = LOOKUPVALUE(Access[Region], Access[Email], USERPRINCIPALNAME()) without testing for new users. When a new employee logs in before their email is added to the Access table, they see all rows where Region is blank — which may include real production data with incomplete region assignments.",
+    "miniQuiz": {
+      "question": "An RLS filter uses: [Region] = LOOKUPVALUE(Map[Region], Map[Email], USERPRINCIPALNAME()). A new user's email is not yet in Map. What rows do they see?",
+      "choices": [
+        "No rows — LOOKUPVALUE returning BLANK means the filter matches nothing",
+        "All rows — no match disables the filter",
+        "Only rows where Region is blank or null",
+        "All rows in the first region alphabetically"
+      ],
+      "correctAnswer": 2,
+      "explanation": "LOOKUPVALUE returns BLANK when no match is found. The RLS condition [Region] = BLANK() evaluates to TRUE for rows where Region is null or empty — those rows are visible to the unmatched user. Rows with an actual region value are correctly excluded. This is a security vulnerability, not an error. Fix: IF(ISBLANK(LOOKUPVALUE(...)), FALSE(), [Region] = LOOKUPVALUE(...))."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 75,
+    "tags": ["RLS", "LOOKUPVALUE", "Security", "BLANK", "USERPRINCIPALNAME"]
+  },
+  {
+    "id": "trap_related_vs_relatedtable",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "RELATED vs RELATEDTABLE",
+    "summary": "RELATED navigates from the many side to the one side of a relationship, returning a single scalar value from the related dimension row. RELATEDTABLE navigates from the one side to the many side, returning a table of related fact rows.",
+    "keyInsight": "RELATED is used in calculated columns or iterators on the fact (many) table to look up a dimension attribute. RELATEDTABLE is used on the dimension (one) table to aggregate across related fact rows — always combined with COUNTROWS, SUMX, or similar aggregators.",
+    "commonTrap": "Using RELATED in a dimension table calculated column trying to retrieve values from the fact table — this fails because RELATED only navigates from many → one. Also: calling RELATED outside of row context (in a standalone measure) causes an error because RELATED requires row context to know which row to navigate from.",
+    "miniQuiz": {
+      "question": "In a calculated column on the Customer (dimension) table, you need to count each customer's total number of orders. Which expression is correct?",
+      "choices": [
+        "RELATED(Sales[OrderID])",
+        "COUNTROWS(RELATEDTABLE(Sales))",
+        "COUNT(Sales[OrderID])",
+        "COUNTROWS(RELATED(Sales))"
+      ],
+      "correctAnswer": 1,
+      "explanation": "RELATEDTABLE(Sales) navigates from the current Customer row to all related Sales rows, returning a table. COUNTROWS then counts those rows. RELATED navigates in the opposite direction (many → one) and returns a single value — it cannot return a table or navigate from one to many."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["RELATED", "RELATEDTABLE", "DAX", "Relationships", "Calculated Columns"]
+  }
+]

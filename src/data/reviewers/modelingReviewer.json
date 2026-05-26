@@ -1,0 +1,232 @@
+[
+  {
+    "id": "mod_star_schema",
+    "domain": "Model the data",
+    "subtopic": "Data Modeling",
+    "concept": "Star Schema",
+    "summary": "A star schema has one central fact table surrounded by dimension tables. Each dimension connects directly to the fact with a one-to-many relationship. This is the recommended structure for Power BI.",
+    "keyInsight": "Star schema is the most important modeling concept for PL-300. Power BI's VertiPaq engine is optimized for star schemas — they compress efficiently and query fast.",
+    "commonTrap": "Using a snowflake schema when a star schema is sufficient. Snowflake normalizes dimensions into chains (Country → Region → Product) but increases DAX complexity and reduces performance.",
+    "miniQuiz": {
+      "question": "A model has Products connected to Categories, which connects to Departments — all separate tables. What design issue does this create?",
+      "choices": [
+        "A many-to-many relationship violation",
+        "A snowflake schema — which adds DAX complexity compared to a star schema",
+        "A missing Date table",
+        "A bidirectional filter conflict"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Products → Categories → Departments is a snowflake schema. Best practice is to denormalize — flatten Categories and Departments into the Products dimension table to create a star schema."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["Star Schema", "Data Modeling", "Relationships"]
+  },
+  {
+    "id": "mod_cardinality",
+    "domain": "Model the data",
+    "subtopic": "Data Modeling",
+    "concept": "Relationship Cardinality",
+    "summary": "Cardinality describes the uniqueness of values in a relationship: one-to-many (1:*), one-to-one (1:1), or many-to-many (*:*). Power BI detects cardinality automatically but you should verify it.",
+    "keyInsight": "One-to-many is the standard relationship in a star schema (dimension side has unique keys). Many-to-many signals a data quality issue or a modeling problem requiring a bridge table.",
+    "commonTrap": "Allowing many-to-many relationships due to duplicate keys in what should be the 'one' side. Always ensure the lookup/dimension table has unique key values.",
+    "miniQuiz": {
+      "question": "A relationship between Products and Sales is showing Many-to-Many unexpectedly. What is the most likely cause?",
+      "choices": [
+        "The Sales table has no date column",
+        "The ProductID in the Products table has duplicate values",
+        "The relationship is set to bidirectional",
+        "The Products table is missing a category column"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Many-to-many occurs when neither table has unique key values for the join column. If Products[ProductID] has duplicates, Power BI cannot establish a 1:* relationship and defaults to *:*."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Cardinality", "Data Modeling", "Relationships"]
+  },
+  {
+    "id": "mod_cross_filter",
+    "domain": "Model the data",
+    "subtopic": "Data Modeling",
+    "concept": "Cross-Filter Direction",
+    "summary": "Filter direction controls how filters propagate across a relationship. Single direction means filters flow from the 'one' side to the 'many' side only. Bidirectional allows filters to flow both ways.",
+    "keyInsight": "Bidirectional filtering should be used sparingly — it can cause ambiguous filter paths, unexpected totals, and performance degradation. Prefer single direction and use CROSSFILTER() in DAX for specific measures.",
+    "commonTrap": "Setting all relationships to bidirectional to 'fix' slicer issues. This often creates ambiguous filter paths that produce wrong totals or degrade query performance.",
+    "miniQuiz": {
+      "question": "A slicer on a dimension table is not filtering a second fact table that shares the same dimension. What is the recommended solution?",
+      "choices": [
+        "Set all relationships to bidirectional",
+        "Use CROSSFILTER() in a DAX measure, or use a bridge table",
+        "Duplicate the dimension table for the second fact",
+        "Use a many-to-many relationship between the two fact tables"
+      ],
+      "correctAnswer": 1,
+      "explanation": "CROSSFILTER() in a DAX measure enables bidirectional behavior only for that specific calculation, avoiding the model-wide risks of global bidirectional relationships."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": ["Cross-Filter Direction", "Data Modeling", "Relationships"]
+  },
+  {
+    "id": "mod_date_table",
+    "domain": "Model the data",
+    "subtopic": "Data Modeling",
+    "concept": "Date Table Requirements",
+    "summary": "A Date table must: have one row per calendar day, contain no date gaps, cover the full date range of your fact data, and be marked as a Date Table in Power BI Desktop.",
+    "keyInsight": "Without a properly marked Date table, time intelligence functions like TOTALYTD, DATEADD, and SAMEPERIODLASTYEAR will not work correctly.",
+    "commonTrap": "Using Power BI's auto-generated date hierarchy instead of a dedicated Date table. Auto-hierarchies work for basic visuals but do not support DAX time intelligence functions.",
+    "miniQuiz": {
+      "question": "A TOTALYTD measure returns blank for some months. The Date table has dates only for transaction dates, skipping weekends. What is the problem?",
+      "choices": [
+        "TOTALYTD requires a Fiscal Year end parameter",
+        "The Date table has gaps — it must have continuous daily dates with no gaps",
+        "The fact table is missing a date column",
+        "The Date table needs a bidirectional relationship"
+      ],
+      "correctAnswer": 1,
+      "explanation": "A Date table must have one row per calendar day with no gaps. Skipping weekends creates gaps that break time intelligence — the function cannot determine correct period boundaries."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["Date Table", "Data Modeling", "Time Intelligence"]
+  },
+  {
+    "id": "mod_role_playing_dimensions",
+    "domain": "Model the data",
+    "subtopic": "Data Modeling",
+    "concept": "Role-Playing Dimensions",
+    "summary": "A role-playing dimension is a single table used multiple times in a fact table — for example, a Date table connected to OrderDate, ShipDate, and DueDate. Power BI allows only one active relationship per table pair.",
+    "keyInsight": "The standard approach is one active relationship (e.g., OrderDate) and additional inactive relationships activated via USERELATIONSHIP() in specific measures.",
+    "commonTrap": "Creating duplicate dimension tables for each role. This wastes memory and creates maintenance overhead. USERELATIONSHIP() is the correct, scalable approach.",
+    "miniQuiz": {
+      "question": "A Sales table has OrderDate and ShipDate, both needing to connect to the same Date table. How do you handle this?",
+      "choices": [
+        "Create two separate Date tables — one per date column",
+        "Create one active relationship on OrderDate and one inactive on ShipDate, using USERELATIONSHIP() for ShipDate measures",
+        "Merge OrderDate and ShipDate into one column",
+        "Use bidirectional relationships for both connections"
+      ],
+      "correctAnswer": 1,
+      "explanation": "One active relationship (OrderDate) handles default date filtering. The inactive ShipDate relationship is activated per-measure using CALCULATE(..., USERELATIONSHIP(Sales[ShipDate], Date[Date]))."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": ["Role-Playing Dimensions", "Data Modeling", "USERELATIONSHIP"]
+  },
+  {
+    "id": "mod_directquery_import",
+    "domain": "Model the data",
+    "subtopic": "Data Modeling",
+    "concept": "Import vs DirectQuery vs DirectLake",
+    "summary": "Import loads data into VertiPaq — fast queries, requires scheduled refresh. DirectQuery queries the source live — always current, slower performance. DirectLake (Fabric only) reads from OneLake without import overhead.",
+    "keyInsight": "Import is best for performance. DirectQuery is best for near real-time data or very large datasets. DirectLake combines the speed of Import with DirectQuery freshness but requires Fabric.",
+    "commonTrap": "Using DirectQuery for all reports to 'stay current.' DirectQuery queries the source on every visual interaction, causing slow performance and higher source system load.",
+    "miniQuiz": {
+      "question": "A company needs reports that always show live data updated every minute. The dataset is 500MB. Which connection mode is most appropriate?",
+      "choices": [
+        "Import with 30-minute scheduled refresh",
+        "DirectQuery",
+        "DirectLake",
+        "Import with incremental refresh"
+      ],
+      "correctAnswer": 1,
+      "explanation": "DirectQuery sends queries to the source in real time for every visual interaction. For data requiring updates every minute, DirectQuery is the correct choice — scheduled refresh intervals are too coarse."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["DirectQuery", "Import", "DirectLake", "Data Modeling"]
+  },
+  {
+    "id": "mod_many_to_many",
+    "domain": "Model the data",
+    "subtopic": "Data Modeling",
+    "concept": "Many-to-Many Relationships",
+    "summary": "Many-to-many relationships exist when both tables have non-unique join keys. Power BI supports native M:M but they can cause double-counting and unpredictable filter behavior.",
+    "keyInsight": "For common M:M scenarios (sales belonging to multiple territories), use a bridge table to resolve through two 1:* joins — this gives cleaner, more predictable filter behavior.",
+    "commonTrap": "Using native M:M when a bridge table gives better results. Native M:M can produce ambiguous totals that are difficult to control with DAX.",
+    "miniQuiz": {
+      "question": "Sales can belong to multiple territories and each territory covers multiple sales. The model shows a Many-to-Many warning. What is the recommended solution?",
+      "choices": [
+        "Add bidirectional filters between Sales and Territory",
+        "Create a bridge table (SalesTerritory) linking Sales and Territory through two 1:* relationships",
+        "Merge the Territory table into the Sales fact table",
+        "Use CROSSFILTER() to enable filtering between them"
+      ],
+      "correctAnswer": 1,
+      "explanation": "A bridge (junction) table resolves M:M into two 1:* relationships, giving cleaner filter behavior and avoiding double-counting — the standard modeling solution for true M:M scenarios."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": ["Many-to-Many", "Data Modeling", "Relationships"]
+  },
+  {
+    "id": "mod_performance",
+    "domain": "Model the data",
+    "subtopic": "Data Modeling",
+    "concept": "Model Performance Optimization",
+    "summary": "Key performance improvements: removing unused columns and rows, using integer keys for relationships instead of text, reducing column cardinality, and avoiding bidirectional relationships where possible.",
+    "keyInsight": "The biggest performance killers are: high-cardinality text columns (GUIDs, free-text), calculated columns on large tables, and importing more data than needed.",
+    "commonTrap": "Keeping all source columns in the model 'just in case.' Every unused column consumes memory and slows VertiPaq compression — remove aggressively in Power Query.",
+    "miniQuiz": {
+      "question": "A model takes 3 minutes to refresh and uses 4GB of memory. Which optimization should you apply first?",
+      "choices": [
+        "Add more calculated columns to pre-aggregate data",
+        "Remove unused columns and filter unnecessary rows in Power Query before load",
+        "Switch to DirectQuery mode",
+        "Enable bidirectional relationships for faster cross-filtering"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Removing unused columns and filtering rows in Power Query is the most impactful first step. It directly reduces what VertiPaq must compress and store, often cutting model size and refresh time dramatically."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Performance", "Data Modeling", "VertiPaq"]
+  },
+  {
+    "id": "mod_calculated_tables",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "Calculated Tables",
+    "summary": "Calculated tables are created using DAX and materialized into the model at refresh time. Stored like imported tables, they consume memory. Common uses: Date tables, bridge tables, parameter tables.",
+    "keyInsight": "CALENDARAUTO() generates a Date table that automatically covers the full date range of all date columns in the model — the easiest way to create a proper Date table.",
+    "commonTrap": "Using a calculated table when a measure would suffice. Calculated tables are static at refresh — they do not respond to user selections unless paired with measures.",
+    "miniQuiz": {
+      "question": "You need a Date table that automatically covers the full date range of your Sales table. Which DAX function creates it?",
+      "choices": [
+        "GENERATE(Sales, CALENDAR(MIN(Sales[Date]), MAX(Sales[Date])))",
+        "CALENDARAUTO()",
+        "DATESINPERIOD(Date[Date], TODAY(), -365, DAY)",
+        "UNION(Sales[Date], DISTINCT(Sales[Date]))"
+      ],
+      "correctAnswer": 1,
+      "explanation": "CALENDARAUTO() scans all date columns in the model and generates a continuous date table from the earliest to the latest date found — automatically covering the full data range."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Calculated Tables", "DAX", "Date Table"]
+  },
+  {
+    "id": "mod_calculation_groups",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "Calculation Groups",
+    "summary": "Calculation groups define reusable sets of DAX logic (calculation items) applied to any measure via a slicer — for example, applying YTD, MTD, or prior-year logic to whichever measure the user selects.",
+    "keyInsight": "Calculation groups eliminate the need to create duplicate time-intelligence measures for every base measure. Define the time logic once, apply it to all measures dynamically.",
+    "commonTrap": "Creating individual YTD, MTD, and prior-year measures for each base measure — resulting in dozens of redundant measures that are hard to maintain.",
+    "miniQuiz": {
+      "question": "A model has 20 base measures and the team needs YTD, MTD, and prior-year versions of each. What is the most maintainable approach?",
+      "choices": [
+        "Create 60 additional measures (3 × 20)",
+        "Create a calculation group with 3 calculation items (YTD, MTD, Prior Year)",
+        "Use SWITCH() to toggle between time periods inside each measure",
+        "Duplicate the fact table three times with pre-filtered data"
+      ],
+      "correctAnswer": 1,
+      "explanation": "A calculation group with 3 items applies the time intelligence logic to any selected measure via a slicer. 3 calculation items replace 60 individual measures and are far easier to maintain."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": ["Calculation Groups", "DAX", "Time Intelligence"]
+  }
+]

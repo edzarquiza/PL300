@@ -1,0 +1,78 @@
+export const EXAM_TRACKS = [
+  {
+    id: 'full_pl300',
+    name: 'Full PL-300',
+    description: 'Official exam simulation with weighted domain distribution',
+    color: 'blue',
+    domainWeights: {
+      'Prepare the data': 0.2881,
+      'Model the data': 0.2881,
+      'Visualize and analyze data': 0.2881,
+      'Manage and secure Power BI': 0.1356,
+    },
+    tagFilter: null,
+    defaultQuestionCount: 40,
+  },
+  {
+    id: 'dax_intensive',
+    name: 'DAX Intensive',
+    description: 'CALCULATE, filter context, iterators, time intelligence',
+    color: 'purple',
+    domainWeights: { 'Model the data': 1.0 },
+    tagFilter: ['CALCULATE', 'Filter Context', 'DAX', 'Time Intelligence', 'SUMX', 'RELATED',
+      'ALL', 'Row Context', 'Calculated Columns', 'Measures', 'Iterator Functions',
+      'Relationships', 'Calculated Columns', 'RANKX', 'VAR'],
+    defaultQuestionCount: 20,
+  },
+  {
+    id: 'power_query',
+    name: 'Power Query',
+    description: 'Merge, append, query folding, transforms, M language',
+    color: 'green',
+    domainWeights: { 'Prepare the data': 1.0 },
+    tagFilter: ['Power Query', 'M Language', 'Merge', 'Append', 'Query Folding',
+      'Pivot', 'Data Types', 'Parameters', 'Null Handling'],
+    defaultQuestionCount: 15,
+  },
+  {
+    id: 'data_modeling',
+    name: 'Data Modeling',
+    description: 'Relationships, schema design, cardinality, DAX modeling',
+    color: 'orange',
+    domainWeights: { 'Model the data': 0.75, 'Prepare the data': 0.25 },
+    tagFilter: ['Relationships', 'Star Schema', 'Cardinality', 'Data Modeling',
+      'Many-to-Many', 'Calculated Columns', 'Measures'],
+    defaultQuestionCount: 20,
+  },
+  {
+    id: 'visualization',
+    name: 'Visualization',
+    description: 'Visuals, formatting, navigation, AI analytics, mobile',
+    color: 'teal',
+    domainWeights: { 'Visualize and analyze data': 1.0 },
+    tagFilter: null,
+    defaultQuestionCount: 20,
+  },
+  {
+    id: 'security_service',
+    name: 'Security & Service',
+    description: 'RLS, workspaces, licensing, gateways, sensitivity labels',
+    color: 'red',
+    domainWeights: { 'Manage and secure Power BI': 1.0 },
+    tagFilter: null,
+    defaultQuestionCount: 15,
+  },
+]
+
+export const TRACK_COLORS = {
+  blue:   { border: 'border-blue-500',   bg: 'bg-blue-50',   text: 'text-blue-700',   dot: 'bg-blue-500'   },
+  purple: { border: 'border-purple-500', bg: 'bg-purple-50', text: 'text-purple-700', dot: 'bg-purple-500' },
+  green:  { border: 'border-green-500',  bg: 'bg-green-50',  text: 'text-green-700',  dot: 'bg-green-500'  },
+  orange: { border: 'border-orange-500', bg: 'bg-orange-50', text: 'text-orange-700', dot: 'bg-orange-500' },
+  teal:   { border: 'border-teal-500',   bg: 'bg-teal-50',   text: 'text-teal-700',   dot: 'bg-teal-500'   },
+  red:    { border: 'border-red-500',    bg: 'bg-red-50',    text: 'text-red-700',    dot: 'bg-red-500'    },
+}
+
+export function getTrackById(id) {
+  return EXAM_TRACKS.find(t => t.id === id) ?? EXAM_TRACKS[0]
+}

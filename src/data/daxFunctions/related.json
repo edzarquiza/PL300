@@ -1,0 +1,52 @@
+{
+  "functionName": "RELATED",
+  "category": "Relationship",
+  "syntax": "RELATED(<column>)",
+  "parameters": [
+    {
+      "name": "column",
+      "required": true,
+      "type": "Column reference",
+      "description": "A column from a related table on the one-side of a relationship.",
+      "examNote": "The relationship must exist in the model. RELATED traverses from the many-side to the one-side (fact → dimension)."
+    }
+  ],
+  "returnType": "Scalar (the matching value from the related table for the current row)",
+  "summary": "RELATED retrieves a value from a related dimension table, following the relationship from the many-side (fact) to the one-side (dimension). Used in calculated columns to bring in dimension attributes.",
+  "examples": [
+    {
+      "label": "Bring Category from Products into Sales",
+      "expression": "Category = RELATED(Products[Category])",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Sales (fact)",
+            "columns": ["ProductID", "Amount"],
+            "rows": [[1, 400], [2, 80], [1, 200]]
+          },
+          {
+            "name": "Products (dim)",
+            "columns": ["ProductID", "Category"],
+            "rows": [[1, "Bikes"], [2, "Accessories"]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "Sales with Category added",
+        "columns": ["ProductID", "Amount", "Category"],
+        "rows": [[1, 400, "Bikes"], [2, 80, "Accessories"], [1, 200, "Bikes"]]
+      },
+      "explanation": "RELATED follows the Sales→Products relationship on ProductID to retrieve the Category for each row. This works because each Sales row maps to exactly one Products row."
+    }
+  ],
+  "filterFlow": null,
+  "iteratorFlow": null,
+  "commonTraps": [
+    "RELATED only works from the many-side to the one-side — you cannot use it inside a dimension table to look up fact data (use RELATEDTABLE for that).",
+    "RELATED can only be used in calculated columns or inside iterators (SUMX, FILTER) — not in regular measures where there is no row context.",
+    "If the relationship does not exist or is inactive, RELATED returns BLANK."
+  ],
+  "relatedFunctions": ["RELATEDTABLE", "LOOKUPVALUE", "USERELATIONSHIP", "FILTER"],
+  "examWeight": "High",
+  "difficulty": "Easy"
+}

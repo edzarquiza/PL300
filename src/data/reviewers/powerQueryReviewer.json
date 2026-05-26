@@ -1,0 +1,232 @@
+[
+  {
+    "id": "pq_merge_vs_append",
+    "domain": "Prepare the data",
+    "subtopic": "Power Query",
+    "concept": "Merge vs Append",
+    "summary": "Merge joins two queries horizontally (like a SQL JOIN) — combining columns from matching rows. Append stacks queries vertically (like UNION ALL) — combining rows from tables with the same structure.",
+    "keyInsight": "Merge = JOIN (adds columns). Append = UNION (adds rows). This distinction appears frequently on PL-300 and is often tested in scenario form.",
+    "commonTrap": "Using Merge when data should be stacked. If two tables share the same column structure and you want all rows combined, use Append — not Merge.",
+    "miniQuiz": {
+      "question": "You have sales data from two regions with identical column structures. You want all rows in one table. Which operation should you use?",
+      "choices": [
+        "Merge queries",
+        "Append queries",
+        "Reference query",
+        "Duplicate query"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Append stacks tables vertically (adds rows). Merge joins tables horizontally (adds columns based on a matching key). Same structure + combine rows = Append."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["Merge", "Append", "Power Query"]
+  },
+  {
+    "id": "pq_query_folding",
+    "domain": "Prepare the data",
+    "subtopic": "Power Query",
+    "concept": "Query Folding",
+    "summary": "Query folding translates Power Query steps into native queries executed by the data source (SQL, OData, etc.). Folded queries run on the server, reducing data transfer and refresh time.",
+    "keyInsight": "Query folding is a key performance concept. Once a non-foldable step is introduced, all subsequent steps cannot fold. Apply foldable steps (filter, sort, select columns) before non-foldable ones.",
+    "commonTrap": "Adding a custom M column early in the query breaks folding for all subsequent steps. A filter applied after a non-foldable step will run in Power Query memory instead of on the server.",
+    "miniQuiz": {
+      "question": "A Power Query connected to SQL Server refreshes slowly. A custom column is added at step 3 and a row filter at step 7. What should you do first?",
+      "choices": [
+        "Delete the custom column entirely",
+        "Move the filter step before the custom column to preserve server-side filtering",
+        "Switch to DirectQuery mode",
+        "Add an index column to improve performance"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Moving the filter before the custom column lets it fold to SQL, reducing rows pulled from the server before the non-foldable step runs. This can dramatically reduce refresh time."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": ["Query Folding", "Power Query", "Performance"]
+  },
+  {
+    "id": "pq_reference_vs_duplicate",
+    "domain": "Prepare the data",
+    "subtopic": "Power Query",
+    "concept": "Reference vs Duplicate Query",
+    "summary": "Duplicate creates an independent copy of a query. Reference creates a new query that builds on the output of an existing query — changes to the source propagate downstream.",
+    "keyInsight": "Use Reference when you want multiple shaped versions of the same source (e.g., a fact table and a dimension from one raw CSV). Use Duplicate for fully independent copies.",
+    "commonTrap": "Duplicating when a reference is needed — causing redundant loads from the source and inflating model size.",
+    "miniQuiz": {
+      "question": "You want a Customers dimension from the same CSV as your Sales fact table, without loading the file twice. What should you use?",
+      "choices": [
+        "Duplicate the Sales query",
+        "Reference the Sales query and apply different transformations",
+        "Create a new query pointing to the same CSV file",
+        "Merge the Sales query with itself"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Referencing the Sales query creates a second query that reads from its in-memory output, not the source file again. This avoids double-loading the CSV and allows independent transformations."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Reference", "Duplicate", "Power Query"]
+  },
+  {
+    "id": "pq_pivot_unpivot",
+    "domain": "Prepare the data",
+    "subtopic": "Power Query",
+    "concept": "Pivot and Unpivot",
+    "summary": "Unpivot transforms columns into rows — useful for normalizing crosstab (wide) data. Pivot transforms rows into columns — useful for creating summary views from transactional data.",
+    "keyInsight": "PL-300 frequently tests Unpivot because real-world data often arrives in wide spreadsheet format that must be normalized for Power BI's columnar model.",
+    "commonTrap": "Forgetting to select the correct columns before unpivoting. Selecting the wrong columns creates extra rows with unexpected null values.",
+    "miniQuiz": {
+      "question": "A spreadsheet has columns: Product, Jan_Sales, Feb_Sales, Mar_Sales. You need the data as rows: Product, Month, Sales. What should you do?",
+      "choices": [
+        "Pivot the Month column",
+        "Unpivot the Jan_Sales, Feb_Sales, Mar_Sales columns",
+        "Transpose the entire table",
+        "Group By the Product column"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Unpivot converts wide columns (Jan_Sales, Feb_Sales, Mar_Sales) into rows with Attribute (month name) and Value (sales amount) columns — the correct normalized format for Power BI."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Pivot", "Unpivot", "Power Query"]
+  },
+  {
+    "id": "pq_parameters",
+    "domain": "Prepare the data",
+    "subtopic": "Power Query",
+    "concept": "Parameters",
+    "summary": "Parameters are named values referenced in queries to make transformations dynamic — for example, a server name, a file path, or a filter threshold that varies by environment.",
+    "keyInsight": "Parameters enable dynamic data source configuration and are commonly used with deployment pipelines to swap connection strings between Dev, Test, and Production.",
+    "commonTrap": "Hardcoding file paths or server names directly in query steps. Parameters allow the value to be changed without editing M code.",
+    "miniQuiz": {
+      "question": "A report connects to a development database. When deployed to production, a different server name is needed. What is the best approach?",
+      "choices": [
+        "Create two separate PBIX files — one per environment",
+        "Use a Power Query parameter for the server name and change it per environment",
+        "Switch to DirectQuery instead of Import",
+        "Hard-code the production server name before publishing"
+      ],
+      "correctAnswer": 1,
+      "explanation": "A Power Query parameter stores the server name as a changeable value. It can be updated in Power BI Service or via deployment pipeline rules without editing query steps."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Parameters", "Power Query", "M Language"]
+  },
+  {
+    "id": "pq_null_handling",
+    "domain": "Prepare the data",
+    "subtopic": "Power Query",
+    "concept": "Null Value Handling",
+    "summary": "Nulls represent missing or unknown values. Options include: Replace Value, Fill Down, Remove Rows, or filtering — the correct choice depends on why the null exists.",
+    "keyInsight": "Choose the right null strategy for the scenario. Replacing nulls with 0 is wrong when 0 means 'zero sales' but a null means 'no record.' Fill Down is correct for repeated category values.",
+    "commonTrap": "Removing null rows when they should be filled or replaced. Removing a row with null Sales deletes valid product records that simply had no transactions.",
+    "miniQuiz": {
+      "question": "A product table has a Category column where the category name appears only on the first row of each group; subsequent rows in the group are null. What is the correct fix?",
+      "choices": [
+        "Replace null with 'Unknown'",
+        "Remove rows where Category is null",
+        "Fill Down the Category column",
+        "Change the data type to text"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Fill Down propagates the last non-null value downward, correctly associating each row with its category — the standard fix for sparse category columns from exported spreadsheets."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["Null Handling", "Power Query", "Data Quality"]
+  },
+  {
+    "id": "pq_data_types",
+    "domain": "Prepare the data",
+    "subtopic": "Power Query",
+    "concept": "Data Types",
+    "summary": "Power Query requires explicit data types for each column. Incorrect types prevent relationships, break DAX aggregations, and cause errors in visuals. Common types: Text, Whole Number, Decimal, Date, Date/Time, Boolean.",
+    "keyInsight": "Always set data types explicitly — do not rely on auto-detection. Date columns stored as Text will break time intelligence functions and date relationships.",
+    "commonTrap": "Leaving date columns as Text type. TOTALYTD, DATEADD, and all time intelligence functions require a proper Date data type, not a text representation.",
+    "miniQuiz": {
+      "question": "A TOTALYTD measure returns blank for all months. The Date column appears to have valid date values. What should you check first?",
+      "choices": [
+        "Whether the measure uses SUM instead of SUMX",
+        "Whether the Date column is typed as Date, not Text",
+        "Whether the table has a primary key",
+        "Whether the report has a slicer applied"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Time intelligence functions require a proper Date data type. If the Date column is stored as Text, TOTALYTD and similar functions will fail or return incorrect results regardless of the visual values."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["Data Types", "Power Query"]
+  },
+  {
+    "id": "pq_group_by",
+    "domain": "Prepare the data",
+    "subtopic": "Power Query",
+    "concept": "Group By",
+    "summary": "Group By aggregates rows based on one or more columns, applying aggregation functions (Sum, Count, Average, Min, Max) to remaining columns. It permanently reduces row-level granularity.",
+    "keyInsight": "Group By in Power Query is an ETL-level aggregation — use it to reduce row count before loading to the model. DAX measures are more flexible, but Group By is better for large pre-aggregated datasets.",
+    "commonTrap": "Using Group By when you need row-level detail in the model. Grouping removes granularity — you cannot drill back to individual rows after the aggregation.",
+    "miniQuiz": {
+      "question": "You have 10 million transaction rows but only need daily totals in the model. What is the best approach?",
+      "choices": [
+        "Import all 10 million rows and use DAX measures for aggregation",
+        "Use Group By in Power Query to aggregate to daily totals before loading",
+        "Use DirectQuery to avoid importing rows",
+        "Create a calculated table from the fact table"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Group By reduces the data to daily totals in Power Query before it enters the model, dramatically reducing model size and improving performance when individual row detail is not needed."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Group By", "Power Query", "Performance"]
+  },
+  {
+    "id": "pq_semi_structured",
+    "domain": "Prepare the data",
+    "subtopic": "Power Query",
+    "concept": "Semi-Structured Data (JSON and XML)",
+    "summary": "Power Query can parse JSON and XML, expanding nested records and lists into tabular form. Use the Expand button on Record or List columns to flatten the structure.",
+    "keyInsight": "JSON from APIs and XML from legacy systems are common PL-300 data source types. Expanding always produces more rows (List) or more columns (Record).",
+    "commonTrap": "Confusing a Record column with a List column. Records expand into new columns (horizontal), while Lists expand into new rows (vertical).",
+    "miniQuiz": {
+      "question": "A Power Query table has a column of type List containing multiple values per row. Expanding it will:",
+      "choices": [
+        "Add new columns — one per list item",
+        "Add new rows — one per list item",
+        "Convert the list to a comma-separated text value",
+        "Remove the column and replace it with a count"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Expanding a List column adds new rows — one per list element. Expanding a Record column adds new columns. Knowing this distinction prevents unexpected row multiplication in your dataset."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["JSON", "XML", "Semi-structured Data", "Power Query"]
+  },
+  {
+    "id": "pq_staging_queries",
+    "domain": "Prepare the data",
+    "subtopic": "Power Query",
+    "concept": "Staging Queries (Disable Load)",
+    "summary": "Staging queries are intermediate transformation steps that are not loaded into the model. Set 'Enable Load' to false on a query to use it as a reusable transformation layer without adding a table to the model.",
+    "keyInsight": "The best practice pattern is: raw source → staging (load disabled) → fact/dimension tables (load enabled). This keeps the model clean and avoids redundant tables.",
+    "commonTrap": "Loading every intermediate query as a table in the model. Intermediate transformation queries should have load disabled — loading them unnecessarily increases model size.",
+    "miniQuiz": {
+      "question": "You have a raw data query used as the source for both a fact table and a dimension table. The raw query should not appear in the model. What should you do?",
+      "choices": [
+        "Delete the raw query after referencing it",
+        "Disable load on the raw query so it acts as a staging layer only",
+        "Set the raw query to DirectQuery mode",
+        "Mark the raw query as a Date table"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Disabling load (unchecking 'Enable Load') prevents the raw query from appearing as a table in the model while still allowing other queries to reference and build on its output."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Staging Queries", "Power Query", "Data Modeling"]
+  }
+]

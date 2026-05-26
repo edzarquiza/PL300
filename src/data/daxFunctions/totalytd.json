@@ -1,0 +1,71 @@
+{
+  "functionName": "TOTALYTD",
+  "category": "Time Intelligence",
+  "syntax": "TOTALYTD(<expression>, <dates>, [<filter>], [<year_end_date>])",
+  "parameters": [
+    {
+      "name": "expression",
+      "required": true,
+      "type": "Scalar",
+      "description": "The expression to evaluate cumulatively from the start of the year to the current date.",
+      "examNote": "Usually a measure like SUM(Sales[Amount])."
+    },
+    {
+      "name": "dates",
+      "required": true,
+      "type": "Date column",
+      "description": "A date column from a marked date table.",
+      "examNote": "Must come from a date table marked as a date table. Requires a continuous, gap-free date table."
+    },
+    {
+      "name": "filter",
+      "required": false,
+      "type": "Filter expression",
+      "description": "An additional filter to apply during evaluation.",
+      "examNote": "Rarely used — the function already handles YTD date logic automatically."
+    },
+    {
+      "name": "year_end_date",
+      "required": false,
+      "type": "Date string",
+      "description": "The last day of the fiscal year if different from December 31st.",
+      "examNote": "Use \"6/30\" for a fiscal year ending June 30th. Format is MM/DD."
+    }
+  ],
+  "returnType": "Scalar (year-to-date cumulative value)",
+  "summary": "TOTALYTD computes a year-to-date cumulative total from January 1st (or the fiscal year start) through the current date in context. Equivalent to CALCULATE(expression, DATESYTD(dates)) but more concise.",
+  "examples": [
+    {
+      "label": "Cumulative year-to-date sales",
+      "expression": "Sales YTD = TOTALYTD(SUM(Sales[Amount]), DimDate[Date])",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Monthly Sales",
+            "columns": ["Month", "Monthly Sales", "YTD Sales"],
+            "rows": [["Jan", 100, 100], ["Feb", 150, 250], ["Mar", 200, 450]]
+          }
+        ]
+      },
+      "expectedOutput": null,
+      "explanation": "By March, the YTD total is 100 + 150 + 200 = 450. TOTALYTD accumulates from the start of the year to the current month's end date."
+    }
+  ],
+  "filterFlow": {
+    "steps": [
+      "Current filter context contains a date (e.g., March 2024)",
+      "TOTALYTD replaces the date filter with all dates from Jan 1 2024 through Mar 31 2024",
+      "The expression is evaluated across this expanded date range",
+      "Result is the cumulative total from the start of the year"
+    ]
+  },
+  "iteratorFlow": null,
+  "commonTraps": [
+    "Requires a continuous date table with no gaps — missing dates cause incorrect YTD cutoffs.",
+    "TOTALYTD resets at the start of each calendar year unless year_end_date is specified for fiscal year calculations.",
+    "TOTALYTD is equivalent to CALCULATE(expression, DATESYTD(dates)) — both approaches appear on the exam."
+  ],
+  "relatedFunctions": ["TOTALQTD", "TOTALMTD", "DATESYTD", "DATEADD", "SAMEPERIODLASTYEAR"],
+  "examWeight": "High",
+  "difficulty": "Medium"
+}

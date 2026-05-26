@@ -1,0 +1,186 @@
+[
+  {
+    "id": "sec_rls_static",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Security",
+    "concept": "Row-Level Security (RLS) — Static",
+    "summary": "Static RLS defines fixed DAX filter rules per role in Power BI Desktop. Each role has one or more table filter expressions. Users assigned to a role see only rows matching those filters.",
+    "keyInsight": "RLS is enforced in Power BI Service after publishing. RLS does NOT apply to workspace Admins, Members, or Contributors — they always see all data regardless of role assignments.",
+    "commonTrap": "Thinking RLS applies to workspace members. Only users accessing data through Apps or as workspace Viewers have RLS enforced. Higher workspace roles bypass it entirely.",
+    "miniQuiz": {
+      "question": "A user is a Workspace Member and is also assigned to an RLS role filtered to the East region only. What data will they see?",
+      "choices": [
+        "Only the East region — the RLS role restricts their view",
+        "All data — workspace Members bypass RLS",
+        "No data — RLS blocks all access for Members",
+        "Whichever is more restrictive — RLS or workspace role"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Workspace Admins, Members, and Contributors bypass RLS — they see all data regardless of role assignments. RLS only restricts Viewers or users accessing data through Apps."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["RLS", "Security", "Workspace Roles"]
+  },
+  {
+    "id": "sec_rls_dynamic",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Security",
+    "concept": "Dynamic RLS with USERPRINCIPALNAME()",
+    "summary": "Dynamic RLS uses the current user's identity to filter data at runtime. The standard pattern matches [UserEmail] = USERPRINCIPALNAME() against a user-to-data mapping table.",
+    "keyInsight": "Dynamic RLS requires a user-mapping table in the model. It scales to any number of users with a single role — adding a new user only requires adding a row to the mapping table.",
+    "commonTrap": "Creating one static RLS role per user. With many users, static roles are unmanageable and require model republishing every time the user list changes.",
+    "miniQuiz": {
+      "question": "A company has 200 salespeople, each seeing only their own region's data. What is the most scalable RLS approach?",
+      "choices": [
+        "Create 200 static RLS roles — one per salesperson",
+        "Create a user-mapping table and one dynamic RLS role using USERPRINCIPALNAME()",
+        "Create one role per region (10 regions = 10 roles)",
+        "Use sensitivity labels to restrict data access per user"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Dynamic RLS with a user-mapping table and USERPRINCIPALNAME() creates one role that automatically filters each user's data. New salespeople are added by inserting a row into the mapping table — no model changes needed."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": ["RLS", "Dynamic RLS", "Security", "USERPRINCIPALNAME"]
+  },
+  {
+    "id": "sec_workspace_roles",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Security",
+    "concept": "Workspace Roles",
+    "summary": "Power BI workspace roles in order of permission: Admin (full control), Member (publish, edit, manage access), Contributor (publish, edit), Viewer (read-only, RLS enforced).",
+    "keyInsight": "Only the Viewer role enforces RLS. For broad, RLS-restricted read-only distribution to many users, publish an App — App audience members get Viewer-equivalent access with RLS applied.",
+    "commonTrap": "Giving users Member or Contributor roles when they only need to view. These roles bypass RLS and expose all underlying data. Use Viewer or App distribution instead.",
+    "miniQuiz": {
+      "question": "You want 500 employees to view reports with RLS applied. What is the most appropriate distribution method?",
+      "choices": [
+        "Add all 500 as Workspace Members",
+        "Add all 500 as Workspace Viewers",
+        "Publish an App and add the 500 employees as the App audience",
+        "Share individual reports with each employee"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Publishing an App and assigning users as the audience gives them viewer-level access with RLS enforced. It also provides a clean, managed distribution experience without exposing the workspace directly."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Workspace Roles", "Security", "Apps"]
+  },
+  {
+    "id": "sec_sensitivity_labels",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Security",
+    "concept": "Sensitivity Labels",
+    "summary": "Sensitivity labels (from Microsoft Purview) classify and protect Power BI content. Labels like Confidential or Highly Confidential can restrict sharing, export, and downstream use of data.",
+    "keyInsight": "Sensitivity labels propagate downstream — when data is exported to Excel, the label follows it. This ensures protection outside of Power BI. Labels are configured in the Microsoft Purview compliance portal.",
+    "commonTrap": "Thinking sensitivity labels enforce data access control (who can view). Labels classify and protect data after access — they do not restrict who can view a report. That is handled by workspace roles and RLS.",
+    "miniQuiz": {
+      "question": "An organization wants to prevent employees from exporting a dataset containing PII to unprotected Excel files. Which feature addresses this?",
+      "choices": [
+        "Row-Level Security",
+        "Workspace Viewer role",
+        "Sensitivity labels with export restrictions",
+        "Disabled scheduled refresh"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Sensitivity labels can restrict export actions on classified content. A 'Highly Confidential' label prevents export to unprotected files or requires encryption when exported, protecting PII outside Power BI."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Sensitivity Labels", "Security", "Compliance"]
+  },
+  {
+    "id": "sec_gateway",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Security",
+    "concept": "Data Gateway",
+    "summary": "An on-premises data gateway bridges Power BI Service to data sources inside an organizational network. Required for scheduled refresh of on-premises sources (SQL Server, Oracle, files, etc.).",
+    "keyInsight": "Standard gateway supports multiple users and DirectQuery — required for enterprise use. Personal gateway is single-user only. Cloud sources (Azure SQL, SharePoint Online) do NOT need a gateway.",
+    "commonTrap": "Assuming all data sources need a gateway. Gateways are only required for on-premises sources or sources within private VNets — not for cloud services.",
+    "miniQuiz": {
+      "question": "A scheduled refresh of a report connected to an on-premises SQL Server is failing. What is most likely missing?",
+      "choices": [
+        "A Premium capacity license",
+        "An on-premises data gateway configured and running",
+        "A DirectQuery connection instead of Import",
+        "A certified dataset endorsement"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Scheduled refresh of on-premises SQL Server requires an on-premises data gateway to bridge the connection between Power BI Service (cloud) and the on-premises network. Without a gateway, refresh will always fail."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["Gateway", "Security", "Scheduled Refresh"]
+  },
+  {
+    "id": "sec_scheduled_refresh",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Security",
+    "concept": "Scheduled Refresh",
+    "summary": "Scheduled refresh automatically updates imported datasets on a defined schedule. Requires: dataset credentials configured, a gateway for on-premises sources, and a license within refresh frequency limits.",
+    "keyInsight": "Pro license: up to 8 refreshes per day. Premium / Fabric: up to 48 refreshes per day. DirectQuery and DirectLake datasets do NOT use scheduled refresh — they query live data.",
+    "commonTrap": "Expecting DirectQuery datasets to benefit from scheduled refresh. DirectQuery always queries the live source — there is no cached data to refresh.",
+    "miniQuiz": {
+      "question": "A Pro license user wants their Import mode dataset to refresh 10 times per day. What is the limitation?",
+      "choices": [
+        "Pro license supports up to 8 refreshes per day — 10 requires Premium or Fabric capacity",
+        "Pro license supports unlimited scheduled refreshes",
+        "Import mode does not support scheduled refresh at all",
+        "Scheduled refresh requires a DirectQuery connection"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Power BI Pro limits scheduled refresh to 8 times per day. For 10+ daily refreshes, Premium Per User, Premium capacity, or Fabric is required — those support up to 48 refreshes per day."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Scheduled Refresh", "Security", "Licensing"]
+  },
+  {
+    "id": "sec_endorsement",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Security",
+    "concept": "Endorsement — Promoted and Certified",
+    "summary": "Endorsement labels mark datasets, reports, or dataflows as trustworthy. Promoted means the content owner vouches for it. Certified requires admin-level verification and carries the highest trust signal.",
+    "keyInsight": "Certified content is the authoritative signal for organizational data assets. It appears prominently in dataset search and Lineage View, encouraging analysts to reuse governed datasets.",
+    "commonTrap": "Confusing Promoted with Certified. Any dataset owner can Promote their content. Only authorized certifiers (configured by admins) can Certify — it is a formal governance checkpoint.",
+    "miniQuiz": {
+      "question": "A data team wants their master dataset to appear as the authoritative source for all reports across the company. Which endorsement level is most appropriate?",
+      "choices": [
+        "Promoted — the owner can apply this themselves",
+        "Certified — requires admin verification and signals the highest organizational trust",
+        "Sensitivity label — Confidential",
+        "Featured — highlighted on the home experience"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Certified is the highest endorsement level. It signals organizational trust, appears in dataset search results and Lineage View, and encourages analysts to build on this authoritative, governed dataset."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["Endorsement", "Security", "Governance", "Certification"]
+  },
+  {
+    "id": "sec_deployment_pipelines",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Security",
+    "concept": "Deployment Pipelines",
+    "summary": "Deployment pipelines manage Power BI content lifecycle across Development, Test, and Production workspaces. Changes are promoted stage-by-stage with comparison views to see differences before deploying.",
+    "keyInsight": "Deployment pipelines require Premium or Fabric capacity. They are the recommended ALM (Application Lifecycle Management) approach — ensuring changes are validated before reaching production users.",
+    "commonTrap": "Manually copying PBIX files between workspaces as a deployment process. This is error-prone and does not preserve dataset configurations or data source settings. Deployment pipelines handle this automatically.",
+    "miniQuiz": {
+      "question": "An organization wants to test report changes in a staging environment before publishing to production. Which feature supports this workflow?",
+      "choices": [
+        "Workspace roles with Contributor permissions for staging",
+        "Deployment pipelines with Development, Test, and Production stages",
+        "Scheduled refresh across multiple workspaces",
+        "Sensitivity labels with staged deployment rules"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Deployment pipelines provide a structured Dev → Test → Production promotion workflow with side-by-side comparison views, ensuring changes are validated before reaching production users."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Deployment Pipelines", "Security", "ALM", "Governance"]
+  }
+]

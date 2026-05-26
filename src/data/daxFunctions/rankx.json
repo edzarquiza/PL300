@@ -1,0 +1,71 @@
+{
+  "functionName": "RANKX",
+  "category": "Aggregation",
+  "syntax": "RANKX(<table>, <expression>, [<value>], [<order>], [<ties>])",
+  "parameters": [
+    {
+      "name": "table",
+      "required": true,
+      "type": "Table",
+      "description": "The set of items to rank against. Use ALL(Table) to rank against every item, ignoring visual filters.",
+      "examNote": "Without ALL(), ranks are relative to the currently visible rows only — not all items in the model."
+    },
+    {
+      "name": "expression",
+      "required": true,
+      "type": "Scalar",
+      "description": "The value used to determine ranking order. Evaluated for each row of the table.",
+      "examNote": "Must be the same measure or expression you are ranking by — a mismatch causes all items to tie at rank 1."
+    },
+    {
+      "name": "value",
+      "required": false,
+      "type": "Scalar",
+      "description": "The value to look up in the ranking. If omitted, uses the expression in the current filter context.",
+      "examNote": "Almost always omitted — DAX automatically uses the current row/context as the lookup value."
+    },
+    {
+      "name": "order",
+      "required": false,
+      "type": "DESC | ASC",
+      "description": "DESC (default) gives rank 1 to the highest value. ASC gives rank 1 to the lowest.",
+      "examNote": "Default is DESC — rank 1 = best/highest. Specify ASC to rank smallest first (e.g., lowest cost)."
+    },
+    {
+      "name": "ties",
+      "required": false,
+      "type": "SKIP | DENSE",
+      "description": "SKIP (default) leaves rank gaps for ties (1, 1, 3). DENSE produces consecutive ranks (1, 1, 2).",
+      "examNote": "Default SKIP matches Excel RANK behavior. Use DENSE when gaps in ranking would confuse report users."
+    }
+  ],
+  "returnType": "Integer (the rank position)",
+  "summary": "RANKX returns the rank of a value within a set of values. Used to create Top N visuals, leaderboards, and product/customer rankings. The table argument controls what you rank against.",
+  "examples": [
+    {
+      "label": "Rank all products by total sales",
+      "expression": "Product Rank = RANKX(ALL(Products), SUM(Sales[Amount]))",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Result",
+            "columns": ["Product", "Total Sales", "Rank"],
+            "rows": [["Bike", 1000, 1], ["Gloves", 400, 2], ["Helmet", 300, 3], ["Lock", 80, 4]]
+          }
+        ]
+      },
+      "expectedOutput": null,
+      "explanation": "ALL(Products) makes every product available for comparison. RANKX evaluates SUM(Sales[Amount]) for each product. Highest sales = Rank 1 (default DESC order)."
+    }
+  ],
+  "filterFlow": null,
+  "iteratorFlow": null,
+  "commonTraps": [
+    "Without ALL(), RANKX ranks within the currently visible set. If a visual shows 5 products filtered by category, ranks go 1–5 even though there are 100 products in the model.",
+    "The expression must exactly match the measure being ranked. If they differ, every item evaluates to the same rank.",
+    "RANKX is a measure — it cannot be used directly as a calculated column in most scenarios due to its dependence on filter context."
+  ],
+  "relatedFunctions": ["ALL", "TOPN", "CALCULATE", "DENSE_RANK"],
+  "examWeight": "Medium",
+  "difficulty": "Hard"
+}

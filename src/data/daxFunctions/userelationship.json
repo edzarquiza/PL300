@@ -1,0 +1,62 @@
+{
+  "functionName": "USERELATIONSHIP",
+  "category": "Relationship",
+  "syntax": "USERELATIONSHIP(<column1>, <column2>)",
+  "parameters": [
+    {
+      "name": "column1",
+      "required": true,
+      "type": "Column reference",
+      "description": "One end of an existing inactive relationship in the model.",
+      "examNote": "The relationship must already exist in the model as inactive. USERELATIONSHIP cannot create new relationships."
+    },
+    {
+      "name": "column2",
+      "required": true,
+      "type": "Column reference",
+      "description": "The other end of the same inactive relationship.",
+      "examNote": "Column order does not matter — either column can be listed first."
+    }
+  ],
+  "returnType": "Used only as a filter argument inside CALCULATE — does not return a value",
+  "summary": "USERELATIONSHIP temporarily activates an inactive relationship for the scope of a CALCULATE expression. Essential for role-playing dimensions where multiple date relationships exist (OrderDate, ShipDate, DeliveryDate all joined to the same DimDate table).",
+  "examples": [
+    {
+      "label": "Filter Sales by Ship Date instead of Order Date",
+      "expression": "Shipped Sales =\nCALCULATE(\n  SUM(Sales[Amount]),\n  USERELATIONSHIP(Sales[ShipDate], DimDate[Date])\n)",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Sales",
+            "columns": ["OrderDate", "ShipDate", "Amount"],
+            "rows": [["2024-01-01", "2024-01-03", 400], ["2024-01-02", "2024-01-05", 200]]
+          },
+          {
+            "name": "DimDate",
+            "columns": ["Date", "Month"],
+            "rows": [["2024-01-01", "Jan"], ["2024-01-03", "Jan"], ["2024-01-05", "Jan"]]
+          }
+        ]
+      },
+      "expectedOutput": null,
+      "explanation": "The active relationship is Sales[OrderDate]→DimDate. USERELATIONSHIP temporarily deactivates it and activates Sales[ShipDate]→DimDate. Date slicers now filter by ShipDate for this measure only."
+    }
+  ],
+  "filterFlow": {
+    "steps": [
+      "Model has two relationships: active Sales[OrderDate]→DimDate, inactive Sales[ShipDate]→DimDate",
+      "USERELATIONSHIP deactivates the OrderDate relationship for this CALCULATE scope",
+      "The ShipDate relationship becomes active within this scope",
+      "Date slicers now filter Sales rows by ShipDate instead of OrderDate"
+    ]
+  },
+  "iteratorFlow": null,
+  "commonTraps": [
+    "USERELATIONSHIP can only activate an EXISTING inactive relationship — you cannot reference columns that have no defined relationship.",
+    "USERELATIONSHIP must be placed inside CALCULATE as a filter argument — it cannot be used standalone.",
+    "Only one relationship between the same two tables can be active at a time."
+  ],
+  "relatedFunctions": ["RELATED", "CALCULATE", "CROSSFILTER"],
+  "examWeight": "High",
+  "difficulty": "Hard"
+}

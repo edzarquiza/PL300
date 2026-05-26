@@ -1,0 +1,68 @@
+{
+  "functionName": "CALCULATE",
+  "category": "Filter",
+  "syntax": "CALCULATE(<expression>, [<filter1>], [<filter2>], ...)",
+  "parameters": [
+    {
+      "name": "expression",
+      "required": true,
+      "type": "Scalar",
+      "description": "The expression to evaluate — typically a measure or aggregation like SUM(), COUNT(), or AVERAGE().",
+      "examNote": "Must return a scalar value. Cannot be a raw column reference like Sales[Amount]."
+    },
+    {
+      "name": "filter1, filter2, ...",
+      "required": false,
+      "type": "Boolean filter or Table expression",
+      "description": "Filters applied to the evaluation context. Each filter modifies or replaces the existing filter context.",
+      "examNote": "Accepts ALL(), FILTER(), KEEPFILTERS(), or simple boolean expressions like Sales[Region] = \"East\"."
+    }
+  ],
+  "returnType": "Same scalar type as <expression>",
+  "summary": "CALCULATE evaluates an expression under a modified filter context. It is the cornerstone of DAX — nearly every advanced measure uses it directly or indirectly.",
+  "examples": [
+    {
+      "label": "Filter to one region",
+      "expression": "East Sales = CALCULATE(SUM(Sales[Amount]), Sales[Region] = \"East\")",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Sales",
+            "columns": ["Region", "Amount"],
+            "rows": [["East", 400], ["West", 300], ["East", 200], ["North", 150]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "East Sales",
+        "columns": ["East Sales"],
+        "rows": [[600]]
+      },
+      "explanation": "CALCULATE filters Sales to Region = East rows only, then sums their Amount. Row 1 (400) + Row 3 (200) = 600."
+    },
+    {
+      "label": "Remove all filters with ALL()",
+      "expression": "Grand Total = CALCULATE(SUM(Sales[Amount]), ALL(Sales))",
+      "sampleData": null,
+      "expectedOutput": null,
+      "explanation": "ALL(Sales) removes every existing filter on the Sales table. The result is always the full grand total regardless of slicers or visual filters."
+    }
+  ],
+  "filterFlow": {
+    "steps": [
+      "Current filter context enters (e.g., slicer: Region = North)",
+      "CALCULATE removes or overrides the filter for the specified columns",
+      "CALCULATE applies its own filter arguments to the context",
+      "The expression is evaluated inside this modified filter context"
+    ]
+  },
+  "iteratorFlow": null,
+  "commonTraps": [
+    "Boolean filter arguments completely replace the existing column filter — use KEEPFILTERS() to intersect instead of override",
+    "CALCULATE inside an iterator (SUMX, AVERAGEX) performs context transition, converting row context into an equivalent filter context",
+    "The first argument must be a scalar expression — passing a column reference like Sales[Amount] directly causes an error"
+  ],
+  "relatedFunctions": ["FILTER", "ALL", "REMOVEFILTERS", "ALLEXCEPT", "KEEPFILTERS"],
+  "examWeight": "Very High",
+  "difficulty": "Hard"
+}

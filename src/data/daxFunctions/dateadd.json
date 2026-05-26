@@ -1,0 +1,56 @@
+{
+  "functionName": "DATEADD",
+  "category": "Time Intelligence",
+  "syntax": "DATEADD(<dates>, <number_of_intervals>, <interval>)",
+  "parameters": [
+    {
+      "name": "dates",
+      "required": true,
+      "type": "Date column",
+      "description": "A column of dates from a marked date table.",
+      "examNote": "The date table must be continuous with no gaps and must be marked as a date table in the model."
+    },
+    {
+      "name": "number_of_intervals",
+      "required": true,
+      "type": "Integer",
+      "description": "Number of intervals to shift. Use negative numbers to go backward in time.",
+      "examNote": "Use -1 for the previous period. Use -12 for 12 months ago. Positive values shift forward."
+    },
+    {
+      "name": "interval",
+      "required": true,
+      "type": "DAY | MONTH | QUARTER | YEAR",
+      "description": "The unit of time to shift by.",
+      "examNote": "YEAR is most common for year-over-year comparisons. MONTH for month-over-month."
+    }
+  ],
+  "returnType": "Table (a set of dates shifted by the specified interval)",
+  "summary": "DATEADD shifts a set of dates forward or backward by a specified interval. Used inside CALCULATE to compute period-over-period comparisons such as previous year sales, previous quarter revenue, or trailing 12 months.",
+  "examples": [
+    {
+      "label": "Sales same period last year",
+      "expression": "Sales LY = CALCULATE(SUM(Sales[Amount]), DATEADD(DimDate[Date], -1, YEAR))",
+      "sampleData": null,
+      "expectedOutput": null,
+      "explanation": "DATEADD shifts the current date filter back by 1 year. If the visual shows Jan 2024, CALCULATE evaluates SUM(Sales[Amount]) for Jan 2023."
+    }
+  ],
+  "filterFlow": {
+    "steps": [
+      "Current filter context contains a date range (e.g., Jan 2024 from a year slicer)",
+      "DATEADD shifts the entire date range back by 1 YEAR → Jan 2023",
+      "CALCULATE replaces the date filter with this shifted set",
+      "SUM is evaluated against the prior period's data"
+    ]
+  },
+  "iteratorFlow": null,
+  "commonTraps": [
+    "Requires a continuous date table explicitly marked as a date table — gaps in dates cause incorrect results.",
+    "DATEADD shifts the exact date selection forward or backward. For a full prior calendar year use PREVIOUSYEAR() instead.",
+    "SAMEPERIODLASTYEAR is shorthand for DATEADD(dates, -1, YEAR) and produces identical results — interchangeable on the exam."
+  ],
+  "relatedFunctions": ["SAMEPERIODLASTYEAR", "PREVIOUSMONTH", "PREVIOUSYEAR", "DATESINPERIOD", "TOTALYTD"],
+  "examWeight": "High",
+  "difficulty": "Medium"
+}

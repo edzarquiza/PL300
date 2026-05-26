@@ -1,0 +1,54 @@
+{
+  "functionName": "ALL",
+  "category": "Filter",
+  "syntax": "ALL([<table_or_column>], [<column2>], ...)",
+  "parameters": [
+    {
+      "name": "table_or_column",
+      "required": false,
+      "type": "Table or Column reference",
+      "description": "If a table is provided, all filters on that table are removed. If a column is provided, only that column's filter is removed. If omitted, all filters on all tables are removed.",
+      "examNote": "ALL(Sales) removes all filters on the Sales table. ALL(Sales[Region]) removes only the Region filter, leaving other filters active."
+    }
+  ],
+  "returnType": "Table (all rows of the specified table or column, ignoring current filters)",
+  "summary": "ALL removes filters from a table or specific column. When used inside CALCULATE, it overrides slicer and visual filters to compute totals, percentages, or rank denominators.",
+  "examples": [
+    {
+      "label": "Percentage of grand total",
+      "expression": "% of Total =\nDIVIDE(\n  SUM(Sales[Amount]),\n  CALCULATE(SUM(Sales[Amount]), ALL(Sales))\n)",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Sales",
+            "columns": ["Region", "Amount"],
+            "rows": [["East", 600], ["West", 400], ["North", 200]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "% of Total (East row in visual)",
+        "columns": ["% of Total"],
+        "rows": [["50%"]]
+      },
+      "explanation": "Numerator = 600 (East only). Denominator uses ALL(Sales) = 1200 (entire table). Result: 600/1200 = 50%."
+    }
+  ],
+  "filterFlow": {
+    "steps": [
+      "Current filter context has Region = East (from slicer)",
+      "ALL(Sales) removes every active filter on the Sales table",
+      "The denominator expression now evaluates across all rows",
+      "Result: grand total regardless of slicer selection"
+    ]
+  },
+  "iteratorFlow": null,
+  "commonTraps": [
+    "ALL() used outside CALCULATE returns a table — it cannot stand alone as a measure value.",
+    "ALL(Sales[Region]) removes only the Region filter — other column filters on Sales remain active.",
+    "REMOVEFILTERS is the preferred choice when intent is purely filter removal (ALL has a secondary use as a table function returning all rows)."
+  ],
+  "relatedFunctions": ["REMOVEFILTERS", "ALLEXCEPT", "ALLSELECTED", "CALCULATE", "KEEPFILTERS"],
+  "examWeight": "High",
+  "difficulty": "Medium"
+}
