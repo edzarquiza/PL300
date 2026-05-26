@@ -30,8 +30,15 @@ export const EXAM_TRACKS = [
     description: 'Merge, append, query folding, transforms, M language',
     color: 'green',
     domainWeights: { 'Prepare the data': 1.0 },
-    tagFilter: ['Power Query', 'M Language', 'Merge', 'Append', 'Query Folding',
-      'Pivot', 'Data Types', 'Parameters', 'Null Handling'],
+    tagFilter: [
+      'Power Query', 'M Language', 'Merge', 'Append', 'Query Folding',
+      'Pivot', 'Unpivot', 'Data Types', 'Parameters', 'Null Handling',
+      'Merge Queries', 'Reference Query', 'Duplicate Query', 'Staging Queries',
+      'Data Reshaping', 'Normalization', 'Enable Load', 'Join Types',
+      'Left Outer Join', 'Data Connectors', 'SharePoint', 'Semi-structured Data',
+      'JSON', 'XML', 'Group By',
+    ],
+    tagExclusive: true,
     defaultQuestionCount: 15,
   },
   {

@@ -16,6 +16,7 @@ import { EXAM_TRACKS } from '../data/examTracks'
 export default function ResultsPage() {
   const { state } = useLocation()
   const navigate = useNavigate()
+  const [seedCopied, setSeedCopied] = useState(false)
 
   useEffect(() => {
     if (!state) navigate('/', { replace: true })
@@ -28,7 +29,6 @@ export default function ResultsPage() {
   const flaggedCount = Object.keys(flagged).length
   const isStudy = mode === 'study'
   const track = EXAM_TRACKS.find(t => t.id === trackId)
-  const [seedCopied, setSeedCopied] = useState(false)
 
   function handleCopySeed() {
     if (!examSeed) return

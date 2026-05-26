@@ -2,16 +2,24 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getExamHistory, clearHistory } from '../services/historyService'
 import { formatTime } from '../utils/examUtils'
+import { lookupQuestion } from '../utils/questionLookup'
+import { isAnswerCorrect } from '../utils/answerUtils'
 
 export default function HistoryPage() {
   const navigate = useNavigate()
   const [history, setHistory] = useState(() => getExamHistory())
   const [showConfirm, setShowConfirm] = useState(false)
+  const [expandedIndex, setExpandedIndex] = useState(null)
 
   function handleClear() {
     clearHistory()
     setHistory([])
     setShowConfirm(false)
+    setExpandedIndex(null)
+  }
+
+  function toggleExpand(i) {
+    setExpandedIndex(prev => (prev === i ? null : i))
   }
 
   return (
@@ -77,9 +85,12 @@ export default function HistoryPage() {
               const date = new Date(entry.savedAt)
               const isStudy = entry.mode === 'study'
               const { correct, total, percentage, passed } = entry.score
+              const hasAnswers = entry.questionIds?.length > 0
+              const isExpanded = expandedIndex === i
 
               return (
                 <div key={i} className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+                  {/* Header row */}
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
@@ -111,8 +122,9 @@ export default function HistoryPage() {
                     </p>
                   </div>
 
+                  {/* Domain breakdown */}
                   {entry.domainBreakdown?.length > 0 && (
-                    <div className="space-y-2">
+                    <div className="space-y-2 mb-4">
                       {entry.domainBreakdown.map(({ domain, correct: c, total: t, percentage: pct }) => (
                         <div key={domain}>
                           <div className="flex items-center justify-between text-xs mb-1">
@@ -131,12 +143,76 @@ export default function HistoryPage() {
                       ))}
                     </div>
                   )}
+
+                  {/* Answer review toggle */}
+                  {hasAnswers && (
+                    <div className="border-t border-gray-100 pt-3">
+                      <button
+                        onClick={() => toggleExpand(i)}
+                        className="text-xs font-medium text-blue-600 hover:text-blue-700 transition-colors"
+                      >
+                        {isExpanded ? '▲ Hide answers' : `▼ Review ${entry.questionIds.length} answers`}
+                      </button>
+
+                      {isExpanded && (
+                        <AnswerReview questionIds={entry.questionIds} answers={entry.answers} />
+                      )}
+                    </div>
+                  )}
                 </div>
               )
             })}
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+function AnswerReview({ questionIds, answers }) {
+  const rows = questionIds.map((id, index) => {
+    const q = lookupQuestion(id)
+    const answer = answers[id] ?? answers[String(id)]
+    const correct = q ? isAnswerCorrect(answer, q) : null
+    return { index, id, q, answer, correct }
+  })
+
+  const correctCount = rows.filter(r => r.correct === true).length
+
+  return (
+    <div className="mt-3 space-y-1">
+      <p className="text-xs text-gray-400 mb-2">
+        {correctCount} / {rows.length} correct
+      </p>
+      {rows.map(({ index, id, q, correct }) => (
+        <div
+          key={id}
+          className={`flex items-start gap-2.5 px-3 py-2.5 rounded-lg text-xs ${
+            correct === true
+              ? 'bg-green-50 border border-green-100'
+              : correct === false
+              ? 'bg-red-50 border border-red-100'
+              : 'bg-gray-50 border border-gray-100'
+          }`}
+        >
+          <span className={`flex-shrink-0 font-bold mt-0.5 ${
+            correct === true ? 'text-green-600' : correct === false ? 'text-red-500' : 'text-gray-400'
+          }`}>
+            {correct === true ? '✓' : correct === false ? '✗' : '—'}
+          </span>
+          <div className="min-w-0">
+            <span className="text-gray-400 mr-1.5">Q{index + 1}.</span>
+            {q ? (
+              <>
+                <span className="text-gray-700 font-medium">{q.question.length > 100 ? q.question.slice(0, 100) + '…' : q.question}</span>
+                <span className="ml-1.5 text-gray-400">· {q.subtopic}</span>
+              </>
+            ) : (
+              <span className="text-gray-400 italic">Question no longer available</span>
+            )}
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

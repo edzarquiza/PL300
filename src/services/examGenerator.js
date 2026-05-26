@@ -219,8 +219,13 @@ export function generateExam(allQuestions, {
   // Tag affinity for intensive tracks: triplicate tagged questions
   if (track.tagFilter?.length > 0) {
     const tagged   = pool.filter(q => q.tags?.some(t => track.tagFilter.includes(t)))
-    const untagged = pool.filter(q => !q.tags?.some(t => track.tagFilter.includes(t)))
-    pool = [...tagged, ...tagged, ...tagged, ...untagged]
+    if (track.tagExclusive) {
+      // Exclusive tracks: only questions that match at least one tag
+      pool = [...tagged, ...tagged, ...tagged]
+    } else {
+      const untagged = pool.filter(q => !q.tags?.some(t => track.tagFilter.includes(t)))
+      pool = [...tagged, ...tagged, ...tagged, ...untagged]
+    }
   }
 
   if (pool.length === 0) return []

@@ -23,7 +23,15 @@
       "Bash(node -e \"const d = require\\('./src/data/reviewers/daxReviewer.json'\\); console.log\\(JSON.stringify\\(d[0], null, 2\\)\\);\")",
       "Bash(node add_questions_phase2.cjs)",
       "Bash(rm add_questions_phase2.cjs)",
-      "Bash(node -e \"const q=require\\('./src/data/questions.json'\\); const byDiff={Easy:0,Medium:0,Hard:0}; q.forEach\\(x=>byDiff[x.difficulty]=\\(byDiff[x.difficulty]||0\\)+1\\); console.log\\('Total:', q.length, '| Diffs:', JSON.stringify\\(byDiff\\)\\);\")"
+      "Bash(node -e \"const q=require\\('./src/data/questions.json'\\); const byDiff={Easy:0,Medium:0,Hard:0}; q.forEach\\(x=>byDiff[x.difficulty]=\\(byDiff[x.difficulty]||0\\)+1\\); console.log\\('Total:', q.length, '| Diffs:', JSON.stringify\\(byDiff\\)\\);\")",
+      "Bash(git diff *)",
+      "Bash(git status *)",
+      "Bash(timeout 4)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173/)",
+      "Bash(curl -s http://localhost:5173/)",
+      "Bash(curl -s http://localhost:5173/results)",
+      "Bash(curl -s http://localhost:5173/reviewer)",
+      "Bash(curl -s http://localhost:5173/history)"
     ]
   }
 }

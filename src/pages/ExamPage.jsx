@@ -33,7 +33,7 @@ export default function ExamPage() {
   const isStudy = mode === 'study'
 
   useEffect(() => {
-    if (!isActive || questions.length === 0) navigate('/', { replace: true })
+    if (!isActive && questions.length === 0) navigate('/', { replace: true })
   }, [isActive, questions.length, navigate])
 
   useEffect(() => {
@@ -70,7 +70,7 @@ export default function ExamPage() {
     const subtopicBreakdown = getSubtopicBreakdown(questions, answers)
     const trapStats = getTrapAnalytics(questions, answers, confidence)
     endExam()
-    saveExamResult({ score, domainBreakdown, subtopicBreakdown, mode, timeSpent, questionCount: questions.length, confidence, questionTimes: finalTimes, trapStats, trackId })
+    saveExamResult({ score, domainBreakdown, subtopicBreakdown, mode, timeSpent, questionCount: questions.length, confidence, questionTimes: finalTimes, trapStats, trackId, questionIds: questions.map(q => String(q.id)), answers })
     navigate('/results', {
       state: { questions, answers, score, timeSpent, flagged, mode, domainBreakdown, confidence, questionTimes: finalTimes, trackId, examSeed, answerChanges },
     })
