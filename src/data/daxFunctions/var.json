@@ -45,5 +45,9 @@
   ],
   "relatedFunctions": ["CALCULATE", "IF", "SWITCH", "DIVIDE"],
   "examWeight": "Medium",
-  "difficulty": "Medium"
+  "difficulty": "Medium",
+  "sqlEquivalent": {
+    "expression": "WITH CurrentSales AS (SELECT SUM(Amount) FROM Sales),\n     LastYear AS (SELECT SUM(Amount) FROM Sales WHERE YEAR(Date) = YEAR(GETDATE())-1)\nSELECT (c.Total - l.Total) * 1.0 / l.Total FROM CurrentSales c, LastYear l",
+    "note": "VAR/RETURN mirrors SQL Common Table Expressions (WITH ... AS). Both store intermediate results to avoid redundant recalculations. Key difference: a DAX VAR captures the filter context at the point of its declaration — similar to how a CTE is materialized when defined, not when referenced in RETURN."
+  }
 }

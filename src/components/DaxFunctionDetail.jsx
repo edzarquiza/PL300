@@ -107,6 +107,21 @@ export default function DaxFunctionDetail({ fn }) {
           </div>
         )}
 
+        {/* SQL Equivalent */}
+        {fn.sqlEquivalent && (
+          <div className="bg-gray-900 rounded-lg p-4 space-y-2">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+              SQL Equivalent
+            </p>
+            <pre className="text-xs text-green-400 font-mono leading-relaxed whitespace-pre-wrap break-words">
+              {fn.sqlEquivalent.expression}
+            </pre>
+            <p className="text-xs text-gray-400 leading-relaxed border-t border-gray-700 pt-2 mt-2">
+              {fn.sqlEquivalent.note}
+            </p>
+          </div>
+        )}
+
         {/* Related functions */}
         {fn.relatedFunctions?.length > 0 && (
           <div>

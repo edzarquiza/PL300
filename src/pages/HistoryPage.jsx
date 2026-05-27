@@ -169,48 +169,159 @@ export default function HistoryPage() {
   )
 }
 
+const CHOICE_LABELS = ['A', 'B', 'C', 'D', 'E']
+
+function getAnswerDetail(q, answer) {
+  if (!q || answer === null || answer === undefined) return null
+
+  switch (q.type) {
+    case 'single': {
+      if (typeof answer !== 'number') return null
+      const correctIdx = q.correctAnswers?.[0]
+      return {
+        userLabel: CHOICE_LABELS[answer],
+        userText: q.choices?.[answer],
+        correctLabel: CHOICE_LABELS[correctIdx],
+        correctText: q.choices?.[correctIdx],
+        wrongExplanation: answer !== correctIdx ? (q.choiceExplanations?.[answer] ?? null) : null,
+        isCorrect: answer === correctIdx,
+      }
+    }
+    case 'multiple': {
+      if (!Array.isArray(answer)) return null
+      const correct = [...(q.correctAnswers ?? [])].sort((a, b) => a - b)
+      return {
+        userLabels: answer.map(i => CHOICE_LABELS[i]).join(', '),
+        correctLabels: correct.map(i => CHOICE_LABELS[i]).join(', '),
+        isCorrect: isAnswerCorrect(answer, q),
+      }
+    }
+    case 'true_false': {
+      if (answer !== true && answer !== false) return null
+      return {
+        userText: answer ? 'True' : 'False',
+        correctText: q.correctAnswer ? 'True' : 'False',
+        isCorrect: answer === q.correctAnswer,
+      }
+    }
+    default:
+      return null
+  }
+}
+
 function AnswerReview({ questionIds, answers }) {
   const rows = questionIds.map((id, index) => {
     const q = lookupQuestion(id)
     const answer = answers[id] ?? answers[String(id)]
     const correct = q ? isAnswerCorrect(answer, q) : null
-    return { index, id, q, answer, correct }
+    const detail = getAnswerDetail(q, answer)
+    return { index, id, q, answer, correct, detail }
   })
 
   const correctCount = rows.filter(r => r.correct === true).length
 
   return (
-    <div className="mt-3 space-y-1">
+    <div className="mt-3 space-y-2">
       <p className="text-xs text-gray-400 mb-2">
         {correctCount} / {rows.length} correct
       </p>
-      {rows.map(({ index, id, q, correct }) => (
+      {rows.map(({ index, id, q, correct, detail }) => (
         <div
           key={id}
-          className={`flex items-start gap-2.5 px-3 py-2.5 rounded-lg text-xs ${
+          className={`rounded-lg text-xs border ${
             correct === true
-              ? 'bg-green-50 border border-green-100'
+              ? 'bg-green-50 border-green-100'
               : correct === false
-              ? 'bg-red-50 border border-red-100'
-              : 'bg-gray-50 border border-gray-100'
+              ? 'bg-red-50 border-red-200'
+              : 'bg-gray-50 border-gray-100'
           }`}
         >
-          <span className={`flex-shrink-0 font-bold mt-0.5 ${
-            correct === true ? 'text-green-600' : correct === false ? 'text-red-500' : 'text-gray-400'
-          }`}>
-            {correct === true ? '✓' : correct === false ? '✗' : '—'}
-          </span>
-          <div className="min-w-0">
-            <span className="text-gray-400 mr-1.5">Q{index + 1}.</span>
-            {q ? (
-              <>
-                <span className="text-gray-700 font-medium">{q.question.length > 100 ? q.question.slice(0, 100) + '…' : q.question}</span>
-                <span className="ml-1.5 text-gray-400">· {q.subtopic}</span>
-              </>
-            ) : (
-              <span className="text-gray-400 italic">Question no longer available</span>
-            )}
+          {/* Question header */}
+          <div className="flex items-start gap-2.5 px-3 py-2.5">
+            <span className={`flex-shrink-0 font-bold mt-0.5 ${
+              correct === true ? 'text-green-600' : correct === false ? 'text-red-500' : 'text-gray-400'
+            }`}>
+              {correct === true ? '✓' : correct === false ? '✗' : '—'}
+            </span>
+            <div className="min-w-0">
+              <span className="text-gray-400 mr-1.5">Q{index + 1}.</span>
+              {q ? (
+                <>
+                  <span className="text-gray-700 font-medium">
+                    {q.question.length > 120 ? q.question.slice(0, 120) + '…' : q.question}
+                  </span>
+                  <span className="ml-1.5 text-gray-400">· {q.subtopic}</span>
+                </>
+              ) : (
+                <span className="text-gray-400 italic">Question no longer available</span>
+              )}
+            </div>
           </div>
+
+          {/* Answer detail — shown for all answered questions */}
+          {detail && q && (
+            <div className="border-t border-current border-opacity-10 px-3 pb-3 pt-2 space-y-1.5">
+
+              {/* Single choice */}
+              {detail.userLabel && (
+                <>
+                  <div className={`flex items-start gap-1.5 ${correct ? 'text-green-800' : 'text-red-800'}`}>
+                    <span className="flex-shrink-0 font-semibold">{detail.userLabel}.</span>
+                    <span className="leading-snug">{detail.userText}</span>
+                    <span className="flex-shrink-0 ml-auto pl-2 font-semibold">
+                      {correct ? '✓ your pick' : '✗ your pick'}
+                    </span>
+                  </div>
+                  {!correct && detail.correctLabel && (
+                    <div className="flex items-start gap-1.5 text-green-800">
+                      <span className="flex-shrink-0 font-semibold">{detail.correctLabel}.</span>
+                      <span className="leading-snug">{detail.correctText}</span>
+                      <span className="flex-shrink-0 ml-auto pl-2 font-semibold text-green-600">✓ correct</span>
+                    </div>
+                  )}
+                  {detail.wrongExplanation && (
+                    <p className="mt-1 text-red-700 leading-relaxed bg-red-100 rounded px-2 py-1.5 border border-red-200">
+                      {detail.wrongExplanation}
+                    </p>
+                  )}
+                </>
+              )}
+
+              {/* Multiple choice */}
+              {detail.userLabels && (
+                <>
+                  <div className={`${correct ? 'text-green-800' : 'text-red-800'}`}>
+                    <span className="font-semibold">Your answer: </span>
+                    {detail.userLabels}
+                    {correct && <span className="ml-1.5 font-semibold text-green-600">✓</span>}
+                  </div>
+                  {!correct && (
+                    <div className="text-green-800">
+                      <span className="font-semibold">Correct: </span>
+                      {detail.correctLabels}
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* True / False */}
+              {detail.userText && !detail.userLabel && (
+                <>
+                  <div className={`${correct ? 'text-green-800' : 'text-red-800'}`}>
+                    <span className="font-semibold">Your answer: </span>
+                    {detail.userText}
+                    {correct && <span className="ml-1.5 font-semibold text-green-600">✓</span>}
+                  </div>
+                  {!correct && (
+                    <div className="text-green-800">
+                      <span className="font-semibold">Correct: </span>
+                      {detail.correctText}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
         </div>
       ))}
     </div>

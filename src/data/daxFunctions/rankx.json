@@ -67,5 +67,9 @@
   ],
   "relatedFunctions": ["ALL", "TOPN", "CALCULATE", "DENSE_RANK"],
   "examWeight": "Medium",
-  "difficulty": "Hard"
+  "difficulty": "Hard",
+  "sqlEquivalent": {
+    "expression": "SELECT Product, SUM(Amount), RANK() OVER (ORDER BY SUM(Amount) DESC) AS Rank FROM Sales GROUP BY Product",
+    "note": "SQL uses RANK(), DENSE_RANK(), or ROW_NUMBER() window functions with OVER(ORDER BY). RANKX is a measure: ALL(Products) removes visual filters so every product is ranked, equivalent to an unfiltered GROUP BY. Without ALL(), RANKX only ranks the currently visible rows — like adding WHERE to the SQL query."
+  }
 }

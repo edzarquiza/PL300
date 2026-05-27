@@ -60,5 +60,9 @@
   ],
   "relatedFunctions": ["SUM", "AVERAGEX", "MAXX", "MINX", "COUNTX", "FILTER"],
   "examWeight": "High",
-  "difficulty": "Medium"
+  "difficulty": "Medium",
+  "sqlEquivalent": {
+    "expression": "SELECT SUM(Qty * UnitPrice) FROM Sales",
+    "note": "SQL can inline arithmetic directly inside SUM(). In DAX, if a Revenue column doesn't exist in the table, SUM(Sales[Revenue]) fails. SUMX computes the per-row expression on the fly — equivalent to writing the formula inside SQL's SUM()."
+  }
 }

@@ -48,5 +48,9 @@
   ],
   "relatedFunctions": ["RELATEDTABLE", "LOOKUPVALUE", "USERELATIONSHIP", "FILTER"],
   "examWeight": "High",
-  "difficulty": "Easy"
+  "difficulty": "Easy",
+  "sqlEquivalent": {
+    "expression": "SELECT s.ProductID, s.Amount, p.Category FROM Sales s LEFT JOIN Products p ON s.ProductID = p.ProductID",
+    "note": "RELATED is a row-level lookup equivalent to LEFT JOIN in SQL. Unlike SQL, you don't write the join condition — DAX uses the pre-defined model relationship. RELATED only works from the many-side (fact) to the one-side (dimension), matching how a FK→PK join works."
+  }
 }

@@ -64,5 +64,9 @@
   ],
   "relatedFunctions": ["FILTER", "ALL", "REMOVEFILTERS", "ALLEXCEPT", "KEEPFILTERS"],
   "examWeight": "Very High",
-  "difficulty": "Hard"
+  "difficulty": "Hard",
+  "sqlEquivalent": {
+    "expression": "SELECT SUM(Amount) FROM Sales WHERE Region = 'East'",
+    "note": "SQL uses a WHERE clause to filter rows before aggregation. CALCULATE modifies an already-active filter context at runtime — it can override or stack on top of filters applied by slicers and visuals, which has no direct SQL analog."
+  }
 }

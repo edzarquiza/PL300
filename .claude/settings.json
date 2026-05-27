@@ -31,7 +31,12 @@
       "Bash(curl -s http://localhost:5173/)",
       "Bash(curl -s http://localhost:5173/results)",
       "Bash(curl -s http://localhost:5173/reviewer)",
-      "Bash(curl -s http://localhost:5173/history)"
+      "Bash(curl -s http://localhost:5173/history)",
+      "Bash(node -e \"const q = require\\('./src/data/questions.json'\\); const missing = q.filter\\(x => !x.choiceExplanations && \\(x.type === 'single' || x.type === 'multiple'\\)\\); console.log\\('Missing choiceExplanations:', missing.map\\(x => x.id\\).join\\(', '\\)\\); console.log\\('Total missing:', missing.length\\);\")",
+      "Bash(node scripts/addChoiceExplanations.js)",
+      "Bash(node --input-type=commonjs)",
+      "Bash(node --input-type=commonjs -e \"const q = require\\('./src/data/questions.json'\\); const ids = q.map\\(x=>x.id\\).sort\\(\\(a,b\\)=>b-a\\); console.log\\('Max ID:', ids[0], '| Total:', q.length\\);\")",
+      "Bash(node scripts/addNewQuestions.cjs)"
     ]
   }
 }

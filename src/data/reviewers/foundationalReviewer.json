@@ -1,0 +1,310 @@
+[
+  {
+    "id": "found_fact_table",
+    "concept": "Fact Table",
+    "subtopic": "Data Modeling",
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["Star Schema", "Data Modeling", "Fact Table"],
+    "summary": "A fact table stores measurable events — sales transactions, order lines, website clicks. Each row is one event. Fact tables are usually wide (many rows) and contain numeric values you want to aggregate (amounts, quantities, counts).",
+    "keyInsight": "Fact tables answer the question: WHAT happened and HOW MUCH? They connect to dimension tables through foreign keys. On PL-300, fact tables almost always sit at the MANY side of a relationship.",
+    "commonTrap": "Adding descriptive attributes (like product name or region name) directly to the fact table. These belong in dimension tables. Mixing them into the fact table creates redundancy and slows performance.",
+    "miniQuiz": {
+      "question": "A Sales table has columns: SaleID, CustomerID, ProductID, Date, Quantity, Amount. Which columns are the measurable facts?",
+      "choices": [
+        "SaleID and Date",
+        "CustomerID and ProductID",
+        "Quantity and Amount",
+        "All columns equally"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Quantity and Amount are the numeric measurements — the things you aggregate with SUM, AVERAGE, or COUNT. SaleID is a key, Date is a time reference, and CustomerID/ProductID are foreign keys linking to dimension tables."
+    }
+  },
+  {
+    "id": "found_dimension_table",
+    "concept": "Dimension Table",
+    "subtopic": "Data Modeling",
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["Star Schema", "Data Modeling", "Dimension Table"],
+    "summary": "A dimension table stores descriptive context about the things in your fact table — who the customer is, what the product is, where the store is. Dimension tables are usually narrow (fewer rows, more columns describing each item).",
+    "keyInsight": "Dimensions answer: WHO, WHAT, WHERE, WHEN, WHY. They provide the labels and groupings users see in slicers and chart axes. Each dimension row is unique (primary key). They sit on the ONE side of a relationship.",
+    "commonTrap": "Confusing a lookup table with a dimension. A lookup table is a dimension. The term 'dimension table' just means: a table used to describe and filter the facts. Customer, Product, Date, Store, Region — these are all dimensions.",
+    "miniQuiz": {
+      "question": "You have a Products table with columns: ProductID, ProductName, Category, Brand, UnitPrice. How would you describe this table?",
+      "choices": [
+        "A fact table — it contains UnitPrice which is numeric",
+        "A dimension table — it describes product attributes used for filtering and grouping",
+        "A bridge table — it connects two fact tables",
+        "A calculated table — it was created using DAX"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The Products table is a dimension. It describes what each product IS — name, category, brand. UnitPrice is a product attribute, not a transactional measurement. Fact tables record events (sales, orders); dimension tables describe the participants in those events."
+    }
+  },
+  {
+    "id": "found_star_schema",
+    "concept": "Star Schema",
+    "subtopic": "Data Modeling",
+    "difficulty": "Easy",
+    "estimatedReviewTime": 60,
+    "tags": ["Star Schema", "Data Modeling", "Relationships"],
+    "summary": "A star schema places one central fact table surrounded by dimension tables connected through foreign keys. It looks like a star. This is the recommended Power BI model structure because it compresses well, queries fast, and simplifies DAX.",
+    "keyInsight": "Star schema separates MEASUREMENTS (fact table) from DESCRIPTIONS (dimension tables). Power BI's Vertipaq engine is specifically optimised for this pattern. Flat single-table models and snowflake schemas perform worse for most BI workloads.",
+    "commonTrap": "Building a snowflake schema (dimensions linked to other dimensions) when a star schema would work. Snowflakes add complexity without performance benefits in Power BI. Flatten dimension hierarchies into a single wide dimension table instead.",
+    "miniQuiz": {
+      "question": "A model has: Sales (fact), Customers, Products, Date, and a Regions table linked to Customers. What schema pattern does this represent?",
+      "choices": [
+        "Star schema — all dimensions connect directly to the fact",
+        "Snowflake schema — a dimension (Regions) links to another dimension (Customers)",
+        "Flat schema — everything is in one table",
+        "Bridge schema — bridge tables are being used"
+      ],
+      "correctAnswer": 1,
+      "explanation": "When a dimension table (Regions) connects to another dimension table (Customers) rather than directly to the fact, it creates a snowflake. For Power BI, the best practice is to flatten Regions into the Customers table to keep a true star schema."
+    }
+  },
+  {
+    "id": "found_filter_context",
+    "concept": "Filter Context",
+    "subtopic": "DAX",
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["Filter Context", "DAX", "CALCULATE"],
+    "summary": "Filter context is the set of active filters when a DAX expression is evaluated. It comes from slicers, page filters, report filters, row/column fields in a matrix, and CALCULATE() calls. DAX measures always execute within the current filter context.",
+    "keyInsight": "Every value you see in a Power BI visual is a DAX result evaluated inside a filter context. A simple measure like SUM(Sales[Amount]) automatically respects whatever filters are active — you do not have to write the filter logic into the measure itself.",
+    "commonTrap": "Assuming a measure works differently based on WHERE it's placed. SUM(Sales[Amount]) on a card gives total sales. The same measure in a matrix by Region gives regional sales. The measure code is identical — the FILTER CONTEXT changes.",
+    "miniQuiz": {
+      "question": "A measure Total Sales = SUM(Sales[Amount]) shows $10,000 on a card visual. When placed in a matrix with Region on rows, the East row shows $3,200. Why?",
+      "choices": [
+        "The measure was recalculated with different code for each row",
+        "The matrix applies a Region filter for each row, changing the filter context the measure evaluates in",
+        "SUM automatically groups by Region when used in a matrix",
+        "The card visual shows incorrect totals"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The measure code never changes — SUM(Sales[Amount]) is always the same. What changes is the filter context. Each matrix row adds a filter for that specific region. The measure evaluates within that narrowed context, naturally producing the regional total."
+    }
+  },
+  {
+    "id": "found_row_context",
+    "concept": "Row Context",
+    "subtopic": "DAX",
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["Row Context", "DAX", "Calculated Columns", "Iterator Functions"],
+    "summary": "Row context is the current row being processed during iteration. It exists in two situations: inside calculated columns (each row being computed), and inside iterator functions like SUMX, AVERAGEX, MAXX (each row of the table being iterated).",
+    "keyInsight": "Row context lets you reference individual column values. In a calculated column, Sales[Profit] = Sales[Amount] - Sales[Cost] works because DAX knows which row it is. In a measure, you cannot reference Sales[Amount] directly — there is no single row. You must iterate with SUMX.",
+    "commonTrap": "Writing a measure that references a column value like Sales[Amount] without an aggregation. This fails because measures have no row context. You must wrap it: SUM(Sales[Amount]) or use an iterator like SUMX(Sales, Sales[Amount]).",
+    "miniQuiz": {
+      "question": "You want to calculate Profit Margin for each row in the Sales table. Should you use a calculated column or a measure?",
+      "choices": [
+        "A measure — measures are always more flexible than calculated columns",
+        "A calculated column — each row needs its own Profit Margin based on that row's Amount and Cost values",
+        "Either — both work identically for per-row calculations",
+        "A calculated table — you need a separate table for this"
+      ],
+      "correctAnswer": 1,
+      "explanation": "A calculated column has row context — it evaluates once per row, so it can access Sales[Amount] and Sales[Cost] for that specific row. A measure has no row context by default, making direct per-row column references impossible without an iterator like SUMX."
+    }
+  },
+  {
+    "id": "found_measure_vs_calc_col",
+    "concept": "Measure vs Calculated Column",
+    "subtopic": "DAX",
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["Measures", "Calculated Columns", "DAX", "Row Context"],
+    "summary": "A measure calculates at query time using the current filter context — it has no permanent column in the table. A calculated column is computed once at refresh and stored as a physical column in the table. Wrong choice = bloated model or broken DAX.",
+    "keyInsight": "Use a MEASURE when the result changes with slicers/filters (totals, KPIs, ratios). Use a CALCULATED COLUMN when you need a permanent per-row value for sorting, filtering, or as input to a relationship. Measures do not increase model size; calculated columns do.",
+    "commonTrap": "Creating a calculated column for an aggregation like Total Sales. Calculated columns cannot aggregate across rows — they only see the current row. SUM(Sales[Amount]) in a calculated column gives the grand total on every row, which is almost never what you want.",
+    "miniQuiz": {
+      "question": "You need a Profit % KPI that updates when a slicer changes. You also need a Price Category column (Low/Medium/High) to use as a slicer. Which approach is correct?",
+      "choices": [
+        "Both should be measures — measures are always more efficient",
+        "Profit % → measure (responds to filter context). Price Category → calculated column (stored value for slicing)",
+        "Both should be calculated columns — they are computed once at refresh",
+        "Profit % → calculated column. Price Category → measure"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Profit % must respond to slicers (filter context) → measure. Price Category is a static per-row classification used as a slicer itself → calculated column. You cannot slicer by a measure; you can only slicer by a column."
+    }
+  },
+  {
+    "id": "found_cardinality",
+    "concept": "Cardinality",
+    "subtopic": "Data Modeling",
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["Cardinality", "Relationships", "Data Modeling"],
+    "summary": "Cardinality describes the uniqueness of values on each side of a relationship. One-to-Many (1:*) is standard — one unique key in the dimension, many matching rows in the fact. Many-to-Many (*:*) means neither side is unique and usually requires a bridge table.",
+    "keyInsight": "In a correctly designed star schema, dimension tables always have a unique primary key (the ONE side). Fact tables have foreign keys that repeat (the MANY side). Power BI auto-detects cardinality but you should verify it is always 1:* — not *:* which can cause unexpected results.",
+    "commonTrap": "Accidentally creating a Many-to-Many relationship by joining on a non-unique column. If CustomerID in your Sales table appears in both Sales and Customers but isn't unique in Customers, Power BI will set the relationship as *:*. This often silently produces wrong totals.",
+    "miniQuiz": {
+      "question": "A Date table has one row per date (unique DateKey). A Sales table has many rows with a DateKey that repeats. What is the correct cardinality?",
+      "choices": [
+        "Many-to-Many (*:*) — DateKey appears in both tables",
+        "One-to-One (1:1) — each date maps to one set of sales",
+        "One-to-Many (1:*) from Date to Sales — one unique date maps to many sales rows",
+        "Many-to-One (*:1) from Date to Sales"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Date[DateKey] is unique (one row per date) → ONE side. Sales[DateKey] repeats (many sales per date) → MANY side. The relationship goes from the ONE side (Date) to the MANY side (Sales). This is the standard pattern for all dimension-to-fact relationships."
+    }
+  },
+  {
+    "id": "found_query_folding",
+    "concept": "Query Folding",
+    "subtopic": "Power Query",
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Query Folding", "Power Query", "Performance"],
+    "summary": "Query folding is Power Query translating your transformation steps into a single native query (SQL, OData, etc.) sent to the data source. When steps fold, the source does the heavy lifting — fewer rows are pulled over the network. When steps don't fold, Power Query processes data locally in memory.",
+    "keyInsight": "Folding = FAST. Non-folding = slow (data is pulled first, then transformed in memory). Adding a custom M column, using certain text functions, or merging with a local table breaks folding. Once broken, all subsequent steps cannot fold.",
+    "commonTrap": "Adding a non-foldable step early in the query (like a custom column), then wondering why a filter applied later is slow. The filter was applied AFTER the non-foldable step so it could not be pushed to the server. Move foldable steps (filters, column selections, row removals) BEFORE non-foldable ones.",
+    "miniQuiz": {
+      "question": "A query against SQL Server has 10 steps. Step 4 is 'Added Custom Column' using M. Step 8 is 'Filter Rows'. Does the Filter Rows step benefit from query folding?",
+      "choices": [
+        "Yes — each step folds independently",
+        "No — once a non-foldable step appears, all subsequent steps cannot fold",
+        "Only if the custom column uses SQL-compatible logic",
+        "Yes — Power Query optimises step order automatically"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Once a non-foldable step breaks the folding chain (custom M columns typically cannot be translated to SQL), all steps after it also cannot fold. The filter at step 8 runs in Power Query memory after all rows are already loaded. Moving the filter to step 3 (before the custom column) would allow it to fold."
+    }
+  },
+  {
+    "id": "found_rls",
+    "concept": "Row-Level Security (RLS)",
+    "subtopic": "Security & Service",
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["RLS", "Security", "USERPRINCIPALNAME"],
+    "summary": "RLS restricts which rows a user can see in a report. You define roles with DAX filter expressions in Power BI Desktop, then assign users (or Azure AD groups) to those roles in the Power BI Service. Users never see data they are not assigned to.",
+    "keyInsight": "RLS is defined in the SEMANTIC MODEL (not the report). It filters at the data level, so every visual, page, and export is automatically restricted. The DAX function USERPRINCIPALNAME() returns the signed-in user's email, enabling dynamic RLS without creating one role per person.",
+    "commonTrap": "Creating static RLS roles for every individual user. This is unmaintainable. The best practice is dynamic RLS: one role whose DAX filter uses USERPRINCIPALNAME() to match the signed-in user's email to a security mapping table.",
+    "miniQuiz": {
+      "question": "A company has 200 sales reps, each seeing only their own sales data. What is the most maintainable RLS approach?",
+      "choices": [
+        "Create 200 roles — one per sales rep with a static filter",
+        "Create one dynamic role using USERPRINCIPALNAME() matched to a security mapping table",
+        "Hide the report pages that show other reps' data",
+        "Use workspace roles to restrict access per user"
+      ],
+      "correctAnswer": 1,
+      "explanation": "One dynamic role with USERPRINCIPALNAME() filters rows to match the signed-in user. Adding new reps requires only adding a row to the mapping table — not creating a new role. Static roles (200 individual roles) break every time headcount changes. Workspace roles control report access, not data row visibility."
+    }
+  },
+  {
+    "id": "found_directquery_vs_import",
+    "concept": "DirectQuery vs Import",
+    "subtopic": "Data Modeling",
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["DirectQuery", "Import", "Storage Mode", "Performance"],
+    "summary": "Import loads data into Power BI's in-memory Vertipaq engine at refresh time — queries are blazing fast but data is as fresh as the last refresh. DirectQuery sends live queries to the source on every visual interaction — always current but slower, and limited DAX support.",
+    "keyInsight": "Import is the default and best choice for most reports. Choose DirectQuery only when: data freshness is critical (stock prices, live ops), the data is too large to import, or security policies prohibit copying data. Scheduled refresh (up to 48×/day with Premium) handles most freshness requirements.",
+    "commonTrap": "Defaulting to DirectQuery for 'real-time' requirements that are actually satisfied by hourly Import refresh. DirectQuery has significant DAX limitations, slower visual interactions, and no support for some features (calculated columns, certain relationships). Import + frequent refresh is usually the better tradeoff.",
+    "miniQuiz": {
+      "question": "A finance report needs accurate daily closing figures updated by 7am. The source is an on-premises SQL Server with 5 million rows. Which storage mode is most appropriate?",
+      "choices": [
+        "DirectQuery — the data must always be live",
+        "Import with a scheduled refresh running at 7am daily",
+        "DirectLake — best for large on-premises datasets",
+        "Composite — use both Import and DirectQuery simultaneously"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Import with a scheduled 7am refresh delivers accurate daily data with fast visual performance. DirectQuery is not needed — 'accurate daily data by 7am' does not require live querying. DirectLake requires Microsoft Fabric and cannot connect to arbitrary on-premises sources."
+    }
+  },
+  {
+    "id": "found_relationships",
+    "concept": "Relationships Between Tables",
+    "subtopic": "Data Modeling",
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["Relationships", "Data Modeling", "Cardinality"],
+    "summary": "Relationships in Power BI connect tables so filters can propagate between them. A filter applied to a dimension (e.g. selecting 'Electronics' in Product Category) automatically filters the fact table (showing only electronics sales). Relationships replace the need to JOIN tables in every measure.",
+    "keyInsight": "Filter propagation flows from ONE side to MANY side by default (single direction). To cross-filter in both directions, you enable bi-directional filtering — but this should be used sparingly as it can cause ambiguity, slow performance, and unexpected double-filtering results.",
+    "commonTrap": "Enabling bi-directional filtering everywhere 'just to be safe'. This often produces incorrect totals and circular filter paths. Use it only when genuinely needed (e.g. many-to-many with a bridge table). For standard star schema models, single-direction filtering is correct.",
+    "miniQuiz": {
+      "question": "A slicer on the Products table (filtering by Category) affects the totals shown from the Sales fact table. Why does this work without writing any DAX?",
+      "choices": [
+        "Power BI automatically JOINs the tables on every visual load",
+        "The relationship between Products and Sales propagates the category filter automatically from the ONE side (Products) to the MANY side (Sales)",
+        "The slicer sends a parameter to a Power Query filter step",
+        "Calculated columns in Sales already store the product category"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Relationships propagate filters automatically. When a slicer selects 'Electronics' in Products, that filter flows through the Products-to-Sales relationship and restricts Sales rows to those with matching ProductIDs. This is the core value of a relational model — no JOIN code required in every measure."
+    }
+  },
+  {
+    "id": "found_date_table",
+    "concept": "Date Table",
+    "subtopic": "Data Modeling",
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Date Table", "Time Intelligence", "DAX"],
+    "summary": "Time intelligence functions (TOTALYTD, DATEADD, SAMEPERIODLASTYEAR) require a dedicated Date table: a table with one row per calendar date, marked as the official Date table, containing a Date column with no gaps. Without it, time intelligence DAX breaks.",
+    "keyInsight": "Mark your Date table using 'Mark as Date Table' in Power BI Desktop. The Date column must be of Date type, cover the full range of dates in your fact table with no gaps, and have no duplicate dates. Relationships from the fact table connect to this Date table.",
+    "commonTrap": "Using the date column from the fact table directly for time intelligence. Fact tables have gaps (no transaction on weekends or holidays) — this breaks YTD and DATEADD calculations. A proper Date table has every calendar date with no gaps.",
+    "miniQuiz": {
+      "question": "Your TOTALYTD measure returns BLANK for all dates. The Date column in the Sales table has valid date values. What is the most likely cause?",
+      "choices": [
+        "TOTALYTD requires a SUM, not a COUNT",
+        "There is no dedicated Date table marked as a Date table, or the fact table date column is used directly",
+        "The measure is missing a CALCULATE wrapper",
+        "The slicer is filtering to a single day, causing YTD to equal the day's value"
+      ],
+      "correctAnswer": 1,
+      "explanation": "TOTALYTD and all time intelligence functions require a proper Date table (marked as Date Table in Power BI Desktop) with contiguous dates and no gaps. Using the Sales[Date] column directly — which has gaps on non-sale days — breaks these functions. Create a dedicated Date table first."
+    }
+  },
+  {
+    "id": "found_aggregation_functions",
+    "concept": "Aggregation: SUM vs SUMX",
+    "subtopic": "DAX",
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["SUM", "SUMX", "Iterator Functions", "DAX"],
+    "summary": "SUM(table[column]) adds up all values in a column — simple and fast. SUMX(table, expression) iterates row by row, evaluating the expression for each row, then sums the results. SUMX is needed when the calculation involves multiple columns per row.",
+    "keyInsight": "SUM(Sales[Amount]) works when Amount is already stored. SUMX(Sales, Sales[Qty] * Sales[UnitPrice]) is needed when you must multiply two columns per row before summing. You CANNOT do SUM(Sales[Qty] * Sales[UnitPrice]) — SUM only accepts a single column reference.",
+    "commonTrap": "Writing Total Revenue = SUM(Sales[Qty] * Sales[Price]) — this is invalid DAX syntax. SUM only accepts a column. The correct formula is SUMX(Sales, Sales[Qty] * Sales[Price]), which iterates each row, multiplies the two columns, and sums the results.",
+    "miniQuiz": {
+      "question": "You want to calculate total revenue where Revenue = Quantity × Unit Price and neither column exists pre-computed. Which DAX is correct?",
+      "choices": [
+        "Total Revenue = SUM(Sales[Quantity] * Sales[UnitPrice])",
+        "Total Revenue = SUMX(Sales, Sales[Quantity] * Sales[UnitPrice])",
+        "Total Revenue = SUM(Sales[Quantity]) * SUM(Sales[UnitPrice])",
+        "Total Revenue = CALCULATE(SUM(Sales[Quantity]), Sales[UnitPrice])"
+      ],
+      "correctAnswer": 1,
+      "explanation": "SUMX iterates the Sales table row by row, multiplies Quantity × UnitPrice for each row, then sums all results. Option A is invalid syntax. Option C multiplies total quantity by total unit price — mathematically wrong (averages out the prices). Option D misuses CALCULATE."
+    }
+  },
+  {
+    "id": "found_workspace_roles",
+    "concept": "Power BI Workspace Roles",
+    "subtopic": "Security & Service",
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["Workspace Roles", "Security", "Power BI Service"],
+    "summary": "Workspace roles control who can do what in a Power BI workspace. Viewer: read-only (consume reports). Contributor: create and edit content, cannot manage access. Member: everything Contributor can do, plus add Members. Admin: full control including deleting the workspace.",
+    "keyInsight": "Workspace roles control ACCESS to the workspace and its content. They do NOT control which rows of data a user sees — that is RLS. A Viewer with no RLS sees all rows. A Viewer with RLS sees only their permitted rows. The two systems work at different levels.",
+    "commonTrap": "Thinking Viewer role restricts data visibility. It only restricts actions (can't edit, can't publish). To restrict what DATA a viewer sees, you must configure RLS in the semantic model separately. Workspace role ≠ data security.",
+    "miniQuiz": {
+      "question": "A new analyst should be able to view reports and build their own reports in a workspace, but NOT manage access for other users. Which role is appropriate?",
+      "choices": [
+        "Viewer — they need read access",
+        "Contributor — they can create content but cannot manage workspace membership",
+        "Member — full content management plus adding Members",
+        "Admin — required to build reports"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Contributor can create, edit, and publish reports but cannot manage workspace access (add/remove users). Viewer is read-only — cannot build reports. Member adds the ability to grant Member or lower roles to others. Admin has full control. Contributor is the correct minimum permission for report builders who should not control workspace membership."
+    }
+  }
+]

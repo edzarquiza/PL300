@@ -50,5 +50,9 @@
   ],
   "relatedFunctions": ["DISTINCT", "SELECTEDVALUE", "HASONEVALUE", "CALCULATE", "ALL"],
   "examWeight": "Medium",
-  "difficulty": "Medium"
+  "difficulty": "Medium",
+  "sqlEquivalent": {
+    "expression": "SELECT DISTINCT Region FROM Sales WHERE <active_filters_applied>",
+    "note": "VALUES is like SELECT DISTINCT but filtered by the active slicer/visual context. SQL's SELECT DISTINCT always returns all distinct values from the full table unless you add WHERE manually. DAX's DISTINCT() is closer to SQL DISTINCT; VALUES adds a blank row for unmatched foreign keys, which DISTINCT() does not."
+  }
 }

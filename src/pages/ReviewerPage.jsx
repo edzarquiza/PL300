@@ -9,8 +9,16 @@ import modelingCards from '../data/reviewers/modelingReviewer.json'
 import vizCards from '../data/reviewers/visualizationReviewer.json'
 import secCards from '../data/reviewers/securityReviewer.json'
 import trapCards from '../data/reviewers/trapReviewer.json'
+import foundCards from '../data/reviewers/foundationalReviewer.json'
 
 const CATEGORIES = [
+  {
+    id: 'foundational',
+    name: 'Foundations',
+    description: 'Fact tables, star schema, filter context, measures, RLS — explained simply',
+    color: 'sky',
+    cards: foundCards,
+  },
   {
     id: 'dax',
     name: 'DAX',
@@ -98,9 +106,16 @@ const COLOR_MAP = {
     badge: 'bg-rose-100 text-rose-700',
     button: 'bg-rose-600 hover:bg-rose-700',
   },
+  sky: {
+    border: 'border-sky-400',
+    bg: 'bg-sky-50',
+    text: 'text-sky-700',
+    badge: 'bg-sky-100 text-sky-700',
+    button: 'bg-sky-600 hover:bg-sky-700',
+  },
 }
 
-const ALL_CARDS = [...daxCards, ...pqCards, ...modelingCards, ...vizCards, ...secCards, ...trapCards]
+const ALL_CARDS = [...foundCards, ...daxCards, ...pqCards, ...modelingCards, ...vizCards, ...secCards, ...trapCards]
 
 function findWeakCards(history) {
   if (!history.length) return []
@@ -304,7 +319,7 @@ export default function ReviewerPage() {
             High-yield PL-300 concept refreshers with quick checks
           </p>
           <p className="text-xs text-gray-400 mt-1">
-            {ALL_CARDS.length} concepts · 6 categories · No timer
+            {ALL_CARDS.length} concepts · 7 categories · No timer
           </p>
         </div>
 

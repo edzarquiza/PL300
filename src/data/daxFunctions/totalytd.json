@@ -67,5 +67,9 @@
   ],
   "relatedFunctions": ["TOTALQTD", "TOTALMTD", "DATESYTD", "DATEADD", "SAMEPERIODLASTYEAR"],
   "examWeight": "High",
-  "difficulty": "Medium"
+  "difficulty": "Medium",
+  "sqlEquivalent": {
+    "expression": "SELECT Date, SUM(Amount) OVER (PARTITION BY YEAR(Date) ORDER BY Date ROWS UNBOUNDED PRECEDING) AS YTD FROM Sales",
+    "note": "SQL uses a window function with PARTITION BY year and ORDER BY date for a running total. TOTALYTD handles the cumulative date range logic automatically from Jan 1 to the current date in context. In SQL you must manually partition by year and ensure date ordering; DAX infers this from the marked date table."
+  }
 }

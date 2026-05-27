@@ -50,5 +50,9 @@
   ],
   "relatedFunctions": ["REMOVEFILTERS", "ALLEXCEPT", "ALLSELECTED", "CALCULATE", "KEEPFILTERS"],
   "examWeight": "High",
-  "difficulty": "Medium"
+  "difficulty": "Medium",
+  "sqlEquivalent": {
+    "expression": "SELECT SUM(Amount) FROM Sales -- (no WHERE clause)",
+    "note": "ALL() is like writing a query without a WHERE clause to get an unrestricted total. In SQL you simply omit the WHERE; in DAX, slicers and visuals automatically add invisible filters to every measure — ALL() explicitly removes them, something SQL has no equivalent for."
+  }
 }

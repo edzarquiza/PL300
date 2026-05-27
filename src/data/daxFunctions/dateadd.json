@@ -52,5 +52,9 @@
   ],
   "relatedFunctions": ["SAMEPERIODLASTYEAR", "PREVIOUSMONTH", "PREVIOUSYEAR", "DATESINPERIOD", "TOTALYTD"],
   "examWeight": "High",
-  "difficulty": "Medium"
+  "difficulty": "Medium",
+  "sqlEquivalent": {
+    "expression": "WHERE Date BETWEEN DATEADD(year, -1, @StartDate) AND DATEADD(year, -1, @EndDate)",
+    "note": "SQL Server's DATEADD() function has identical syntax (datepart, number, date). The difference: in SQL you manually construct the shifted date range in WHERE; in DAX, DATEADD shifts the entire current filter context date set automatically based on whatever the active slicer or visual is showing — no manual range calculation needed."
+  }
 }

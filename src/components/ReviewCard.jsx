@@ -9,6 +9,46 @@ const TYPE_LABEL = {
   rearrange_steps: 'Arrange in Order',
 }
 
+const CHOICE_LABELS = ['A', 'B', 'C', 'D', 'E']
+
+function ChoiceExplanations({ question, userAnswer }) {
+  if (!question.choiceExplanations) return null
+  if (question.type !== 'single' && question.type !== 'multiple') return null
+
+  const selected = question.type === 'multiple'
+    ? (Array.isArray(userAnswer) ? userAnswer : [])
+    : (userAnswer !== null && userAnswer !== undefined ? [userAnswer] : [])
+
+  const entries = Object.entries(question.choiceExplanations).map(([idx, text]) => {
+    const i = Number(idx)
+    const isCorrectChoice = question.correctAnswers?.includes(i)
+    const wasSelected = selected.includes(i)
+    return { i, text, isCorrectChoice, wasSelected }
+  }).filter(e => e.isCorrectChoice || e.wasSelected)
+
+  if (entries.length === 0) return null
+
+  return (
+    <div className="mt-3 space-y-2">
+      {entries.map(({ i, text, isCorrectChoice, wasSelected }) => (
+        <div
+          key={i}
+          className={`rounded-lg px-3 py-2.5 border text-xs leading-relaxed ${
+            isCorrectChoice
+              ? 'bg-green-50 border-green-200 text-green-900'
+              : 'bg-red-50 border-red-200 text-red-900'
+          }`}
+        >
+          <span className={`font-semibold mr-1.5 ${isCorrectChoice ? 'text-green-700' : 'text-red-600'}`}>
+            {CHOICE_LABELS[i]}{isCorrectChoice ? ' (correct)' : ' (your pick)'}:
+          </span>
+          {text}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export default function ReviewCard({ question, userAnswer, questionNumber }) {
   const isEmpty = isAnswerEmpty(userAnswer, question)
   const isCorrect = !isEmpty && isAnswerCorrect(userAnswer, question)
@@ -67,6 +107,7 @@ export default function ReviewCard({ question, userAnswer, questionNumber }) {
             <span className="font-semibold text-gray-900">Explanation: </span>
             {question.explanation}
           </p>
+          <ChoiceExplanations question={question} userAnswer={userAnswer} />
         </div>
       )}
     </div>

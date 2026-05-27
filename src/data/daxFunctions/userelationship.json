@@ -58,5 +58,9 @@
   ],
   "relatedFunctions": ["RELATED", "CALCULATE", "CROSSFILTER"],
   "examWeight": "High",
-  "difficulty": "Hard"
+  "difficulty": "Hard",
+  "sqlEquivalent": {
+    "expression": "SELECT SUM(s.Amount) FROM Sales s JOIN DimDate d ON s.ShipDate = d.Date WHERE d.Year = 2024",
+    "note": "SQL lets you write any JOIN condition per query. DAX requires relationships to be pre-defined in the model; USERELATIONSHIP switches which pre-defined relationship is active for a single CALCULATE scope. There is no DAX equivalent of an ad-hoc JOIN — the relationship must exist first."
+  }
 }

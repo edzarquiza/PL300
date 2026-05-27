@@ -57,5 +57,9 @@
   ],
   "relatedFunctions": ["CALCULATE", "ALL", "SUMX", "COUNTROWS", "KEEPFILTERS"],
   "examWeight": "High",
-  "difficulty": "Medium"
+  "difficulty": "Medium",
+  "sqlEquivalent": {
+    "expression": "SELECT * FROM Sales WHERE Amount > 300",
+    "note": "FILTER returns a filtered table like a SQL subquery with WHERE. The key difference: FILTER respects the current DAX filter context by default, so it's more like a correlated subquery. Use FILTER(ALL(Table), ...) when you want SQL-style unconditional filtering that ignores context."
+  }
 }
