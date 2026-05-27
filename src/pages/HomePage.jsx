@@ -92,26 +92,27 @@ export default function HomePage() {
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-1">PL-300 Exam Simulator</h1>
           <p className="text-gray-400 text-sm">Microsoft Power BI Data Analyst · Passing score: 70%</p>
-          <div className="flex items-center justify-center gap-4 mt-2">
+          <div className="grid grid-cols-3 gap-2 mt-5">
             <button
               onClick={() => navigate('/history')}
-              className="text-xs text-blue-500 hover:text-blue-700 transition-colors"
+              className="flex flex-col items-center gap-1 px-3 py-3 rounded-xl bg-blue-50 border border-blue-100 hover:bg-blue-100 hover:border-blue-200 transition-colors"
             >
-              Exam history →
+              <span className="text-sm font-semibold text-blue-700">Exam History</span>
+              <span className="text-xs text-blue-400">Past results</span>
             </button>
-            <span className="text-gray-300 select-none">·</span>
             <button
               onClick={() => navigate('/reviewer')}
-              className="text-xs text-purple-500 hover:text-purple-700 transition-colors"
+              className="flex flex-col items-center gap-1 px-3 py-3 rounded-xl bg-purple-50 border border-purple-100 hover:bg-purple-100 hover:border-purple-200 transition-colors"
             >
-              Concept reviewer →
+              <span className="text-sm font-semibold text-purple-700">Concept Reviewer</span>
+              <span className="text-xs text-purple-400">Key concepts</span>
             </button>
-            <span className="text-gray-300 select-none">·</span>
             <button
               onClick={() => navigate('/dax')}
-              className="text-xs text-teal-500 hover:text-teal-700 transition-colors"
+              className="flex flex-col items-center gap-1 px-3 py-3 rounded-xl bg-teal-50 border border-teal-100 hover:bg-teal-100 hover:border-teal-200 transition-colors"
             >
-              DAX library →
+              <span className="text-sm font-semibold text-teal-700">DAX Library</span>
+              <span className="text-xs text-teal-400">Functions & syntax</span>
             </button>
           </div>
         </div>
