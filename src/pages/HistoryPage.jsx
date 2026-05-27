@@ -4,6 +4,7 @@ import { getExamHistory, clearHistory } from '../services/historyService'
 import { formatTime } from '../utils/examUtils'
 import { lookupQuestion } from '../utils/questionLookup'
 import { isAnswerCorrect } from '../utils/answerUtils'
+import { addToRetryQueue, removeFromRetryQueue, isInRetryQueue } from '../services/retryQueueService'
 
 export default function HistoryPage() {
   const navigate = useNavigate()
@@ -209,6 +210,26 @@ function getAnswerDetail(q, answer) {
   }
 }
 
+function RetryButton({ questionId }) {
+  const [inQueue, setInQueue] = useState(() => isInRetryQueue(questionId))
+  function toggle() {
+    if (inQueue) { removeFromRetryQueue(questionId); setInQueue(false) }
+    else         { addToRetryQueue(questionId);      setInQueue(true)  }
+  }
+  return (
+    <button
+      onClick={toggle}
+      className={`text-xs font-semibold px-2.5 py-1 rounded-lg transition-colors ${
+        inQueue
+          ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+          : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-50'
+      }`}
+    >
+      {inQueue ? '✓ Queued' : '+ Retry Later'}
+    </button>
+  )
+}
+
 function AnswerReview({ questionIds, answers }) {
   const rows = questionIds.map((id, index) => {
     const q = lookupQuestion(id)
@@ -320,6 +341,13 @@ function AnswerReview({ questionIds, answers }) {
                   )}
                 </>
               )}
+            </div>
+          )}
+
+          {/* Retry button for wrong answers */}
+          {correct === false && q && (
+            <div className="border-t border-current border-opacity-10 px-3 py-2 flex justify-end">
+              <RetryButton questionId={id} />
             </div>
           )}
         </div>

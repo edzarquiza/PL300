@@ -38,15 +38,25 @@ export default function ResultsPage() {
     })
   }
 
-  const timingData = getTimingAnalytics(questions, questionTimes)
-  const confidenceData = getConfidenceAnalytics(questions, answers, confidence)
-  const subtopicData = getSubtopicAnalytics(questions, answers, confidence)
-  const trapData = getTrapAnalytics(questions, answers, confidence)
-  const psychData = getPsychologyAnalytics(questions, answers, answerChanges)
+  let timingData = null
+  let confidenceData = { correctHighConfidence: 0, correctLowConfidence: 0, incorrectHighConfidence: 0, incorrectLowConfidence: 0 }
+  let subtopicData = []
+  let trapData = []
+  let psychData = null
+  let masteryData = []
+  let trapHistory = []
 
-  const history = getExamHistory()
-  const masteryData = getSubtopicMastery(history)
-  const trapHistory = getConceptTrapHistory(history)
+  try { timingData = getTimingAnalytics(questions, questionTimes) } catch {}
+  try { confidenceData = getConfidenceAnalytics(questions, answers, confidence) } catch {}
+  try { subtopicData = getSubtopicAnalytics(questions, answers, confidence) } catch {}
+  try { trapData = getTrapAnalytics(questions, answers, confidence) } catch {}
+  try { psychData = getPsychologyAnalytics(questions, answers, answerChanges) } catch {}
+
+  try {
+    const history = getExamHistory()
+    masteryData = getSubtopicMastery(history)
+    trapHistory = getConceptTrapHistory(history)
+  } catch {}
 
   const hasConfidenceRatings = Object.keys(confidence).length > 0
   const hasTraps = trapData.length > 0
@@ -411,6 +421,8 @@ export default function ResultsPage() {
               question={q}
               userAnswer={answers[q.id] ?? null}
               questionNumber={i + 1}
+              confidenceLevel={confidence[q.id] ?? null}
+              timeSpent={questionTimes[q.id] ?? 0}
             />
           ))}
         </div>

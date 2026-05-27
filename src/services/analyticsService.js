@@ -1,3 +1,5 @@
+import { isAnswerCorrect } from '../utils/answerUtils'
+
 const HIGH_CONFIDENCE = new Set(['confident', 'very_confident'])
 const LOW_CONFIDENCE = new Set(['very_unsure', 'unsure'])
 
@@ -17,7 +19,7 @@ export function getConfidenceAnalytics(questions, answers, confidence) {
       (!Array.isArray(answer) || answer.length > 0)
     if (!answered) continue
 
-    const correct = isAnswerCorrect(q, answer)
+    const correct = isAnswerCorrect(answer, q)
     if (!level) { unrated++; continue }
 
     if (correct) {
@@ -54,7 +56,7 @@ export function getSubtopicAnalytics(questions, answers, confidence) {
     const key = q.subtopic || 'Unknown'
     if (!map[key]) map[key] = { subtopic: key, correct: 0, total: 0, lowConfidenceCorrect: 0 }
 
-    const correct = isAnswerCorrect(q, answer)
+    const correct = isAnswerCorrect(answer, q)
     const level = confidence[q.id]
     map[key].total++
     if (correct) {
@@ -81,7 +83,7 @@ export function getTrapAnalytics(questions, answers, confidence) {
     const answered = answer !== undefined && answer !== null &&
       (!Array.isArray(answer) || answer.length > 0)
     if (!answered) continue
-    if (isAnswerCorrect(q, answer)) continue
+    if (isAnswerCorrect(answer, q)) continue
 
     const key = q.trapType
     if (!map[key]) map[key] = { trapType: key, count: 0, highConfidenceCount: 0, examples: [] }
@@ -157,7 +159,7 @@ export function getCognitiveLevelAnalytics(questions, answers) {
     const key = q.cognitiveLevel
     if (!map[key]) map[key] = { level: key, correct: 0, total: 0 }
     map[key].total++
-    if (isAnswerCorrect(q, answer)) map[key].correct++
+    if (isAnswerCorrect(answer, q)) map[key].correct++
   }
 
   const order = ['recall', 'understanding', 'application', 'analysis']
@@ -166,12 +168,3 @@ export function getCognitiveLevelAnalytics(questions, answers) {
     .sort((a, b) => order.indexOf(a.level) - order.indexOf(b.level))
 }
 
-function isAnswerCorrect(question, answer) {
-  if (question.type === 'multiple') {
-    if (!Array.isArray(answer)) return false
-    const a = [...answer].sort((x, y) => x - y)
-    const b = [...question.correctAnswers].sort((x, y) => x - y)
-    return a.length === b.length && a.every((v, i) => v === b[i])
-  }
-  return answer === question.correctAnswers[0]
-}
