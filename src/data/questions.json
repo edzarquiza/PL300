@@ -49,13 +49,13 @@
     "trapType": "DAX Function Confusion",
     "question": "You have a fact table and a dimension table connected by a one-to-many relationship. You need to retrieve a column value from the dimension table inside a calculated column on the fact table. Which function should you use?",
     "choices": [
-      "VLOOKUP",
       "RELATED",
+      "VLOOKUP",
       "RELATEDTABLE",
       "LOOKUPVALUE"
     ],
     "correctAnswers": [
-      1
+      0
     ],
     "explanation": "RELATED navigates from the many side to the one side of an active relationship and returns a single column value. LOOKUPVALUE is used when no relationship exists. VLOOKUP is an Excel function, not DAX.",
     "estimatedTimeSeconds": 60,
@@ -64,12 +64,12 @@
       "Relationships",
       "Calculated Columns"
     ],
-    "choiceExplanations": [
-      "VLOOKUP is an Excel worksheet function — it does not exist in the DAX language and cannot be used in Power BI measures or calculated columns at all.",
-      "Correct. RELATED navigates from the many side to the one side of an active relationship and returns a single column value.",
-      "RELATEDTABLE returns an entire table of related rows from the many side. Use it when you need to aggregate across multiple related rows, not when you need a single column value from the one side.",
-      "LOOKUPVALUE is used when no active relationship exists between tables — it performs a search by matching column values. Since a relationship already exists here, RELATED is the simpler and correct choice."
-    ],
+    "choiceExplanations": {
+      "0": "Correct. RELATED navigates from the many side to the one side of an active relationship and returns a single column value.",
+      "1": "VLOOKUP is an Excel worksheet function — it does not exist in the DAX language and cannot be used in Power BI measures or calculated columns at all.",
+      "2": "RELATEDTABLE returns an entire table of related rows from the many side. Use it when you need to aggregate across multiple related rows, not when you need a single column value from the one side.",
+      "3": "LOOKUPVALUE is used when no active relationship exists between tables — it performs a search by matching column values. Since a relationship already exists here, RELATED is the simpler and correct choice."
+    },
     "questionGroupId": "dax_related",
     "variantId": "full_pl300_01"
   },
@@ -234,13 +234,13 @@
     "trapType": "Import vs DirectQuery",
     "question": "A report using DirectQuery against Azure SQL Database is slow to load. What is the most likely cause?",
     "choices": [
-      "Calculated columns are not supported in DirectQuery mode",
+      "Every visual interaction sends a live query to the source database",
       "The dataset exceeds the maximum size for DirectQuery",
       "Power BI Service cannot connect to Azure SQL without a gateway",
-      "Every visual interaction sends a live query to the source database"
+      "Calculated columns are not supported in DirectQuery mode"
     ],
     "correctAnswers": [
-      3
+      0
     ],
     "explanation": "DirectQuery does not cache data — every filter change, cross-highlight, or drill action generates a new SQL query to the source. Slow database response or complex queries directly cause slow report load times.",
     "estimatedTimeSeconds": 90,
@@ -249,12 +249,12 @@
       "Performance",
       "Query Execution"
     ],
-    "choiceExplanations": [
-      "Calculated columns are supported in DirectQuery mode, though they are evaluated in-memory. Their presence is not what causes visual interactions to be slow — the live query-per-interaction model is the root cause.",
-      "DirectQuery doesn't cache data locally, so there's no dataset size limit in the traditional sense. Import mode has a size cap — not DirectQuery. Dataset size is not the cause here.",
-      "Azure SQL Database is a cloud service and connects directly from the Power BI service without a gateway. On-premises gateways are only required for sources behind a corporate firewall, not cloud databases.",
-      "Correct. Every visual interaction in DirectQuery sends a live SQL query to the source database, so slow database response or complex queries directly cause slow report performance."
-    ],
+    "choiceExplanations": {
+      "0": "Correct. Every visual interaction in DirectQuery sends a live SQL query to the source database, so slow database response or complex queries directly cause slow report performance.",
+      "1": "DirectQuery doesn't cache data locally, so there's no dataset size limit in the traditional sense. Import mode has a size cap — not DirectQuery. Dataset size is not the cause here.",
+      "2": "Azure SQL Database is a cloud service and connects directly from the Power BI service without a gateway. On-premises gateways are only required for sources behind a corporate firewall, not cloud databases.",
+      "3": "Calculated columns are supported in DirectQuery mode, though they are evaluated in-memory. Their presence is not what causes visual interactions to be slow — the live query-per-interaction model is the root cause."
+    },
     "questionGroupId": "import_vs_directquery",
     "variantId": "full_pl300_01"
   },
@@ -271,13 +271,13 @@
     "trapType": "Drill-through vs Drill-down",
     "question": "You want report users to right-click a product name in a chart and navigate to a detailed product report page, pre-filtered to that product. Which Power BI feature enables this?",
     "choices": [
-      "Bookmarks",
       "Drill-through",
+      "Bookmarks",
       "Report page tooltip",
       "Cross-filtering between visuals"
     ],
     "correctAnswers": [
-      1
+      0
     ],
     "explanation": "Drill-through lets users navigate from a summary visual to a detail page with automatic filtering applied. You configure a drill-through field on the target page; Power BI passes the selected value as a filter when navigating.",
     "estimatedTimeSeconds": 90,
@@ -286,12 +286,12 @@
       "Navigation",
       "Filtering"
     ],
-    "choiceExplanations": [
-      "Bookmarks capture and restore a report page state (filter state, visual visibility). They're used for toggling views on the same page — not for context-filtered navigation to a dedicated detail page.",
-      "Correct. Drill-through lets users right-click a data point and navigate to a detail page pre-filtered to that context.",
-      "Report page tooltips show a mini-page on hover without leaving the current page. They display contextual info as a floating overlay — they don't navigate the user to a new page.",
-      "Cross-filtering propagates a selection from one visual to other visuals on the same page. It doesn't navigate to a different report page or automatically apply a filter on a detail page."
-    ],
+    "choiceExplanations": {
+      "0": "Correct. Drill-through lets users right-click a data point and navigate to a detail page pre-filtered to that context.",
+      "1": "Bookmarks capture and restore a report page state (filter state, visual visibility). They're used for toggling views on the same page — not for context-filtered navigation to a dedicated detail page.",
+      "2": "Report page tooltips show a mini-page on hover without leaving the current page. They display contextual info as a floating overlay — they don't navigate the user to a new page.",
+      "3": "Cross-filtering propagates a selection from one visual to other visuals on the same page. It doesn't navigate to a different report page or automatically apply a filter on a detail page."
+    },
     "questionGroupId": "drill_through",
     "variantId": "full_pl300_01"
   },
@@ -419,13 +419,13 @@
     "trapType": "Row Context vs Filter Context",
     "question": "What happens when a measure is referenced inside a calculated column in DAX?",
     "choices": [
-      "The calculated column inherits the query context from the most recent report visual",
+      "A context transition occurs — the current row context is converted to an equivalent filter context",
       "The measure is evaluated without any filter or row context",
       "The measure evaluates using the row context of the calculated column directly",
-      "A context transition occurs — the current row context is converted to an equivalent filter context"
+      "The calculated column inherits the query context from the most recent report visual"
     ],
     "correctAnswers": [
-      3
+      0
     ],
     "explanation": "Referencing a measure inside a calculated column triggers a context transition. The row context (which row we are on) is automatically converted to a filter context that filters to that specific row, allowing the measure to evaluate correctly per row.",
     "estimatedTimeSeconds": 120,
@@ -434,12 +434,12 @@
       "Row Context",
       "Filter Context"
     ],
-    "choiceExplanations": [
-      "There is no concept of inheriting context from the 'most recent visual' in DAX. Each measure evaluation is isolated to the filter context established by the current row/column/slicer combination.",
-      "A measure always evaluates in some context. When referenced from a calculated column, context transition provides a filter context equivalent to that row — it's never completely context-free.",
-      "Measures cannot operate in row context directly — they need filter context. Without context transition, the measure wouldn't know which single row to evaluate for.",
-      "Correct. A context transition automatically converts the current row context into an equivalent filter context, allowing the measure to evaluate correctly per row."
-    ],
+    "choiceExplanations": {
+      "0": "Correct. A context transition automatically converts the current row context into an equivalent filter context, allowing the measure to evaluate correctly per row.",
+      "1": "A measure always evaluates in some context. When referenced from a calculated column, context transition provides a filter context equivalent to that row — it's never completely context-free.",
+      "2": "Measures cannot operate in row context directly — they need filter context. Without context transition, the measure wouldn't know which single row to evaluate for.",
+      "3": "There is no concept of inheriting context from the 'most recent visual' in DAX. Each measure evaluation is isolated to the filter context established by the current row/column/slicer combination."
+    },
     "questionGroupId": "row_vs_filter_context",
     "variantId": "full_pl300_01"
   },
@@ -456,13 +456,13 @@
     "trapType": "Inactive Relationship Activation",
     "question": "Your Sales table has two relationships to the Date table: one active (OrderDate) and one inactive (ShipDate). How do you calculate total sales by ShipDate in a DAX measure?",
     "choices": [
-      "Create a separate Sales by Ship Date table with a new relationship",
       "Use USERELATIONSHIP within CALCULATE to activate the inactive ShipDate relationship",
+      "Create a separate Sales by Ship Date table with a new relationship",
       "Create a calculated column that copies ShipDate values using RELATED",
       "Delete the OrderDate relationship and make ShipDate active"
     ],
     "correctAnswers": [
-      1
+      0
     ],
     "explanation": "USERELATIONSHIP(Sales[ShipDate], Dates[Date]) inside CALCULATE temporarily activates the inactive relationship for that measure's evaluation. This avoids changing the model structure and keeps both relationships available.",
     "estimatedTimeSeconds": 90,
@@ -471,12 +471,12 @@
       "Inactive Relationships",
       "CALCULATE"
     ],
-    "choiceExplanations": [
-      "Duplicating the sales table wastes model size and creates ongoing maintenance overhead. Any source change must be replicated in both tables. USERELATIONSHIP is the purpose-built solution for this exact scenario.",
-      "Correct. USERELATIONSHIP inside CALCULATE temporarily activates the inactive relationship for that specific measure's evaluation.",
-      "RELATED copies a column value using the active relationship — it doesn't activate an inactive relationship or affect how DAX navigates relationships during calculation.",
-      "Deleting the active OrderDate relationship would break every existing measure that relies on it. The point of keeping multiple relationships is to use each one when appropriate without restructuring the model."
-    ],
+    "choiceExplanations": {
+      "0": "Correct. USERELATIONSHIP inside CALCULATE temporarily activates the inactive relationship for that specific measure's evaluation.",
+      "1": "Duplicating the sales table wastes model size and creates ongoing maintenance overhead. Any source change must be replicated in both tables. USERELATIONSHIP is the purpose-built solution for this exact scenario.",
+      "2": "RELATED copies a column value using the active relationship — it doesn't activate an inactive relationship or affect how DAX navigates relationships during calculation.",
+      "3": "Deleting the active OrderDate relationship would break every existing measure that relies on it. The point of keeping multiple relationships is to use each one when appropriate without restructuring the model."
+    },
     "questionGroupId": "userelationship",
     "variantId": "full_pl300_01"
   },
@@ -530,13 +530,13 @@
     "trapType": "Query Folding Break",
     "question": "You connect Power BI to an on-premises SQL Server database using Power Query. To ensure transformations are executed by the database server rather than locally in Power BI, which capability must be preserved?",
     "choices": [
-      "Query diagnostics",
       "Query folding",
+      "Query diagnostics",
       "Incremental refresh",
       "Data profiling"
     ],
     "correctAnswers": [
-      1
+      0
     ],
     "explanation": "Query folding translates Power Query transformation steps into native SQL queries that run on the source database. When folding is active, the database handles filtering, sorting, and aggregation — dramatically reducing local memory usage and load times.",
     "estimatedTimeSeconds": 90,
@@ -545,12 +545,12 @@
       "Performance",
       "SQL Pushdown"
     ],
-    "choiceExplanations": [
-      "Query diagnostics records timing traces of Power Query steps to help identify bottlenecks. It's a debugging tool — not the mechanism that translates transformations into SQL queries.",
-      "Correct. Query folding translates Power Query steps into native SQL that runs on the database, reducing local processing.",
-      "Incremental refresh is a dataset configuration that refreshes only recent data partitions. It depends on query folding to work, but the mechanism that pushes SQL to the source is query folding itself.",
-      "Data profiling (column quality, distribution, profile) samples data to show quality statistics in the editor. It's a diagnostic tool — it doesn't send transformation logic to the source database."
-    ],
+    "choiceExplanations": {
+      "0": "Correct. Query folding translates Power Query steps into native SQL that runs on the database, reducing local processing.",
+      "1": "Query diagnostics records timing traces of Power Query steps to help identify bottlenecks. It's a debugging tool — not the mechanism that translates transformations into SQL queries.",
+      "2": "Incremental refresh is a dataset configuration that refreshes only recent data partitions. It depends on query folding to work, but the mechanism that pushes SQL to the source is query folding itself.",
+      "3": "Data profiling (column quality, distribution, profile) samples data to show quality statistics in the editor. It's a diagnostic tool — it doesn't send transformation logic to the source database."
+    },
     "questionGroupId": "query_folding",
     "variantId": "full_pl300_01"
   },
@@ -567,13 +567,13 @@
     "trapType": "Relationship Direction",
     "question": "You enable bidirectional cross-filtering on a relationship between the Sales fact table and the Product dimension table. What is the primary risk of this setting?",
     "choices": [
-      "The relationship becomes inactive and must be activated using USERELATIONSHIP",
       "It can create ambiguous filter propagation paths and produce unexpected results in complex models",
+      "The relationship becomes inactive and must be activated using USERELATIONSHIP",
       "The dataset cannot be published to the Power BI service with bidirectional relationships",
       "Measures referencing the Sales table will stop calculating correctly"
     ],
     "correctAnswers": [
-      1
+      0
     ],
     "explanation": "Bidirectional cross-filtering allows filters to flow in both directions across a relationship. In complex models with multiple paths between tables, this can create ambiguous or circular filter paths, leading to incorrect aggregations and unpredictable behavior.",
     "estimatedTimeSeconds": 90,
@@ -582,12 +582,12 @@
       "Relationships",
       "Model Design"
     ],
-    "choiceExplanations": [
-      "Enabling bidirectional filtering keeps the relationship active — it changes how filters flow, not whether the relationship is active. USERELATIONSHIP is for inactive relationships, not this scenario.",
-      "Correct. Bidirectional filtering can create ambiguous filter paths in complex models with multiple tables, leading to unexpected aggregation results.",
-      "Bidirectional relationships are fully supported in the Power BI service. There is no publishing restriction for models with bidirectional cross-filtering enabled.",
-      "Bidirectional filtering doesn't break measures outright. The risk is unexpected or incorrect results from ambiguous filter propagation in multi-table scenarios, not measures ceasing to work."
-    ],
+    "choiceExplanations": {
+      "0": "Correct. Bidirectional filtering can create ambiguous filter paths in complex models with multiple tables, leading to unexpected aggregation results.",
+      "1": "Enabling bidirectional filtering keeps the relationship active — it changes how filters flow, not whether the relationship is active. USERELATIONSHIP is for inactive relationships, not this scenario.",
+      "2": "Bidirectional relationships are fully supported in the Power BI service. There is no publishing restriction for models with bidirectional cross-filtering enabled.",
+      "3": "Bidirectional filtering doesn't break measures outright. The risk is unexpected or incorrect results from ambiguous filter propagation in multi-table scenarios, not measures ceasing to work."
+    },
     "questionGroupId": "bidir_relationship",
     "variantId": "full_pl300_01"
   },
@@ -604,13 +604,13 @@
     "trapType": "Calculated Column vs Measure",
     "question": "A user needs to segment customers into 'High', 'Medium', or 'Low' value tiers based on their lifetime purchase total. The tier label must be available as a slicer in reports. What should you create?",
     "choices": [
-      "A DAX measure that returns the tier label",
       "A calculated column on the Customer table using DAX",
+      "A DAX measure that returns the tier label",
       "A quick measure using the built-in wizard",
       "A report-level filter with three conditions"
     ],
     "correctAnswers": [
-      1
+      0
     ],
     "explanation": "A calculated column stores a value per row in the table, making it available as a slicer or filter. Measures evaluate dynamically and cannot be used directly as a slicer axis. The tier must be a column to enable slicing.",
     "estimatedTimeSeconds": 90,
@@ -619,12 +619,12 @@
       "Measures vs Columns",
       "Slicers"
     ],
-    "choiceExplanations": [
-      "Measures evaluate dynamically in filter context and return a single aggregated value per visual cell. They cannot be placed on a slicer axis because they don't represent a per-row attribute stored in the table.",
-      "Correct. A calculated column stores a value per row, making it available as a slicer field or filter.",
-      "Quick measures produce DAX measures via a guided wizard — not columns. Since they create measures rather than columns, they still cannot be used directly as a slicer source.",
-      "A report-level filter applies a fixed filter set by the report author. It doesn't create an interactive slicer for users, and slicers require a column field in the data model to work from."
-    ],
+    "choiceExplanations": {
+      "0": "Correct. A calculated column stores a value per row, making it available as a slicer field or filter.",
+      "1": "Measures evaluate dynamically in filter context and return a single aggregated value per visual cell. They cannot be placed on a slicer axis because they don't represent a per-row attribute stored in the table.",
+      "2": "Quick measures produce DAX measures via a guided wizard — not columns. Since they create measures rather than columns, they still cannot be used directly as a slicer source.",
+      "3": "A report-level filter applies a fixed filter set by the report author. It doesn't create an interactive slicer for users, and slicers require a column field in the data model to work from."
+    },
     "questionGroupId": "calc_col_vs_measure",
     "variantId": "full_pl300_01"
   },
@@ -715,13 +715,13 @@
     "trapType": "License Requirements",
     "question": "Your team has published reports in a workspace. You want to provide 200 business users with a clean, read-only experience without exposing workspace content or requiring them to navigate the workspace. What should you create?",
     "choices": [
-      "Export all reports to PDF and host them on SharePoint",
       "Publish a Power BI App from the workspace",
+      "Export all reports to PDF and host them on SharePoint",
       "Share each report individually via the sharing dialog",
       "Grant all 200 users Viewer access to the workspace"
     ],
     "correctAnswers": [
-      1
+      0
     ],
     "explanation": "A Power BI App packages workspace content into a curated, consumer-friendly experience. Users see only what the publisher includes, with a simplified navigation. It scales to large audiences without exposing the underlying workspace structure.",
     "estimatedTimeSeconds": 60,
@@ -730,12 +730,12 @@
       "Content Distribution",
       "Workspaces"
     ],
-    "choiceExplanations": [
-      "PDF exports are static — all interactivity, filters, and drill capabilities are lost. This isn't suitable for distributing a live, interactive reporting experience.",
-      "Correct. A Power BI App packages content into a curated, consumer-friendly experience that scales to large audiences without exposing the workspace.",
-      "Sharing reports individually doesn't scale to 200 users. Each report must be shared separately, and users see raw shared reports rather than a polished, curated app experience.",
-      "Viewer access exposes the full workspace structure — all reports, datasets, and dashboards — to every viewer. There's no curation, simplified navigation, or separation between workspace internals and consumer experience."
-    ],
+    "choiceExplanations": {
+      "0": "Correct. A Power BI App packages content into a curated, consumer-friendly experience that scales to large audiences without exposing the workspace.",
+      "1": "PDF exports are static — all interactivity, filters, and drill capabilities are lost. This isn't suitable for distributing a live, interactive reporting experience.",
+      "2": "Sharing reports individually doesn't scale to 200 users. Each report must be shared separately, and users see raw shared reports rather than a polished, curated app experience.",
+      "3": "Viewer access exposes the full workspace structure — all reports, datasets, and dashboards — to every viewer. There's no curation, simplified navigation, or separation between workspace internals and consumer experience."
+    },
     "questionGroupId": "app_distribution",
     "variantId": "full_pl300_01"
   },
@@ -752,13 +752,13 @@
     "trapType": "Import vs DirectQuery",
     "question": "A Power BI dataset uses Import mode to connect to an on-premises SQL Server database. For scheduled refresh to work from the Power BI service, what must be installed and configured?",
     "choices": [
-      "Azure Data Factory with a self-hosted integration runtime",
       "An on-premises data gateway",
+      "Azure Data Factory with a self-hosted integration runtime",
       "Power BI Report Server",
       "A virtual network data gateway"
     ],
     "correctAnswers": [
-      1
+      0
     ],
     "explanation": "The on-premises data gateway acts as a bridge between the Power BI service (in the cloud) and on-premises data sources. It must be installed on a machine with network access to the data source and registered with the Power BI service.",
     "estimatedTimeSeconds": 60,
@@ -767,12 +767,12 @@
       "Scheduled Refresh",
       "Connectivity"
     ],
-    "choiceExplanations": [
-      "Azure Data Factory orchestrates ETL pipelines in Azure. While it can move data, it's not the mechanism Power BI uses for its own scheduled dataset refresh from on-premises sources.",
-      "Correct. The on-premises data gateway bridges the Power BI service (cloud) to on-premises data sources and must be registered with the service.",
-      "Power BI Report Server is an on-premises hosting solution for Power BI reports — it's an alternative to the cloud service, not a connectivity mechanism for enabling cloud dataset refresh.",
-      "A virtual network (VNet) data gateway connects to data sources inside an Azure VNet. It's designed for cloud-to-cloud connectivity within Azure — not for bridging to on-premises servers behind a corporate firewall."
-    ],
+    "choiceExplanations": {
+      "0": "Correct. The on-premises data gateway bridges the Power BI service (cloud) to on-premises data sources and must be registered with the service.",
+      "1": "Azure Data Factory orchestrates ETL pipelines in Azure. While it can move data, it's not the mechanism Power BI uses for its own scheduled dataset refresh from on-premises sources.",
+      "2": "Power BI Report Server is an on-premises hosting solution for Power BI reports — it's an alternative to the cloud service, not a connectivity mechanism for enabling cloud dataset refresh.",
+      "3": "A virtual network (VNet) data gateway connects to data sources inside an Azure VNet. It's designed for cloud-to-cloud connectivity within Azure — not for bridging to on-premises servers behind a corporate firewall."
+    },
     "questionGroupId": "gateway_types",
     "variantId": "full_pl300_01"
   },
@@ -789,13 +789,13 @@
     "trapType": "License Requirements",
     "question": "Your organization wants to manage Power BI content through Development, Test, and Production stages with the ability to review and promote changes between stages. Which feature should you use?",
     "choices": [
-      "Power BI Embedded with environment variables",
       "Deployment pipelines",
+      "Power BI Embedded with environment variables",
       "Multiple workspaces with different permission levels",
       "Power BI Report Server with staging environments"
     ],
     "correctAnswers": [
-      1
+      0
     ],
     "explanation": "Deployment pipelines in Power BI Premium provide a structured workflow for promoting datasets, reports, and dashboards from Development to Test to Production. Each stage is a separate workspace, and you can compare and selectively deploy changes.",
     "estimatedTimeSeconds": 90,
@@ -804,12 +804,12 @@
       "ALM",
       "Premium"
     ],
-    "choiceExplanations": [
-      "Power BI Embedded is a developer platform for embedding Power BI in custom applications. It's not a content lifecycle management tool for promoting reports between development stages.",
-      "Correct. Deployment pipelines provide a structured Dev→Test→Production workflow with content comparison and selective promotion.",
-      "Multiple workspaces with permission tiers is a workable but manual approach. Without deployment pipelines, you must manually copy content and track differences between Dev/Test/Prod — there's no built-in comparison or promote workflow.",
-      "Power BI Report Server is an on-premises alternative to the Power BI cloud service — a completely different platform. It doesn't provide the cloud-based Dev→Test→Prod pipeline workflow described."
-    ],
+    "choiceExplanations": {
+      "0": "Correct. Deployment pipelines provide a structured Dev→Test→Production workflow with content comparison and selective promotion.",
+      "1": "Power BI Embedded is a developer platform for embedding Power BI in custom applications. It's not a content lifecycle management tool for promoting reports between development stages.",
+      "2": "Multiple workspaces with permission tiers is a workable but manual approach. Without deployment pipelines, you must manually copy content and track differences between Dev/Test/Prod — there's no built-in comparison or promote workflow.",
+      "3": "Power BI Report Server is an on-premises alternative to the Power BI cloud service — a completely different platform. It doesn't provide the cloud-based Dev→Test→Prod pipeline workflow described."
+    },
     "questionGroupId": "deployment_pipeline",
     "variantId": "full_pl300_01"
   },
@@ -826,13 +826,13 @@
     "trapType": "Import vs DirectQuery",
     "question": "A Sales table contains 5 years of transactional data. Only the last 90 days of data changes regularly. To minimize refresh duration and model size, what should you configure?",
     "choices": [
-      "Switch the connection from Import to DirectQuery mode",
       "Configure incremental refresh with a 5-year historical range and a 90-day refresh window",
+      "Switch the connection from Import to DirectQuery mode",
       "Schedule a full daily refresh during off-peak hours",
       "Create a separate 'Recent Sales' dataset containing only the last 90 days"
     ],
     "correctAnswers": [
-      1
+      0
     ],
     "explanation": "Incremental refresh archives older data into read-only partitions and only refreshes data within the refresh window (e.g., last 90 days). This dramatically reduces refresh duration and minimizes churn on historical data that never changes.",
     "estimatedTimeSeconds": 90,
@@ -841,12 +841,12 @@
       "Performance",
       "Partitioning"
     ],
-    "choiceExplanations": [
-      "Switching to DirectQuery avoids the refresh problem but makes every visual interaction send live database queries, trading refresh speed for slower report interactivity.",
-      "Correct. Incremental refresh archives historical data in static partitions and only refreshes the recent window, minimizing refresh time and churn.",
-      "A full daily refresh re-imports all 5 years of data every time, which is exactly the inefficiency incremental refresh eliminates — even if scheduled off-peak.",
-      "A separate 'recent' dataset introduces duplication and synchronization complexity. You'd need to maintain two datasets and combine them for historical analysis — far more work than incremental refresh."
-    ],
+    "choiceExplanations": {
+      "0": "Correct. Incremental refresh archives historical data in static partitions and only refreshes the recent window, minimizing refresh time and churn.",
+      "1": "Switching to DirectQuery avoids the refresh problem but makes every visual interaction send live database queries, trading refresh speed for slower report interactivity.",
+      "2": "A full daily refresh re-imports all 5 years of data every time, which is exactly the inefficiency incremental refresh eliminates — even if scheduled off-peak.",
+      "3": "A separate 'recent' dataset introduces duplication and synchronization complexity. You'd need to maintain two datasets and combine them for historical analysis — far more work than incremental refresh."
+    },
     "questionGroupId": "incremental_refresh",
     "variantId": "full_pl300_01"
   },
@@ -977,13 +977,13 @@
     "trapType": "DAX Function Confusion",
     "question": "You want to rank products by total sales in descending order so that the top-selling product receives rank 1. The rank must recalculate correctly when the report is filtered. Which DAX measure is correct?",
     "choices": [
-      "Rank = COUNTROWS(FILTER(Products, [Total Sales] > EARLIER([Total Sales])))",
       "Rank = RANKX(ALL(Products[ProductName]), [Total Sales], , DESC)",
+      "Rank = COUNTROWS(FILTER(Products, [Total Sales] > EARLIER([Total Sales])))",
       "Rank = RANK.EQ([Total Sales], VALUES(Products[ProductName]))",
       "Rank = TOPN(1, Products, [Total Sales], DESC)"
     ],
     "correctAnswers": [
-      1
+      0
     ],
     "explanation": "RANKX(ALL(Products[ProductName]), [Total Sales], , DESC) uses ALL() to rank across all products regardless of the current filter, then evaluates [Total Sales] for each product. Descending order puts the highest value at rank 1. RANK.EQ is an Excel function, not a DAX function.",
     "estimatedTimeSeconds": 120,
@@ -992,12 +992,12 @@
       "ALL",
       "Ranking"
     ],
-    "choiceExplanations": [
-      "COUNTROWS(FILTER(...EARLIER(...))) is a calculated column pattern for ranking — it doesn't recalculate correctly in a measure context when the report is filtered, and EARLIER() is not valid in a measure.",
-      "Correct. RANKX with ALL() ranks across all products regardless of report filters, and DESC puts the highest value at rank 1.",
-      "RANK.EQ is an Excel worksheet function — it does not exist in the DAX language and cannot be used in Power BI measures or calculated columns.",
-      "TOPN returns a table of the top N rows, not a rank position number. It's used to retrieve the top rows for further processing, not to assign rank values to each product."
-    ],
+    "choiceExplanations": {
+      "0": "Correct. RANKX with ALL() ranks across all products regardless of report filters, and DESC puts the highest value at rank 1.",
+      "1": "COUNTROWS(FILTER(...EARLIER(...))) is a calculated column pattern for ranking — it doesn't recalculate correctly in a measure context when the report is filtered, and EARLIER() is not valid in a measure.",
+      "2": "RANK.EQ is an Excel worksheet function — it does not exist in the DAX language and cannot be used in Power BI measures or calculated columns.",
+      "3": "TOPN returns a table of the top N rows, not a rank position number. It's used to retrieve the top rows for further processing, not to assign rank values to each product."
+    },
     "questionGroupId": "rankx_dax",
     "variantId": "full_pl300_01"
   },
@@ -1495,13 +1495,13 @@
     "trapType": "Power Query Transformation Order",
     "question": "You need to extract the year from a text column formatted as 'MM/DD/YYYY' strings. Which Power Query feature lets you do this by providing example outputs instead of writing M code?",
     "choices": [
-      "Conditional Column",
       "Column From Examples",
+      "Conditional Column",
       "Custom Column with Text.Start()",
       "Split Column by Delimiter"
     ],
     "correctAnswers": [
-      1
+      0
     ],
     "explanation": "Column From Examples lets you type the desired output (e.g., '2023') for a few rows and Power BI infers and generates the M transformation automatically. It is ideal when you know the desired result but not the exact M function to write.",
     "estimatedTimeSeconds": 60,
@@ -1510,12 +1510,12 @@
       "AI-Assisted Transformation",
       "Power Query"
     ],
-    "choiceExplanations": [
-      "Conditional Column creates if/else classification rules based on value conditions. It's for creating category buckets — not for extracting or parsing parts of a text string.",
-      "Correct. Column From Examples lets you provide sample outputs and Power BI infers the M transformation automatically.",
-      "Text.Start() extracts a fixed number of characters from the beginning of a string. Since the year is at the end of 'MM/DD/YYYY', Text.Start() would return the month portion, not the year.",
-      "Split Column by Delimiter splits one column into multiple columns at a fixed separator. For 'MM/DD/YYYY' split by '/', you'd get three columns (month, day, year) — not a single extracted year column."
-    ],
+    "choiceExplanations": {
+      "0": "Correct. Column From Examples lets you provide sample outputs and Power BI infers the M transformation automatically.",
+      "1": "Conditional Column creates if/else classification rules based on value conditions. It's for creating category buckets — not for extracting or parsing parts of a text string.",
+      "2": "Text.Start() extracts a fixed number of characters from the beginning of a string. Since the year is at the end of 'MM/DD/YYYY', Text.Start() would return the month portion, not the year.",
+      "3": "Split Column by Delimiter splits one column into multiple columns at a fixed separator. For 'MM/DD/YYYY' split by '/', you'd get three columns (month, day, year) — not a single extracted year column."
+    },
     "questionGroupId": "pq_extract_ai",
     "variantId": "full_pl300_01"
   },
@@ -1532,13 +1532,13 @@
     "trapType": "Power Query Transformation Order",
     "question": "You need a custom column that returns the first word from a full name stored in [FullName]. Which M expression is correct?",
     "choices": [
-      "Text.Start([FullName], 5)",
       "Text.BeforeDelimiter([FullName], \" \")",
+      "Text.Start([FullName], 5)",
       "Text.Length(Text.Split([FullName], \" \"))",
       "Text.From(List.Count([FullName]))"
     ],
     "correctAnswers": [
-      1
+      0
     ],
     "explanation": "Text.BeforeDelimiter([FullName], \" \") returns all text before the first space, which is the first word. Text.Start requires a fixed character count, not a delimiter, so it cannot reliably extract the first word across names of different lengths.",
     "estimatedTimeSeconds": 120,
@@ -1547,12 +1547,12 @@
       "Custom Column",
       "Text Functions"
     ],
-    "choiceExplanations": [
-      "Text.Start([FullName], 5) returns the first 5 characters, not the first word. 'John Smith' → 'John ' (includes a space); 'Jo Smith' → 'Jo Sm'. It doesn't stop at a word boundary.",
-      "Correct. Text.BeforeDelimiter([FullName], \" \") returns all text before the first space — reliably extracting the first word regardless of name length.",
-      "Text.Split([FullName], \" \") returns a list of words, and Text.Length() on a list returns the count of items — not the first word text. This would return a number, not a name.",
-      "[FullName] is a text value, not a list, so List.Count([FullName]) would error. Even if it worked, Text.From(List.Count(...)) would return a number converted to text — not the first word."
-    ],
+    "choiceExplanations": {
+      "0": "Correct. Text.BeforeDelimiter([FullName], \" \") returns all text before the first space — reliably extracting the first word regardless of name length.",
+      "1": "Text.Start([FullName], 5) returns the first 5 characters, not the first word. 'John Smith' → 'John ' (includes a space); 'Jo Smith' → 'Jo Sm'. It doesn't stop at a word boundary.",
+      "2": "Text.Split([FullName], \" \") returns a list of words, and Text.Length() on a list returns the count of items — not the first word text. This would return a number, not a name.",
+      "3": "[FullName] is a text value, not a list, so List.Count([FullName]) would error. Even if it worked, Text.From(List.Count(...)) would return a number converted to text — not the first word."
+    },
     "questionGroupId": "pq_text_delimiter",
     "variantId": "full_pl300_01"
   },
@@ -1680,13 +1680,13 @@
     "trapType": "Calculated Column vs Measure",
     "question": "A model has 20 measures and a business user wants a slicer to toggle each measure between Actual, YoY Growth %, and 3-Month Rolling Average. What is the most maintainable approach?",
     "choices": [
-      "Create a separate DAX measure for each combination using IF() logic based on slicer selection",
       "Use calculation groups to define the three calculation items once, applied dynamically across all measures",
+      "Create a separate DAX measure for each combination using IF() logic based on slicer selection",
       "Create 3 versions of each measure (60 total) with the calculation logic embedded in each",
       "Use report bookmarks to switch between three pre-built pages, each showing a different calculation"
     ],
     "correctAnswers": [
-      1
+      0
     ],
     "explanation": "Calculation groups let you define reusable calculation items (YoY Growth, Rolling Average, etc.) that dynamically modify any measure they are applied to. Instead of 20×3=60 measures, you have 20 base measures and one calculation group with 3 items — far easier to maintain and extend.",
     "estimatedTimeSeconds": 120,
@@ -1695,12 +1695,12 @@
       "Tabular Editor",
       "Measure Reuse"
     ],
-    "choiceExplanations": [
-      "Embedding IF() slicer logic in every measure has the same maintenance burden as 60 measures, plus it mixes calculation type selection into every measure definition rather than separating concerns.",
-      "Correct. Calculation groups define reusable calculation items once, dynamically modifying any measure — 20 measures + 1 group with 3 items instead of 60 measures.",
-      "Creating 3 variants of 20 measures (60 total) works but is a maintenance nightmare. Adding one new base measure requires creating 3 variants; changing the YoY logic requires editing 20 measures.",
-      "Bookmarks switch between pre-built visual page states. You'd still need 60 measures behind the scenes. Bookmarks are a UI navigation feature, not a calculation reuse mechanism."
-    ],
+    "choiceExplanations": {
+      "0": "Correct. Calculation groups define reusable calculation items once, dynamically modifying any measure — 20 measures + 1 group with 3 items instead of 60 measures.",
+      "1": "Embedding IF() slicer logic in every measure has the same maintenance burden as 60 measures, plus it mixes calculation type selection into every measure definition rather than separating concerns.",
+      "2": "Creating 3 variants of 20 measures (60 total) works but is a maintenance nightmare. Adding one new base measure requires creating 3 variants; changing the YoY logic requires editing 20 measures.",
+      "3": "Bookmarks switch between pre-built visual page states. You'd still need 60 measures behind the scenes. Bookmarks are a UI navigation feature, not a calculation reuse mechanism."
+    },
     "questionGroupId": "calculation_groups",
     "variantId": "full_pl300_01"
   },
@@ -1902,13 +1902,13 @@
     "trapType": "Visualization Selection",
     "question": "A sales manager wants to interactively explore which combination of product, region, and salesperson contributes most to total sales, choosing the breakdown order themselves. Which visual is best suited?",
     "choices": [
-      "Treemap",
       "Decomposition tree",
+      "Treemap",
       "Matrix visual with drill-down enabled",
       "Waterfall chart"
     ],
     "correctAnswers": [
-      1
+      0
     ],
     "explanation": "The Decomposition tree lets users expand dimensions one at a time in any sequence to explore metric drivers. Unlike matrix drill-down which follows a fixed hierarchy, the decomposition tree allows ad-hoc exploration of any available fields in any order.",
     "estimatedTimeSeconds": 90,
@@ -1917,12 +1917,12 @@
       "Root Cause Analysis",
       "AI Visuals"
     ],
-    "choiceExplanations": [
-      "A treemap shows proportional area for categories at a single level. It doesn't support interactive multi-level exploration where the user chooses the next dimension to break down.",
-      "Correct. The Decomposition tree lets users expand any dimension in any sequence for ad-hoc exploration.",
-      "A matrix with drill-down follows a fixed hierarchy defined at design time. Users cannot change the breakdown order or substitute dimensions ad hoc — the hierarchy is predetermined.",
-      "A waterfall chart shows cumulative positive and negative contributions to a running total. It's for financial bridge analysis, not multi-dimensional interactive exploration."
-    ],
+    "choiceExplanations": {
+      "0": "Correct. The Decomposition tree lets users expand any dimension in any sequence for ad-hoc exploration.",
+      "1": "A treemap shows proportional area for categories at a single level. It doesn't support interactive multi-level exploration where the user chooses the next dimension to break down.",
+      "2": "A matrix with drill-down follows a fixed hierarchy defined at design time. Users cannot change the breakdown order or substitute dimensions ad hoc — the hierarchy is predetermined.",
+      "3": "A waterfall chart shows cumulative positive and negative contributions to a running total. It's for financial bridge analysis, not multi-dimensional interactive exploration."
+    },
     "questionGroupId": "decomp_tree",
     "variantId": "full_pl300_01"
   },
@@ -2051,13 +2051,13 @@
     "trapType": "Visualization Selection",
     "question": "A business user wants to type natural language questions like 'total sales by region last year' into a Power BI report and have visuals generated automatically. Which feature enables this?",
     "choices": [
-      "Smart narratives",
       "Q&A visual",
+      "Smart narratives",
       "Auto-generated summaries",
       "Quick insights"
     ],
     "correctAnswers": [
-      1
+      0
     ],
     "explanation": "The Q&A visual lets users type natural language questions. Power BI interprets the query using the model's field names and synonyms and generates the most appropriate visual automatically. It supports self-service exploration without requiring report design skills.",
     "estimatedTimeSeconds": 60,
@@ -2066,12 +2066,12 @@
       "Natural Language",
       "Self-Service Analytics"
     ],
-    "choiceExplanations": [
-      "Smart narratives automatically generate text summaries describing notable patterns in a visual's data. They produce computer-generated text — users don't type queries into them.",
-      "Correct. The Q&A visual accepts typed natural language questions and generates the most appropriate visual automatically.",
-      "'Auto-generated summaries' is not a distinct Power BI feature. It partially describes smart narratives, which don't accept user-typed natural language questions.",
-      "Quick insights is a Power BI service feature that automatically scans a dataset and suggests visualizations. It runs automatically — users don't type questions to drive it."
-    ],
+    "choiceExplanations": {
+      "0": "Correct. The Q&A visual accepts typed natural language questions and generates the most appropriate visual automatically.",
+      "1": "Smart narratives automatically generate text summaries describing notable patterns in a visual's data. They produce computer-generated text — users don't type queries into them.",
+      "2": "'Auto-generated summaries' is not a distinct Power BI feature. It partially describes smart narratives, which don't accept user-typed natural language questions.",
+      "3": "Quick insights is a Power BI service feature that automatically scans a dataset and suggests visualizations. It runs automatically — users don't type questions to drive it."
+    },
     "questionGroupId": "qa_visual",
     "variantId": "full_pl300_01"
   },

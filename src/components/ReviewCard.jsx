@@ -2,8 +2,15 @@ import { useState } from 'react'
 import { isAnswerEmpty, isAnswerCorrect } from '../utils/answerUtils'
 import QuestionRenderer from './question-types/QuestionRenderer'
 import VisualQuestionContext from './VisualQuestionContext'
+import SampleDataTable from './SampleDataTable'
+import ResultTable from './ResultTable'
 import { addToRetryQueue, removeFromRetryQueue, isInRetryQueue } from '../services/retryQueueService'
 import { formatTime } from '../utils/examUtils'
+import { DAX_FUNCTIONS } from '../data/daxFunctions'
+
+const DAX_MAP = Object.fromEntries(
+  DAX_FUNCTIONS.map(fn => [fn.functionName.toUpperCase(), fn])
+)
 
 const TYPE_LABEL = {
   multiple:        'Multiple choice',
@@ -75,6 +82,94 @@ function MistakeAnalysis({ question, userAnswer }) {
         </p>
       )}
     </div>
+  )
+}
+
+function DaxReferencePanel({ question }) {
+  const tags = question.tags ?? []
+  const fn = tags.map(t => DAX_MAP[t.toUpperCase()]).find(Boolean)
+  if (!fn) return null
+
+  const example = fn.examples?.[0]
+
+  return (
+    <CollapseSection title={`DAX Reference: ${fn.functionName}`} defaultOpen={false}>
+      <div className="space-y-3">
+
+        {/* Syntax */}
+        <div className="bg-gray-900 rounded-lg px-3 py-2.5">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Syntax</p>
+          <pre className="text-xs text-green-400 font-mono leading-relaxed whitespace-pre-wrap break-words">
+            {fn.syntax}
+          </pre>
+        </div>
+
+        {/* Summary */}
+        <p className="text-xs text-gray-600 leading-relaxed">{fn.summary}</p>
+
+        {/* Parameters */}
+        {fn.parameters?.length > 0 && (
+          <div>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Parameters</p>
+            <div className="space-y-2">
+              {fn.parameters.map(p => (
+                <div key={p.name} className="flex items-start gap-2.5 text-xs">
+                  <code className={`flex-shrink-0 font-mono px-1.5 py-0.5 rounded text-xs ${
+                    p.required ? 'bg-blue-50 text-blue-700 border border-blue-100' : 'bg-gray-100 text-gray-500'
+                  }`}>
+                    {p.name}
+                  </code>
+                  <span className="text-gray-600 leading-snug">
+                    {p.description}
+                    {p.examNote && (
+                      <span className="block text-amber-600 mt-0.5">{p.examNote}</span>
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Example */}
+        {example && (
+          <div>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">{example.label}</p>
+            <div className="bg-gray-900 rounded-lg px-3 py-2.5 mb-2">
+              <pre className="text-xs text-amber-300 font-mono leading-relaxed whitespace-pre-wrap break-words">
+                {example.expression}
+              </pre>
+            </div>
+            {example.sampleData?.tables?.map(t => (
+              <div key={t.name} className="mb-2">
+                <SampleDataTable table={t} />
+              </div>
+            ))}
+            {example.expectedOutput && <ResultTable output={example.expectedOutput} />}
+            {example.explanation && (
+              <p className="text-xs text-gray-600 leading-relaxed mt-2 bg-gray-50 rounded-lg px-3 py-2 border border-gray-100">
+                {example.explanation}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Common traps */}
+        {fn.commonTraps?.length > 0 && (
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+            <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-2">Exam Traps</p>
+            <ul className="space-y-1.5">
+              {fn.commonTraps.map((trap, i) => (
+                <li key={i} className="flex items-start gap-2 text-xs text-amber-900">
+                  <span className="flex-shrink-0 text-amber-500 font-bold mt-0.5">!</span>
+                  <span className="leading-relaxed">{trap}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </CollapseSection>
   )
 }
 
@@ -196,6 +291,9 @@ export default function ReviewCard({ question, userAnswer, questionNumber, confi
           </div>
         </CollapseSection>
       )}
+
+      {/* Expandable: DAX Reference (syntax + params + example + traps) */}
+      <DaxReferencePanel question={question} />
 
       {/* Retry footer */}
       {!isCorrect && !isEmpty && (
