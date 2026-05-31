@@ -1,0 +1,72 @@
+{
+  "functionName": "SELECTEDVALUE",
+  "category": "Filter",
+  "syntax": "SELECTEDVALUE(<columnName>, [<alternateResult>])",
+  "parameters": [
+    {
+      "name": "columnName",
+      "required": true,
+      "type": "Column",
+      "description": "The column to inspect. If exactly one value is selected in the current filter context, that value is returned.",
+      "examNote": "The column is usually the one being sliced or filtered in the report. SELECTEDVALUE checks whether exactly one distinct value remains after all filters are applied."
+    },
+    {
+      "name": "alternateResult",
+      "required": false,
+      "type": "Scalar",
+      "description": "The value returned when no value or multiple values are selected. Defaults to BLANK() if not specified.",
+      "examNote": "Providing a fallback string like \"All Regions\" or a numeric default prevents blank titles or calculation errors when multiple items are selected."
+    }
+  ],
+  "returnType": "Same data type as columnName, or alternateResult type",
+  "summary": "SELECTEDVALUE returns the single value from a column when exactly one value is visible in the current filter context — typically when a slicer has exactly one item selected. If zero or multiple values are selected, it returns the alternateResult (or BLANK by default). It is the clean, safe replacement for VALUES()[0] patterns and is widely used for dynamic titles, conditional measures, and what-if parameters.",
+  "examples": [
+    {
+      "label": "Dynamic report title based on slicer",
+      "expression": "Report Title = \"Sales Report - \" & SELECTEDVALUE(DimRegion[Region], \"All Regions\")",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "DimRegion",
+            "columns": ["Region"],
+            "rows": [["East"], ["West"], ["North"]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "Title when East is selected",
+        "columns": ["Report Title"],
+        "rows": [["Sales Report - East"]]
+      },
+      "explanation": "When the Region slicer has only East selected, the filter context contains one value and SELECTEDVALUE returns East. If no selection or multiple selections are active, it returns the fallback All Regions."
+    },
+    {
+      "label": "Conditional measure using selected value",
+      "expression": "Target = IF(SELECTEDVALUE(DimScenario[Scenario]) = \"Optimistic\", [Revenue] * 1.2, [Revenue])",
+      "sampleData": null,
+      "expectedOutput": null,
+      "explanation": "If the Scenario slicer is set to exactly Optimistic, revenue is multiplied by 1.2. For any other selection or multiple selections, the base revenue is returned. This pattern is common in financial what-if models."
+    }
+  ],
+  "filterFlow": {
+    "steps": [
+      "All active filters are evaluated for the specified column",
+      "If exactly one distinct value passes through all filters, that value is returned",
+      "If zero values or more than one value pass through, alternateResult is returned",
+      "The alternateResult defaults to BLANK() if not specified"
+    ]
+  },
+  "iteratorFlow": null,
+  "commonTraps": [
+    "SELECTEDVALUE returns BLANK (or alternateResult) when multiple items are selected — it does NOT error. Always provide an alternateResult to avoid blank dynamic titles.",
+    "SELECTEDVALUE is equivalent to IF(HASONEVALUE(column), VALUES(column)[1][1], alternateResult) — older DAX code uses this pattern but SELECTEDVALUE is cleaner and preferred.",
+    "Cross-filters from other visuals on the page also affect the filter context — SELECTEDVALUE may return a value even if the user has not explicitly used a slicer."
+  ],
+  "relatedFunctions": ["HASONEVALUE", "VALUES", "HASONEFILTER", "FILTERS", "CALCULATE"],
+  "examWeight": "High",
+  "difficulty": "Medium",
+  "sqlEquivalent": {
+    "expression": "No direct SQL equivalent",
+    "note": "SQL has no concept of a slicer filter context. The closest analog is a parameterized query where the parameter has exactly one value. SELECTEDVALUE is a uniquely DAX/Power BI concept tied to the report's interactive filter context."
+  }
+}

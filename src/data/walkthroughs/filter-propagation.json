@@ -1,0 +1,77 @@
+{
+  "id": "filter-propagation",
+  "concept": "Filter Propagation",
+  "category": "Data Modeling",
+  "tagline": "How slicer filters travel through the data model via relationships",
+  "relatedTags": ["Relationships", "Filter Context", "Cross-filter Direction"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "How Filters Travel",
+      "icon": "➡️",
+      "body": "In a star schema, when a user selects a value in a slicer connected to a dimension table, that filter automatically flows to the fact table via the relationship — restricting which rows are visible in all measures.",
+      "keyPoint": "Filters travel from the ONE side (dimension) to the MANY side (fact) by default. This is single-direction cross-filtering."
+    },
+    {
+      "type": "table",
+      "title": "The Model — Three Tables",
+      "caption": "Star schema: DimCategory (1) → FactSales (many) ← DimProduct (1)",
+      "headers": ["Table", "Role", "Key"],
+      "rows": [
+        ["DimCategory", "Dimension (1 side)", "CategoryID"],
+        ["DimProduct", "Dimension (1 side)", "ProductID"],
+        ["FactSales", "Fact (many side)", "ProductID, CategoryID, Revenue"]
+      ]
+    },
+    {
+      "type": "table",
+      "title": "FactSales — All Rows (No Filter)",
+      "caption": "Without any slicer, all 4 rows are visible",
+      "headers": ["ProductID", "Category", "Revenue"],
+      "rows": [
+        [101, "Bikes", 900],
+        [102, "Accessories", 45],
+        [103, "Bikes", 1300],
+        [104, "Accessories", 25]
+      ]
+    },
+    {
+      "type": "filtered-table",
+      "title": "User Selects 'Bikes' in Category Slicer",
+      "caption": "Filter flows: DimCategory → FactSales via relationship",
+      "headers": ["ProductID", "Category", "Revenue"],
+      "rows": [
+        [101, "Bikes", 900],
+        [102, "Accessories", 45],
+        [103, "Bikes", 1300],
+        [104, "Accessories", 25]
+      ],
+      "highlightRows": [0, 2],
+      "dimRows": [1, 3],
+      "filterNote": "DimCategory[Category] = \"Bikes\" → propagates to FactSales[Category]"
+    },
+    {
+      "type": "result",
+      "title": "Total Revenue with 'Bikes' Filter",
+      "steps": [
+        "Slicer sets DimCategory filter: Category = 'Bikes'",
+        "Filter propagates to FactSales via the relationship",
+        "FactSales visible rows: ProductID 101 (900) and 103 (1300)",
+        "SUM(FactSales[Revenue]) = 900 + 1300"
+      ],
+      "value": "2,200",
+      "unit": "Bikes Revenue only"
+    },
+    {
+      "type": "text",
+      "title": "Bidirectional Filtering — Use With Caution",
+      "bullets": [
+        "Single-direction (default): filter flows dimension → fact only. Safest for performance and RLS.",
+        "Bidirectional: filter flows both ways. Needed for some many-to-many or disconnected table scenarios.",
+        "Bidirectional can cause RLS bypass — filters propagating unexpectedly through the fact table can expose hidden data.",
+        "Bidirectional increases query plan complexity — VertiPaq must evaluate both filter directions."
+      ],
+      "warning": "Never use bidirectional cross-filtering by default. Enable it only when explicitly needed and verify that RLS filters still work correctly after enabling it."
+    }
+  ]
+}

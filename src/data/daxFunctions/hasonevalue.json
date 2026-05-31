@@ -1,0 +1,65 @@
+{
+  "functionName": "HASONEVALUE",
+  "category": "Filter",
+  "syntax": "HASONEVALUE(<columnName>)",
+  "parameters": [
+    {
+      "name": "columnName",
+      "required": true,
+      "type": "Column",
+      "description": "The column to test. Returns TRUE if exactly one distinct value is visible in the current filter context for this column.",
+      "examNote": "HASONEVALUE checks the filter context, not user selections directly. Any filter — slicers, visual interactions, row context in calculated columns, or CALCULATE filters — that reduces a column to a single value will make HASONEVALUE return TRUE."
+    }
+  ],
+  "returnType": "Boolean (TRUE if the column has exactly one value in context, FALSE otherwise)",
+  "summary": "HASONEVALUE returns TRUE when exactly one distinct value for the specified column is visible in the current filter context. It is used as a guard condition before retrieving a single value — typically paired with VALUES() or used before SELECTEDVALUE to confirm that a safe, single-value assumption holds. It is the recommended safety check for dynamic titles, conditional calculations, and any measure that assumes a single selection.",
+  "examples": [
+    {
+      "label": "Safe dynamic title using HASONEVALUE",
+      "expression": "Page Title = IF(HASONEVALUE(DimRegion[Region]), \"Region: \" & VALUES(DimRegion[Region]), \"Multiple Regions Selected\")",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "DimRegion",
+            "columns": ["Region"],
+            "rows": [["East"], ["West"], ["North"]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "When East is selected",
+        "columns": ["Page Title"],
+        "rows": [["Region: East"]]
+      },
+      "explanation": "HASONEVALUE checks if exactly one region is in context. If true, VALUES() safely returns that single value and the title is built. If multiple regions or none are selected, the fallback message is used instead."
+    },
+    {
+      "label": "Prevent error when multiple values are in context",
+      "expression": "Selected Product Price = IF(HASONEVALUE(DimProduct[ProductID]), LOOKUPVALUE(DimProduct[Price], DimProduct[ProductID], VALUES(DimProduct[ProductID])), BLANK())",
+      "sampleData": null,
+      "expectedOutput": null,
+      "explanation": "Without HASONEVALUE, VALUES(DimProduct[ProductID]) would error if multiple products are in context. HASONEVALUE acts as a safety gate, ensuring VALUES() is only called when it will return exactly one row."
+    }
+  ],
+  "filterFlow": {
+    "steps": [
+      "All active filters are applied to the specified column",
+      "DAX counts the number of distinct values that pass through all filters",
+      "If exactly one distinct value remains, HASONEVALUE returns TRUE",
+      "If zero or two or more distinct values remain, HASONEVALUE returns FALSE"
+    ]
+  },
+  "iteratorFlow": null,
+  "commonTraps": [
+    "HASONEVALUE is equivalent to COUNTROWS(VALUES(column)) = 1. On the exam, both patterns are valid but HASONEVALUE is more readable and preferred.",
+    "SELECTEDVALUE already handles the multiple-value case internally by returning alternateResult. If you are using SELECTEDVALUE with a fallback, you do NOT need to also wrap it in HASONEVALUE.",
+    "HASONEVALUE returns TRUE when one value is in context — this includes cases where a cross-filter from another visual reduces the column to one value, even if the user has not explicitly used a slicer."
+  ],
+  "relatedFunctions": ["SELECTEDVALUE", "HASONEFILTER", "VALUES", "COUNTROWS", "IF"],
+  "examWeight": "Medium",
+  "difficulty": "Medium",
+  "sqlEquivalent": {
+    "expression": "No direct SQL equivalent",
+    "note": "SQL has no concept of an interactive filter context. The closest analog is checking whether a parameterized filter produces exactly one row: SELECT COUNT(DISTINCT Region) FROM DimRegion WHERE [filter] = 1. HASONEVALUE is a uniquely DAX concept tied to Power BI's dynamic filter context."
+  }
+}

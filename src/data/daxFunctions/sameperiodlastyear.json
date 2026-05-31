@@ -1,0 +1,66 @@
+{
+  "functionName": "SAMEPERIODLASTYEAR",
+  "category": "Time Intelligence",
+  "syntax": "SAMEPERIODLASTYEAR(<dates>)",
+  "parameters": [
+    {
+      "name": "dates",
+      "required": true,
+      "type": "Date column",
+      "description": "A column of dates from a marked date table that represents the current period to shift back one year.",
+      "examNote": "Must be from a date table marked as a date table. The table must be contiguous with no date gaps, otherwise the shifted period may not align correctly."
+    }
+  ],
+  "returnType": "Table (a single-column table of dates corresponding to the same period one year prior)",
+  "summary": "SAMEPERIODLASTYEAR returns a table of dates representing the equivalent period exactly one year ago. It is used inside CALCULATE to create prior-year comparison measures such as Last Year Sales or Year-over-Year growth. Like all time intelligence functions, it requires a properly marked, continuous date table and is always used as a CALCULATE filter argument.",
+  "examples": [
+    {
+      "label": "Prior year sales comparison",
+      "expression": "Sales LY = CALCULATE(SUM(Sales[Amount]), SAMEPERIODLASTYEAR(DimDate[Date]))",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Quarterly Comparison",
+            "columns": ["Period", "Current Year", "Last Year"],
+            "rows": [["Q1 2024", 1200, 1000], ["Q2 2024", 1500, 1300], ["Q3 2024", 900, 950]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "Q1 2024 Last Year",
+        "columns": ["Sales LY"],
+        "rows": [[1000]]
+      },
+      "explanation": "For Q1 2024 (January–March 2024), SAMEPERIODLASTYEAR returns January–March 2023. CALCULATE then sums Sales for that prior-year period, returning 1000."
+    },
+    {
+      "label": "Year-over-year growth percentage",
+      "expression": "YoY Growth % = DIVIDE([Total Sales] - [Sales LY], [Sales LY], 0)",
+      "sampleData": null,
+      "expectedOutput": null,
+      "explanation": "By subtracting last year's sales from current and dividing by last year, you get the percentage change. DIVIDE is used here to safely handle cases where [Sales LY] is zero or blank."
+    }
+  ],
+  "filterFlow": {
+    "steps": [
+      "Current filter context has a date range (e.g., March 2024)",
+      "SAMEPERIODLASTYEAR shifts every date in that range back exactly 12 months",
+      "The resulting date table covers March 2023",
+      "CALCULATE replaces the current date filter with this prior-year date set",
+      "The expression is evaluated for the prior-year period"
+    ]
+  },
+  "iteratorFlow": null,
+  "commonTraps": [
+    "SAMEPERIODLASTYEAR requires a contiguous, gap-free date table. If dates are missing, the shifted period may not map correctly and results become unreliable.",
+    "SAMEPERIODLASTYEAR is a table function used inside CALCULATE. It cannot be used standalone as a measure.",
+    "For shifting periods other than exactly one year (e.g., 3 months or 2 years), use DATEADD instead — SAMEPERIODLASTYEAR is fixed at exactly -1 year."
+  ],
+  "relatedFunctions": ["DATEADD", "TOTALYTD", "DATESYTD", "PARALLELPERIOD", "PREVIOUSYEAR", "CALCULATE"],
+  "examWeight": "High",
+  "difficulty": "Medium",
+  "sqlEquivalent": {
+    "expression": "WHERE Date BETWEEN DATEADD(year, -1, PeriodStart) AND DATEADD(year, -1, PeriodEnd)",
+    "note": "SQL achieves this by manually offsetting the WHERE clause date boundaries by one year. SAMEPERIODLASTYEAR automatically computes the prior-year equivalent of whatever period is in the current filter context, eliminating hardcoded date boundaries."
+  }
+}

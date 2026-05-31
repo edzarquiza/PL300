@@ -1,0 +1,69 @@
+{
+  "functionName": "COUNTROWS",
+  "category": "Aggregation",
+  "syntax": "COUNTROWS([<table>])",
+  "parameters": [
+    {
+      "name": "table",
+      "required": false,
+      "type": "Table",
+      "description": "The table whose rows are counted. If omitted, counts rows of the table in the current row context (used inside iterators).",
+      "examNote": "COUNTROWS counts ALL rows in the table, including rows where every column is blank. This differs from COUNT(Table[Column]), which ignores blank values in that specific column."
+    }
+  ],
+  "returnType": "Integer (number of rows in the table)",
+  "summary": "COUNTROWS returns the number of rows in a table or a filtered table expression. It is the standard way to count transactions, orders, customers, or any entity that corresponds to a row. Because it counts rows rather than column values, it counts even rows where column values are blank — making it more reliable than COUNT() for row-level counting.",
+  "examples": [
+    {
+      "label": "Count total orders",
+      "expression": "Total Orders = COUNTROWS(Sales)",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Sales",
+            "columns": ["OrderID", "Region", "Amount"],
+            "rows": [["O1", "East", 400], ["O2", "West", null], ["O3", "East", 200], ["O4", "North", 150]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "Total Orders",
+        "columns": ["Total Orders"],
+        "rows": [[4]]
+      },
+      "explanation": "All 4 rows are counted regardless of whether Amount is blank. ORDER O2 has a null Amount, but COUNTROWS still counts it because the row itself exists."
+    },
+    {
+      "label": "Count filtered rows with CALCULATE",
+      "expression": "East Orders = CALCULATE(COUNTROWS(Sales), Sales[Region] = \"East\")",
+      "sampleData": null,
+      "expectedOutput": {
+        "label": "East Orders",
+        "columns": ["East Orders"],
+        "rows": [[2]]
+      },
+      "explanation": "CALCULATE filters the Sales table to Region = East before COUNTROWS runs. Only rows O1 and O3 remain, so the result is 2."
+    }
+  ],
+  "filterFlow": {
+    "steps": [
+      "Current filter context is active (e.g., slicer on Region = East)",
+      "COUNTROWS receives the filtered version of the table based on that context",
+      "Every row of the filtered table is counted, including rows with blank column values",
+      "The integer count is returned as the result"
+    ]
+  },
+  "iteratorFlow": null,
+  "commonTraps": [
+    "COUNTROWS(Table) counts ALL rows including those with blank values. COUNT(Table[Column]) ignores blanks in that column — they are NOT always equivalent.",
+    "Passing a column reference to COUNTROWS causes an error. COUNTROWS takes a TABLE, not a column. Use COUNT() or COUNTA() for columns.",
+    "COUNTROWS wrapped in CALCULATE respects the filter context set by slicers and visuals — without CALCULATE, it only uses the natural row context."
+  ],
+  "relatedFunctions": ["COUNT", "COUNTA", "COUNTBLANK", "DISTINCTCOUNT", "FILTER"],
+  "examWeight": "High",
+  "difficulty": "Easy",
+  "sqlEquivalent": {
+    "expression": "SELECT COUNT(*) FROM Sales",
+    "note": "SQL COUNT(*) counts all rows regardless of nulls — equivalent to COUNTROWS. SQL COUNT(column) ignores nulls — equivalent to DAX COUNT(Table[Column]). This distinction is a common exam trap."
+  }
+}

@@ -36,7 +36,20 @@
       "Bash(node scripts/addChoiceExplanations.js)",
       "Bash(node --input-type=commonjs)",
       "Bash(node --input-type=commonjs -e \"const q = require\\('./src/data/questions.json'\\); const ids = q.map\\(x=>x.id\\).sort\\(\\(a,b\\)=>b-a\\); console.log\\('Max ID:', ids[0], '| Total:', q.length\\);\")",
-      "Bash(node scripts/addNewQuestions.cjs)"
+      "Bash(node scripts/addNewQuestions.cjs)",
+      "Bash(timeout 30)",
+      "Bash(node scripts/add-exp-batch1b.cjs)",
+      "Bash(node -e \"const q = require\\('./src/data/questions.json'\\); const singles = q.filter\\(x=>x.type==='single'\\); const withExp = singles.filter\\(x=>x.choiceExplanations\\); const diff = {}; q.forEach\\(x=>{diff[x.difficulty]=\\(diff[x.difficulty]||0\\)+1}\\); const dom = {}; q.forEach\\(x=>{dom[x.domain]=\\(dom[x.domain]||0\\)+1}\\); console.log\\('Total questions:', q.length\\); console.log\\('Singles:', singles.length, 'with choiceExplanations:', withExp.length\\); console.log\\('Difficulty:', diff\\); console.log\\('Domains:', dom\\);\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const files=['security-governance.json','dax-power-query.json','data-modeling.json','visualization.json','power-query.json','report-design.json','exam-strategy.json']; files.forEach\\(f=>{try{const d=JSON.parse\\(fs.readFileSync\\('./src/data/reviewers/'+f,'utf8'\\)\\); console.log\\(f, d.length\\)}catch\\(e\\){console.log\\(f,'ERROR',e.message\\)}}\\);\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); try{const d=JSON.parse\\(fs.readFileSync\\('./src/data/caseStudies.json','utf8'\\)\\); console.log\\('Case studies:', d.length\\)}catch\\(e\\){console.log\\('ERROR',e.message\\)}\")",
+      "Bash(node scripts/add-hard-questions.cjs)",
+      "Bash(node scripts/finalize-all.cjs)",
+      "Bash(curl -s http://localhost:5199)",
+      "Bash(npx playwright *)",
+      "Bash(python -m playwright --version)",
+      "Bash(node scripts/verify.mjs)",
+      "Bash(npm install *)",
+      "Bash(node scripts/inspect.mjs)"
     ]
   }
 }

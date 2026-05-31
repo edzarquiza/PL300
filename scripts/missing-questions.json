@@ -1,0 +1,1332 @@
+[
+  {
+    "id": 100,
+    "domain": "Model the data",
+    "question": "Which DAX expression correctly returns the total sales for the same date range one year earlier than the current visual selection?",
+    "choices": [
+      "CALCULATE(SUM(Sales[Amount]), DATEADD(DimDate[Date], 1, YEAR))",
+      "CALCULATE(SUM(Sales[Amount]), LASTDATE(DimDate[Date]) - 365)",
+      "CALCULATE(SUM(Sales[Amount]), PREVIOUSYEAR(DimDate[Date]))",
+      "CALCULATE(SUM(Sales[Amount]), DATEADD(DimDate[Date], -1, YEAR))"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 101,
+    "domain": "Model the data",
+    "question": "A measure uses SELECTEDVALUE(Products[Category], \"All Categories\"). No Category slicer exists on the report page. What does the measure return?",
+    "choices": [
+      "The first Category value alphabetically",
+      "An error — SELECTEDVALUE requires a slicer to function",
+      "\"All Categories\" — the alternate result is returned when more than one value is visible",
+      "BLANK()"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 102,
+    "domain": "Model the data",
+    "question": "A calculated column Category = RELATED(Products[Category]) is added to the Sales fact table. When is this column's values computed?",
+    "choices": [
+      "When the report page is first opened by a user",
+      "Only when the column is used inside a DAX measure",
+      "During data refresh — the values are computed and stored in the model",
+      "Each time a visual queries the Sales table"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 103,
+    "domain": "Model the data",
+    "question": "A Sales table contains Qty and UnitPrice columns. You need the average revenue per transaction — where revenue is Qty × UnitPrice for each row. Which measure is correct?",
+    "choices": [
+      "AVERAGE(Sales[UnitPrice]) * AVERAGE(Sales[Qty])",
+      "AVERAGEX(Sales, Sales[Qty] * Sales[UnitPrice])",
+      "AVERAGE(Sales[Qty] * Sales[UnitPrice])",
+      "DIVIDE(SUM(Sales[Qty] * Sales[UnitPrice]), COUNT(Sales[Qty]))"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 104,
+    "domain": "Model the data",
+    "question": "A measure is defined as: East Sales = CALCULATE(SUM(Sales[Amount]), Sales[Region] = \"East\"). A report slicer is currently set to Region = \"West\". What value does this measure return?",
+    "choices": [
+      "Sales for West only — the slicer filter takes precedence over CALCULATE",
+      "BLANK() — conflicting filters on the same column return an empty result",
+      "Sales for both East and West combined",
+      "Sales for East only — CALCULATE's filter argument overrides the slicer's Region filter"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 105,
+    "domain": "Visualize and analyze data",
+    "question": "A business analyst wants to display how total monthly revenue has changed across the last 18 months to help executives identify seasonal patterns and growth trends. Which visual is most appropriate?",
+    "choices": [
+      "Clustered bar chart",
+      "Pie chart",
+      "Treemap",
+      "Line chart"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 106,
+    "domain": "Visualize and analyze data",
+    "question": "A regional manager wants to compare total quarterly sales across five product categories side by side for the current quarter. All five categories should be equally prominent. Which visual is most appropriate?",
+    "choices": [
+      "Clustered bar chart",
+      "Funnel chart",
+      "Line chart",
+      "KPI visual"
+    ],
+    "correctAnswers": [
+      0
+    ]
+  },
+  {
+    "id": 107,
+    "domain": "Visualize and analyze data",
+    "question": "A data analyst wants to determine whether marketing spend and revenue are correlated across 60 sales territories. Each territory should appear as a data point plotted against both values. Which visual is most appropriate?",
+    "choices": [
+      "Donut chart",
+      "Line chart",
+      "Clustered bar chart",
+      "Scatter chart"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 108,
+    "domain": "Visualize and analyze data",
+    "question": "A finance team needs a report showing total revenue organized by product category (rows) and fiscal quarter (columns), with subtotals per category and a grand total row. Which visual supports this layout natively?",
+    "choices": [
+      "Matrix visual",
+      "Stacked bar chart",
+      "Clustered bar chart",
+      "Table visual"
+    ],
+    "correctAnswers": [
+      0
+    ]
+  },
+  {
+    "id": 109,
+    "domain": "Visualize and analyze data",
+    "question": "A sales team tracks deal counts through the stages: Lead → Qualified → Proposal → Negotiation → Closed Won. They want to clearly show how many deals drop off between stages. Which visual best represents this sequential attrition?",
+    "choices": [
+      "Clustered bar chart",
+      "Waterfall chart",
+      "Line chart",
+      "Funnel chart"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 110,
+    "domain": "Visualize and analyze data",
+    "question": "An executive dashboard needs a visual showing current month revenue (£820K), the target revenue (£1M), and a directional indicator showing whether performance is trending up or down compared to last month — all in a single compact visual. Which is most appropriate?",
+    "choices": [
+      "Card visual",
+      "Gauge visual",
+      "Matrix visual",
+      "KPI visual"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 111,
+    "domain": "Visualize and analyze data",
+    "question": "A dashboard must display the total number of active customers this year (42,831) as a single large, prominent number. No comparison or trend is needed — just the value itself. Which visual is most appropriate?",
+    "choices": [
+      "Line chart",
+      "Card visual",
+      "Gauge visual",
+      "KPI visual"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 112,
+    "domain": "Visualize and analyze data",
+    "question": "A product manager wants to show the relative revenue contribution of 12 product categories simultaneously, where larger revenue categories appear as larger visual blocks. Hierarchy and proportional area are important. Which visual is most appropriate?",
+    "choices": [
+      "Clustered bar chart",
+      "Treemap",
+      "Pie chart",
+      "Donut chart"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 113,
+    "domain": "Prepare the data",
+    "question": "A company has a Customers table and an Orders table in separate data sources. Each order has a CustomerID. The analyst needs a single result that includes all customer records plus any matching order data. Customers with no orders must still appear. Which Power Query operation is correct?",
+    "choices": [
+      "Merge Queries with a Left Outer join",
+      "Reference Query — creates a pointer to an existing query",
+      "Append Queries — combines both tables vertically",
+      "Merge Queries with an Inner join"
+    ],
+    "correctAnswers": [
+      0
+    ]
+  },
+  {
+    "id": 114,
+    "domain": "Prepare the data",
+    "question": "A developer needs a query that returns only sales transactions where a matching product record exists in the Products table. Transactions with no matching product must be excluded from the result. Which Merge join type achieves this?",
+    "choices": [
+      "Right Outer — keeps all Products rows",
+      "Full Outer — keeps all rows from both tables",
+      "Left Outer — keeps all Sales rows including those with no matching product",
+      "Inner join — returns only rows where a match exists in both tables"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 115,
+    "domain": "Prepare the data",
+    "question": "A sales dataset has individual transaction rows: TransactionID, Region, Product, Amount. A report needs one row per Region showing the total Amount sold in that region. Which Power Query operation creates this summary?",
+    "choices": [
+      "Merge Queries — joins two tables on a key",
+      "Group By — aggregates rows by a grouping column",
+      "Unpivot columns — converts wide format to tall format",
+      "Pivot columns — reshapes column values into new columns"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 116,
+    "domain": "Prepare the data",
+    "question": "A dataset has one row per sales order. A manager needs to see how many orders each sales representative has closed in the current year. Which Power Query operation produces this summary?",
+    "choices": [
+      "Duplicate Query — creates a copy of the orders query",
+      "Group By with a Count Rows aggregation",
+      "Pivot on the sales rep column",
+      "Merge Queries — joins the orders table to the reps table"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 117,
+    "domain": "Model the data",
+    "question": "A developer needs a measure that counts the number of sales transactions where the individual transaction Amount exceeds $500. Which DAX expression is correct?",
+    "choices": [
+      "CALCULATE(COUNT(Sales[Amount]), Sales[Amount] > 500)",
+      "SUM(FILTER(Sales, Sales[Amount] > 500))",
+      "CALCULATE(COUNTROWS(Sales), ALL(Sales), Sales[Amount] > 500)",
+      "COUNTROWS(FILTER(Sales, Sales[Amount] > 500))"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 118,
+    "domain": "Model the data",
+    "question": "A developer needs a measure that returns distinct years visible in the current filter context, while ensuring that unmatched foreign key values — which would produce a blank row in the relationship — are also included. Which function correctly returns this set?",
+    "choices": [
+      "VALUES(DimDate[Year]) — returns distinct visible values including the blank row for unmatched keys",
+      "DISTINCT(DimDate[Year]) — excludes blank rows from unmatched relationship keys",
+      "REMOVEFILTERS(DimDate[Year]) — removes the Year filter rather than returning visible values",
+      "ALL(DimDate[Year]) — removes all active filters, returning all years regardless of selection"
+    ],
+    "correctAnswers": [
+      0
+    ]
+  },
+  {
+    "id": 119,
+    "domain": "Model the data",
+    "question": "A measure needs to return the number of products visible in the current filter context. The Products table has a ProductID column. Which DAX expression is the most appropriate?",
+    "choices": [
+      "COUNT(Products[ProductID])",
+      "SUM(Products[ProductID])",
+      "COUNTROWS(Products)",
+      "SUMX(Products, 1)"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 120,
+    "domain": "Model the data",
+    "question": "A Sales table has a DiscountPct column containing the discount percentage applied to each transaction. A measure should return the average discount percentage across all visible transactions. Which expression is most appropriate?",
+    "choices": [
+      "AVERAGE(Sales[DiscountPct])",
+      "DIVIDE(SUM(Sales[DiscountPct]), COUNTROWS(Sales))",
+      "AVERAGEX(Sales, Sales[DiscountPct])",
+      "SUM(Sales[DiscountPct]) / COUNT(Sales[DiscountPct])"
+    ],
+    "correctAnswers": [
+      0
+    ]
+  },
+  {
+    "id": 121,
+    "domain": "Model the data",
+    "question": "A Sales calculated column needs to retrieve the Manager name for each sale. The ManagerID exists in Sales, and the Managers table has ManagerID and Name columns. However, no relationship exists between Sales and Managers in the model. Which function retrieves the Name per row?",
+    "choices": [
+      "RELATED(Managers[Name]) — requires an active relationship between the tables",
+      "LOOKUPVALUE(Managers[Name], Managers[ManagerID], Sales[ManagerID])",
+      "RELATEDTABLE(Managers) — returns a table, not a scalar value",
+      "VALUES(Managers[Name])"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 122,
+    "domain": "Model the data",
+    "question": "A company wants a measure that shows cumulative total sales from January 1 of the current year through the last date visible in the report — updating automatically when a month slicer changes. Which DAX function most concisely implements this?",
+    "choices": [
+      "PREVIOUSYEAR(DimDate[Date]) — returns the full prior calendar year",
+      "DATEADD(DimDate[Date], -1, YEAR) — shifts dates backward, does not accumulate",
+      "SAMEPERIODLASTYEAR(DimDate[Date]) — returns the equivalent prior-year period",
+      "TOTALYTD(SUM(Sales[Amount]), DimDate[Date])"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 123,
+    "domain": "Model the data",
+    "question": "A Power BI developer needs to create a disconnected 'What-If' scenario table containing three rows: Best Case, Base Case, Worst Case. The values do not exist in any data source — they are defined entirely within the model. Which feature creates this table?",
+    "choices": [
+      "Power Query duplicate query — duplicates an existing query, still requires a source",
+      "A DAX calculated table using DATATABLE() or UNION(ROW(),...)",
+      "Power Query reference query — requires an existing source query to reference",
+      "A direct import from a data source"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 124,
+    "domain": "Model the data",
+    "question": "A retail model has Products and Promotions tables. Each product can belong to multiple promotions, and each promotion can cover multiple products. The relationship also stores a DiscountPct specific to each product-promotion pair. How should this be modeled?",
+    "choices": [
+      "Add a PromotionID column to the Products table with comma-separated values",
+      "A direct many-to-many relationship between Products and Promotions",
+      "Add a DiscountPct column to the Products table",
+      "A ProductPromotion bridge table with ProductID, PromotionID, and DiscountPct, joined one-to-many to both dimension tables"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 125,
+    "domain": "Model the data",
+    "question": "A Sales table already contains a pre-calculated Revenue column representing each transaction's total revenue. A measure is needed to sum all revenues for the current filter context. Which expression is most appropriate?",
+    "choices": [
+      "CALCULATE(SUM(Sales[Revenue])) — adds CALCULATE overhead without any filter modification",
+      "SUM(Sales[Revenue])",
+      "AVERAGEX(Sales, Sales[Revenue])",
+      "SUMX(Sales, Sales[Revenue]) — iterates each row unnecessarily when the column already exists"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 126,
+    "domain": "Model the data",
+    "question": "A developer cannot modify Power Query transformations. A new classification field is needed in the Products table: 'Premium' if UnitPrice > 200, otherwise 'Standard'. This field must be available as a slicer and used in row-level security filters. Which implementation is correct?",
+    "choices": [
+      "A DAX calculated column: Tier = IF(Products[UnitPrice] > 200, \"Premium\", \"Standard\")",
+      "A DAX calculated table filtering Products where UnitPrice > 200",
+      "A measure that dynamically classifies products using FILTER()",
+      "A DAX measure: Tier = IF(SELECTEDVALUE(Products[UnitPrice]) > 200, \"Premium\", \"Standard\")"
+    ],
+    "correctAnswers": [
+      0
+    ]
+  },
+  {
+    "id": 127,
+    "domain": "Manage and secure Power BI",
+    "question": "A company's Power BI reports use data from an Azure SQL database that is updated nightly at 2:00 AM. Business users must see data from the previous day when they open their reports at 8:00 AM. What should the Power BI administrator configure?",
+    "choices": [
+      "Real-time streaming — used for live event and sensor data ingestion",
+      "Incremental refresh — optimizes large table refreshes but does not automate the schedule",
+      "Scheduled refresh — automates data refresh on a defined time schedule",
+      "DirectQuery mode — provides live data but adds latency to every report interaction"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 128,
+    "domain": "Manage and secure Power BI",
+    "question": "A Power BI dataset connects to an on-premises SQL Server database. The dataset publishes successfully to the Power BI Service, but scheduled refresh keeps failing with a connectivity error. What is the most likely missing component?",
+    "choices": [
+      "The SQL Server credentials must be re-entered in the dataset settings",
+      "The refresh frequency must be increased",
+      "The dataset must be moved to a Premium capacity workspace",
+      "An on-premises data gateway must be installed and configured"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 129,
+    "domain": "Model the data",
+    "question": "A developer uses CALCULATE(SUM(Sales[Amount]), ...) and needs to provide a date range that includes every date from January 1 of the current year through the last date in the current filter context. Which DAX function returns this specific date range as a table?",
+    "choices": [
+      "PREVIOUSYEAR(DimDate[Date]) — returns all dates of the previous full calendar year",
+      "DATEADD(DimDate[Date], -1, YEAR) — shifts dates backward by a year interval",
+      "DATESYTD(DimDate[Date])",
+      "SAMEPERIODLASTYEAR(DimDate[Date]) — returns the same period from the prior year"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 130,
+    "domain": "Manage and secure Power BI",
+    "question": "A data analyst needs to publish new reports to a Power BI workspace, edit existing reports and datasets, and create dashboards — but should NOT be able to manage workspace membership or update the workspace app. Which workspace role is most appropriate?",
+    "choices": [
+      "Admin — full control including workspace settings and member management",
+      "Viewer — read-only access, cannot publish or edit content",
+      "Contributor — can publish, edit content, and create dashboards, but cannot manage members or update the app",
+      "Member — can manage the workspace app and update workspace members"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 131,
+    "domain": "Manage and secure Power BI",
+    "question": "A Power BI developer has published reports to a workspace. 300 users across the organization need read-only access to the reports. These users should not see the workspace itself, other datasets, or development-in-progress items. What is the best distribution method?",
+    "choices": [
+      "Share individual report URLs with each user",
+      "Publish the workspace as a Power BI app and assign users to the app audience",
+      "Add all 300 users as Viewers in the workspace",
+      "Export reports to PDF and distribute via email"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 132,
+    "domain": "Manage and secure Power BI",
+    "question": "A data governance team wants to mark a specific shared semantic model as the officially reviewed and approved data source for the entire organization — distinguishing it from department-level or individual datasets. Which Power BI feature achieves the highest level of this trust designation?",
+    "choices": [
+      "Promote the dataset — marks it as high quality but is self-service, not governed",
+      "Certify the dataset — the highest endorsement level, requires organizational authority and indicates official quality review",
+      "Workspace roles — control who can access and edit the model, not its endorsement status",
+      "Sensitivity label — classifies data confidentiality level, not data quality"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 133,
+    "domain": "Model the data",
+    "question": "A report has a product category slicer. A card visual should display the selected category name when exactly one category is chosen, or show 'All Categories' when multiple are selected. Which DAX expression implements this?",
+    "choices": [
+      "VALUES(Products[Category]) — returns a table, not a scalar string",
+      "SELECTEDVALUE(Products[Category], \"All Categories\")",
+      "DISTINCT(Products[Category]) — returns a table of distinct values, not a single text value",
+      "HASONEVALUE(Products[Category]) — returns a Boolean, not the category name"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 134,
+    "domain": "Model the data",
+    "question": "A developer creates a disconnected category slicer using a calculated table of distinct product category names. Unmatched foreign key values exist in the model, which would cause VALUES() to include a blank entry in the slicer. Which function should be used to exclude the blank?",
+    "choices": [
+      "DISTINCT(Products[Category])",
+      "ALL(Products[Category]) — removes filters rather than returning a deduplicated list",
+      "SELECTEDVALUE(Products[Category]) — returns a scalar, not a table suitable for a slicer",
+      "VALUES(Products[Category]) — includes a blank row for unmatched foreign keys, which would appear in the slicer"
+    ],
+    "correctAnswers": [
+      0
+    ]
+  },
+  {
+    "id": 135,
+    "domain": "Model the data",
+    "question": "A calculated column is being added to the Customers dimension table. Each customer row should show how many orders that customer has placed (from the Orders fact table). The relationship is one-to-many from Customers to Orders. Which function retrieves the related Order rows for each Customer?",
+    "choices": [
+      "LOOKUPVALUE(Orders[CustomerID], Customers[CustomerID]) — returns a single value, not all related rows",
+      "VALUES(Orders[OrderID]) — returns all visible order IDs, not filtered to the current customer",
+      "COUNTROWS(RELATEDTABLE(Orders))",
+      "RELATED(Orders[OrderID]) — traverses from many-to-one, not from one-to-many"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 136,
+    "domain": "Model the data",
+    "question": "A CFO wants a measure showing the complete prior calendar year's total sales (January through December of last year), regardless of what period is currently selected in the report. Which DAX time intelligence function returns all dates of the previous full calendar year?",
+    "choices": [
+      "SAMEPERIODLASTYEAR(DimDate[Date]) — returns the same relative period from last year, not the full year",
+      "DATEADD(DimDate[Date], -1, YEAR) — shifts the current selection back by one year, not the full prior year",
+      "DATESYTD(DimDate[Date]) — returns year-to-date for the current year",
+      "PREVIOUSYEAR(DimDate[Date])"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 137,
+    "domain": "Model the data",
+    "question": "A developer needs a 'Sales Prior Year' measure. When the visual shows March 2024 data, the measure should return March 2023 sales. When the visual shows Q3 2024, it should return Q3 2023. Which function most explicitly and concisely expresses this same-period prior-year shift?",
+    "choices": [
+      "PREVIOUSYEAR(DimDate[Date]) — returns the entire prior calendar year, not just the equivalent period",
+      "SAMEPERIODLASTYEAR(DimDate[Date])",
+      "DATESYTD(DimDate[Date]) — returns the year-to-date date range",
+      "TOTALYTD(SUM(Sales[Amount]), DimDate[Date]) — computes year-to-date cumulative total"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 138,
+    "domain": "Visualize and analyze data",
+    "question": "An executive dashboard needs to show the revenue contribution of three business units — North (45%), South (30%), and Central (25%) — as proportions of the whole. The stakeholder specifically wants to see how each unit's share relates to 100%. Which visual is most appropriate?",
+    "choices": [
+      "Scatter chart — plots two numeric measures for correlation, not proportions of a whole",
+      "Clustered bar chart — compares absolute values between categories but does not naturally show part-to-whole proportions",
+      "Line chart — shows trends over time, not proportional distribution",
+      "Pie chart"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 139,
+    "domain": "Visualize and analyze data",
+    "question": "An audit team needs a Power BI visual showing individual transaction records with columns: Date, Customer, Product, Quantity, Unit Price, and Total Amount. Users need to sort any column and filter inline. Which visual is most appropriate?",
+    "choices": [
+      "Clustered bar chart — aggregates and visualizes, doesn't display detailed row-level records",
+      "Card visual — displays a single summary number, not multiple columns of row data",
+      "Matrix visual — supports row and column groupings with subtotals, but is structured for aggregated cross-tabular analysis, not raw row-level detail",
+      "Table visual"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 140,
+    "domain": "Prepare the data",
+    "question": "A Power Query solution has a 'Sales Cleaned' query with 12 shared transformation steps. Two downstream queries — 'Sales by Region' and 'Sales by Product' — both need to build from this cleaned base with different final steps. Which approach avoids duplicating the 12 shared steps?",
+    "choices": [
+      "Merge Queries — joins two queries on a key, not for creating a shared transformation base",
+      "Append Queries — combines queries vertically, not for building dependent transformation chains",
+      "Duplicate Query — creates an independent copy; changes to 'Sales Cleaned' do not propagate to duplicates",
+      "Reference Query — creates a new query that reads from the output of 'Sales Cleaned', inheriting all its steps automatically"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 141,
+    "domain": "Prepare the data",
+    "question": "A developer wants to experiment with restructuring the Sales query heavily — testing column removals and data type changes — without any risk of breaking the existing production Sales query used in live reports. Which Power Query approach creates a completely independent working copy?",
+    "choices": [
+      "Reference Query — the experimental query depends on the original; changes to either can affect the other",
+      "Duplicate Query — creates a fully independent copy that evaluates from the source separately, with no shared dependency on the original query",
+      "Merge Queries — joins tables, doesn't create an independent copy for testing",
+      "Append Queries — adds rows, doesn't create an independent structural copy"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 142,
+    "domain": "Model the data",
+    "question": "In a Power BI model, each sales transaction can be attributed to more than one territory, and each territory can be associated with many transactions. The Territory dimension has one row per territory. What relationship cardinality is required between Sales and Territory?",
+    "choices": [
+      "One-to-many (1:*) from Territory to Sales — assumes each transaction belongs to exactly one territory",
+      "Many-to-many (*:*) between Sales and Territory",
+      "One-to-one (1:1) — assumes each transaction and territory uniquely correspond",
+      "No relationship — use LOOKUPVALUE to retrieve territory data per transaction"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 143,
+    "domain": "Model the data",
+    "question": "A developer needs a measure that always returns total company revenue regardless of any Country slicer selection. The measure should ignore the Country filter but respect all other active filters. Which expression achieves this?",
+    "choices": [
+      "CALCULATE(SUM(Sales[Amount]), ALL(Sales[Country]))",
+      "FILTER(ALL(Sales[Country]), 1=1) — returns a table, not a scalar measure value",
+      "ALL(Sales[Country]) — removes a filter but cannot stand alone as a measure",
+      "SUM(Sales[Amount]) — respects all active filters including Country"
+    ],
+    "correctAnswers": [
+      0
+    ]
+  },
+  {
+    "id": 144,
+    "domain": "Model the data",
+    "question": "A developer states: 'I need to evaluate an expression in a modified filter context — specifically, I want to override the existing slicer filter with my own condition.' Which DAX function is the only one capable of modifying the filter context when evaluating an expression?",
+    "choices": [
+      "SUMX — an iterator that evaluates per-row expressions but cannot modify the outer filter context",
+      "CALCULATE",
+      "ALL — removes filters when used inside CALCULATE, but cannot modify context independently",
+      "FILTER — iterates a table and returns a subset, but does not modify the filter context for an expression"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 145,
+    "domain": "Model the data",
+    "question": "A developer needs to calculate total revenue (Qty × UnitPrice) but only for transactions where UnitPrice exceeds 100. The iteration should only visit rows meeting this condition. Which DAX expression is correct?",
+    "choices": [
+      "SUMX(FILTER(Sales, Sales[UnitPrice] > 100), Sales[Qty] * Sales[UnitPrice])",
+      "SUMX(ALL(Sales), IF(Sales[UnitPrice] > 100, Sales[Qty] * Sales[UnitPrice], 0))",
+      "CALCULATE(SUMX(Sales, Sales[Qty] * Sales[UnitPrice]), Sales[UnitPrice] > 100)",
+      "SUMX(Sales, IF(Sales[UnitPrice] > 100, Sales[Qty] * Sales[UnitPrice], 0)) — visits all rows, adding unnecessary evaluation overhead"
+    ],
+    "correctAnswers": [
+      0
+    ]
+  },
+  {
+    "id": 146,
+    "domain": "Visualize and analyze data",
+    "question": "A marketing analyst wants to compare two measures — Total Spend and Revenue Generated — side by side for each of six marketing channels. Both measures should be visible simultaneously for direct comparison per channel. Which visual best supports this?",
+    "choices": [
+      "Treemap — encodes a single measure as area, cannot show two measures per category",
+      "Stacked bar chart — shows how a total is composed of parts, not two independent parallel measures",
+      "Line chart — connects data points over a sequence, not suited for parallel measure comparison per category",
+      "Clustered bar chart"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 147,
+    "domain": "Prepare the data",
+    "question": "An analyst has two Power Query queries: Employees (with EmployeeID and Name) and Salaries (with EmployeeID and MonthlySalary). The final dataset should combine both tables to show each employee's name alongside their salary. EmployeeID is the common key. Which Power Query operation achieves this?",
+    "choices": [
+      "Append Queries — stacks two tables vertically, not for joining on a key column",
+      "Reference Query — creates a dependency on an existing query, not a join",
+      "Duplicate Query — creates an independent copy, does not join two different tables",
+      "Merge Queries joining Employees to Salaries on EmployeeID"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 148,
+    "domain": "Visualize and analyze data",
+    "question": "A summary report page shows sales by region. When a user right-clicks a region and selects 'Drill through,' they should be taken to a detail page showing all orders for that region. What must the report developer configure on the detail page?",
+    "choices": [
+      "A slicer synced to the region field across all pages",
+      "A drillthrough filter using the Region field on the detail page",
+      "A page-level filter set to a fixed region value",
+      "A bookmark capturing the current filter state of the summary page"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 149,
+    "domain": "Manage and secure Power BI",
+    "question": "A Power BI dataset uses static row-level security with a 'NorthRegion' role that filters data to Region = 'North'. A new group of five users should all see only North region data. What is the most efficient way to grant this security in Power BI Service?",
+    "choices": [
+      "Create five separate RLS roles — one per user — each filtering to Region = 'North'",
+      "Create a workspace with only North region data and add the users as Viewers",
+      "Add all five users to the 'NorthRegion' role in the dataset's Security settings in Power BI Service",
+      "Share the report individually with each of the five users and instruct them to use the North filter"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 150,
+    "domain": "Manage and secure Power BI",
+    "question": "A development team maintains Power BI reports through three environments: Development, Test, and Production. They need to promote content through stages with version control and rollback capability, without manually re-publishing from Power BI Desktop each time. Which Power BI feature supports this workflow?",
+    "choices": [
+      "Workspace roles — control user permissions, not deployment promotion",
+      "Scheduled refresh — automates data refresh but not report deployment between environments",
+      "Sensitivity labels — classify data sensitivity level, unrelated to deployment",
+      "Deployment pipelines — enables stage-based promotion of content between Development, Test, and Production workspaces"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 151,
+    "domain": "Manage and secure Power BI",
+    "question": "A Power BI administrator needs to allow a team member to publish reports to a workspace but not manage workspace settings. Which workspace permission should be assigned?",
+    "choices": [
+      "Contributor",
+      "Admin",
+      "Member",
+      "Viewer"
+    ],
+    "correctAnswers": [
+      0
+    ]
+  },
+  {
+    "id": 152,
+    "domain": "Manage and secure Power BI",
+    "question": "A business analyst needs to view dashboards and reports in a Power BI workspace but should not be able to modify any content. Which workspace role is most appropriate?",
+    "choices": [
+      "Contributor",
+      "Admin",
+      "Viewer",
+      "Member"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 153,
+    "domain": "Model the data",
+    "question": "A data engineer has normalized a Product dimension by splitting category information into a separate Category table linked to the Product table. The model now has a fact table connected to multiple levels of dimension tables. What schema pattern does this represent?",
+    "choices": [
+      "Flat table design",
+      "Galaxy schema",
+      "Snowflake schema",
+      "Star schema"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 154,
+    "domain": "Visualize and analyze data",
+    "question": "A report designer wants to display sales contribution by region as a part-to-whole visualization. The design requires a hollow center where a total KPI value can be overlaid. Which visual should be used?",
+    "choices": [
+      "Pie chart",
+      "Stacked bar chart",
+      "Donut chart",
+      "Treemap"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 155,
+    "domain": "Model the data",
+    "question": "A DAX measure needs to count the number of distinct product categories currently visible in the filter context (reflecting slicer selections). Which function returns a table of visible values from a single column?",
+    "choices": [
+      "SELECTEDVALUE(Products[Category])",
+      "DISTINCT(Products[Category])",
+      "ALL(Products[Category])",
+      "VALUES(Products[Category])"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 156,
+    "domain": "Model the data",
+    "question": "A measure uses CALCULATE with a filter argument. The developer needs the filter to respect existing slicer selections rather than replacing them. Which function should wrap the filter table to merge it with the current context?",
+    "choices": [
+      "REMOVEFILTERS()",
+      "KEEPFILTERS()",
+      "VALUES()",
+      "ALL()"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 157,
+    "domain": "Visualize and analyze data",
+    "question": "A report must show monthly revenue trends over a 24-month period so stakeholders can identify seasonal patterns and growth trajectory. Which visual type is most appropriate?",
+    "choices": [
+      "Bar chart",
+      "Line chart",
+      "Scatter chart",
+      "Matrix visual"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 158,
+    "domain": "Visualize and analyze data",
+    "question": "A Power BI report page shows actual vs target sales over 12 months. The report designer wants to overlay both as continuous lines so the gap between them is immediately visible. Which visual configuration achieves this?",
+    "choices": [
+      "Scatter chart with actual on X and target on Y",
+      "Line chart with two measures on the same axis",
+      "Clustered bar chart with two measures",
+      "Area chart with stacked values"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 159,
+    "domain": "Model the data",
+    "question": "A data modeler needs to create a date dimension table derived entirely from DAX without importing any external data source. The table should be generated dynamically using CALENDARAUTO(). Which object type should be used?",
+    "choices": [
+      "Measure",
+      "Calculated table",
+      "Calculated column",
+      "Power Query reference query"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 160,
+    "domain": "Visualize and analyze data",
+    "question": "A sales report needs to compare total revenue across seven product categories for a single period. The categories have long names that need to be fully readable. Which visual is most appropriate?",
+    "choices": [
+      "Pie chart",
+      "Bar chart",
+      "Scatter chart",
+      "Line chart"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 161,
+    "domain": "Visualize and analyze data",
+    "question": "A report shows quarterly performance for three product lines across four regions. Stakeholders need to compare both quarterly trends and regional differences simultaneously. Which visual type handles this comparison most effectively?",
+    "choices": [
+      "Matrix visual with quarters as columns and regions as rows",
+      "Treemap with hierarchy by region and product",
+      "Line chart with legend showing product lines",
+      "Clustered bar chart grouped by quarter"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 162,
+    "domain": "Model the data",
+    "question": "A Power BI report shows total sales by month. The finance team requests that the same sales figure recalculates dynamically when the user applies a region slicer. Which DAX object type should be used to implement this calculation?",
+    "choices": [
+      "Calculated table filtered by region",
+      "Calculated column in the Sales table",
+      "Measure defined in the Sales table",
+      "Power Query conditional column"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 163,
+    "domain": "Model the data",
+    "question": "A model has a Sales table with Unit Price and Quantity columns. A developer needs to calculate extended revenue (Unit Price × Quantity) per row and use it in relationships or row-level filters. Which DAX object is appropriate?",
+    "choices": [
+      "Calculated table",
+      "Calculated column in the Sales table",
+      "Measure using SUMX",
+      "Power Query custom column"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 164,
+    "domain": "Prepare the data",
+    "question": "A Power Query table has a column named \"Q1 Sales\", \"Q2 Sales\", \"Q3 Sales\", \"Q4 Sales\" where each column represents a quarter. A data modeler needs to restructure this so there is one row per quarter with columns \"Quarter\" and \"Sales\". Which transformation should be applied?",
+    "choices": [
+      "Merge queries",
+      "Unpivot columns",
+      "Group By",
+      "Pivot column"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 165,
+    "domain": "Prepare the data",
+    "question": "A data engineer has a Power Query query that cleans and transforms raw customer data. A second query needs the same cleaned data as a starting point but will apply different filters. The engineer wants changes to the base cleaning logic to automatically propagate to both queries. Which approach should be used?",
+    "choices": [
+      "Merge the raw data query with itself",
+      "Create a reference query from the base query",
+      "Duplicate the base query and modify each independently",
+      "Append both queries into a combined result"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 166,
+    "domain": "Manage and secure Power BI",
+    "question": "A company has an on-premises SQL Server database. A Power BI semantic model uses Import mode and requires daily data refreshes. What must be configured to allow Power BI Service to access the on-premises database during scheduled refresh?",
+    "choices": [
+      "A sensitivity label applied to the semantic model",
+      "A DirectQuery connection to avoid the need for refresh",
+      "A Power BI Premium capacity subscription",
+      "An on-premises data gateway installed on a local machine"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 167,
+    "domain": "Manage and secure Power BI",
+    "question": "A Power BI developer has built a set of reports and dashboards for a business unit. The content should be distributed to 200 end users who should not see the underlying workspace or be able to edit reports. Which distribution method is most appropriate?",
+    "choices": [
+      "Share each report individually with every user",
+      "Assign all users Viewer role in the workspace",
+      "Export reports to PDF and email them",
+      "Publish a Power BI App from the workspace"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 168,
+    "domain": "Manage and secure Power BI",
+    "question": "A compliance officer requires that all Power BI reports containing personally identifiable information (PII) be visually marked and subject to data protection policies such as encryption and access restrictions. Which Power BI feature implements this requirement?",
+    "choices": [
+      "Scheduled refresh policies",
+      "Workspace roles",
+      "Sensitivity labels",
+      "Row-level security"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 169,
+    "domain": "Manage and secure Power BI",
+    "question": "A Power BI administrator needs to grant different levels of access to a shared workspace — some users should publish reports, others should only read content. Which feature should the administrator configure to control these permission levels?",
+    "choices": [
+      "Row-level security on each semantic model",
+      "Sensitivity labels with restricted access policy",
+      "Deployment pipeline stages",
+      "Workspace roles (Admin, Member, Contributor, Viewer)"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 170,
+    "domain": "Visualize and analyze data",
+    "question": "A data analyst wants to explore the relationship between marketing spend and revenue across 150 stores, and also show each store's profit margin as a third dimension. Which visual type is most appropriate?",
+    "choices": [
+      "Scatter chart with size representing profit margin",
+      "Matrix visual with conditional formatting",
+      "Bar chart with profit margin as a second series",
+      "Line chart with two axes"
+    ],
+    "correctAnswers": [
+      0
+    ]
+  },
+  {
+    "id": 171,
+    "domain": "Visualize and analyze data",
+    "question": "A finance report must display revenue, cost, and profit margin for each combination of region and product category, with subtotals for each region. Which visual provides this cross-tabular layout with expandable hierarchies?",
+    "choices": [
+      "Decomposition tree",
+      "Table visual with filters applied",
+      "Matrix visual with rows and columns",
+      "Clustered bar chart by region"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 172,
+    "domain": "Visualize and analyze data",
+    "question": "A report needs to show the relative size of sales for each product subcategory within a parent category, using proportional rectangles so larger contributors are visually obvious. Which visual should be used?",
+    "choices": [
+      "Treemap",
+      "Bar chart",
+      "Pie chart",
+      "Funnel chart"
+    ],
+    "correctAnswers": [
+      0
+    ]
+  },
+  {
+    "id": 173,
+    "domain": "Prepare the data",
+    "question": "A Power Query workflow has a Sales table and a Products table. The Sales table contains a ProductID column, but product names and categories are only in the Products table. Which transformation adds product name and category columns to the Sales table?",
+    "choices": [
+      "Group By ProductID to aggregate sales",
+      "Reference the Products query inside Sales",
+      "Merge queries using ProductID as the join key",
+      "Append queries to combine both tables into one result"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 174,
+    "domain": "Manage and secure Power BI",
+    "question": "A data team wants to signal to report consumers that a specific semantic model has been validated by the organization and meets quality standards. Which Power BI feature communicates this official endorsement?",
+    "choices": [
+      "Applying a sensitivity label to the semantic model",
+      "Publishing the semantic model to a Premium workspace",
+      "Certifying the semantic model through the endorsement system",
+      "Setting the semantic model to DirectQuery mode"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 190,
+    "domain": "Model the data",
+    "question": "A Power BI report connected to a 15M-row fact table via DirectQuery averages 12-second load times. Performance Analyzer shows YTD and prior-year comparison calculated columns account for 9 seconds of Formula Engine time. What is the MOST effective optimization?",
+    "choices": [
+      "Add composite indexes to the YTD and comparison columns in the source database",
+      "Convert the fact table to Import mode and rewrite the YTD and comparison logic as DAX time intelligence measures",
+      "Apply a report-level date filter limiting the visible range to 24 months",
+      "Switch to a composite model using DirectLake for the fact table"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 191,
+    "domain": "Model the data",
+    "question": "A Power BI model refresh takes 55 minutes and the PBIX file is 2.8 GB. The model contains a single denormalized fact table with 65 columns, including 20 high-cardinality string columns (Region, ProductName, CustomerTier, SubCategory, etc.) repeated across 40M rows. Which change will MOST reduce model size?",
+    "choices": [
+      "Remove all calculated columns and replace them with measures",
+      "Enable incremental refresh on the fact table to reduce the data loaded",
+      "Convert the high-cardinality string dimension columns to integer foreign keys and move them into separate dimension tables",
+      "Change the fact table storage mode from Import to DirectQuery"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 192,
+    "domain": "Prepare the data",
+    "question": "A developer loads data from Azure SQL Database using Power Query. After a 'Merge Queries' step, they apply 'Remove Duplicates' then 'Sort Rows'. The model refresh takes 45 minutes despite the source table having only 2M rows. What is the MOST likely root cause?",
+    "choices": [
+      "The Merge Queries step always performs a full table scan regardless of keys",
+      "Azure SQL Database has a query timeout that interrupts Power Query after 30 minutes",
+      "'Remove Duplicates' breaks query folding — all subsequent steps execute in-memory after downloading the full dataset to Power Query",
+      "Sort Rows forces a second connection to the database to re-read the data in order"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 193,
+    "domain": "Model the data",
+    "question": "Performance Analyzer shows a matrix visual takes 5,800ms to render. Storage Engine queries account for 180ms and the Formula Engine accounts for 5,620ms. What does this distribution indicate, and what should be investigated first?",
+    "choices": [
+      "The matrix has too many rows — reduce visual cardinality by adding slicers",
+      "The model should switch to DirectQuery to bypass the Formula Engine bottleneck",
+      "The DAX measure uses complex iterators or nested CALCULATE calls that cannot be parallelised — rewrite using simpler aggregations or pre-aggregated calculated columns where appropriate",
+      "The underlying database is responding slowly — add indexes to the source system"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 194,
+    "domain": "Prepare the data",
+    "question": "A company requires Power BI reports to reflect database changes within 10 minutes during business hours. The source is Azure SQL Database. A full Import refresh takes 3 hours due to the 500M-row table size. What is the MOST appropriate solution?",
+    "choices": [
+      "Schedule a full Import refresh every 10 minutes — Power BI Premium supports up to 48 refreshes per day",
+      "Use full DirectQuery mode so all queries go directly to Azure SQL with no refresh required",
+      "Configure hybrid tables with incremental refresh — keep recent partitions (last 7 days) in DirectQuery mode for near-real-time access while historical partitions remain in Import mode",
+      "Use streaming datasets with Azure Event Hubs to push data changes directly to Power BI"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 195,
+    "domain": "Manage and secure Power BI",
+    "question": "You implement RLS with the DAX filter `[Email] = USERPRINCIPALNAME()` on a Region dimension table. Regional managers report seeing data from all regions despite the filter. The Region table has a one-to-many relationship to the Sales fact table. Cross-filter direction is Single. What is the MOST likely cause?",
+    "choices": [
+      "The Single cross-filter is set so Sales filters Region (Sales → Region), meaning the RLS filter on Region does not propagate to restrict Sales rows",
+      "USERPRINCIPALNAME() returns a domain-qualified name that does not match the Email column format",
+      "RLS filters must be placed on the fact table, not the dimension table",
+      "The one-to-many relationship cardinality is incorrectly configured"
+    ],
+    "correctAnswers": [
+      0
+    ]
+  },
+  {
+    "id": 196,
+    "domain": "Manage and secure Power BI",
+    "question": "A large organisation implements dynamic RLS using the filter on an Employees table: `[Department] IN SELECTCOLUMNS(FILTER(DeptAccess, [ManagerUPN] = USERPRINCIPALNAME()), \"Dept\", [Department])`. Senior managers report seeing no data. The DeptAccess table has no model relationship. What is the MOST likely cause?",
+    "choices": [
+      "SELECTCOLUMNS cannot be used inside an RLS DAX expression",
+      "A model relationship must exist between DeptAccess and Employees for the filter to evaluate",
+      "The filter should be applied to the DeptAccess table rather than the Employees table",
+      "USERPRINCIPALNAME() returns the manager's email in a different case or domain format than stored in DeptAccess[ManagerUPN], causing FILTER to return an empty table — SELECTCOLUMNS then returns an empty set, matching no departments"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 197,
+    "domain": "Manage and secure Power BI",
+    "question": "A Power BI model has an RLS role filtering the Product dimension table. A report shows product sales correctly filtered. However, a matrix visual showing 'Products with no sales this period' still shows products from other regions. Why does the RLS filter not restrict this visual?",
+    "choices": [
+      "The matrix visual requires a separate RLS role defined specifically for that visual type",
+      "The 'Products with no sales' visual uses CROSSFILTER or a DAX measure that explicitly bypasses the Product filter — or the visual uses ALL(Product) to show unfiltered product members",
+      "Inactive relationships used by the visual bypass RLS enforcement",
+      "RLS filters on dimension tables do not apply to matrix visuals"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 198,
+    "domain": "Manage and secure Power BI",
+    "question": "A company wants an external contractor to create new reports using the organisation's shared semantic model but must not be able to modify the existing published reports in the workspace. Which permission assignment is MOST appropriate?",
+    "choices": [
+      "Assign Contributor role in the workspace so the contractor can publish new content",
+      "Assign Member role in the workspace with restricted dataset access",
+      "Grant Build permission on the semantic model only — the contractor can create new reports in their own workspace from the shared model but cannot edit reports in the shared workspace",
+      "Assign Viewer role in the workspace and enable Content Pack distribution"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 199,
+    "domain": "Model the data",
+    "question": "A retail model has two fact tables: OnlineSales and StoreSales. Both need to relate to the same Date, Customer, and Product dimension tables. A many-to-many relationship naturally exists between Products and Promotions (one product can have multiple promotions; one promotion can cover multiple products). What is the correct modeling pattern for the Product-Promotion relationship?",
+    "choices": [
+      "Create a direct bidirectional many-to-many relationship between Product and Promotion",
+      "Add a PromotionKey foreign key directly to the Product dimension table",
+      "Store promotion information as calculated columns in the Product table using LOOKUPVALUE",
+      "Create a ProductPromotion bridge table with individual many-to-one relationships to both Product and Promotion, setting cross-filter direction to Both on each relationship"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 200,
+    "domain": "Model the data",
+    "question": "The data model shown above has two relationships between Sales and the Date dimension: one on OrderDateKey (active) and one on ShipDateKey (inactive). A report needs a measure showing total sales revenue filtered by ShipDate. Which DAX measure definition is correct?",
+    "choices": [
+      "CALCULATE([Total Revenue], USERELATIONSHIP(Sales[ShipDateKey], 'Date'[DateKey]))",
+      "CALCULATE([Total Revenue], CROSSFILTER(Sales[ShipDateKey], 'Date'[DateKey], Both))",
+      "CALCULATE([Total Revenue], FILTER(Sales, Sales[ShipDateKey] = MAX('Date'[DateKey])))",
+      "CALCULATE([Total Revenue], RELATED('Date'[DateKey]) = Sales[ShipDateKey])"
+    ],
+    "correctAnswers": [
+      0
+    ]
+  },
+  {
+    "id": 201,
+    "domain": "Model the data",
+    "question": "The model above uses bidirectional cross-filter between Sales and Customer. An analyst building a customer count report notices that a 'Total Customers' card shows different numbers depending on which product category is selected in a slicer — even when the report should show all customers regardless of purchase behaviour. What is the cause and the BEST fix?",
+    "choices": [
+      "Use KEEPFILTERS instead of CALCULATE to prevent the product slicer from propagating to the Customer table.",
+      "Bidirectional filtering allows Sales (filtered by product category) to propagate back to Customer, removing customers with no purchases in the selected category. Fix: set cross-filter to Single (Customer → Sales only) and use CROSSFILTER in DAX measures that specifically need the reverse direction.",
+      "Create an inactive relationship from Customer to Sales and activate it with USERELATIONSHIP in the count measure.",
+      "The Customer table is missing a row for each unique product category — add a ProductCategory column to the Customer table."
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 202,
+    "domain": "Model the data",
+    "question": "After importing data from a CRM system, Power BI auto-detects a Many-to-Many relationship between the Customers table and the Contracts table on the CustomerID column. The developer accepts this and builds the report. Customer totals appear doubled for some customers. What should the developer do FIRST?",
+    "choices": [
+      "Accept the many-to-many relationship and add a DISTINCTCOUNT measure to deduplicate",
+      "Immediately create a bridge table to handle the many-to-many correctly",
+      "Investigate whether CustomerID is unique in the Contracts table — if it is not, duplicate contracts per customer are causing duplicated aggregations; clean the data before defining a one-to-many relationship",
+      "Switch the relationship to one-to-one cardinality to eliminate the duplication"
+    ],
+    "correctAnswers": [
+      2
+    ]
+  },
+  {
+    "id": 203,
+    "domain": "Model the data",
+    "question": "A measure is defined as: `All Products Revenue = CALCULATE([Total Revenue], ALL(Product))`. It is placed in a matrix with Product[Category] on rows and a Region slicer is active. What does this measure return for each row?",
+    "choices": [
+      "Total revenue for the specific product category on each row — ALL() is overridden by the visual row context",
+      "Total revenue across all products and all regions — ALL(Product) removes all filters including slicers",
+      "An error — ALL() cannot be used when a slicer is active",
+      "Total revenue across all products for each region selected by the slicer — the Product filter is removed but the Region slicer filter remains in effect"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 204,
+    "domain": "Model the data",
+    "question": "A measure `[% of Total] = DIVIDE([Sales], CALCULATE([Sales], ALL(Product)))` is placed in a matrix visual. Product[Category] is on rows and Product[Subcategory] is on columns. The % of Total values for each cell appear correct when slicing by region, but the row subtotals show values over 100%. What is the cause?",
+    "choices": [
+      "The DIVIDE function propagates subtotal aggregation incorrectly — use a simple division operator instead",
+      "ALL(Product) is not compatible with visual subtotals and should be replaced with ALLSELECTED(Product)",
+      "At subtotal rows, the row context includes multiple categories — CALCULATE([Sales], ALL(Product)) still returns the grand total, so the numerator at a subtotal level equals the denominator, producing 100% per row group — when multiple row groups are summed, the displayed total exceeds 100%",
+      "The matrix visual requires a separate measure for subtotal rows defined using ISINSCOPE"
+    ],
+    "correctAnswers": [
+      3
+    ]
+  },
+  {
+    "id": 205,
+    "domain": "Model the data",
+    "question": "A developer writes this measure: `Total Cost = SUM(Sales[UnitCost] * Sales[Quantity])`. The measure returns an error in Power BI Desktop. What is the correct rewrite?",
+    "choices": [
+      "CALCULATE(SUM(Sales[UnitCost]), FILTER(Sales, Sales[Quantity] > 0))",
+      "SUMX(Sales, Sales[UnitCost] * Sales[Quantity])",
+      "First create a calculated column [LineCost] = Sales[UnitCost] * Sales[Quantity], then SUM(Sales[LineCost])",
+      "SUM(Sales[UnitCost]) * SUM(Sales[Quantity])"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 206,
+    "domain": "Model the data",
+    "question": "A measure `Sales LY = CALCULATE([Total Sales], SAMEPERIODLASTYEAR('Date'[Date]))` is used in a monthly trend matrix. The Date table contains data from 2020 through 2025. For January 2024, Sales LY returns BLANK. The year slicer is set to show only 2024. What is the MOST likely cause?",
+    "choices": [
+      "SAMEPERIODLASTYEAR only operates at the year grain — use DATEADD for month-level comparisons",
+      "The Sales fact table contains no transaction rows for January 2023 — SAMEPERIODLASTYEAR correctly returns BLANK when the corresponding prior-year period has no data",
+      "The Date table must be marked as a Date Table for SAMEPERIODLASTYEAR to function correctly",
+      "SAMEPERIODLASTYEAR cannot shift the date context to a year not selected by the slicer"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 207,
+    "domain": "Model the data",
+    "question": "A finance team wants a measure showing quarter-to-date cumulative sales that resets at the start of each new quarter. Which two approaches produce identical results?",
+    "choices": [
+      "CALCULATE([Total Sales], FILTER(ALL('Date'), 'Date'[Date] <= MAX('Date'[Date]))) and DATESQTD — both accumulate from the beginning of the model's date range",
+      "TOTALQTD([Total Sales], 'Date'[Date]) and CALCULATE([Total Sales], DATESQTD('Date'[Date])) — TOTALQTD is the shorthand wrapper for CALCULATE with DATESQTD",
+      "TOTALQTD and TOTALYTD filtered to the current quarter — they produce the same result when a quarterly slicer is active",
+      "DATESINPERIOD starting from the first day of the current quarter and DATESQTD — both return the same date range"
+    ],
+    "correctAnswers": [
+      1
+    ]
+  },
+  {
+    "id": 208,
+    "domain": "Visualize and analyze data",
+    "question": "A sales analyst needs to show how individual order values are distributed — specifically to identify whether most orders fall in the $0–$100, $100–$500, or $500+ range and see the frequency in each bucket. Which visual is MOST appropriate?",
+    "choices": [
+      "Histogram using the Analytics pane bin feature on a bar chart to group order values into ranges and show frequency",
+      "Scatter chart with order value on the X-axis and transaction count on the Y-axis",
+      "Stacked bar chart with each bar representing a region and segment colours for each order value range",
+      "Waterfall chart showing the contribution of each order value range to total revenue"
+    ],
+    "correctAnswers": [
+      0
+    ]
+  },
+  {
+    "id": 209,
+    "domain": "Visualize and analyze data",
+    "question": "A product manager needs users to click a product name in a summary table and be taken to a detailed product analysis page that automatically filters to that specific product. The detail page should not be accessible directly from the page navigation. What is the BEST implementation approach?",
+    "choices": [
+      "Create a drillthrough page — add Product[ProductName] as the drillthrough field on the target page, which automatically passes the selected product's filter context and hides the page from normal navigation",
+      "Create bookmarks — save one bookmark per product with the detail page filtered appropriately, and assign bookmarks to buttons on the summary page",
+      "Use Page Navigator visual and pass the selected product via URL parameters to filter the target page",
+      "Configure sync slicers between the summary and detail pages so selecting a product in the summary updates the detail page slicer"
+    ],
+    "correctAnswers": [
+      0
+    ]
+  }
+]

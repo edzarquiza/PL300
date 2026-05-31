@@ -9,6 +9,20 @@ import rankxFn from './rankx.json'
 import userelationshipFn from './userelationship.json'
 import varFn from './var.json'
 import totalytdFn from './totalytd.json'
+import countrowsFn from './countrows.json'
+import distinctcountFn from './distinctcount.json'
+import selectedvalueFn from './selectedvalue.json'
+import removefiltersFn from './removefilters.json'
+import datesytdFn from './datesytd.json'
+import sameperiodlastyearFn from './sameperiodlastyear.json'
+import calculatetableFn from './calculatetable.json'
+import divideFn from './divide.json'
+import earlierFn from './earlier.json'
+import ifFn from './if.json'
+import switchFn from './switch.json'
+import averagexFn from './averagex.json'
+import lookupvalueFn from './lookupvalue.json'
+import hasonevalueFn from './hasonevalue.json'
 
 export const DAX_FUNCTIONS = [
   calculateFn,
@@ -22,6 +36,20 @@ export const DAX_FUNCTIONS = [
   userelationshipFn,
   varFn,
   totalytdFn,
+  countrowsFn,
+  distinctcountFn,
+  selectedvalueFn,
+  removefiltersFn,
+  datesytdFn,
+  sameperiodlastyearFn,
+  calculatetableFn,
+  divideFn,
+  earlierFn,
+  ifFn,
+  switchFn,
+  averagexFn,
+  lookupvalueFn,
+  hasonevalueFn,
 ]
 
 export const DAX_CATEGORIES = [
@@ -35,11 +63,11 @@ export const DAX_CATEGORIES = [
 ]
 
 export const CATEGORY_META = {
-  Filter: { color: 'blue', description: 'CALCULATE, ALL, FILTER, KEEPFILTERS' },
-  Iterator: { color: 'purple', description: 'SUMX, AVERAGEX, MAXX, COUNTX' },
-  Aggregation: { color: 'green', description: 'SUM, COUNT, AVERAGE, RANKX' },
+  Filter: { color: 'blue', description: 'CALCULATE, ALL, FILTER, REMOVEFILTERS, SELECTEDVALUE, HASONEVALUE, CALCULATETABLE' },
+  Iterator: { color: 'purple', description: 'SUMX, AVERAGEX, MAXX, COUNTX, EARLIER' },
+  Aggregation: { color: 'green', description: 'SUM, COUNT, COUNTROWS, DISTINCTCOUNT, DIVIDE, RANKX' },
   Relationship: { color: 'orange', description: 'RELATED, USERELATIONSHIP, LOOKUPVALUE' },
-  'Time Intelligence': { color: 'teal', description: 'DATEADD, TOTALYTD, SAMEPERIODLASTYEAR' },
+  'Time Intelligence': { color: 'teal', description: 'DATEADD, TOTALYTD, DATESYTD, SAMEPERIODLASTYEAR' },
   Logical: { color: 'gray', description: 'IF, SWITCH, VAR/RETURN' },
   Table: { color: 'indigo', description: 'VALUES, DISTINCT, TOPN' },
 }

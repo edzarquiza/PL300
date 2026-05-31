@@ -7,7 +7,8 @@ const ExamPage      = lazy(() => import('./pages/ExamPage'))
 const ResultsPage   = lazy(() => import('./pages/ResultsPage'))
 const HistoryPage   = lazy(() => import('./pages/HistoryPage'))
 const ReviewerPage  = lazy(() => import('./pages/ReviewerPage'))
-const DaxLibraryPage = lazy(() => import('./pages/DaxLibraryPage'))
+const DaxLibraryPage      = lazy(() => import('./pages/DaxLibraryPage'))
+const WalkthroughsPage    = lazy(() => import('./pages/WalkthroughsPage'))
 
 function PageLoader() {
   return (
@@ -28,7 +29,8 @@ export default function App() {
             <Route path="/results"  element={<ResultsPage />} />
             <Route path="/history"  element={<HistoryPage />} />
             <Route path="/reviewer" element={<ReviewerPage />} />
-            <Route path="/dax"      element={<DaxLibraryPage />} />
+            <Route path="/dax"           element={<DaxLibraryPage />} />
+            <Route path="/walkthroughs"  element={<WalkthroughsPage />} />
           </Routes>
         </Suspense>
       </BrowserRouter>

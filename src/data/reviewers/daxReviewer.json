@@ -274,5 +274,143 @@
     "difficulty": "Hard",
     "estimatedReviewTime": 60,
     "tags": ["USERELATIONSHIP", "DAX", "Relationships", "Role-Playing Dimensions"]
+  },
+  {
+    "id": "dax_divide",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "DIVIDE",
+    "summary": "DIVIDE(numerator, denominator, [alternateResult]) performs safe division in DAX. When the denominator is zero or blank, it returns the alternate result (default: BLANK) instead of throwing an error.",
+    "keyInsight": "Always prefer DIVIDE over the / operator in DAX measures. The / operator throws an error on divide-by-zero; DIVIDE handles it gracefully and is the Microsoft-recommended pattern for all division in measures.",
+    "commonTrap": "Writing [Profit %] = [Profit] / [Revenue] directly. When Revenue is zero for a product, the visual shows an error instead of BLANK. DIVIDE([Profit], [Revenue]) silently returns BLANK, keeping the report clean.",
+    "miniQuiz": {
+      "question": "A measure [Margin %] = [Gross Profit] / [Revenue] shows an error for some rows. What is the safest fix?",
+      "choices": [
+        "Add IF([Revenue] = 0, 0, [Gross Profit] / [Revenue])",
+        "DIVIDE([Gross Profit], [Revenue])",
+        "CALCULATE([Gross Profit] / [Revenue], [Revenue] > 0)",
+        "SUM([Gross Profit]) / SUM([Revenue])"
+      ],
+      "correctAnswer": 1,
+      "explanation": "DIVIDE handles zero and blank denominators gracefully, returning BLANK by default without errors. It is cleaner, safer, and more concise than an explicit IF check."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["DIVIDE", "DAX", "Measures", "Error Handling"]
+  },
+  {
+    "id": "dax_averagex",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "AVERAGEX",
+    "summary": "AVERAGEX iterates a table row by row, evaluates an expression for each row, then returns the average of all results. Like SUMX, it is needed when the per-row calculation involves multiple columns.",
+    "keyInsight": "AVERAGEX(Sales, Sales[Qty] * Sales[UnitPrice]) calculates the average revenue per transaction — first computing Qty × UnitPrice per row, then averaging. AVERAGE(Sales[UnitPrice]) × AVERAGE(Sales[Qty]) is mathematically incorrect.",
+    "commonTrap": "Using AVERAGE(Sales[UnitPrice]) * AVERAGE(Sales[Qty]) to get average revenue. This multiplies averages — a statistically meaningless result. The correct approach iterates per row with AVERAGEX.",
+    "miniQuiz": {
+      "question": "You need the average transaction value where each transaction's value = Qty × UnitPrice. Which expression is correct?",
+      "choices": [
+        "AVERAGE(Sales[Qty]) * AVERAGE(Sales[UnitPrice])",
+        "AVERAGEX(Sales, Sales[Qty] * Sales[UnitPrice])",
+        "SUM(Sales[Qty] * Sales[UnitPrice]) / COUNT(Sales[Qty])",
+        "AVERAGE(Sales[Qty] * Sales[UnitPrice])"
+      ],
+      "correctAnswer": 1,
+      "explanation": "AVERAGEX iterates each row, computing Qty × UnitPrice per row, then averages the results. Option A multiplies two averages (statistically wrong). Option C is invalid DAX syntax. Option D is also invalid — AVERAGE accepts only a column reference."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["AVERAGEX", "DAX", "Iterator Functions", "Measures"]
+  },
+  {
+    "id": "dax_switch",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "SWITCH",
+    "summary": "SWITCH evaluates an expression and returns a result matching one of several conditions — a cleaner alternative to nested IF statements. SWITCH(TRUE(), condition1, result1, condition2, result2, ..., else) allows boolean conditions.",
+    "keyInsight": "SWITCH(TRUE(), ...) is the most useful pattern — it evaluates each condition left to right and returns the first match. It replaces deeply nested IF(cond1, res1, IF(cond2, res2, IF(...))) chains that are hard to read.",
+    "commonTrap": "Nesting five or more IF statements when SWITCH(TRUE()) would be cleaner. Also: each SWITCH condition is evaluated even if a previous one matched — unlike a short-circuit IF. For performance-critical code on very large tables, nested IF can be marginally faster.",
+    "miniQuiz": {
+      "question": "A measure should return 'Low' if Sales < 1000, 'Medium' if < 5000, and 'High' otherwise. What is the cleanest DAX?",
+      "choices": [
+        "IF([Sales] < 1000, \"Low\", IF([Sales] < 5000, \"Medium\", \"High\"))",
+        "SWITCH([Sales], 1000, \"Low\", 5000, \"Medium\", \"High\")",
+        "SWITCH(TRUE(), [Sales] < 1000, \"Low\", [Sales] < 5000, \"Medium\", \"High\")",
+        "IIF([Sales], 1000, 5000)"
+      ],
+      "correctAnswer": 2,
+      "explanation": "SWITCH(TRUE(), ...) evaluates each boolean condition left to right, returning the first match. It is far more readable than nested IF for multiple conditions. Option B is incorrect syntax — SWITCH exact-match form compares the expression to literal values."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["SWITCH", "DAX", "Conditional Logic", "Measures"]
+  },
+  {
+    "id": "dax_countrows",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "COUNTROWS",
+    "summary": "COUNTROWS counts the number of rows in a table or table expression. It is the correct function for counting rows in a filtered table, counting related rows via RELATEDTABLE, or counting the result of FILTER().",
+    "keyInsight": "COUNTROWS(FILTER(Sales, condition)) is the standard pattern for counting rows meeting a condition. COUNT(column) counts non-blank values in a column. COUNTROWS is often faster and more semantically correct for row counts.",
+    "commonTrap": "Using COUNT(Sales[SalesID]) when COUNTROWS(Sales) is cleaner. Also: COUNT ignores blank values while COUNTROWS counts every row regardless of column content. For fact table row counts, always use COUNTROWS.",
+    "miniQuiz": {
+      "question": "A measure should count the number of sales transactions where Amount > 500. Which expression is correct?",
+      "choices": [
+        "COUNT(Sales[Amount] > 500)",
+        "CALCULATE(COUNT(Sales[Amount]), Sales[Amount] > 500)",
+        "COUNTROWS(FILTER(Sales, Sales[Amount] > 500))",
+        "SUM(IF(Sales[Amount] > 500, 1, 0))"
+      ],
+      "correctAnswer": 2,
+      "explanation": "COUNTROWS(FILTER(Sales, Sales[Amount] > 500)) filters the table to matching rows, then counts them. COUNT(Sales[Amount]) with a filter argument (option B) also works but COUNTROWS is more semantically correct. Option A is invalid syntax. Option D iterates unnecessarily when COUNTROWS is available."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["COUNTROWS", "DAX", "Aggregations", "FILTER"]
+  },
+  {
+    "id": "dax_distinctcount",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "DISTINCTCOUNT",
+    "summary": "DISTINCTCOUNT counts the number of unique values in a column, respecting the current filter context. It is the standard measure for counting unique customers, products, or any distinct identifier.",
+    "keyInsight": "DISTINCTCOUNT(Sales[CustomerID]) returns the number of unique customers who made purchases in the current filter context — automatically changing with slicers. It is equivalent to COUNTROWS(DISTINCT(Sales[CustomerID])).",
+    "commonTrap": "Using COUNT(Sales[CustomerID]) to count distinct customers. COUNT counts every row — if a customer made 5 purchases, they are counted 5 times. DISTINCTCOUNT deduplicates before counting.",
+    "miniQuiz": {
+      "question": "A measure should show the number of unique customers who placed at least one order this year. Which is correct?",
+      "choices": [
+        "COUNT(Sales[CustomerID])",
+        "COUNTROWS(Sales)",
+        "DISTINCTCOUNT(Sales[CustomerID])",
+        "CALCULATE(COUNT(Sales[CustomerID]), ALL(Sales))"
+      ],
+      "correctAnswer": 2,
+      "explanation": "DISTINCTCOUNT counts unique values in the CustomerID column, respecting the current year filter. COUNT would count every row (one per order), resulting in order count, not customer count."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["DISTINCTCOUNT", "DAX", "Aggregations", "Measures"]
+  },
+  {
+    "id": "dax_earlier",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "EARLIER",
+    "summary": "EARLIER references the value of a column in an outer row context when nested iterators create multiple row context levels. It is primarily used in calculated columns to compare the current row's value against other rows in the same table.",
+    "keyInsight": "EARLIER is used in calculated columns for row-by-row comparisons — for example, ranking a product's sales against all products using COUNTROWS(FILTER(Products, Products[Sales] > EARLIER(Products[Sales]))). In modern DAX, VAR is almost always a cleaner alternative.",
+    "commonTrap": "Using EARLIER in a measure (not a calculated column). EARLIER requires nested row context — it has no meaning in a measure's filter context. Modern best practice: replace EARLIER with VAR to capture the current row value before entering the inner FILTER.",
+    "miniQuiz": {
+      "question": "A calculated column ranks each product by sales descending. Products with higher sales should have rank 1. Which expression is correct?",
+      "choices": [
+        "RANKX(ALL(Products), Products[Sales])",
+        "COUNTROWS(FILTER(ALL(Products), Products[Sales] > EARLIER(Products[Sales]))) + 1",
+        "CALCULATE(RANK(), Products[Sales])",
+        "EARLIER(Products[Sales])"
+      ],
+      "correctAnswer": 1,
+      "explanation": "COUNTROWS(FILTER(ALL(Products), Products[Sales] > EARLIER(Products[Sales]))) counts how many products have higher sales than the current row, then adds 1. The modern equivalent using VAR: VAR CurrentSales = Products[Sales] RETURN COUNTROWS(FILTER(ALL(Products), Products[Sales] > CurrentSales)) + 1."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 75,
+    "tags": ["EARLIER", "DAX", "Calculated Columns", "Row Context", "Ranking"]
   }
 ]

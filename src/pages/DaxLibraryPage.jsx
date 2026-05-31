@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { DAX_FUNCTIONS, DAX_CATEGORIES, CATEGORY_META } from '../data/daxFunctions'
 import DaxFunctionDetail from '../components/DaxFunctionDetail'
+import WalkthroughViewer from '../components/WalkthroughViewer'
+import { WALKTHROUGH_BY_DAX_FN } from '../data/walkthroughs'
 
 const CATEGORY_CHIP_COLORS = {
   blue: 'border-blue-300 bg-blue-50 text-blue-700',
@@ -43,6 +45,7 @@ export default function DaxLibraryPage() {
 
   // ── Detail view ────────────────────────────────────────────────────────────
   if (selectedFn) {
+    const fnWalkthrough = WALKTHROUGH_BY_DAX_FN[selectedFn.functionName?.toLowerCase()]
     return (
       <div className="min-h-screen bg-gray-50">
         <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
@@ -60,7 +63,10 @@ export default function DaxLibraryPage() {
           </div>
         </header>
 
-        <main className="max-w-2xl mx-auto px-4 py-6 pb-12">
+        <main className="max-w-2xl mx-auto px-4 py-6 pb-12 space-y-6">
+          {fnWalkthrough && (
+            <WalkthroughViewer walkthrough={fnWalkthrough} />
+          )}
           <DaxFunctionDetail fn={selectedFn} />
         </main>
       </div>

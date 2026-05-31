@@ -1,0 +1,73 @@
+{
+  "id": "star-schema",
+  "concept": "Star Schema",
+  "category": "Data Modeling",
+  "tagline": "Why star schema outperforms flat denormalized tables in Power BI",
+  "relatedTags": ["Star Schema", "Data Modeling", "Relationships"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Star Schema vs Flat Table",
+      "icon": "⭐",
+      "body": "A star schema splits a denormalized flat table into one fact table (measures + foreign keys) and multiple dimension tables (descriptors). Each dimension connects to the fact via a single integer key.",
+      "keyPoint": "Star schema improves VertiPaq compression, query speed, DAX simplicity, and allows dimensions to serve multiple fact tables."
+    },
+    {
+      "type": "table",
+      "title": "Flat Table — All Data in One Table (Bad)",
+      "caption": "Customer name and product details repeat on every order row",
+      "headers": ["OrderID", "CustomerName", "City", "ProductName", "Category", "Qty", "Price"],
+      "rows": [
+        ["O1", "Alice", "London", "Bike Pro", "Bikes", 1, 899],
+        ["O2", "Bob", "Paris", "Helmet X", "Accessories", 2, 45],
+        ["O3", "Alice", "London", "Bike Pro", "Bikes", 1, 899],
+        ["O4", "Carol", "Berlin", "Gloves", "Accessories", 3, 20]
+      ],
+      "note": "Alice's city 'London' appears twice — if she moves, you must update EVERY order row"
+    },
+    {
+      "type": "transform",
+      "title": "Fact Table — FactOrders",
+      "stepName": "Remove descriptors, keep keys + measures",
+      "before": {
+        "headers": ["OrderID", "CustomerName", "City", "ProductName", "Qty", "Price"],
+        "rows": [
+          ["O1", "Alice", "London", "Bike Pro", 1, 899],
+          ["O2", "Bob", "Paris", "Helmet X", 2, 45]
+        ]
+      },
+      "after": {
+        "headers": ["OrderID", "CustomerKey", "ProductKey", "DateKey", "Qty", "Price"],
+        "rows": [
+          ["O1", 1, 101, 20240115, 1, 899],
+          ["O2", 2, 102, 20240116, 2, 45]
+        ]
+      },
+      "note": "Fact table keeps only integer keys and numeric measures — smallest possible row size for VertiPaq compression"
+    },
+    {
+      "type": "table",
+      "title": "Dimension Tables — Each Descriptor Stored Once",
+      "caption": "Each dimension connects to FactOrders via its key column",
+      "headers": ["Dimension", "Key Column", "Example Attributes"],
+      "rows": [
+        ["DimCustomer", "CustomerKey", "Name, City, Country, Segment, AgeGroup"],
+        ["DimProduct", "ProductKey", "Name, Category, SubCategory, Color, Size"],
+        ["DimDate", "DateKey", "Date, Month, Quarter, Year, IsWeekend, FiscalYear"]
+      ],
+      "note": "Alice's city is stored once in DimCustomer — updating it there instantly updates all her orders"
+    },
+    {
+      "type": "text",
+      "title": "Why Star Schema Wins in Power BI",
+      "bullets": [
+        "Compression — integer keys compress far better than repeated text strings; smaller model = faster queries",
+        "Query speed — VertiPaq engine is optimized for single-direction (one-to-many) join traversal",
+        "Simpler DAX — RELATED() easily brings dimension attributes into measures without complex lookups",
+        "Reusable dimensions — DimDate can serve FactSales, FactBudget, FactForecast simultaneously",
+        "Update safety — changing a dimension attribute updates all related fact rows via the relationship"
+      ],
+      "keyPoint": "PL-300 exam rule: star schema is almost always the correct answer when asked how to reduce model size, improve query performance, or fix a modeling design issue."
+    }
+  ]
+}

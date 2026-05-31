@@ -182,5 +182,143 @@
     "difficulty": "Medium",
     "estimatedReviewTime": 45,
     "tags": ["Deployment Pipelines", "Security", "ALM", "Governance"]
+  },
+  {
+    "id": "sec_dynamic_rls_upn",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Security",
+    "concept": "Dynamic RLS — USERPRINCIPALNAME() Deep Dive",
+    "summary": "Dynamic RLS uses USERPRINCIPALNAME() to return the signed-in user's identity (email format, e.g., user@domain.com) and matches it against a security mapping table to determine what data the user can see. One role serves all users.",
+    "keyInsight": "The UPN format must exactly match the mapping table — case-insensitive in most deployments but case-sensitive in some. Common pitfalls: alias vs. primary UPN, domain suffixes (user@contoso.com vs user@contoso.onmicrosoft.com), and email casing differences. Use LOWER() on both sides when in doubt.",
+    "commonTrap": "Not testing RLS with the View As feature before publishing. A developer can test their own UPN correctly but miss that other users' UPNs are formatted differently in the mapping table. Always use View As Roles with specific email addresses to validate all user scenarios.",
+    "miniQuiz": {
+      "question": "An RLS filter `[Email] = USERPRINCIPALNAME()` is configured. A user reports seeing no data. Their Power BI login is 'jane.doe@company.com' but the mapping table stores 'JaneDoe@COMPANY.COM'. What is the fix?",
+      "choices": [
+        "Change the RLS filter to use USERNAME() instead of USERPRINCIPALNAME()",
+        "Update the filter to LOWER([Email]) = LOWER(USERPRINCIPALNAME()) to make the comparison case-insensitive",
+        "Create a static RLS role specifically for this user",
+        "Add the user as a workspace Admin to bypass RLS"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Applying LOWER() to both sides of the comparison makes the UPN match case-insensitive. This is the standard fix when email addresses are stored with inconsistent casing in the mapping table. Adding as workspace Admin (D) would bypass RLS entirely — a security violation."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["RLS", "Dynamic RLS", "USERPRINCIPALNAME", "Security", "DAX"]
+  },
+  {
+    "id": "sec_sensitivity_labels_adv",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Security",
+    "concept": "Sensitivity Labels — Inheritance and Enforcement",
+    "summary": "Sensitivity labels from Microsoft Purview classify Power BI content and follow data outside Power BI. When a dataset is labelled 'Confidential', reports built from it inherit the label automatically (downstream inheritance). Exported files also carry the label.",
+    "keyInsight": "Sensitivity labels do NOT control who can VIEW a report — that is workspace roles and RLS. Labels control what happens TO the data after access: can it be exported, printed, forwarded? 'Highly Confidential' can encrypt exported Excel files and prevent forwarding.",
+    "commonTrap": "Expecting sensitivity labels to prevent unauthorized access to reports. Labels are a DATA PROTECTION tool (what happens to data after access), not an ACCESS CONTROL tool (who can see the report). Use workspace roles and RLS for access control. Use labels for compliance and export restrictions.",
+    "miniQuiz": {
+      "question": "A compliance requirement states all Power BI reports containing PII must be labelled 'Confidential' and the label must apply automatically when a new report is built from the PII dataset. Which feature enables this?",
+      "choices": [
+        "Configure row-level security on the PII dataset",
+        "Enable downstream label inheritance so reports built from the labelled dataset automatically inherit the Confidential label",
+        "Require workspace Admins to manually apply labels to each new report",
+        "Enable report-level export restrictions in workspace settings"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Downstream label inheritance propagates the dataset's sensitivity label to all reports, dashboards, and exported files derived from it — automatically, without manual action. This is the scalable compliance enforcement mechanism for Power BI + Microsoft Purview integration."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Sensitivity Labels", "Purview", "Compliance", "Label Inheritance"]
+  },
+  {
+    "id": "sec_external_sharing_b2b",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Security",
+    "concept": "External Sharing and Azure AD B2B",
+    "summary": "Power BI can share content with external users (outside the organization) via Azure Active Directory B2B guest invitations. External users access content through Power BI Apps or direct share links. Licensing requirements depend on whether a Premium capacity is used.",
+    "keyInsight": "External users need a Power BI Pro license OR the content must be in a Premium capacity workspace. In Premium capacity, external B2B guests can consume content without their own Pro license — the capacity license covers consumption. This is the cost-effective model for external distribution.",
+    "commonTrap": "Attempting to add external users as workspace members without a Premium capacity. Without Premium, every external user needs their own Pro license. The cost-effective solution for many external viewers is a Premium capacity workspace with an App distributed to B2B guest accounts.",
+    "miniQuiz": {
+      "question": "A company wants 50 external partners to access Power BI reports. The partners do not have Power BI licenses. What is the most appropriate solution?",
+      "choices": [
+        "Purchase 50 Power BI Pro licenses for the external partners",
+        "Export reports to PDF and email them to the partners monthly",
+        "Publish the reports to a Premium capacity workspace and invite the external users as Azure AD B2B guests to consume via a Power BI App",
+        "Enable public access on the workspace so partners can access without logging in"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Premium capacity workspaces allow Azure AD B2B guest users to consume Power BI Apps without per-user Pro licenses — the Premium capacity license covers consumption. This is the standard external distribution model for many external viewers. Public access (D) removes all security controls."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["B2B", "External Sharing", "Premium", "Licensing", "Security"]
+  },
+  {
+    "id": "sec_app_permissions",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Security",
+    "concept": "Power BI App Permissions and Audiences",
+    "summary": "Power BI Apps provide a curated, managed view of workspace content to consumers. Apps support audience segments — different users or groups can see different content within the same app. Apps separate workspace content from consumer-facing content.",
+    "keyInsight": "App audiences allow the same app to show different reports to different groups without separate workspaces or reports. For example, a Sales App with two audiences: North Managers see North reports; South Managers see South reports. RLS provides row-level restriction; audiences provide report-level visibility.",
+    "commonTrap": "Confusing workspace access with App access. Workspace members (Admin, Member, Contributor, Viewer) see the full workspace and all content in development. App audience members see only what is published to the App — a curated, consumer-friendly subset. Always distribute broadly via Apps, not workspace Viewer roles.",
+    "miniQuiz": {
+      "question": "A Sales App should show North team reports to North managers and South team reports to South managers — from the same workspace. How is this configured?",
+      "choices": [
+        "Create two separate workspaces — one per region",
+        "Configure App audience segments: one audience for North (with North reports) and one for South (with South reports)",
+        "Use row-level security to restrict each manager's report view",
+        "Create separate Apps — one per region"
+      ],
+      "correctAnswer": 1,
+      "explanation": "App audience segments allow one App to serve different content to different groups. North managers are added to the North audience (which includes only North reports); South managers to the South audience. RLS then handles data row restrictions within those reports."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Apps", "Audience", "Distribution", "Workspace", "Security"]
+  },
+  {
+    "id": "sec_ols",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Security",
+    "concept": "Object-Level Security (OLS)",
+    "summary": "Object-Level Security restricts access to entire tables or specific columns in a semantic model. Users subject to OLS cannot see the restricted column or table anywhere in reports — it appears as if the column/table does not exist.",
+    "keyInsight": "OLS complements RLS: RLS restricts ROWS (which data records a user sees), OLS restricts COLUMNS or TABLES (which fields are even visible). OLS is configured using Tabular Editor or SQL Server Management Studio — it cannot be configured in Power BI Desktop alone.",
+    "commonTrap": "Using sensitivity labels when OLS is needed. Sensitivity labels protect data classification and export behavior — they do not hide specific columns from users. OLS is required when a user should not be able to see a column at all (e.g., salary, SSN, credit card number).",
+    "miniQuiz": {
+      "question": "HR reports must hide the Salary column from all non-HR users — they should not be able to see or use this column in any report. Which feature implements this?",
+      "choices": [
+        "Row-level security filtering salary rows",
+        "Sensitivity label 'Highly Confidential' on the Salary column",
+        "Object-Level Security restricting access to the Salary column",
+        "Removing the Salary column from all reports manually"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Object-Level Security hides columns from unauthorized users at the semantic model level — the column does not appear in field lists, cannot be used in visuals or DAX measures, and is invisible to restricted users. RLS restricts rows, not columns. Removing from reports leaves the column in the model where it could be accessed by report builders."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": ["OLS", "Object-Level Security", "Columns", "Security", "Governance"]
+  },
+  {
+    "id": "sec_gateway_security",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Security",
+    "concept": "Data Gateway — Security and Configuration",
+    "summary": "The on-premises data gateway acts as a secure bridge between Power BI Service (cloud) and on-premises data sources. It encrypts all credentials and communication. Gateways run as a Windows service and require a machine that remains always-on for scheduled refresh.",
+    "keyInsight": "Standard (enterprise) gateway supports multiple users, datasets, and DirectQuery connections — required for enterprise deployments. Personal gateway only supports one user and no DirectQuery. Cloud sources (Azure SQL, SharePoint Online, Azure Data Lake) do NOT need a gateway.",
+    "commonTrap": "Assuming all data connections require a gateway. Gateways are ONLY required for on-premises sources or sources within private networks (VNets). Azure SQL Database, SharePoint Online, and other cloud services connect directly from the Power BI Service without a gateway.",
+    "miniQuiz": {
+      "question": "A semantic model uses three sources: on-premises SQL Server, Azure SQL Database, and SharePoint Online. Which sources require an on-premises data gateway for scheduled refresh?",
+      "choices": [
+        "All three sources require a gateway",
+        "Only the on-premises SQL Server requires a gateway",
+        "Only Azure SQL Database and SharePoint Online require gateways — cloud sources need them",
+        "None — Power BI Service connects directly to all sources"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Only the on-premises SQL Server requires a gateway — it is behind the corporate network and Power BI Service cannot reach it directly. Azure SQL Database and SharePoint Online are cloud services accessible directly from Power BI Service. Gateways bridge the gap between cloud (Power BI Service) and on-premises networks only."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["Gateway", "Security", "On-Premises", "Scheduled Refresh", "Cloud"]
   }
 ]

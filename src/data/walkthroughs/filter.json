@@ -1,0 +1,74 @@
+{
+  "id": "filter",
+  "concept": "FILTER",
+  "category": "DAX",
+  "tagline": "Returns a filtered table — used inside CALCULATE or other table functions",
+  "daxFunctionId": "filter",
+  "relatedTags": ["FILTER"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "FILTER Returns a Table",
+      "icon": "🔍",
+      "body": "FILTER iterates a table row by row and returns only the rows where the condition is TRUE. The output is a new, smaller table — not a number.",
+      "keyPoint": "FILTER(Table, Condition) → returns a TABLE. Must be used inside CALCULATE or another function that accepts a table."
+    },
+    {
+      "type": "table",
+      "title": "Products Table — All Rows",
+      "caption": "5 products across 3 categories",
+      "headers": ["ProductID", "Category", "ListPrice"],
+      "rows": [
+        [1, "Bikes", 899],
+        [2, "Accessories", 29],
+        [3, "Bikes", 1299],
+        [4, "Clothing", 75],
+        [5, "Accessories", 12]
+      ]
+    },
+    {
+      "type": "dax",
+      "title": "Using FILTER Inside CALCULATE",
+      "code": "Bike Revenue =\nCALCULATE(\n    SUM(Sales[Revenue]),\n    FILTER(\n        Products,\n        Products[Category] = \"Bikes\"\n    )\n)",
+      "annotation": "FILTER is placed as the filter argument to CALCULATE. It returns a 2-row table of Bikes, which CALCULATE uses to restrict Sales rows via the model relationship."
+    },
+    {
+      "type": "filtered-table",
+      "title": "FILTER Keeps Only Bikes",
+      "caption": "Rows where Category = 'Bikes' pass through; others are removed",
+      "headers": ["ProductID", "Category", "ListPrice"],
+      "rows": [
+        [1, "Bikes", 899],
+        [2, "Accessories", 29],
+        [3, "Bikes", 1299],
+        [4, "Clothing", 75],
+        [5, "Accessories", 12]
+      ],
+      "highlightRows": [0, 2],
+      "dimRows": [1, 3, 4],
+      "filterNote": "Products[Category] = \"Bikes\""
+    },
+    {
+      "type": "result",
+      "title": "CALCULATE Receives the Filtered Table",
+      "steps": [
+        "FILTER returns: {ProductID: 1, Bikes, $899} and {ProductID: 3, Bikes, $1299}",
+        "CALCULATE uses this 2-row table to filter the Sales fact table via relationship",
+        "SUM(Sales[Revenue]) only aggregates Sales rows for ProductID 1 and 3"
+      ],
+      "value": "Bikes Revenue",
+      "unit": "Only rows connected to the filtered Products table are included"
+    },
+    {
+      "type": "text",
+      "title": "FILTER vs Simple Column Filter",
+      "bullets": [
+        "Products[Category] = 'Bikes' directly inside CALCULATE works for simple equality — no FILTER needed",
+        "FILTER(Products, Products[ListPrice] > 500) is needed for comparisons, AND/OR chains, or multi-column expressions",
+        "FILTER(ALL(Products), ...) — removes existing filters on Products first, then applies new condition (common in ranking measures)",
+        "FILTER iterates the full table — avoid wrapping large tables in FILTER when a simpler filter argument works"
+      ],
+      "warning": "Never use FILTER(ALL(Table), column = value) when a direct column filter inside CALCULATE achieves the same result — it forces a full table scan and hurts performance."
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "functionName": "CALCULATETABLE",
+  "category": "Filter",
+  "syntax": "CALCULATETABLE(<table_expression>, [<filter1>], [<filter2>], ...)",
+  "parameters": [
+    {
+      "name": "table_expression",
+      "required": true,
+      "type": "Table",
+      "description": "A table expression to evaluate under the modified filter context. This is the table equivalent of the expression in CALCULATE.",
+      "examNote": "Must return a table, not a scalar. Typically used to produce filtered tables for use inside other table functions like COUNTROWS, SUMX, or as calculated tables."
+    },
+    {
+      "name": "filter1, filter2, ...",
+      "required": false,
+      "type": "Boolean filter or Table expression",
+      "description": "Filters applied to the evaluation context before returning the table. Works identically to CALCULATE filter arguments.",
+      "examNote": "Accepts ALL(), REMOVEFILTERS(), FILTER(), or simple boolean expressions. These filters modify the context in which the table is evaluated."
+    }
+  ],
+  "returnType": "Table (a filtered table based on the modified context)",
+  "summary": "CALCULATETABLE is the table-returning counterpart to CALCULATE. While CALCULATE evaluates a scalar expression under a modified filter context, CALCULATETABLE evaluates a table expression under a modified context and returns that table. It is used when you need a filtered version of a table to pass into functions like COUNTROWS, SUMX, or to define a calculated table in the data model.",
+  "examples": [
+    {
+      "label": "Count rows in a filtered table",
+      "expression": "East Customer Count = COUNTROWS(CALCULATETABLE(Sales, Sales[Region] = \"East\"))",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Sales",
+            "columns": ["Region", "CustomerID", "Amount"],
+            "rows": [["East", "C1", 400], ["West", "C2", 300], ["East", "C3", 200], ["North", "C4", 150]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "East Customer Count",
+        "columns": ["East Customer Count"],
+        "rows": [[2]]
+      },
+      "explanation": "CALCULATETABLE returns the Sales table filtered to Region = East, which contains 2 rows. COUNTROWS then counts those 2 rows."
+    },
+    {
+      "label": "Calculated table using CALCULATETABLE",
+      "expression": "HighValueSales = CALCULATETABLE(Sales, Sales[Amount] > 300)",
+      "sampleData": null,
+      "expectedOutput": null,
+      "explanation": "This creates a calculated table in the data model that only contains rows where Amount > 300. It can then be used in relationships, measures, or as a standalone reference table."
+    }
+  ],
+  "filterFlow": {
+    "steps": [
+      "CALCULATETABLE receives filter arguments just like CALCULATE",
+      "It evaluates the table expression inside the modified filter context",
+      "The result is a table — not a scalar",
+      "The returned table can be passed to COUNTROWS, SUMX, or stored as a calculated table"
+    ]
+  },
+  "iteratorFlow": null,
+  "commonTraps": [
+    "CALCULATETABLE cannot be used as a standalone measure because it returns a table, not a scalar. Wrapping it in COUNTROWS, SUMX, or MAXX is required to produce a scalar measure.",
+    "CALCULATETABLE and FILTER() are sometimes interchangeable, but CALCULATETABLE respects context transition and all CALCULATE semantics, whereas FILTER() does not transition context by itself.",
+    "When creating calculated tables, CALCULATETABLE is evaluated at data refresh time — not at query time. The table is static until the model is refreshed."
+  ],
+  "relatedFunctions": ["CALCULATE", "FILTER", "ALL", "RELATEDTABLE", "COUNTROWS", "SUMX"],
+  "examWeight": "Medium",
+  "difficulty": "Hard",
+  "sqlEquivalent": {
+    "expression": "SELECT * FROM Sales WHERE Region = 'East'",
+    "note": "SQL returns a result set filtered by WHERE. CALCULATETABLE achieves the same by modifying the filter context before returning the table. The key DAX distinction is context transition — CALCULATETABLE also applies CALCULATE semantics such as context transition when used inside iterators."
+  }
+}

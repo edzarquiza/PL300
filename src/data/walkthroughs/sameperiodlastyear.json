@@ -1,0 +1,67 @@
+{
+  "id": "sameperiodlastyear",
+  "concept": "SAMEPERIODLASTYEAR",
+  "category": "DAX",
+  "tagline": "Time intelligence — compare current period to the same period one year ago",
+  "daxFunctionId": "sameperiodlastyear",
+  "relatedTags": ["SAMEPERIODLASTYEAR", "Time Intelligence"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Same Period Last Year",
+      "icon": "📅",
+      "body": "SAMEPERIODLASTYEAR shifts the current date filter context back exactly 12 months. Whatever period the user has selected — a day, a month, a quarter — it returns the equivalent period one year earlier.",
+      "keyPoint": "Requires a Date table marked as a Date Table with a contiguous date range — gaps or missing years cause BLANK results."
+    },
+    {
+      "type": "table",
+      "title": "Report Context — Q1 2024 Selected",
+      "caption": "User has a year slicer set to 2024, showing Jan–Mar data",
+      "headers": ["Month", "2024 Sales"],
+      "rows": [
+        ["Jan 2024", 120000],
+        ["Feb 2024", 115000],
+        ["Mar 2024", 138000]
+      ],
+      "note": "Active filter context: DimDate[Year] = 2024, months Jan–Mar"
+    },
+    {
+      "type": "dax",
+      "title": "Defining the Measures",
+      "code": "Sales LY =\nCALCULATE(\n    [Total Sales],\n    SAMEPERIODLASTYEAR(DimDate[Date])\n)\n\nYoY % Change =\nDIVIDE(\n    [Total Sales] - [Sales LY],\n    [Sales LY]\n)",
+      "annotation": "SAMEPERIODLASTYEAR(DimDate[Date]) returns dates Jan–Mar 2023. CALCULATE evaluates [Total Sales] in that shifted date context."
+    },
+    {
+      "type": "table",
+      "title": "Result — Year-over-Year Comparison",
+      "caption": "SAMEPERIODLASTYEAR correctly shifts each month back exactly 12 months",
+      "headers": ["Month", "2024 Sales", "2023 Sales (LY)", "YoY %"],
+      "rows": [
+        ["Jan", "120,000", "105,000", "+14.3%"],
+        ["Feb", "115,000", "108,000", "+6.5%"],
+        ["Mar", "138,000", "121,000", "+14.0%"]
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Prerequisites — Must Get These Right",
+      "bullets": [
+        "DimDate must be marked as a Date Table in the model (Table Tools → Mark as Date Table)",
+        "DimDate must have a contiguous date range — every single date present, no gaps",
+        "DimDate must be connected to FactSales via an active relationship on the date key",
+        "The date table should extend to Dec 31 of the current or next year — otherwise recent periods return BLANK"
+      ],
+      "warning": "If SAMEPERIODLASTYEAR returns BLANK for all rows, the most common cause is: date table not marked as Date Table, or the date column has gaps. Check both first."
+    },
+    {
+      "type": "text",
+      "title": "Alternatives",
+      "bullets": [
+        "DATEADD(DimDate[Date], -1, YEAR) — functionally identical for most scenarios, slightly more flexible",
+        "PREVIOUSYEAR(DimDate[Date]) — returns the entire previous calendar year regardless of current selection",
+        "PARALLELPERIOD(DimDate[Date], -1, YEAR) — similar to PREVIOUSYEAR, anchors to full period boundaries"
+      ],
+      "keyPoint": "For the PL-300 exam: SAMEPERIODLASTYEAR is the standard expected answer for 'compare to same period last year' questions."
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "id": "rls-dynamic",
+  "concept": "Dynamic RLS",
+  "category": "Security",
+  "tagline": "One role, many users — filter rows using the logged-in user's identity",
+  "relatedTags": ["RLS", "USERPRINCIPALNAME", "Dynamic Security"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Dynamic Row-Level Security",
+      "icon": "🔒",
+      "body": "Dynamic RLS uses the current user's email (from USERPRINCIPALNAME()) at report load time to filter data automatically. One role definition serves all users — each sees only their authorized rows.",
+      "keyPoint": "Define one role with a DAX filter using USERPRINCIPALNAME(). Assign all regional managers to that same role — the DAX handles the per-user filtering."
+    },
+    {
+      "type": "table",
+      "title": "Security Mapping Table — SalesAccess",
+      "caption": "A separate table maps user emails to their authorized region",
+      "headers": ["ManagerEmail", "AllowedRegion"],
+      "rows": [
+        ["alice@corp.com", "North"],
+        ["bob@corp.com", "South"],
+        ["carol@corp.com", "East"]
+      ],
+      "note": "This table is imported into the model. It has NO relationship to other tables — LOOKUPVALUE handles the lookup without one."
+    },
+    {
+      "type": "dax",
+      "title": "RLS DAX Filter on DimRegion",
+      "code": "-- Role: 'RegionManager'\n-- Filter expression applied to DimRegion table:\n\n[Region] = LOOKUPVALUE(\n    SalesAccess[AllowedRegion],\n    SalesAccess[ManagerEmail],\n    USERPRINCIPALNAME()\n)",
+      "annotation": "USERPRINCIPALNAME() returns the email of the user viewing the report in Power BI Service. LOOKUPVALUE finds their authorized region and restricts DimRegion to that value."
+    },
+    {
+      "type": "rls",
+      "title": "Alice Views the Report",
+      "user": "alice@corp.com",
+      "role": "RegionManager",
+      "filter": "[Region] = LOOKUPVALUE(SalesAccess[AllowedRegion], SalesAccess[ManagerEmail], USERPRINCIPALNAME())",
+      "allRows": {
+        "headers": ["Region", "Sales"],
+        "rows": [
+          ["North", "500,000"],
+          ["South", "380,000"],
+          ["East", "420,000"]
+        ]
+      },
+      "visibleRows": {
+        "headers": ["Region", "Sales"],
+        "rows": [
+          ["North", "500,000"]
+        ]
+      },
+      "note": "alice@corp.com → AllowedRegion = 'North' → DimRegion filtered to North → FactSales restricted to North rows via relationship"
+    },
+    {
+      "type": "text",
+      "title": "Critical Security Trap — LOOKUPVALUE Blank Vulnerability",
+      "bullets": [
+        "When LOOKUPVALUE finds no matching email, it returns BLANK",
+        "[Region] = BLANK() evaluates to TRUE for rows where Region is null or empty",
+        "This means users NOT in the SalesAccess table see all rows with null Region — a data leak!",
+        "Fix: IF(ISBLANK(LOOKUPVALUE(...)), FALSE(), [Region] = LOOKUPVALUE(...))"
+      ],
+      "warning": "The LOOKUPVALUE BLANK vulnerability is a top PL-300 exam trap. The 'intermittent data leakage' symptom (some managers see too much data, others don't) is the classic tell."
+    },
+    {
+      "type": "text",
+      "title": "Roles vs Users — How Assignment Works",
+      "bullets": [
+        "You define one role ('RegionManager') with the LOOKUPVALUE DAX filter",
+        "In Power BI Service → Security settings, you assign Azure AD users or groups to that role",
+        "Executives who need all data: assign to a separate role with NO filter (unfiltered role = sees everything)",
+        "When a user belongs to multiple roles, Power BI applies the UNION — most permissive wins"
+      ],
+      "keyPoint": "If an executive is assigned to both 'RegionManager' and an unfiltered 'Executive' role, they see ALL data — the unfiltered role takes precedence via union semantics."
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "functionName": "IF",
+  "category": "Logical",
+  "syntax": "IF(<logical_test>, <value_if_true>, [<value_if_false>])",
+  "parameters": [
+    {
+      "name": "logical_test",
+      "required": true,
+      "type": "Boolean",
+      "description": "An expression that evaluates to TRUE or FALSE. Can use comparison operators (=, <>, >, <, >=, <=) or other boolean functions.",
+      "examNote": "The logical test is always evaluated first. If the test returns an error (such as a division by zero inside the condition), the entire IF expression errors regardless of which branch would have been taken."
+    },
+    {
+      "name": "value_if_true",
+      "required": true,
+      "type": "Scalar",
+      "description": "The value or expression returned when the logical test evaluates to TRUE.",
+      "examNote": "Both the TRUE and FALSE branches may be evaluated internally before the condition is checked in some engine implementations. This can cause performance issues when branches contain complex or slow expressions."
+    },
+    {
+      "name": "value_if_false",
+      "required": false,
+      "type": "Scalar",
+      "description": "The value returned when the logical test evaluates to FALSE. Defaults to BLANK() if not specified.",
+      "examNote": "Omitting this argument returns BLANK() on the false path. If you need to show 0 instead of a blank, you must explicitly pass 0 as the third argument."
+    }
+  ],
+  "returnType": "Same type as value_if_true or value_if_false (must be compatible types)",
+  "summary": "IF evaluates a condition and returns one of two values based on whether the condition is true or false. It is the fundamental conditional function in DAX and is used for classification, validation, safe calculations, and dynamic labeling. For more than two conditions, SWITCH is generally cleaner than nesting multiple IF statements. In newer DAX engines, both branches may be evaluated before the condition resolves, which is a performance consideration for complex measures.",
+  "examples": [
+    {
+      "label": "Classify sales performance",
+      "expression": "Performance = IF([Total Sales] >= 10000, \"Above Target\", \"Below Target\")",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "SalesRep",
+            "columns": ["Rep", "Total Sales"],
+            "rows": [["Alice", 12000], ["Bob", 8500], ["Carol", 10000], ["Dave", 7200]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "Performance",
+        "columns": ["Rep", "Total Sales", "Performance"],
+        "rows": [["Alice", 12000, "Above Target"], ["Bob", 8500, "Below Target"], ["Carol", 10000, "Above Target"], ["Dave", 7200, "Below Target"]]
+      },
+      "explanation": "Alice (12000) and Carol (10000) meet the >= 10000 threshold and return Above Target. Bob and Dave fall below and return Below Target."
+    },
+    {
+      "label": "Safe division with IF",
+      "expression": "Safe Ratio = IF([Revenue] = 0, BLANK(), [Profit] / [Revenue])",
+      "sampleData": null,
+      "expectedOutput": null,
+      "explanation": "This pattern guards against division by zero. However, the preferred modern approach is to use DIVIDE([Profit], [Revenue]) which is more concise and handles blanks automatically."
+    }
+  ],
+  "filterFlow": null,
+  "iteratorFlow": null,
+  "commonTraps": [
+    "DAX IF may evaluate both branches before checking the condition in some engine contexts, unlike typical short-circuit evaluation. Placing an expensive expression in only one branch does not guarantee the other branch is skipped.",
+    "When IF returns BLANK() on the false path (omitted third argument), visuals may show empty cells instead of zeros. This can be intentional but is often unexpected. Pass 0 explicitly if you want zero displayed.",
+    "Deeply nested IFs (IF inside IF inside IF) become hard to read and maintain. Use SWITCH(TRUE(), ...) instead for multiple conditions."
+  ],
+  "relatedFunctions": ["SWITCH", "IFERROR", "BLANK", "AND", "OR", "NOT", "DIVIDE"],
+  "examWeight": "High",
+  "difficulty": "Easy",
+  "sqlEquivalent": {
+    "expression": "CASE WHEN Total_Sales >= 10000 THEN 'Above Target' ELSE 'Below Target' END",
+    "note": "SQL CASE WHEN is the equivalent construct. The key DAX difference is that IF may not short-circuit — both branches can be evaluated. SQL CASE WHEN stops evaluating once the first matching WHEN clause is found."
+  }
+}

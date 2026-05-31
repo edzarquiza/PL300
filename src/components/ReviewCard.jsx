@@ -7,6 +7,8 @@ import ResultTable from './ResultTable'
 import { addToRetryQueue, removeFromRetryQueue, isInRetryQueue } from '../services/retryQueueService'
 import { formatTime } from '../utils/examUtils'
 import { DAX_FUNCTIONS } from '../data/daxFunctions'
+import { getWalkthroughForTags } from '../data/walkthroughs'
+import WalkthroughViewer from './WalkthroughViewer'
 
 const DAX_MAP = Object.fromEntries(
   DAX_FUNCTIONS.map(fn => [fn.functionName.toUpperCase(), fn])
@@ -177,6 +179,8 @@ export default function ReviewCard({ question, userAnswer, questionNumber, confi
   const isEmpty   = isAnswerEmpty(userAnswer, question)
   const isCorrect = !isEmpty && isAnswerCorrect(userAnswer, question)
   const [inQueue, setInQueue] = useState(() => isInRetryQueue(question.id))
+  const [showWalkthrough, setShowWalkthrough] = useState(false)
+  const walkthrough = getWalkthroughForTags(question.tags ?? [])
 
   function toggleRetry() {
     if (inQueue) { removeFromRetryQueue(question.id); setInQueue(false) }
@@ -294,6 +298,16 @@ export default function ReviewCard({ question, userAnswer, questionNumber, confi
 
       {/* Expandable: DAX Reference (syntax + params + example + traps) */}
       <DaxReferencePanel question={question} />
+
+      {/* Expandable: Visual Walkthrough */}
+      {walkthrough && (
+        <CollapseSection
+          title={`▶ Visual Walkthrough — ${walkthrough.concept}`}
+          defaultOpen={false}
+        >
+          <WalkthroughViewer walkthrough={walkthrough} />
+        </CollapseSection>
+      )}
 
       {/* Retry footer */}
       {!isCorrect && !isEmpty && (

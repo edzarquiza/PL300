@@ -1,0 +1,108 @@
+{
+  "id": "visual-selection",
+  "concept": "Choosing the Right Visual",
+  "category": "Visualization",
+  "tagline": "Match the visual to the business question, not to personal preference",
+  "relatedTags": ["Visualization", "Visual Selection", "Report Design"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "The Right Visual for the Right Question",
+      "icon": "📊",
+      "body": "Every visual type is optimized for a specific analytical question. Choosing the wrong visual forces users to work harder to extract insight — and can actively mislead.",
+      "keyPoint": "Always start with the business question, not the data. What is the user trying to understand?"
+    },
+    {
+      "type": "table",
+      "title": "Business Requirement → Visual Match",
+      "caption": "The question determines the visual",
+      "headers": ["Business Question", "Best Visual", "Why"],
+      "rows": [
+        ["How have monthly sales changed over time?", "Line Chart", "Trends over continuous time"],
+        ["Which region has the highest revenue?", "Bar / Column Chart", "Comparing discrete categories"],
+        ["What % of total does each product represent?", "Donut / Pie Chart", "Part-to-whole composition"],
+        ["How does profit vary by region and category?", "Matrix", "Two-dimensional breakdown"],
+        ["Am I above or below my sales target?", "KPI Visual / Card", "Single metric vs goal"],
+        ["How are customers distributed by age and spend?", "Scatter Chart", "Correlation between two measures"]
+      ]
+    },
+    {
+      "type": "comparison",
+      "title": "Trend Over Time — Line vs Bar",
+      "options": [
+        {
+          "label": "Line Chart",
+          "icon": "📈",
+          "description": "Shows continuous change across time. The slope communicates rate of change intuitively.",
+          "pros": [
+            "Ideal for monthly, quarterly, daily trends",
+            "Multiple lines easy to compare",
+            "Forecasting and reference lines add context"
+          ],
+          "cons": [
+            "Harder to read exact values than bars",
+            "Not suited for comparing discrete categories"
+          ]
+        },
+        {
+          "label": "Bar / Column Chart",
+          "icon": "📊",
+          "description": "Best for comparing discrete categories at a single point in time.",
+          "pros": [
+            "Easy to compare exact values across categories",
+            "Works well for ranking"
+          ],
+          "cons": [
+            "Does not communicate trend as naturally as a line",
+            "Cluttered with many time periods"
+          ]
+        }
+      ],
+      "winner": "Line Chart"
+    },
+    {
+      "type": "comparison",
+      "title": "Part-to-Whole — Pie vs Treemap",
+      "options": [
+        {
+          "label": "Donut / Pie Chart",
+          "icon": "🍩",
+          "description": "Shows proportion of a whole. Works best with 3–5 segments — cognitive load increases sharply beyond that.",
+          "pros": [
+            "Instantly communicates 'share of total'",
+            "Good for executive summaries with few categories"
+          ],
+          "cons": [
+            "Difficult to compare similarly-sized slices",
+            "Terrible for more than 5–6 categories"
+          ]
+        },
+        {
+          "label": "Treemap",
+          "icon": "🗂",
+          "description": "Shows hierarchical composition using nested rectangles. Better than pie for many categories.",
+          "pros": [
+            "Handles many categories without clutter",
+            "Supports two-level hierarchy (category + subcategory)"
+          ],
+          "cons": [
+            "Harder to read exact proportions than pie",
+            "Less familiar to non-analyst audiences"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Common PL-300 Visual Selection Traps",
+      "bullets": [
+        "Scatter chart — used for correlation between two measures, NOT for time series",
+        "Waterfall chart — shows cumulative effect of sequential positive/negative values (bridge chart)",
+        "Funnel chart — shows stages of a process where volume decreases (sales pipeline, conversion)",
+        "Gauge chart — single value vs a target range; avoid for dashboards with many KPIs (space-inefficient)"
+      ],
+      "keyPoint": "For PL-300: if the question mentions 'trend over time' → Line Chart. 'Compare categories' → Bar/Column. 'Part of whole' → Donut/Treemap. 'Two measures correlation' → Scatter.",
+      "warning": "Pie charts with more than 5 slices are nearly always wrong on the PL-300 exam. If the scenario has 10 product categories, choose Treemap or Bar — not Pie."
+    }
+  ]
+}

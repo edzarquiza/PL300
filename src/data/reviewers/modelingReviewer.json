@@ -228,5 +228,143 @@
     "difficulty": "Hard",
     "estimatedReviewTime": 60,
     "tags": ["Calculation Groups", "DAX", "Time Intelligence"]
+  },
+  {
+    "id": "mod_role_playing_dim_advanced",
+    "domain": "Model the data",
+    "subtopic": "Data Modeling",
+    "concept": "Role-Playing Dimensions — Multiple Date Roles",
+    "summary": "A role-playing dimension serves multiple business roles in the same fact table — for example, a Date dimension used as OrderDate, ShipDate, and DueDate. Power BI allows only one active relationship per table pair; additional roles use inactive relationships activated via USERELATIONSHIP.",
+    "keyInsight": "Creating separate copies of the Date table for each role (OrderDate table, ShipDate table) wastes memory and creates maintenance overhead. One Date table with one active + multiple inactive relationships, each activated per measure, is the correct pattern.",
+    "commonTrap": "Creating three identical Date tables (DateOrder, DateShip, DateDue) to support three date roles. This triples memory consumption and requires maintaining three copies of any Date dimension enhancements. Use USERELATIONSHIP in specific measures instead.",
+    "miniQuiz": {
+      "question": "A model has OrderDateKey, ShipDateKey, and DueeDateKey in the Sales table. All three need Date dimension context. What is the best approach?",
+      "choices": [
+        "Create three identical Date tables and relate each to its respective date column",
+        "Create one Date table with one active relationship (OrderDate) and two inactive relationships (ShipDate, DueDate), using USERELATIONSHIP in measures as needed",
+        "Store the date attributes directly in the Sales fact table to avoid multiple relationships",
+        "Use LOOKUPVALUE in calculated columns to retrieve date attributes without relationships"
+      ],
+      "correctAnswer": 1,
+      "explanation": "One Date table with multiple inactive relationships is the standard pattern. The active relationship handles default filtering. Inactive ones are activated on demand per measure using CALCULATE(..., USERELATIONSHIP(Sales[ShipDateKey], Date[DateKey]))."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": ["Role-Playing Dimensions", "USERELATIONSHIP", "Data Modeling", "Date Table"]
+  },
+  {
+    "id": "mod_calculation_groups_advanced",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "Calculation Groups — Exam Focus",
+    "summary": "Calculation groups define sets of DAX calculation items (e.g., YTD, MTD, Prior Year, % vs LY) that apply to ANY measure selected via a slicer. They eliminate the need to create individual time-intelligence variants of every base measure.",
+    "keyInsight": "A calculation group with 4 items (Actual, YTD, Prior Year, % vs LY) applied to a model with 20 base measures replaces 80 individual measures (20 × 4). The PL-300 exam expects you to recognize calculation groups as the solution for reducing measure proliferation.",
+    "commonTrap": "Creating individual time-intelligence measures for each base measure: Revenue YTD, Cost YTD, Margin YTD, Revenue LY, Cost LY, etc. This is unmaintainable. A calculation group defines the time logic once and applies it dynamically to any selected measure.",
+    "miniQuiz": {
+      "question": "A model has 15 KPI measures and the business needs YTD, QTD, MTD, and Prior Year versions of each. What is the recommended approach?",
+      "choices": [
+        "Create 60 individual measures (4 × 15)",
+        "Add a SWITCH function inside each base measure to toggle between periods",
+        "Create a calculation group with 4 calculation items that apply time intelligence to the selected measure",
+        "Duplicate the fact table four times with pre-filtered date ranges"
+      ],
+      "correctAnswer": 2,
+      "explanation": "A calculation group with 4 items replaces 60 individual measures. Users select the desired time period from a slicer and any base measure automatically adopts that time logic. Calculation groups require Power BI Desktop and Tabular Editor or the built-in calculation groups feature."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": ["Calculation Groups", "DAX", "Time Intelligence", "Measures"]
+  },
+  {
+    "id": "mod_dax_variables",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "DAX Variables (VAR / RETURN)",
+    "summary": "VAR stores an intermediate calculation result. RETURN specifies the final output of the measure or column. Variables improve readability, avoid repeated evaluation, and capture filter context at the point of declaration.",
+    "keyInsight": "Variables capture the current filter context when declared — they do not re-evaluate inside subsequent iterators. This is especially important when using VAR inside SUMX: the variable stores its value once and remains constant through the entire iteration.",
+    "commonTrap": "Expecting a VAR declared inside a measure to re-evaluate for each row during SUMX iteration. Variables in DAX evaluate exactly ONCE at declaration — they are not row-level expressions. For per-row values inside iterators, reference the column directly without VAR.",
+    "miniQuiz": {
+      "question": "What is the primary benefit of using VAR in a complex DAX measure?",
+      "choices": [
+        "Variables make the measure evaluate faster by using the Storage Engine instead of Formula Engine",
+        "Variables allow the measure to respond to slicer selections differently for each visual",
+        "Variables improve readability and avoid evaluating the same sub-expression multiple times",
+        "Variables automatically remove filter context from the expression"
+      ],
+      "correctAnswer": 2,
+      "explanation": "VAR captures a result once, making complex expressions more readable and more efficient. If the same sub-expression appears twice (e.g., a CALCULATE with several filters), without VAR it would be evaluated twice. With VAR it evaluates once and is reused."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["VAR", "RETURN", "DAX", "Performance", "Readability"]
+  },
+  {
+    "id": "mod_semi_additive",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "Semi-Additive Measures",
+    "summary": "Semi-additive measures sum correctly across some dimensions but not others. The classic example: a bank balance adds correctly across accounts (summing multiple accounts makes sense) but not across time (summing daily balances gives nonsense totals). Correct patterns use LASTDATE or LASTNONBLANK.",
+    "keyInsight": "For period-end balances: CALCULATE(SUM(Balances[Amount]), LASTDATE(Date[Date])) returns the last day's balance in the current period. LASTNONBLANKVALUE handles gaps (missing dates). These patterns are the standard PL-300 answer for inventory, headcount, and financial balance measures.",
+    "commonTrap": "Using SUM(Balances[Amount]) for a bank balance or inventory measure and getting a nonsensical total across months. SUM adds all daily values — a bank balance on Dec 31 ≠ sum of all December daily balances. Use LASTDATE or LASTNONBLANK to retrieve the period-end snapshot.",
+    "miniQuiz": {
+      "question": "A model tracks daily warehouse inventory stock levels. A measure should show the stock at the END of each selected period. Which DAX pattern is correct?",
+      "choices": [
+        "SUM(Inventory[StockLevel]) — sums all daily snapshots",
+        "AVERAGE(Inventory[StockLevel]) — averages daily snapshots",
+        "CALCULATE(SUM(Inventory[StockLevel]), LASTDATE(Date[Date]))",
+        "MAX(Inventory[StockLevel]) — returns the highest daily level"
+      ],
+      "correctAnswer": 2,
+      "explanation": "LASTDATE(Date[Date]) returns the last date in the current filter context. CALCULATE restricts the evaluation to that single date, producing the end-of-period snapshot. SUM adds all daily values, AVERAGE gives a meaningless middle value, and MAX returns the peak (not the final) stock level."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": ["Semi-Additive", "DAX", "LASTDATE", "Inventory", "Finance"]
+  },
+  {
+    "id": "mod_calculatetable",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "CALCULATETABLE",
+    "summary": "CALCULATETABLE is the table equivalent of CALCULATE — it evaluates a table expression in a modified filter context. It returns a filtered table rather than a scalar value, commonly used inside iterators or to create virtual filtered tables.",
+    "keyInsight": "CALCULATETABLE(table, filter) is used wherever you need a filtered TABLE rather than a filtered scalar. Common uses: as the first argument of SUMX, inside COUNTROWS, or to create virtual tables for complex DAX patterns.",
+    "commonTrap": "Confusing CALCULATETABLE with FILTER. FILTER(table, condition) iterates every row and is slower. CALCULATETABLE(table, condition) uses the filter context mechanism — it can be faster for column-filter conditions because it leverages VertiPaq's bitmap filtering rather than row-by-row iteration.",
+    "miniQuiz": {
+      "question": "You need the total revenue for the top 5 products by sales. Which pattern correctly creates the filtered virtual table?",
+      "choices": [
+        "FILTER(Products, RANKX(ALL(Products), [Total Sales]) <= 5)",
+        "CALCULATETABLE(Products, TOPN(5, Products, [Total Sales]))",
+        "TOP5 = Products WHERE rank <= 5",
+        "FILTER(ALL(Products), [Total Sales] > 1000)"
+      ],
+      "correctAnswer": 1,
+      "explanation": "CALCULATETABLE(Products, TOPN(5, Products, [Total Sales])) evaluates the Products table filtered to the top 5 by Total Sales in a modified filter context. This virtual table can then be used as the input to SUMX or CALCULATE for revenue calculation."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": ["CALCULATETABLE", "DAX", "Table Functions", "Measures"]
+  },
+  {
+    "id": "mod_quick_measures",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "Quick Measures",
+    "summary": "Quick measures are pre-built DAX templates in Power BI Desktop that generate common calculations (running totals, percentage of total, year-over-year change, filtered averages) through a guided UI without writing DAX manually.",
+    "keyInsight": "Quick measures generate standard DAX code that you can inspect and modify. They are excellent for learning DAX patterns and for common calculations like moving averages, rank, and time intelligence. The exam tests knowing WHEN to use them, not their implementation details.",
+    "commonTrap": "Over-relying on quick measures for complex custom calculations. Quick measures generate generic templates — custom business logic (e.g., weighted averages, specific fiscal year logic) requires writing the DAX directly. Quick measures also cannot reference other measures as base calculations in all scenarios.",
+    "miniQuiz": {
+      "question": "A business analyst wants to add a Year-Over-Year revenue change measure without writing DAX manually. What should they use?",
+      "choices": [
+        "Write SAMEPERIODLASTYEAR manually in a new measure",
+        "Use a Quick Measure with the 'Year-over-year change' template",
+        "Add an analytics line in the line chart visual settings",
+        "Create a calculated column with DATEADD"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Quick Measures offer a 'Year-over-year change' template that generates the appropriate SAMEPERIODLASTYEAR DAX automatically. The analyst can review and modify the generated DAX to understand the pattern or customize it."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": ["Quick Measures", "DAX", "Time Intelligence", "Power BI Desktop"]
   }
 ]

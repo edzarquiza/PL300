@@ -1,0 +1,72 @@
+{
+  "functionName": "SWITCH",
+  "category": "Logical",
+  "syntax": "SWITCH(<expression>, <value1>, <result1>, [<value2>, <result2>], ..., [<else>])",
+  "parameters": [
+    {
+      "name": "expression",
+      "required": true,
+      "type": "Scalar",
+      "description": "The value to test against each condition. When using SWITCH(TRUE(), ...) this is simply the literal value TRUE and each condition is a full boolean expression.",
+      "examNote": "Two patterns exist: SWITCH(column, value1, result1, ...) for exact matching, and SWITCH(TRUE(), condition1, result1, ...) for range or complex conditions. The TRUE() pattern is more flexible but slightly less performant."
+    },
+    {
+      "name": "value1, result1 (pairs)",
+      "required": true,
+      "type": "Scalar pairs",
+      "description": "Each value-result pair: if the expression equals value1, result1 is returned. Multiple pairs can be listed. The first matching pair wins.",
+      "examNote": "Evaluation stops at the first match. If no values match and no else clause is provided, BLANK() is returned."
+    },
+    {
+      "name": "else",
+      "required": false,
+      "type": "Scalar",
+      "description": "The value returned when no value-result pair matches. If omitted, BLANK() is returned for unmatched cases.",
+      "examNote": "Always include an else clause in measures to handle unexpected values gracefully rather than returning blank silently."
+    }
+  ],
+  "returnType": "Same type as result values (all results must return compatible types)",
+  "summary": "SWITCH evaluates an expression against a list of possible values and returns the result corresponding to the first match. It replaces long chains of nested IF statements with a cleaner, more readable structure. The SWITCH(TRUE(), ...) pattern is especially powerful for range-based conditions and is a common PL-300 exam pattern. SWITCH evaluates conditions top to bottom and stops at the first match.",
+  "examples": [
+    {
+      "label": "Classify sales tier with exact match",
+      "expression": "Region Label = SWITCH(Sales[Region], \"East\", \"East Coast\", \"West\", \"West Coast\", \"North\", \"Northern\", \"Other\")",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Sales",
+            "columns": ["Region", "Amount"],
+            "rows": [["East", 400], ["West", 300], ["North", 200], ["South", 150]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "Region Label",
+        "columns": ["Region", "Region Label"],
+        "rows": [["East", "East Coast"], ["West", "West Coast"], ["North", "Northern"], ["South", "Other"]]
+      },
+      "explanation": "Each region is matched exactly. South does not match any pair so the else clause 'Other' is returned."
+    },
+    {
+      "label": "Classify score ranges with SWITCH TRUE pattern",
+      "expression": "Score Band = SWITCH(TRUE(), [Score] >= 90, \"Excellent\", [Score] >= 70, \"Good\", [Score] >= 50, \"Average\", \"Poor\")",
+      "sampleData": null,
+      "expectedOutput": null,
+      "explanation": "SWITCH(TRUE(), ...) evaluates each condition as a boolean. The first condition that equals TRUE wins. Score of 85 matches >= 70 (but not >= 90) so returns 'Good'. This replaces three nested IF statements with a flat, readable structure."
+    }
+  ],
+  "filterFlow": null,
+  "iteratorFlow": null,
+  "commonTraps": [
+    "SWITCH evaluates pairs in order and stops at the first match. Placing a more specific condition (>= 90) before a less specific one (>= 70) is critical in the SWITCH(TRUE()) pattern — reversing the order produces wrong results.",
+    "SWITCH(TRUE(), ...) creates OR-style conditions internally. For very large numbers of conditions or high-performance scenarios, a lookup table approach may be faster.",
+    "All result expressions in SWITCH may be evaluated before the match is found in some engine implementations, similar to IF. This can cause unexpected errors if a non-matched branch has an error-producing expression."
+  ],
+  "relatedFunctions": ["IF", "IFERROR", "BLANK", "SELECTEDVALUE", "VALUES"],
+  "examWeight": "High",
+  "difficulty": "Medium",
+  "sqlEquivalent": {
+    "expression": "CASE Region WHEN 'East' THEN 'East Coast' WHEN 'West' THEN 'West Coast' ELSE 'Other' END",
+    "note": "SQL CASE WHEN is the direct equivalent. SWITCH(column, value, result) maps to CASE column WHEN value THEN result. SWITCH(TRUE(), condition, result) maps to CASE WHEN condition THEN result. SQL CASE WHEN short-circuits on the first match just like SWITCH."
+  }
+}

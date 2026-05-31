@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import allQuestions from '../data/questions.json'
 import { EXAM_DOMAINS } from '../services/examBlueprint'
-import { generateExam, generateSeed, parseSeed } from '../services/examGenerator'
+import { generateExam, generateSeed, parseSeed, mulberry32, seededShuffle } from '../services/examGenerator'
 import { isAnswerEmpty } from '../utils/answerUtils'
 
 const ExamContext = createContext(null)
@@ -55,17 +55,27 @@ export function ExamProvider({ children }) {
     0
   )
 
-  function startExam({ questionCount = 10, domains = [], difficulties = [], examMode = 'exam', track = 'full_pl300', seed = null } = {}) {
+  function startExam({ questionCount = 10, domains = [], difficulties = [], examMode = 'exam', track = 'full_pl300', seed = null, questionIds = null } = {}) {
     const finalSeed = parseSeed(seed) ?? generateSeed()
-    const selected = generateExam(allQuestions, {
-      questionCount,
-      trackId: track,
-      domains,
-      difficulties,
-      examMode,
-      seed: finalSeed,
-      weakAreaBoost: examMode === 'weak_area',
-    })
+
+    let selected
+    if (questionIds && questionIds.length > 0) {
+      const idSet = new Set(questionIds.map(String))
+      const pool  = allQuestions.filter(q => idSet.has(String(q.id)))
+      const rng   = mulberry32(finalSeed)
+      const shuffled = seededShuffle(pool, rng)
+      selected = questionCount === Infinity ? shuffled : shuffled.slice(0, questionCount)
+    } else {
+      selected = generateExam(allQuestions, {
+        questionCount,
+        trackId: track,
+        domains,
+        difficulties,
+        examMode,
+        seed: finalSeed,
+        weakAreaBoost: examMode === 'weak_area',
+      })
+    }
 
     setQuestions(selected)
     setAnswers({})

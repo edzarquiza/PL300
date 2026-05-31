@@ -1,0 +1,62 @@
+{
+  "functionName": "DISTINCTCOUNT",
+  "category": "Aggregation",
+  "syntax": "DISTINCTCOUNT(<column>)",
+  "parameters": [
+    {
+      "name": "column",
+      "required": true,
+      "type": "Column",
+      "description": "The column whose distinct non-blank values are counted.",
+      "examNote": "DISTINCTCOUNT automatically ignores BLANK values. If you need to count distinct values including blanks, use COUNTROWS(DISTINCT(Table[Column])) instead."
+    }
+  ],
+  "returnType": "Integer (count of unique non-blank values in the column)",
+  "summary": "DISTINCTCOUNT counts the number of unique, non-blank values in a column. It is the go-to function for cardinality analysis — counting unique customers, unique products sold, or unique order IDs. Because it ignores blank values by default, results can differ from COUNTROWS(DISTINCT()) when blank rows exist.",
+  "examples": [
+    {
+      "label": "Count unique customers",
+      "expression": "Unique Customers = DISTINCTCOUNT(Sales[CustomerID])",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Sales",
+            "columns": ["OrderID", "CustomerID", "Amount"],
+            "rows": [["O1", "C1", 400], ["O2", "C2", 300], ["O3", "C1", 200], ["O4", null, 150]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "Unique Customers",
+        "columns": ["Unique Customers"],
+        "rows": [[2]]
+      },
+      "explanation": "CustomerID has values C1, C2, C1, and blank. DISTINCTCOUNT ignores the blank, sees C1 and C2 as the two distinct values, and returns 2."
+    },
+    {
+      "label": "Compare with COUNTROWS DISTINCT",
+      "expression": "Unique Incl Blank = COUNTROWS(DISTINCT(Sales[CustomerID]))",
+      "sampleData": null,
+      "expectedOutput": {
+        "label": "Unique Incl Blank",
+        "columns": ["Unique Incl Blank"],
+        "rows": [[3]]
+      },
+      "explanation": "DISTINCT() preserves the blank row as a distinct entry. COUNTROWS then counts C1, C2, and BLANK = 3. This differs from DISTINCTCOUNT, which would return 2."
+    }
+  ],
+  "filterFlow": null,
+  "iteratorFlow": null,
+  "commonTraps": [
+    "DISTINCTCOUNT ignores BLANK() — if your column has blank rows and you need to count them, use COUNTROWS(DISTINCT(column)) instead.",
+    "DISTINCTCOUNT only accepts a single column reference. It cannot accept a table expression. Use COUNTROWS(DISTINCT(...)) for table expressions.",
+    "DISTINCTCOUNT is affected by the current filter context, so its result changes based on slicer selections — this is expected behavior, not a bug."
+  ],
+  "relatedFunctions": ["COUNTROWS", "DISTINCT", "VALUES", "COUNT", "COUNTA"],
+  "examWeight": "Medium",
+  "difficulty": "Easy",
+  "sqlEquivalent": {
+    "expression": "SELECT COUNT(DISTINCT CustomerID) FROM Sales",
+    "note": "SQL COUNT(DISTINCT column) also ignores NULLs, making it directly equivalent to DAX DISTINCTCOUNT. The key difference is that DAX applies this within the current filter context rather than a WHERE clause."
+  }
+}

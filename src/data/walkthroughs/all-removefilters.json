@@ -1,0 +1,67 @@
+{
+  "id": "all-removefilters",
+  "concept": "ALL / REMOVEFILTERS",
+  "category": "DAX",
+  "tagline": "Clear filters to compute totals and percentages regardless of slicers",
+  "relatedTags": ["ALL", "REMOVEFILTERS", "Filter Context"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Why Remove Filters?",
+      "icon": "🧹",
+      "body": "When a slicer or row context filters the data, your measure only sees a subset. ALL() and REMOVEFILTERS() clear those filters so you can compute grand totals, denominators for %, or cross-category comparisons.",
+      "keyPoint": "CALCULATE([Sales], ALL(DimDate)) ignores any date slicer and always returns sales for all time."
+    },
+    {
+      "type": "table",
+      "title": "Data — User Slicer Set to 2024",
+      "caption": "Without ALL, measures only see the filtered 2024 rows",
+      "headers": ["Year", "Sales"],
+      "rows": [
+        [2022, 450000],
+        [2023, 520000],
+        [2024, 610000]
+      ],
+      "note": "Active filter context: Year = 2024. [Total Sales] = 610,000 (only 2024 visible)"
+    },
+    {
+      "type": "dax",
+      "title": "Three Related Measures",
+      "code": "-- Respects the year slicer\n[Total Sales] = SUM(Sales[Revenue])\n\n-- Ignores the year slicer entirely\n[All Time Sales] =\nCALCULATE(\n    SUM(Sales[Revenue]),\n    ALL(DimDate)\n)\n\n-- Current year as % of all-time total\n[% of Total] =\nDIVIDE([Total Sales], [All Time Sales])",
+      "annotation": "ALL(DimDate) clears every filter on DimDate — the Year slicer no longer affects [All Time Sales], allowing a meaningful denominator for the % measure."
+    },
+    {
+      "type": "table",
+      "title": "Result with Year = 2024 Selected",
+      "caption": "Even though the slicer is on 2024, [All Time Sales] sees all years",
+      "headers": ["Measure", "Value"],
+      "rows": [
+        ["[Total Sales]", "610,000"],
+        ["[All Time Sales]", "1,580,000"],
+        ["[% of Total]", "38.6%"]
+      ]
+    },
+    {
+      "type": "text",
+      "title": "ALL vs REMOVEFILTERS — The Difference",
+      "bullets": [
+        "ALL(Table) — dual purpose: clears filters AND can return the full table as a result (usable in FILTER or RANKX)",
+        "REMOVEFILTERS(Table) — only removes filters, cannot return a table (cleaner intent, recommended in CALCULATE)",
+        "ALL(Table[Column]) — removes filter only from one specific column, other column filters stay active",
+        "ALLEXCEPT(Table, Col1, Col2) — removes ALL filters on a table EXCEPT the columns listed"
+      ],
+      "keyPoint": "Exam rule: use REMOVEFILTERS when intent is purely to clear a filter inside CALCULATE. Use ALL when you also need the full table returned (e.g., RANKX(ALL(DimProduct), [Sales]))."
+    },
+    {
+      "type": "text",
+      "title": "Common ALL Patterns",
+      "bullets": [
+        "% of Grand Total: DIVIDE([Sales], CALCULATE([Sales], ALL(FactSales)))",
+        "Running Total: CALCULATE([Sales], FILTER(ALL(DimDate), DimDate[Date] <= MAX(DimDate[Date])))",
+        "Category Share: DIVIDE([Sales], CALCULATE([Sales], ALL(DimProduct[Category])))",
+        "RANKX across all: RANKX(ALL(DimStore), [Sales])"
+      ],
+      "warning": "ALL inside CALCULATE removes the filter, but measure-level filter tables and explicit visual-level filters can have higher precedence. Know the filter context precedence order for the PL-300 exam."
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "functionName": "LOOKUPVALUE",
+  "category": "Relationship",
+  "syntax": "LOOKUPVALUE(<result_column>, <search_column1>, <search_value1>, [<search_column2>, <search_value2>], ..., [<alternate_result>])",
+  "parameters": [
+    {
+      "name": "result_column",
+      "required": true,
+      "type": "Column",
+      "description": "The column from which the matching value is retrieved and returned.",
+      "examNote": "This is the column in the lookup table that holds the value you want to bring back — equivalent to the return column in a VLOOKUP."
+    },
+    {
+      "name": "search_column1",
+      "required": true,
+      "type": "Column",
+      "description": "The column to search in. Must be in the same table as result_column.",
+      "examNote": "Multiple search column/value pairs can be provided to create a composite key lookup. All conditions must match simultaneously — they are AND-ed together."
+    },
+    {
+      "name": "search_value1",
+      "required": true,
+      "type": "Scalar",
+      "description": "The value to match in search_column1. Typically a column reference from the table being calculated.",
+      "examNote": "If search_value1 comes from a different table, the tables do not need a defined relationship. This is the key advantage of LOOKUPVALUE over RELATED."
+    },
+    {
+      "name": "alternate_result",
+      "required": false,
+      "type": "Scalar",
+      "description": "The value returned when no match is found. Defaults to BLANK() if not specified.",
+      "examNote": "Unlike the last argument in some functions, LOOKUPVALUE's alternate_result is positional — it must come after all search_column/search_value pairs."
+    }
+  ],
+  "returnType": "Scalar (value from result_column where search conditions match), or alternate_result if no match",
+  "summary": "LOOKUPVALUE retrieves a value from a column in another table based on one or more matching criteria, without requiring a defined relationship between the tables. It is DAX's equivalent of a VLOOKUP or INDEX/MATCH. Use it when you need to bring values from an unrelated table, or when a relationship cannot be created due to data quality issues or model design constraints. If multiple rows match all conditions, an error is returned — use IFERROR or ensure uniqueness.",
+  "examples": [
+    {
+      "label": "Retrieve manager name without a relationship",
+      "expression": "Manager = LOOKUPVALUE(Employees[ManagerName], Employees[EmployeeID], Sales[SalesRepID])",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Sales",
+            "columns": ["OrderID", "SalesRepID"],
+            "rows": [["O1", "E101"], ["O2", "E102"], ["O3", "E101"]]
+          },
+          {
+            "name": "Employees",
+            "columns": ["EmployeeID", "ManagerName"],
+            "rows": [["E101", "Sarah Jones"], ["E102", "Mike Brown"]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "Manager Lookup",
+        "columns": ["OrderID", "Manager"],
+        "rows": [["O1", "Sarah Jones"], ["O2", "Mike Brown"], ["O3", "Sarah Jones"]]
+      },
+      "explanation": "For each row in Sales, LOOKUPVALUE searches Employees[EmployeeID] for the value in Sales[SalesRepID]. When E101 matches, it returns the corresponding Employees[ManagerName] value 'Sarah Jones'."
+    },
+    {
+      "label": "Composite key lookup",
+      "expression": "Price = LOOKUPVALUE(PriceList[Price], PriceList[ProductID], Sales[ProductID], PriceList[Year], Sales[Year])",
+      "sampleData": null,
+      "expectedOutput": null,
+      "explanation": "Both ProductID AND Year must match simultaneously. This is equivalent to a two-column VLOOKUP or INDEX/MATCH with multiple criteria. Both conditions are AND-ed together."
+    }
+  ],
+  "filterFlow": null,
+  "iteratorFlow": null,
+  "commonTraps": [
+    "If multiple rows in the lookup table match all search conditions, LOOKUPVALUE returns an error — not BLANK. Use IFERROR(LOOKUPVALUE(...), BLANK()) or ensure uniqueness before relying on LOOKUPVALUE.",
+    "LOOKUPVALUE works without a defined relationship. If a relationship already exists between the tables, use RELATED instead — it is simpler, faster, and leverages the model's relationship engine.",
+    "LOOKUPVALUE returning BLANK on no match can silently hide data issues in an RLS scenario. Always validate that all expected values have matches, especially when used for security-sensitive calculations."
+  ],
+  "relatedFunctions": ["RELATED", "RELATEDTABLE", "VALUES", "SELECTEDVALUE", "FILTER"],
+  "examWeight": "Medium",
+  "difficulty": "Medium",
+  "sqlEquivalent": {
+    "expression": "SELECT e.ManagerName FROM Sales s LEFT JOIN Employees e ON s.SalesRepID = e.EmployeeID",
+    "note": "SQL uses a JOIN to retrieve values from another table. LOOKUPVALUE achieves a per-row lookup without a physical join or a defined model relationship. For performance at scale, defined relationships with RELATED are preferred over LOOKUPVALUE."
+  }
+}

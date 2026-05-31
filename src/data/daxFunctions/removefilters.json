@@ -1,0 +1,65 @@
+{
+  "functionName": "REMOVEFILTERS",
+  "category": "Filter",
+  "syntax": "REMOVEFILTERS([<table_or_column>], [<column1>], [<column2>], ...)",
+  "parameters": [
+    {
+      "name": "table_or_column",
+      "required": false,
+      "type": "Table or Column",
+      "description": "The table or column from which filters are removed. If omitted entirely, ALL filters from the entire model are removed.",
+      "examNote": "Passing a table removes all column filters on that table. Passing individual columns removes only those column filters. Omitting the argument completely clears every filter in the model — use with care."
+    }
+  ],
+  "returnType": "Used as a filter modifier inside CALCULATE — returns a modified filter context, not a standalone scalar",
+  "summary": "REMOVEFILTERS is used exclusively inside CALCULATE as a filter argument. It removes filters from a specified table, one or more columns, or the entire model. Functionally it is identical to ALL() when used as a CALCULATE modifier, but semantically it communicates intent more clearly — the goal is to remove filters, not to return a full table. Microsoft introduced REMOVEFILTERS to make DAX code more readable and self-documenting.",
+  "examples": [
+    {
+      "label": "Calculate grand total ignoring all filters",
+      "expression": "Grand Total = CALCULATE(SUM(Sales[Amount]), REMOVEFILTERS(Sales))",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Sales",
+            "columns": ["Region", "Product", "Amount"],
+            "rows": [["East", "Bike", 400], ["West", "Helmet", 300], ["East", "Lock", 200]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "Grand Total",
+        "columns": ["Grand Total"],
+        "rows": [[900]]
+      },
+      "explanation": "REMOVEFILTERS(Sales) clears every filter on the Sales table — Region, Product, and any others. CALCULATE then evaluates SUM(Sales[Amount]) across all 900 worth of rows regardless of any slicer."
+    },
+    {
+      "label": "Remove filter from one column only",
+      "expression": "All Products Total = CALCULATE(SUM(Sales[Amount]), REMOVEFILTERS(Sales[Product]))",
+      "sampleData": null,
+      "expectedOutput": null,
+      "explanation": "Only the Product filter is removed. If a Region slicer is set to East, that filter remains active. This gives the total for all products within the selected region."
+    }
+  ],
+  "filterFlow": {
+    "steps": [
+      "CALCULATE receives its filter arguments before evaluating the expression",
+      "REMOVEFILTERS(Sales) signals DAX to strip all column filters from the Sales table",
+      "The expression is evaluated with no Sales filters but all other model filters remain",
+      "REMOVEFILTERS() with no arguments strips filters from every table in the model"
+    ]
+  },
+  "iteratorFlow": null,
+  "commonTraps": [
+    "REMOVEFILTERS() with NO arguments removes ALL filters from every table in the model — this is an extremely broad operation and rarely the correct choice.",
+    "REMOVEFILTERS is identical to ALL() when used inside CALCULATE. The difference is only semantic clarity. On the exam, both are correct for the same use case.",
+    "REMOVEFILTERS cannot be used standalone outside of CALCULATE. It has no meaning outside a filter context modification."
+  ],
+  "relatedFunctions": ["ALL", "ALLEXCEPT", "ALLSELECTED", "CALCULATE", "KEEPFILTERS"],
+  "examWeight": "Medium",
+  "difficulty": "Medium",
+  "sqlEquivalent": {
+    "expression": "SELECT SUM(Amount) FROM Sales",
+    "note": "SQL achieves this by simply not including a WHERE clause. In DAX, filters are always active from slicers and visuals, so REMOVEFILTERS is needed to explicitly override them — there is no passive way to ignore the filter context."
+  }
+}

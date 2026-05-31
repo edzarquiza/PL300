@@ -1,0 +1,69 @@
+{
+  "functionName": "EARLIER",
+  "category": "Iterator",
+  "syntax": "EARLIER(<column>, [<number>])",
+  "parameters": [
+    {
+      "name": "column",
+      "required": true,
+      "type": "Column",
+      "description": "The column from the outer row context you want to reference while inside an inner row context.",
+      "examNote": "EARLIER references the value of this column as it was in the PREVIOUS (outer) row context. This is what enables row-level comparisons like ranking each row against all other rows."
+    },
+    {
+      "name": "number",
+      "required": false,
+      "type": "Integer",
+      "description": "How many row context levels to go back. Defaults to 1 (one level up). Use 2 to go two levels up in deeply nested iterators.",
+      "examNote": "The default of 1 is sufficient for typical ranking scenarios. The number argument is rarely needed on the exam — focus on the default EARLIER(column) pattern."
+    }
+  ],
+  "returnType": "Scalar (the value of the specified column from the outer row context)",
+  "summary": "EARLIER provides access to the outer row context value of a column when you are inside a nested row context. It is most commonly used in calculated columns to create rankings, where you iterate over all rows of the table and compare each row's value to the value of the current outer row. The classic pattern is COUNTROWS(FILTER(Table, Table[Value] > EARLIER(Table[Value]))) + 1, which produces a rank for each row.",
+  "examples": [
+    {
+      "label": "Rank products by sales amount (calculated column)",
+      "expression": "Sales Rank = COUNTROWS(FILTER(Sales, Sales[Amount] > EARLIER(Sales[Amount]))) + 1",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Sales",
+            "columns": ["Product", "Amount"],
+            "rows": [["Bike", 500], ["Helmet", 200], ["Lock", 350], ["Gloves", 150]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "Sales Rank",
+        "columns": ["Product", "Amount", "Sales Rank"],
+        "rows": [["Bike", 500, 1], ["Helmet", 200, 3], ["Lock", 350, 2], ["Gloves", 150, 4]]
+      },
+      "explanation": "For the Bike row (outer context, Amount = 500): FILTER iterates all rows. EARLIER(Sales[Amount]) is 500 (the outer row value). No rows have Amount > 500, so COUNTROWS = 0. Rank = 0 + 1 = 1. For Helmet (Amount = 200): Bike (500) and Lock (350) have Amount > 200, so COUNTROWS = 2. Rank = 2 + 1 = 3."
+    }
+  ],
+  "filterFlow": null,
+  "iteratorFlow": {
+    "description": "EARLIER works within nested row contexts. The outer row context (from a calculated column scan) holds the current row value. The FILTER function creates an inner row context. EARLIER retrieves the outer value for comparison.",
+    "columns": ["Product", "Amount", "EARLIER(Amount)", "Rows with Amount > EARLIER", "Rank"],
+    "rows": [
+      ["Bike", 500, 500, 0, 1],
+      ["Helmet", 200, 200, 2, 3],
+      ["Lock", 350, 350, 1, 2],
+      ["Gloves", 150, 150, 3, 4]
+    ],
+    "finalOperation": "COUNTROWS of filtered rows + 1",
+    "finalResult": "Rank column values: 1, 3, 2, 4"
+  },
+  "commonTraps": [
+    "EARLIER is only meaningful inside a nested iterator (e.g., FILTER inside a calculated column). Calling it outside a nested row context causes an error because there is no outer row context to reference.",
+    "For most ranking scenarios in measures, RANKX is the better choice. EARLIER is more appropriate for ranking calculated columns where you need the value stored per row in the model.",
+    "EARLIER refers to the PREVIOUS row context level — it does NOT mean 'earlier in time'. The name is misleading but refers to an earlier (outer) level of context nesting."
+  ],
+  "relatedFunctions": ["RANKX", "FILTER", "COUNTROWS", "EARLIEST", "CALCULATE"],
+  "examWeight": "Medium",
+  "difficulty": "Hard",
+  "sqlEquivalent": {
+    "expression": "SELECT Product, Amount, (SELECT COUNT(*) FROM Sales s2 WHERE s2.Amount > s1.Amount) + 1 AS Rank FROM Sales s1",
+    "note": "SQL uses a correlated subquery referencing the outer table alias s1 to access the outer row's value. EARLIER(Sales[Amount]) is the DAX equivalent of referencing the outer row alias in a correlated subquery."
+  }
+}

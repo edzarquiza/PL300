@@ -138,5 +138,217 @@
         "tags": ["Sensitivity Labels", "Purview", "Compliance", "MiFID II", "Label Inheritance"]
       }
     ]
+  },
+  {
+    "id": "cs_contoso_health",
+    "title": "Contoso Healthcare Patient Analytics",
+    "scenario": "Contoso Regional Health System operates 6 hospitals and 40 outpatient clinics across three states. Their analytics team is building a centralized Power BI solution to consolidate patient outcome metrics, operational throughput, and financial performance for clinical and administrative leaders.",
+    "currentSetup": "Data is stored in an Azure Synapse Analytics dedicated SQL pool (patient encounters, procedures, billing — 220 million rows). Clinical reference data (ICD codes, provider rosters, facility mappings) is maintained in Excel workbooks on SharePoint. Refresh: the Synapse pool receives daily batch loads at 2:00 AM. All patient-identifiable information is classified as Protected Health Information (PHI) under HIPAA. Department heads should only see data for patients within their department. The executive team requires an enterprise-wide view. Current report build times in Power BI Desktop range from 45 seconds to 3 minutes per visual when connected via DirectQuery.",
+    "requirements": [
+      "Patient-level data must never be exposed to unauthorized users — department heads see only their department",
+      "Report performance must allow executives to load a 6-hospital summary in under 5 seconds",
+      "Source data changes daily — reports must reflect yesterday's data by 6:00 AM",
+      "PHI fields must be masked or excluded from any export functionality"
+    ],
+    "questions": [
+      {
+        "id": "cs_contoso_q1",
+        "type": "single",
+        "domain": "Prepare the data",
+        "subtopic": "Choose between DirectLake, DirectQuery, and Import",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_contoso_health",
+        "question": "The analytics team is evaluating storage modes for the 220M-row patient encounters table in Synapse Analytics. Executives report 45-second visual load times in DirectQuery mode. Refresh must reflect yesterday's data by 6:00 AM. Which storage mode configuration BEST meets both the performance and freshness requirements?",
+        "choices": [
+          "Import mode with incremental refresh policy — partition by EncounterDate, import only the last 3 days on each refresh cycle, retain 5 years historical in frozen partitions, schedule refresh at 3:00 AM",
+          "DirectQuery mode with Synapse materialized views pre-aggregating the most common executive KPIs to eliminate Formula Engine overhead",
+          "DirectLake mode pointing to the Synapse-backed OneLake delta tables for zero-ETL import with automatic framing at each batch load",
+          "Composite model — DirectQuery for the current month's encounters for live data, Import for all prior months"
+        ],
+        "correctAnswers": [0],
+        "explanation": "Import mode with incremental refresh is the standard PL-300 answer for large tables with daily batch loads and sub-second performance requirements. Incremental refresh partitions the table so only recent data is re-imported each cycle (here 3 days covers batch delays), while historical partitions remain frozen — avoiding a full 220M-row import daily. VertiPaq compression on Import mode delivers the sub-5-second executive load times. DirectQuery with materialized views (B) reduces load but cannot match Import compression ratios at 220M rows. DirectLake (C) requires Microsoft Fabric; Synapse dedicated SQL pools do not automatically expose OneLake delta tables without Fabric integration.",
+        "trapType": "Import vs DirectQuery",
+        "tags": ["Incremental Refresh", "Import Mode", "DirectQuery", "Performance", "Synapse"]
+      },
+      {
+        "id": "cs_contoso_q2",
+        "type": "single",
+        "domain": "Manage and secure Power BI",
+        "subtopic": "Implement row-level security roles",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_contoso_health",
+        "question": "The model has a DimDepartment table with a DepartmentHead_UPN column. Department heads must see only encounters where Encounter[DepartmentID] matches their assigned department. Executives belong to an 'Executive' Azure AD security group and must bypass department filtering. Which RLS design CORRECTLY implements this without creating separate roles for each department?",
+        "choices": [
+          "Create a single 'DeptHead' role with filter on DimDepartment: [DepartmentHead_UPN] = USERPRINCIPALNAME(). Add executives to a separate 'Executive' role with no filter. Assign users to exactly one role in the semantic model.",
+          "Create a 'DeptHead' role with filter on the Encounter fact table: [DepartmentID] IN VALUES(DimDepartment[DepartmentID]). Use LOOKUPVALUE to retrieve the department of the current user from a separate HR table.",
+          "Create one role with the DAX filter: IF(USERPRINCIPALNAME() IN VALUES(ExecRoster[UPN]), TRUE(), [DepartmentHead_UPN] = USERPRINCIPALNAME()). Apply the filter to DimDepartment.",
+          "Create a dynamic role using USERNAME() on the Encounter table: [DepartmentID] = LOOKUPVALUE(DimDepartment[DepartmentID], DimDepartment[DepartmentHead_UPN], USERNAME())"
+        ],
+        "correctAnswers": [0],
+        "explanation": "The correct pattern uses separate named roles — one for department heads filtered via DimDepartment (which propagates to Encounter via the relationship), and one for executives with no filter. Power BI applies the most permissive role when a user belongs to multiple roles, so executives assigned to the 'Executive' role see all data. This avoids the maintenance burden of per-department roles. Option C places the executive check inside a DAX IF expression — this pattern is not reliably supported in Power BI RLS and can produce unexpected results. Option D uses USERNAME() which returns domain\\user format on-premises, not UPN — unreliable in the Power BI Service.",
+        "trapType": "RLS Role Design",
+        "tags": ["RLS", "Dynamic Security", "USERPRINCIPALNAME", "Role Design", "PHI"]
+      },
+      {
+        "id": "cs_contoso_q3",
+        "type": "single",
+        "domain": "Visualize and analyze data",
+        "subtopic": "Configure export settings",
+        "difficulty": "Medium",
+        "caseStudyId": "cs_contoso_health",
+        "question": "HIPAA compliance requires that PHI fields (PatientName, DateOfBirth, SSN_Last4) must never be exportable from Power BI reports, even by department heads who can view them on screen. The fields are visible in table and matrix visuals for clinical users. What is the MOST appropriate configuration?",
+        "choices": [
+          "In the Power BI Admin portal, disable 'Export data' for the workspace under tenant settings; supplement with sensitivity labels that restrict export on the semantic model",
+          "Remove PatientName, DateOfBirth, and SSN_Last4 from all visuals and replace with a de-identified PatientToken column; retain PHI only in a separate restricted semantic model used by authorized clinical apps",
+          "Set the semantic model sensitivity label to 'Highly Confidential — PHI' in Microsoft Purview and configure label-based protection to block download/export actions",
+          "Configure workspace-level export restrictions to 'Allow export with restrictions' and instruct report authors to exclude PHI columns from table visuals"
+        ],
+        "correctAnswers": [1],
+        "explanation": "The only reliable way to prevent PHI export is to exclude it from the model entirely for general reporting. If PHI is present in the semantic model, any user with Build permission or data export capability could access it regardless of visual-level hiding. De-identification at the model level (B) is the architecturally sound HIPAA-compliant approach — clinical detail is served through a separate, purpose-built restricted model. Sensitivity labels (C) add a governance layer but rely on Microsoft 365 label enforcement, which does not prevent all export paths. Admin portal export restrictions (A, D) are policy controls that can be bypassed by users with the right permissions or desktop tools.",
+        "tags": ["PHI", "HIPAA", "Export Restrictions", "Data Security", "Sensitivity Labels"]
+      }
+    ]
+  },
+  {
+    "id": "cs_adventure_works",
+    "title": "Adventure Works Retail Modernization",
+    "scenario": "Adventure Works is a sporting goods retailer with 180 stores across North America, a growing e-commerce channel, and a wholesale distribution arm. Their BI team is migrating from SSRS paginated reports to an interactive Power BI solution serving 600 store managers, 15 regional directors, and the executive board.",
+    "currentSetup": "Source: on-premises SQL Server 2019 data warehouse with a partially normalized star schema. The FactSales table has 95 million rows. DimCustomer has a Type 2 SCD (historical rows with IsCurrent flag). The team currently runs 3 separate SQL queries to produce a monthly P&L: one for store sales, one for e-commerce, and one for wholesale. Each query returns different grain (store/day, order/hour, invoice/month). Marketing wants a DAX measure that shows 'Sales vs Same Period Last Year' with the ability to slice by store, product category, and channel.",
+    "requirements": [
+      "Unify store, e-commerce, and wholesale sales into a single fact table at day-channel-store grain without losing order-level e-commerce detail",
+      "The SCD Type 2 DimCustomer must correctly attribute sales to the customer profile active at the time of sale",
+      "The 'Sales vs Same Period Last Year' measure must work correctly with any combination of date, store, category, and channel slicers",
+      "Regional directors must see all stores in their region; store managers see only their own store"
+    ],
+    "questions": [
+      {
+        "id": "cs_aw_q1",
+        "type": "single",
+        "domain": "Prepare the data",
+        "subtopic": "Merge and append queries",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_adventure_works",
+        "question": "The team needs to combine store sales (day-store grain), e-commerce orders (hourly), and wholesale invoices (monthly) into a single FactSales table. Store and e-commerce data share the same SalesDate, StoreID, ProductID, and Revenue columns. Wholesale invoices have InvoiceDate, DistributorID, ProductID, and InvoiceRevenue with no StoreID. Which Power Query approach BEST supports a unified model without distorting granularity?",
+        "choices": [
+          "Append store and e-commerce queries (matching columns), add a Channel column to each before appending; load wholesale as a separate FactWholesale table linked to a shared DimProduct and DimDate — avoid forcing into FactSales due to grain mismatch",
+          "Merge all three queries using a full outer join on ProductID and date, filling nulls for missing columns with 0 to ensure no rows are dropped",
+          "Append all three sources and add a grain identifier column; aggregate to day-store grain using Group By on SalesDate and StoreID before loading",
+          "Create a reference query from FactSales, filter by Channel, and use Merge to add wholesale data via a left outer join on ProductID"
+        ],
+        "correctAnswers": [0],
+        "explanation": "When combining datasets with different grains, forcing them into the same fact table introduces data integrity risks. Appending store and e-commerce (same day-store grain) is valid. Wholesale at invoice-month grain with no StoreID cannot be cleanly appended — DistributorID does not map to StoreID, and aggregating to day would fabricate sub-invoice data. A separate FactWholesale table sharing DimProduct and DimDate allows accurate analysis at each table's natural grain. A full outer join (B) on ProductID alone is meaningless — one product can have millions of sales rows. Forced aggregation (C) loses the e-commerce hourly detail that was specified as a requirement.",
+        "trapType": "Merge vs Append",
+        "tags": ["Append", "Merge", "Fact Table Grain", "Power Query", "Data Integration"]
+      },
+      {
+        "id": "cs_aw_q2",
+        "type": "single",
+        "domain": "Model the data",
+        "subtopic": "Create model calculations by using DAX",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_adventure_works",
+        "question": "The marketing team wants a measure [Sales vs SPLY %] that compares current period sales to the same period last year, working correctly with any combination of date, store, product category, and channel slicers. The model has a standard DimDate table marked as a date table with a DateKey column. Which DAX measure is MOST correct?",
+        "choices": [
+          "Sales vs SPLY % = DIVIDE([Total Sales] - CALCULATE([Total Sales], SAMEPERIODLASTYEAR(DimDate[Date])), CALCULATE([Total Sales], SAMEPERIODLASTYEAR(DimDate[Date])))",
+          "Sales vs SPLY % = DIVIDE([Total Sales] - CALCULATE([Total Sales], DATEADD(DimDate[Date], -1, YEAR)), CALCULATE([Total Sales], DATEADD(DimDate[Date], -1, YEAR)))",
+          "Sales vs SPLY % = DIVIDE([Total Sales], CALCULATE([Total Sales], SAMEPERIODLASTYEAR(DimDate[Date]))) - 1",
+          "Sales vs SPLY % = ([Total Sales] - [Total Sales LY]) / [Total Sales LY]"
+        ],
+        "correctAnswers": [2],
+        "explanation": "Option C is the most concise and correct form: DIVIDE(Current, PY) - 1 gives the percentage change. SAMEPERIODLASTYEAR respects the current date filter context from all slicers (date, store, category, channel) and is the standard PL-300 time intelligence function for this pattern. Option A is logically equivalent but unnecessarily calculates SAMEPERIODLASTYEAR twice (no variable reuse). Option B using DATEADD -1 YEAR is functionally similar but SAMEPERIODLASTYEAR is preferred for this exact use case. Option D references [Total Sales LY] as if it were a separate named measure — if that measure is undefined, the formula breaks; this pattern should be self-contained or use VAR.",
+        "trapType": "Time Intelligence function selection",
+        "tags": ["SAMEPERIODLASTYEAR", "Time Intelligence", "DIVIDE", "Measures", "DAX"]
+      },
+      {
+        "id": "cs_aw_q3",
+        "type": "single",
+        "domain": "Model the data",
+        "subtopic": "Implement role-playing dimensions",
+        "difficulty": "Medium",
+        "caseStudyId": "cs_adventure_works",
+        "question": "FactSales has two date foreign keys: OrderDate and ShipDate. Both need to relate to DimDate for time intelligence. The team creates two relationships between FactSales and DimDate, but Power BI only allows one to be active. A measure [Sales by Ship Date] must correctly use the ShipDate relationship for SAMEPERIODLASTYEAR. How should this be implemented?",
+        "choices": [
+          "Keep the OrderDate → DimDate relationship active. Create [Sales by Ship Date] using CALCULATE([Total Sales], USERELATIONSHIP(FactSales[ShipDate], DimDate[DateKey])). Wrap the SAMEPERIODLASTYEAR call inside the same CALCULATE.",
+          "Create a second copy of DimDate named DimShipDate and establish a separate active relationship from FactSales[ShipDate] to DimShipDate[DateKey]",
+          "Mark both relationships as active — Power BI will use the relationship that matches the slicer's connected date dimension",
+          "Add a ShipYear, ShipMonth calculated column to FactSales using RELATED(DimDate[Year]) to avoid needing a second relationship"
+        ],
+        "correctAnswers": [0],
+        "explanation": "Role-playing dimensions are handled in Power BI by keeping one relationship active and activating the inactive relationship within a CALCULATE using USERELATIONSHIP. The SAMEPERIODLASTYEAR function must be inside the same CALCULATE that activates the USERELATIONSHIP — both modifiers apply within that filter context scope. A duplicate DimDate table (B) is the alternative approach and works correctly, but USERELATIONSHIP is the preferred PL-300 pattern when a single dimension serves multiple roles. Power BI does not allow two active relationships between the same tables (C is invalid). Calculated columns via RELATED (D) would return the OrderDate dimension values, not ShipDate.",
+        "trapType": "Role-Playing Dimensions",
+        "tags": ["USERELATIONSHIP", "Role-Playing Dimensions", "Time Intelligence", "Inactive Relationships", "DAX"]
+      }
+    ]
+  },
+  {
+    "id": "cs_tailspin",
+    "title": "Tailspin Toys Global Distribution",
+    "scenario": "Tailspin Toys is a global toy manufacturer and distributor operating in 22 countries. Their Power BI solution serves 800 users including country managers, category leads, and a global supply chain team. The solution was built 18 months ago and is showing significant performance and governance issues as the business has scaled.",
+    "currentSetup": "The model imports data from three sources: Azure SQL (global orders, 140M rows), Azure Blob Storage (product master CSV files, refreshed ad-hoc by the product team), and a third-party logistics API (delivery status, JSON format, updated every 6 hours). The model has 14 measures, 31 calculated columns on the FactOrders table, and 6 bidirectional relationships. Workspace: shared Premium P1 capacity. Users report 8–15 second load times. The product CSV files occasionally have schema changes (new columns added) that break the refresh pipeline. Country managers have raised concerns that they sometimes see order data from other countries.",
+    "requirements": [
+      "Reduce average report load time to under 4 seconds",
+      "Prevent CSV schema changes from breaking the refresh pipeline",
+      "Ensure country managers see only their country's orders — investigate and fix the data leakage",
+      "Allow the product team to update product master data without IT involvement"
+    ],
+    "questions": [
+      {
+        "id": "cs_tailspin_q1",
+        "type": "single",
+        "domain": "Model the data",
+        "subtopic": "Optimize model performance",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_tailspin",
+        "question": "Performance Analyzer shows the FactOrders table accounts for 73% of model memory. The table has 140M rows, 31 calculated columns, and 6 bidirectional relationships. A DAX query on a top-10 country revenue visual takes 11 seconds. Which combination of changes will MOST effectively reduce model size and query time?",
+        "choices": [
+          "Convert calculated columns that are used only in visuals (not in relationships or other measures) to measures; remove bidirectional relationships where single-direction filtering is sufficient; verify column data types are minimal (Integer vs Text for ID columns)",
+          "Switch FactOrders to DirectQuery mode to eliminate in-memory storage; this moves calculation to the Azure SQL engine which is optimized for 140M-row aggregation",
+          "Add aggregation tables in Power Query that pre-aggregate FactOrders to Country-Month grain; load both the aggregation table and detail table, configuring the aggregation table as a dual-storage model",
+          "Reduce the import date range from all history to the last 24 months using a query parameter; archive older data in a separate historical model"
+        ],
+        "correctAnswers": [0],
+        "explanation": "Calculated columns are stored in memory per row — 31 columns on a 140M-row table creates massive VertiPaq pressure and causes slow compression scans. Converting display-only calculated columns to measures eliminates this overhead (measures compute at query time on aggregated data, not row-by-row). Bidirectional relationships force both-direction filter propagation which multiplies query complexity — removing unnecessary bidirectional filters significantly reduces DAX query plan branching. Correct data types (Integer IDs vs Text) dramatically improve VertiPaq dictionary compression. DirectQuery (B) eliminates in-memory storage but introduces network round-trips and typically increases, not decreases, load time for aggregation-heavy executive dashboards.",
+        "trapType": "Calculated Column vs Measure",
+        "tags": ["Performance", "Calculated Columns", "Measures", "Bidirectional Relationships", "VertiPaq"]
+      },
+      {
+        "id": "cs_tailspin_q2",
+        "type": "single",
+        "domain": "Prepare the data",
+        "subtopic": "Create and modify parameters",
+        "difficulty": "Medium",
+        "caseStudyId": "cs_tailspin",
+        "question": "The product team uploads updated product master CSV files to Azure Blob Storage. When the product team adds new columns to the CSV (e.g., a new 'EcoRating' attribute), the Power Query step that selects specific columns fails because the step references columns by name using Table.SelectColumns with a hardcoded list. The refresh pipeline errors with 'column not found'. What is the MOST resilient fix?",
+        "choices": [
+          "Replace the Table.SelectColumns step with Table.SelectColumns that dynamically builds the column list using only columns confirmed to exist: Table.SelectColumns(Source, List.Intersect({requiredCols}, Table.ColumnNames(Source)))",
+          "Add a try/otherwise expression around the Table.SelectColumns step to silently ignore column errors and return the last successful refresh result",
+          "Set the CSV source query to use schema-on-read inference disabled so Power Query accepts any schema without validation",
+          "Create a Power Query parameter 'CSVSchema' that the product team updates manually each time they change the CSV structure before triggering refresh"
+        ],
+        "correctAnswers": [0],
+        "explanation": "The root cause is a brittle column selection step that assumes a fixed schema. The resilient fix is to intersect the required column list with the actual column names available in the source — Table.SelectColumns only requests columns that exist. This allows the product team to add new columns to the CSV without breaking the pipeline; the Power Query step simply ignores columns it doesn't need. try/otherwise (B) would mask legitimate errors and could serve stale data silently — dangerous for a production pipeline. Schema-on-read disabling (C) is not a configurable option in this way. A manual parameter (D) defeats the goal of IT-free product team updates and is error-prone.",
+        "trapType": "Power Query schema brittleness",
+        "tags": ["Power Query", "Parameters", "Schema", "Resilient Pipelines", "M Language"]
+      },
+      {
+        "id": "cs_tailspin_q3",
+        "type": "single",
+        "domain": "Manage and secure Power BI",
+        "subtopic": "Implement row-level security roles",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_tailspin",
+        "question": "Country managers report seeing order data from other countries. The model has a 'CountryManager' RLS role with filter on DimCountry: [CountryCode] = USERPRINCIPALNAME(). Investigation shows FactOrders has a bidirectional relationship with DimProduct, and DimProduct has an active relationship with a PromotionFact table. Promotions reference orders from multiple countries. What is the MOST likely cause of the data leakage and the correct fix?",
+        "choices": [
+          "Bidirectional cross-filtering on the FactOrders ↔ DimProduct relationship allows filter context to propagate from PromotionFact through DimProduct back into FactOrders, bypassing the DimCountry RLS filter. Fix: change the FactOrders ↔ DimProduct relationship to single-direction (DimProduct → FactOrders).",
+          "The RLS filter [CountryCode] = USERPRINCIPALNAME() is comparing a country code (e.g., 'US') against an email UPN — the comparison always evaluates to FALSE for all users, so no filter is applied and all rows are visible.",
+          "The 'CountryManager' role has not been assigned to users in the Power BI Service — unassigned roles do not restrict access and default to showing all data.",
+          "DimCountry uses a text CountryCode column but FactOrders stores a numeric CountryID — the relationship is on mismatched data types, so the filter does not propagate correctly."
+        ],
+        "correctAnswers": [0],
+        "explanation": "This is a classic bidirectional relationship RLS leakage scenario. With bidirectional cross-filter on FactOrders ↔ DimProduct, filter context can flow FROM FactOrders TO DimProduct AND back. When PromotionFact is filtered, it can pull DimProduct rows from other countries' orders, and the bidirectional relationship then exposes those FactOrders rows — bypassing the DimCountry RLS filter that only directly filters DimCountry, not FactOrders through this cross-filter path. The fix is to revert to single-direction filtering where possible and use CROSSFILTER(FactOrders[ProductID], DimProduct[ProductID], NONE) in measures that need the reverse direction. Option B is plausible but if the filter always returned FALSE, NO data would be visible — the symptom is too much data, not too little.",
+        "trapType": "Bidirectional Relationships and RLS",
+        "tags": ["RLS", "Bidirectional Relationships", "Security", "Cross-filter", "Data Leakage"]
+      }
+    ]
   }
 ]

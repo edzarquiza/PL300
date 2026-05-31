@@ -4,6 +4,7 @@ import { useExam } from '../context/ExamContext'
 import { getExamHistory, getWeakDomains } from '../services/historyService'
 import { EXAM_TRACKS, TRACK_COLORS } from '../data/examTracks'
 import { parseSeed } from '../services/examGenerator'
+import { getRetryQueue, clearRetryQueue } from '../services/retryQueueService'
 import allQuestions from '../data/questions.json'
 
 const COUNT_OPTIONS = [10, 20, 30, 50]
@@ -26,6 +27,7 @@ export default function HomePage() {
 
   const history = getExamHistory()
   const weakDomains = getWeakDomains(history)
+  const retryQueue = getRetryQueue()
 
   const track = EXAM_TRACKS.find(t => t.id === selectedTrack) ?? EXAM_TRACKS[0]
 
@@ -64,6 +66,18 @@ export default function HomePage() {
     navigate('/exam')
   }
 
+  function handleRetryQueue(count) {
+    if (!retryQueue.length) return
+    const ids = count === Infinity ? retryQueue : retryQueue.slice(0, count)
+    startExam({
+      questionIds: ids,
+      questionCount: ids.length,
+      examMode,
+      track: selectedTrack,
+    })
+    navigate('/exam')
+  }
+
   function handleDrillWeak() {
     if (!weakDomains.length) return
     startExam({
@@ -92,7 +106,7 @@ export default function HomePage() {
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-1">PL-300 Exam Simulator</h1>
           <p className="text-gray-400 text-sm">Microsoft Power BI Data Analyst · Passing score: 70%</p>
-          <div className="grid grid-cols-3 gap-2 mt-5">
+          <div className="grid grid-cols-2 gap-2 mt-5 sm:grid-cols-4">
             <button
               onClick={() => navigate('/history')}
               className="flex flex-col items-center gap-1 px-3 py-3 rounded-xl bg-blue-50 border border-blue-100 hover:bg-blue-100 hover:border-blue-200 transition-colors"
@@ -113,6 +127,13 @@ export default function HomePage() {
             >
               <span className="text-sm font-semibold text-teal-700">DAX Library</span>
               <span className="text-xs text-teal-400">Functions & syntax</span>
+            </button>
+            <button
+              onClick={() => navigate('/walkthroughs')}
+              className="flex flex-col items-center gap-1 px-3 py-3 rounded-xl bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 hover:border-indigo-200 transition-colors"
+            >
+              <span className="text-sm font-semibold text-indigo-700">Walkthroughs</span>
+              <span className="text-xs text-indigo-400">Visual learning</span>
             </button>
           </div>
         </div>
@@ -139,6 +160,40 @@ export default function HomePage() {
                 className="text-xs font-semibold text-white px-3 py-1.5 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Resume →
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Retry queue banner */}
+        {retryQueue.length > 0 && !savedSession && (
+          <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 mb-5">
+            <div className="flex items-center justify-between gap-4 mb-3">
+              <div>
+                <p className="text-sm font-semibold text-orange-800">
+                  Retry queue — {retryQueue.length} question{retryQueue.length !== 1 ? 's' : ''}
+                </p>
+                <p className="text-xs text-orange-600 mt-0.5">Questions you marked for review</p>
+              </div>
+              <button
+                onClick={() => { clearRetryQueue(); window.location.reload() }}
+                className="text-xs text-orange-400 hover:text-orange-600 transition-colors flex-shrink-0"
+              >
+                Clear
+              </button>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleRetryQueue(10)}
+                className="flex-1 text-xs font-semibold text-white px-3 py-2 bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors"
+              >
+                Quick Retry (10)
+              </button>
+              <button
+                onClick={() => handleRetryQueue(Infinity)}
+                className="flex-1 text-xs font-semibold text-orange-700 px-3 py-2 bg-orange-100 border border-orange-200 rounded-lg hover:bg-orange-200 transition-colors"
+              >
+                Full Retry ({retryQueue.length})
               </button>
             </div>
           </div>

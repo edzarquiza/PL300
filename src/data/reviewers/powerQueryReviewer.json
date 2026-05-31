@@ -228,5 +228,125 @@
     "difficulty": "Medium",
     "estimatedReviewTime": 45,
     "tags": ["Staging Queries", "Power Query", "Data Modeling"]
+  },
+  {
+    "id": "pq_privacy_levels",
+    "domain": "Prepare the data",
+    "subtopic": "Power Query",
+    "concept": "Privacy Levels",
+    "summary": "Privacy levels classify data sources by sensitivity: Public, Organizational, or Private. When Power Query combines data from multiple sources, privacy levels control whether data from one source can be shared with another during query evaluation.",
+    "keyInsight": "Privacy level mismatches cause Formula Firewall errors — the most common reason a query works in Power BI Desktop but fails when connecting to another source. Setting both sources to Organizational (or matching levels) resolves most formula firewall errors in enterprise scenarios.",
+    "commonTrap": "Ignoring privacy level warnings and setting all sources to Public for convenience. Public privacy means data can be sent to any other source — this is inappropriate for internal databases or confidential data. The correct practice is to set levels intentionally based on data sensitivity.",
+    "miniQuiz": {
+      "question": "A Power Query combining data from an internal SQL Server and a public API throws a Formula Firewall error. What is the most likely resolution?",
+      "choices": [
+        "Switch both sources to DirectQuery mode",
+        "Set the internal SQL Server source to Public privacy level",
+        "Set both sources to the Organizational privacy level so they can be combined",
+        "Disable query folding on the SQL Server connection"
+      ],
+      "correctAnswer": 2,
+      "explanation": "The Formula Firewall prevents data from a Private or Organizational source being sent to a less trusted source. Setting both to Organizational (matching trust level) allows Power Query to combine them without the firewall error, while still protecting internal data from being sent to Public sources."
+    }
+  },
+  {
+    "id": "pq_error_handling",
+    "domain": "Prepare the data",
+    "subtopic": "Power Query",
+    "concept": "Error Handling — try...otherwise",
+    "summary": "In M (Power Query formula language), try...otherwise handles transformation errors gracefully. try expression otherwise fallback returns the fallback value instead of propagating an error when the expression fails.",
+    "keyInsight": "try [Column] otherwise null is the standard pattern for catching conversion errors (e.g., trying to convert 'N/A' to a number). It is commonly used with custom column formulas to prevent errors from propagating and breaking the entire query load.",
+    "commonTrap": "Changing a column's data type directly when the column contains non-convertible values (like 'N/A' text in a numeric column). The direct type change errors on all bad values. The safer approach: add a custom column using try Number.From([Column]) otherwise null, then remove the original.",
+    "miniQuiz": {
+      "question": "A Revenue column contains mostly numbers but some rows have 'N/A' text. Changing the data type to Decimal causes errors. What is the best fix?",
+      "choices": [
+        "Filter out all rows where Revenue = 'N/A' before changing the data type",
+        "Add a custom column: try Number.From([Revenue]) otherwise null, then use this column",
+        "Replace 'N/A' with 0 and then change the data type",
+        "Keep the column as Text type and handle conversion in DAX measures"
+      ],
+      "correctAnswer": 1,
+      "explanation": "try...otherwise gracefully handles conversion errors per row, returning null for non-convertible values instead of failing the entire column transformation. This preserves all rows while safely converting valid revenue values to numbers."
+    }
+  },
+  {
+    "id": "pq_reference_vs_duplicate_adv",
+    "domain": "Prepare the data",
+    "subtopic": "Power Query",
+    "concept": "Reference vs Duplicate — When to Use Each",
+    "summary": "Duplicate creates an independent copy that re-evaluates from the original data source. Reference creates a dependent query that builds on the OUTPUT of the source query — changes to the source propagate downstream automatically.",
+    "keyInsight": "The critical distinction: a Reference query shares transformation work with its source. If both queries apply the same 5 steps, Reference runs those 5 steps once. Duplicate runs them twice — doubling source load and refresh time for identical transformations.",
+    "commonTrap": "Duplicating a query to create a dimension table from the same source as a fact table. This loads the source data twice. Referencing the base query (or a staging query) and applying different column selections creates both tables from a single source load.",
+    "miniQuiz": {
+      "question": "A base query loads 10M rows and applies 8 cleaning steps. You need a Customers dimension (unique customers) from the same data. Which approach avoids loading the source twice?",
+      "choices": [
+        "Duplicate the base query and add Group By on CustomerID",
+        "Create a new query pointing to the same SQL source with a different SELECT",
+        "Reference the base query and add Group By on CustomerID",
+        "Import a separate CSV with just customer data"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Referencing the base query builds the Customers query from the already-loaded output of the base query. No second trip to the source is required. Duplicating would re-execute all 8 steps independently against the source, doubling the data load."
+    }
+  },
+  {
+    "id": "pq_query_folding_break",
+    "domain": "Prepare the data",
+    "subtopic": "Power Query",
+    "concept": "Query Folding Break Points",
+    "summary": "Common operations that break query folding: adding a custom M column (non-SQL-translatable), Buffer functions (Table.Buffer), sorting after a merge, Remove Duplicates, certain text transformations, and merging with a non-foldable query.",
+    "keyInsight": "Once folding breaks at step N, ALL steps after N also lose folding — even if they would individually fold. The fix is to reorder: apply all foldable steps (filter rows, select columns, sort) before the first non-foldable step.",
+    "commonTrap": "Applying a date filter AFTER a Table.Buffer step and wondering why the filter is slow. Table.Buffer explicitly breaks folding by loading data into memory. All subsequent steps — including a simple row filter — run in Power Query memory on the full buffered dataset.",
+    "miniQuiz": {
+      "question": "A query has steps: 1. Source (SQL), 2. Filter date > 2022, 3. Table.Buffer(), 4. Filter region = 'East'. Which filters fold to SQL?",
+      "choices": [
+        "Both filters fold — they are both row filters",
+        "Neither filter folds — SQL Server connections cannot fold filters",
+        "Only step 2 folds — Table.Buffer breaks folding for all subsequent steps including step 4",
+        "Only step 4 folds — later steps override earlier ones"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Step 2 (Filter date > 2022) occurs before Table.Buffer and folds to SQL as a WHERE clause. Table.Buffer at step 3 explicitly loads all data into memory, breaking the folding chain. Step 4 (Filter region = 'East') runs in memory on the already-loaded buffer — it cannot fold."
+    }
+  },
+  {
+    "id": "pq_unpivot_columns",
+    "domain": "Prepare the data",
+    "subtopic": "Power Query",
+    "concept": "Unpivot Columns — Normalizing Wide Data",
+    "summary": "Unpivot transforms a wide (crosstab) table into a tall (normalized) table by converting selected column headers into rows. Each selected column becomes a row with an Attribute column (original column name) and a Value column (the cell value).",
+    "keyInsight": "PL-300 frequently tests Unpivot because real-world Excel exports, survey tools, and financial systems produce wide tables. Power BI's data model requires narrow, normalized tables. Unpivot is often the first transformation needed when loading spreadsheet data.",
+    "commonTrap": "Selecting the wrong columns before unpivoting. You should select the MEASURE columns (Jan Sales, Feb Sales, Mar Sales) to unpivot — not the identifier columns (Product, Region). Selecting identifier columns produces a mangled result with product names as attribute values.",
+    "miniQuiz": {
+      "question": "A table has: Product | Jan_Revenue | Feb_Revenue | Mar_Revenue. You need: Product | Month | Revenue. Which columns should you select for Unpivot?",
+      "choices": [
+        "Select the Product column and choose Unpivot Other Columns",
+        "Select Jan_Revenue, Feb_Revenue, Mar_Revenue and choose Unpivot Columns",
+        "Select all columns and choose Transpose",
+        "Use Group By on the Product column"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Selecting the month revenue columns (Jan_Revenue, Feb_Revenue, Mar_Revenue) and unpivoting them produces Attribute (month name) and Value (revenue) columns, with Product repeating per row — the correct normalized structure. 'Unpivot Other Columns' (option A) achieves the same result by keeping Product fixed and unpivoting everything else."
+    }
+  },
+  {
+    "id": "pq_parameters_advanced",
+    "domain": "Prepare the data",
+    "subtopic": "Power Query",
+    "concept": "Parameters — Dynamic Configuration",
+    "summary": "Power Query parameters are named typed values that can be referenced in query steps. They support dynamic data source URLs, file paths, server names, filter thresholds, and environment switching. Parameters can be modified in Power BI Desktop or updated via deployment pipeline rules.",
+    "keyInsight": "Parameters enable ENVIRONMENT SWITCHING — a parameter for the server name set to 'dev-server' in development and 'prod-server' in production. Deployment pipeline parameter rules update the value automatically when promoting from Development to Production without touching the PBIX file.",
+    "commonTrap": "Hardcoding environment-specific values (server names, API keys, file paths) directly in query steps. When the report is promoted from Dev to Production, the developer must manually edit the query — a maintenance risk. Parameters make this change a configuration step, not a code edit.",
+    "miniQuiz": {
+      "question": "A report connects to different server names in Development, Test, and Production environments. How should this be managed?",
+      "choices": [
+        "Create three separate PBIX files — one per environment",
+        "Use a Power Query parameter for the server name and configure deployment pipeline parameter rules to update it per stage",
+        "Switch to DirectQuery mode so the server name is passed at runtime",
+        "Store the server name in a SharePoint list and use a Web connector to retrieve it"
+      ],
+      "correctAnswer": 1,
+      "explanation": "A Power Query parameter for the server name, combined with deployment pipeline parameter rules, allows the server value to change automatically when content is promoted from Dev → Test → Production. This is the standard enterprise configuration management pattern."
+    }
   }
 ]

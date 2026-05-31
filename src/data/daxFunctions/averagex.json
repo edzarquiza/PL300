@@ -1,0 +1,87 @@
+{
+  "functionName": "AVERAGEX",
+  "category": "Iterator",
+  "syntax": "AVERAGEX(<table>, <expression>)",
+  "parameters": [
+    {
+      "name": "table",
+      "required": true,
+      "type": "Table",
+      "description": "The table to iterate over. Every row is visited once and the expression is evaluated in that row's context.",
+      "examNote": "Use FILTER() to limit the rows before averaging. AVERAGEX(FILTER(Sales, Sales[Region] = 'East'), ...) averages only East region rows."
+    },
+    {
+      "name": "expression",
+      "required": true,
+      "type": "Scalar",
+      "description": "The expression evaluated for each row. The results from all rows are averaged. Blank results are excluded from the average calculation.",
+      "examNote": "If the expression returns BLANK for some rows, those rows are excluded from both the numerator and the denominator of the average. This differs from treating blanks as zero."
+    }
+  ],
+  "returnType": "Decimal (average of all non-blank per-row expression results)",
+  "summary": "AVERAGEX iterates every row of a table, evaluates an expression for each row, and returns the arithmetic mean of the non-blank results. Use AVERAGEX when the value you want to average requires per-row calculation — for example, averaging a profit margin that must be computed as Profit / Revenue for each row before averaging. AVERAGE(column) only works on a stored column of values; AVERAGEX computes on the fly.",
+  "examples": [
+    {
+      "label": "Average order value per transaction",
+      "expression": "Avg Order Value = AVERAGEX(Sales, Sales[Qty] * Sales[UnitPrice])",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Sales",
+            "columns": ["OrderID", "Qty", "UnitPrice"],
+            "rows": [["O1", 2, 500], ["O2", 3, 80], ["O3", 1, 30]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "Avg Order Value",
+        "columns": ["Avg Order Value"],
+        "rows": [[423.33]]
+      },
+      "explanation": "Row O1: 2 × 500 = 1000. Row O2: 3 × 80 = 240. Row O3: 1 × 30 = 30. Average = (1000 + 240 + 30) / 3 = 423.33. Note: SUM(Sales[Qty]) * SUM(Sales[UnitPrice]) / COUNTROWS(Sales) would give a wrong result because it multiplies totals before dividing."
+    },
+    {
+      "label": "AVERAGEX vs AVERAGE comparison",
+      "expression": "Wrong Avg = AVERAGE(Sales[Amount])",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Sales with blanks",
+            "columns": ["OrderID", "Amount"],
+            "rows": [["O1", 100], ["O2", 200], ["O3", null]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "Average (excluding blank)",
+        "columns": ["AVERAGE result"],
+        "rows": [[150]]
+      },
+      "explanation": "AVERAGE(Sales[Amount]) returns (100 + 200) / 2 = 150 because blank rows are excluded. AVERAGEX(Sales, Sales[Amount]) also returns 150 for the same reason. The difference appears only when the expression produces blanks differently than the column's stored blanks."
+    }
+  ],
+  "filterFlow": null,
+  "iteratorFlow": {
+    "description": "AVERAGEX visits each row of the Sales table, computes the expression in that row's context, excludes blanks, then divides the sum of results by the count of non-blank results.",
+    "columns": ["OrderID", "Qty", "UnitPrice", "Row Expression", "Row Result"],
+    "rows": [
+      ["O1", 2, 500, "2 × 500", 1000],
+      ["O2", 3, 80, "3 × 80", 240],
+      ["O3", 1, 30, "1 × 30", 30]
+    ],
+    "finalOperation": "SUM(1000 + 240 + 30) / COUNT(3 non-blank rows)",
+    "finalResult": 423.33
+  },
+  "commonTraps": [
+    "AVERAGEX(Sales, Sales[Amount]) and AVERAGE(Sales[Amount]) produce the same result when the column has no blank rows. They differ when the row expression produces blanks differently than the stored column — blanks are excluded from both numerator and denominator.",
+    "AVERAGE([Profit] / [Revenue]) is NOT the same as AVERAGEX(Sales, Sales[Profit] / Sales[Revenue]). The former takes the average of already-aggregated values; the latter computes a per-row ratio first, which is the correct approach for margin averaging.",
+    "If ALL rows produce BLANK, AVERAGEX returns BLANK — not zero or an error."
+  ],
+  "relatedFunctions": ["AVERAGE", "SUMX", "MAXX", "MINX", "COUNTX", "FILTER"],
+  "examWeight": "Medium",
+  "difficulty": "Medium",
+  "sqlEquivalent": {
+    "expression": "SELECT AVG(Qty * UnitPrice) FROM Sales",
+    "note": "SQL AVG() of an inline expression (AVG(Qty * UnitPrice)) computes per-row before averaging — exactly what AVERAGEX does. SQL also excludes NULLs from AVG automatically, mirroring AVERAGEX's blank-exclusion behavior."
+  }
+}

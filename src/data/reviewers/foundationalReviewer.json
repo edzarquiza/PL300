@@ -286,6 +286,98 @@
     }
   },
   {
+    "id": "found_directlake",
+    "concept": "DirectLake Storage Mode",
+    "subtopic": "Data Modeling",
+    "domain": "Prepare the data",
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["DirectLake", "Microsoft Fabric", "Storage Mode", "Performance"],
+    "summary": "DirectLake is a storage mode in Microsoft Fabric that reads data directly from OneLake parquet files without importing into memory or querying live. It combines Import speed with DirectQuery freshness — but only within the Microsoft Fabric ecosystem.",
+    "keyInsight": "DirectLake requires Microsoft Fabric and OneLake. It cannot connect to arbitrary external databases, on-premises sources, or Azure SQL. If the question mentions SQL Server or non-Fabric sources, DirectLake is NEVER the answer.",
+    "commonTrap": "Selecting DirectLake as the answer whenever 'performance + freshness' is mentioned. DirectLake only works with data stored in OneLake (Fabric). For all other sources — Azure SQL, on-premises SQL Server, SharePoint — use Import or DirectQuery.",
+    "miniQuiz": {
+      "question": "A team wants near-real-time report performance for a dataset stored in Microsoft Fabric's OneLake. Which storage mode is most appropriate?",
+      "choices": [
+        "Import with 30-minute refresh",
+        "DirectQuery against Azure SQL Database",
+        "DirectLake — reads OneLake parquet files with near-Import performance",
+        "Composite model combining Import and DirectQuery"
+      ],
+      "correctAnswer": 2,
+      "explanation": "DirectLake is specifically designed for Fabric/OneLake data — it reads parquet files at near-Import speed without requiring scheduled refresh. It is only available in the Microsoft Fabric platform."
+    }
+  },
+  {
+    "id": "found_incremental_refresh",
+    "concept": "Incremental Refresh",
+    "subtopic": "Data Modeling",
+    "domain": "Prepare the data",
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["Incremental Refresh", "Performance", "Power Query", "Premium"],
+    "summary": "Incremental refresh partitions a large table so only new or changed data is refreshed, rather than reloading the entire table every time. Configured in Power BI Desktop using RangeStart and RangeEnd Power Query parameters.",
+    "keyInsight": "Incremental refresh requires Power BI Premium or Premium Per User. It dramatically reduces refresh time for large tables by only loading data within the recent window. Historical partitions are preserved and not re-queried.",
+    "commonTrap": "Expecting incremental refresh to work on Pro license workspaces — it requires Premium capacity. Also: incremental refresh requires the source to support query folding on the date filter. If the source cannot fold the date filter, the entire table is still downloaded.",
+    "miniQuiz": {
+      "question": "A 500M-row sales table takes 4 hours to refresh fully. Only the last 90 days of data changes. What is the most appropriate optimization?",
+      "choices": [
+        "Switch to DirectQuery mode to avoid all refreshes",
+        "Remove historical data and only load 90 days",
+        "Configure incremental refresh to store 5 years of history but only refresh the last 90 days",
+        "Schedule more frequent full refreshes to reduce the backlog"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Incremental refresh keeps historical data as compressed partitions and only reloads the rolling recent window (e.g., last 90 days). This keeps full historical analysis available while reducing refresh time from hours to minutes."
+    }
+  },
+  {
+    "id": "found_dataflows",
+    "concept": "Dataflows",
+    "subtopic": "Data Modeling",
+    "domain": "Prepare the data",
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": ["Dataflows", "Power Query", "Reuse", "ETL"],
+    "summary": "Dataflows are reusable Power Query transformations executed in the Power BI Service and stored as tables in Azure Data Lake Storage. Multiple datasets can consume the same dataflow, centralizing ETL logic.",
+    "keyInsight": "Dataflows separate data preparation from data modeling. Instead of each report's dataset performing its own transformations, one dataflow prepares the data once and multiple semantic models consume it — ensuring consistency and reducing source system query load.",
+    "commonTrap": "Duplicating the same Power Query transformation steps in five different datasets. Dataflows allow you to define the transformation once in the Service and reference it from any dataset — the 'single source of truth' for data preparation.",
+    "miniQuiz": {
+      "question": "Five different Power BI datasets all query the same CRM API and apply identical cleaning steps. What is the most maintainable approach?",
+      "choices": [
+        "Copy the Power Query steps into each dataset and maintain them separately",
+        "Create a dataflow with the shared cleaning logic and connect all datasets to it",
+        "Create a single dataset and have all five reports connect to it",
+        "Use DirectQuery in all five datasets to avoid duplication"
+      ],
+      "correctAnswer": 1,
+      "explanation": "A dataflow centralizes the shared transformation logic in the Power BI Service. All five datasets reference the dataflow's output — changes to the cleaning logic are made once and propagate to all consumers automatically."
+    }
+  },
+  {
+    "id": "found_query_folding_advanced",
+    "concept": "Query Folding — Advanced",
+    "subtopic": "Power Query",
+    "domain": "Prepare the data",
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": ["Query Folding", "Power Query", "Performance", "M Language"],
+    "summary": "Query folding pushes transformation logic back to the data source as a native query. When folding breaks, Power Query downloads all data to memory and processes it locally. Breaking points include: custom M columns, certain text functions, merging with non-foldable queries, and some data type changes.",
+    "keyInsight": "To diagnose folding: right-click a step in Power Query Editor — if 'View Native Query' is available, the step folds. Once broken, all subsequent steps run in memory. Design strategy: apply all foldable steps (filters, column selection, row removal) BEFORE any non-foldable steps.",
+    "commonTrap": "Applying a row filter (which would normally fold) AFTER a custom column that breaks folding. The filter then runs in memory on the full downloaded dataset. Re-ordering steps so the filter precedes the custom column restores server-side filtering and can reduce refresh time from hours to minutes.",
+    "miniQuiz": {
+      "question": "A Power Query for SQL Server has these steps: 1. Source, 2. Filter rows (date > 2020), 3. Add custom column, 4. Remove duplicates. Which steps fold to SQL?",
+      "choices": [
+        "All four steps — Power Query always tries to fold everything",
+        "Only step 1 and 2 — the custom column and Remove Duplicates break folding",
+        "None — SQL Server connections never fold",
+        "Only step 1 — filters require explicit indexing to fold"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Steps 1 and 2 (Source + Filter rows) fold to SQL as a SELECT with WHERE clause. Adding a custom M column (step 3) typically cannot be translated to SQL — it breaks folding. Remove Duplicates (step 4) also cannot fold. Steps 3 and 4 run in memory after the first two steps execute on the server."
+    }
+  },
+  {
     "id": "found_workspace_roles",
     "concept": "Power BI Workspace Roles",
     "subtopic": "Security & Service",

@@ -1,0 +1,117 @@
+{
+  "id": "merge-append",
+  "concept": "Merge vs Append",
+  "category": "Power Query",
+  "tagline": "Combine queries horizontally (columns) or vertically (rows)",
+  "relatedTags": ["Merge Queries", "Append Queries"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Two Ways to Combine Queries",
+      "icon": "🔗",
+      "body": "Merge combines two queries side-by-side — like a SQL JOIN, it adds new columns. Append stacks queries on top of each other — like a SQL UNION ALL, it adds more rows.",
+      "keyPoint": "Merge = more columns (lookup/enrich). Append = more rows (consolidate). Choose based on what your data shape needs."
+    },
+    {
+      "type": "table",
+      "title": "Table A — Sales Orders",
+      "headers": ["OrderID", "CustomerID", "Amount"],
+      "rows": [
+        ["ORD-1", "C001", 500],
+        ["ORD-2", "C002", 300],
+        ["ORD-3", "C001", 150]
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Table B — Customers (Lookup)",
+      "headers": ["CustomerID", "Name", "Region"],
+      "rows": [
+        ["C001", "Alice Chen", "North"],
+        ["C002", "Bob Smith", "South"]
+      ]
+    },
+    {
+      "type": "transform",
+      "title": "Merge — Enrich Orders with Customer Data",
+      "stepName": "Left Outer Join on CustomerID",
+      "before": {
+        "headers": ["OrderID", "CustomerID", "Amount"],
+        "rows": [
+          ["ORD-1", "C001", 500],
+          ["ORD-2", "C002", 300],
+          ["ORD-3", "C001", 150]
+        ]
+      },
+      "after": {
+        "headers": ["OrderID", "CustomerID", "Amount", "Name", "Region"],
+        "rows": [
+          ["ORD-1", "C001", 500, "Alice Chen", "North"],
+          ["ORD-2", "C002", 300, "Bob Smith", "South"],
+          ["ORD-3", "C001", 150, "Alice Chen", "North"]
+        ]
+      },
+      "note": "Merge added Name and Region columns — row count stays the same (3 orders in, 3 orders out)"
+    },
+    {
+      "type": "table",
+      "title": "Table C — Online Sales (same structure as A)",
+      "caption": "Same schema as Table A — can be stacked",
+      "headers": ["OrderID", "CustomerID", "Amount"],
+      "rows": [
+        ["WEB-1", "C003", 200],
+        ["WEB-2", "C001", 75]
+      ]
+    },
+    {
+      "type": "transform",
+      "title": "Append — Combine Store and Online Sales",
+      "stepName": "Append Queries (UNION ALL)",
+      "before": {
+        "headers": ["OrderID", "CustomerID", "Amount"],
+        "rows": [
+          ["ORD-1", "C001", 500],
+          ["ORD-2", "C002", 300],
+          ["ORD-3", "C001", 150]
+        ]
+      },
+      "after": {
+        "headers": ["OrderID", "CustomerID", "Amount"],
+        "rows": [
+          ["ORD-1", "C001", 500],
+          ["ORD-2", "C002", 300],
+          ["ORD-3", "C001", 150],
+          ["WEB-1", "C003", 200],
+          ["WEB-2", "C001", 75]
+        ]
+      },
+      "note": "Append added 2 rows — column count stays the same. Both tables must share the same column names and types."
+    },
+    {
+      "type": "comparison",
+      "title": "Choosing the Right Operation",
+      "options": [
+        {
+          "label": "Merge",
+          "icon": "↔",
+          "description": "Combine horizontally by matching on a key column. Use to look up and add related data from another table.",
+          "pros": [
+            "Adds columns from a related/lookup table",
+            "Supports Left / Right / Full / Inner join types",
+            "Equivalent to VLOOKUP or SQL JOIN"
+          ]
+        },
+        {
+          "label": "Append",
+          "icon": "↕",
+          "description": "Stack tables vertically. Use to consolidate data from multiple sources that share the same structure.",
+          "pros": [
+            "Adds more rows of the same type of data",
+            "Keeps column schema consistent",
+            "Use for multi-sheet, multi-file, or multi-period consolidation"
+          ]
+        }
+      ]
+    }
+  ]
+}

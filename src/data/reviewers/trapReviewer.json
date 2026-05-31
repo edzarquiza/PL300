@@ -228,5 +228,120 @@
     "difficulty": "Medium",
     "estimatedReviewTime": 60,
     "tags": ["RELATED", "RELATEDTABLE", "DAX", "Relationships", "Calculated Columns"]
+  },
+  {
+    "id": "trap_lookupvalue_rls_multirow",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "RLS",
+    "concept": "LOOKUPVALUE in RLS — Single vs Multiple Rows",
+    "summary": "LOOKUPVALUE returns a SINGLE value from a lookup table. In RLS, if a user has access to multiple departments, LOOKUPVALUE(Map[Dept], Map[Email], UPN()) only returns ONE department (or errors if multiple matches exist). For multi-value RLS access, use IN SELECTCOLUMNS(FILTER(...)) instead.",
+    "keyInsight": "LOOKUPVALUE is correct for one-to-one RLS mappings (one user = one region). For many-to-one mappings (one user = multiple departments), use the IN pattern: [Department] IN SELECTCOLUMNS(FILTER(AccessMap, [UserEmail] = USERPRINCIPALNAME()), \"D\", [Department]).",
+    "commonTrap": "Using LOOKUPVALUE for a user who manages multiple regions — the function returns only the FIRST matching region (or throws an error for multiple matches). The affected user either sees only one region's data or sees an error. The correct multi-value pattern uses IN with FILTER/SELECTCOLUMNS.",
+    "miniQuiz": {
+      "question": "A manager oversees 3 regions and should see data for all three. The AccessMap has 3 rows for this user. An RLS filter uses LOOKUPVALUE. What will happen?",
+      "choices": [
+        "The user will see data for all 3 regions correctly",
+        "LOOKUPVALUE will return the first match — the user sees only 1 region",
+        "LOOKUPVALUE will error due to multiple matches — the user sees no data",
+        "LOOKUPVALUE automatically joins all matching rows"
+      ],
+      "correctAnswer": 2,
+      "explanation": "LOOKUPVALUE throws an error when it finds multiple matching rows for the same lookup key. The user gets an error or no data. The fix is to use: [Region] IN SELECTCOLUMNS(FILTER(AccessMap, [UserEmail] = USERPRINCIPALNAME()), \"R\", [Region]) — this correctly handles multi-value access."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 75,
+    "tags": ["RLS", "LOOKUPVALUE", "Security", "IN", "Multi-Row Access", "SELECTCOLUMNS"]
+  },
+  {
+    "id": "trap_context_transition",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "Context Transition in CALCULATE",
+    "summary": "Context transition occurs when CALCULATE is called inside a row context (calculated column or iterator). CALCULATE converts the current row's values into filter context, adding a filter for each column of the current row to the filter context.",
+    "keyInsight": "This is one of the most subtle DAX behaviors. Inside SUMX, when you call a MEASURE (which implicitly contains CALCULATE), context transition fires automatically. The measure evaluates in a filter context representing the current row — not the full table. This can cause unexpected BLANK results or performance issues.",
+    "commonTrap": "Calling CALCULATE([Measure]) or simply [Measure] inside SUMX and expecting it to evaluate in the outer filter context. The measure triggers context transition, filtering the table to the current SUMX row's values. If [Measure] needs the full table context, wrap the measure in CALCULATE with REMOVEFILTERS.",
+    "miniQuiz": {
+      "question": "Inside SUMX(Sales, [Total Sales]), [Total Sales] is a measure defined as CALCULATE(SUM(Sales[Amount])). What filter context does CALCULATE see for each row?",
+      "choices": [
+        "The full outer filter context from the visual — no change per row",
+        "No filter context — SUMX removes all filters during iteration",
+        "The outer filter context PLUS a filter for the current row's column values (context transition)",
+        "Only the current row's Amount value — all other filters are removed"
+      ],
+      "correctAnswer": 2,
+      "explanation": "When a measure (containing implicit or explicit CALCULATE) is called inside SUMX, context transition converts the current row context into additional filter context. The measure evaluates under the outer filter context PLUS filters for all columns of the current Sales row. This is why [Total Sales] inside SUMX returns the individual row's Amount, not the full Sales total."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 90,
+    "tags": ["Context Transition", "CALCULATE", "DAX", "SUMX", "Row Context", "Filter Context"]
+  },
+  {
+    "id": "trap_all_outside_calculate",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "ALL() Outside CALCULATE — No Filter Removal",
+    "summary": "ALL() has two roles: (1) as a CALCULATE modifier — removes filters; (2) as a table function — returns all rows of a table regardless of context. When used OUTSIDE of CALCULATE, ALL() does NOT remove filters — it simply returns the table's full row set.",
+    "keyInsight": "CALCULATE(SUM(Sales[Amount]), ALL(Product)) removes the Product filter — correct. FILTER(ALL(Product), Product[Color] = 'Red') just returns a subset of all product rows — it does NOT modify the filter context of any outer expression. The filter-removal behavior of ALL only activates when ALL is a direct argument inside CALCULATE.",
+    "commonTrap": "Writing ALL(Sales) expecting it to 'clear filters' in a context where it appears inside FILTER rather than CALCULATE. For example: SUMX(ALL(Sales), Sales[Amount]) iterates all Sales rows (ignoring filters) but does NOT change the filter context for any sub-expressions inside the iteration.",
+    "miniQuiz": {
+      "question": "A developer writes: Total = SUMX(ALL(Sales), Sales[Amount]). Does this measure ignore slicer filters?",
+      "choices": [
+        "Yes — ALL(Sales) removes all filters including slicers",
+        "Partially — ALL(Sales) ignores Sales filters but other table filters remain",
+        "Yes for the iteration, but sub-expressions inside still see the full filter context",
+        "No — SUMX iterates but the result still reflects the outer filter context on Sales[Amount]"
+      ],
+      "correctAnswer": 0,
+      "explanation": "SUMX(ALL(Sales), Sales[Amount]) iterates ALL rows of the Sales table regardless of active filters, and SUM(Sales[Amount]) within each iteration also sees ALL rows due to the ALL() context. The result equals the grand total, ignoring all slicers. Note: this is different from CALCULATE(SUM(Sales[Amount]), ALL(Sales)) in terms of internal mechanics, but both produce the same result in this simple case."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 75,
+    "tags": ["ALL", "CALCULATE", "DAX", "Filter Context", "SUMX"]
+  },
+  {
+    "id": "trap_bidirectional_side_effects",
+    "domain": "Model the data",
+    "subtopic": "Data Modeling",
+    "concept": "Bidirectional Filter Side Effects",
+    "summary": "Bidirectional cross-filter allows filters to flow in both directions between two tables. While this can be useful, it causes a well-known side effect: dimension slicers silently hide members that have no related fact rows in the current filter context, even when the user expects to see all dimension members.",
+    "keyInsight": "When Sales → Customer is bidirectional and a product slicer is active, the Customer slicer/visual shows only customers who purchased the selected products. Customers who have never purchased those products disappear silently — this is often mistaken for a data error.",
+    "commonTrap": "A 'Total Customers' count card showing different numbers depending on which product is selected — even though the question is 'how many customers do we have in total?' The bidirectional relationship allows Sales (filtered by product) to reduce the visible Customer set. Fix: Single direction for the relationship; use CROSSFILTER() in specific measures that need reverse filtering.",
+    "miniQuiz": {
+      "question": "A Customer slicer shows 150 customers when no filters are active but only 80 when a product category is selected. No RLS is configured. What is the most likely cause?",
+      "choices": [
+        "The 70 missing customers have a different data type on CustomerID",
+        "The Customer table has null values for 70 customers",
+        "Bidirectional cross-filter between Sales and Customer is hiding customers with no purchases in the selected category",
+        "The product slicer is incorrectly configured with a page-level filter"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Bidirectional filtering between Sales and Customer allows the product category filter (applied to Sales) to propagate back to Customer — removing from view any customers who have no sales in that category. Setting the relationship to Single direction (Customer → Sales only) restores all 150 customers in the slicer regardless of product selection."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 60,
+    "tags": ["Bidirectional", "Cross-Filter", "Relationships", "Slicers", "Data Modeling"]
+  },
+  {
+    "id": "trap_circular_dependency",
+    "domain": "Model the data",
+    "subtopic": "DAX",
+    "concept": "Circular Dependency in Calculated Columns",
+    "summary": "A circular dependency occurs when a calculated column references another column that (directly or indirectly) references it back. Power BI detects circular dependencies and throws an error, preventing the model from loading. This is most common when two calculated columns in the same table reference each other.",
+    "keyInsight": "Circular dependency errors most often appear when building classification columns that reference aggregation measures, and those measures reference the classification column. The fix: break the cycle by using a different base column, computing the value in Power Query instead, or restructuring the measure to not depend on the calculated column.",
+    "commonTrap": "Creating Calculated Column A = IF([Measure1] > [Column B], ...) and Calculated Column B = IF([Measure2] > [Column A], ...) where both measures ultimately filter using the same table. Power BI cannot resolve the evaluation order and throws a circular dependency error. Move one of the calculations to Power Query as a step before loading.",
+    "miniQuiz": {
+      "question": "Two calculated columns in the Sales table: [Tier] = IF([TierScore] > 100, 'Premium', 'Standard') and [TierScore] = CALCULATE(SUM(Sales[Amount]), FILTER(Sales, Sales[Tier] = 'Premium')). What will happen?",
+      "choices": [
+        "Both columns are created successfully — Power BI resolves the order automatically",
+        "A circular dependency error — [TierScore] depends on [Tier] which depends on [TierScore]",
+        "Only [Tier] is created — [TierScore] is ignored as redundant",
+        "Power BI creates the columns but both return BLANK"
+      ],
+      "correctAnswer": 1,
+      "explanation": "[TierScore] filters Sales by [Tier], and [Tier] depends on [TierScore]. This creates a circular reference — neither can be computed without the other being already resolved. Power BI throws a circular dependency error. The fix is to move the base scoring logic to Power Query where it has no circular dependency."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": ["Circular Dependency", "DAX", "Calculated Columns", "Data Modeling"]
   }
 ]

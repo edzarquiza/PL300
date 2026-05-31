@@ -1,0 +1,73 @@
+{
+  "functionName": "DATESYTD",
+  "category": "Time Intelligence",
+  "syntax": "DATESYTD(<dates>, [<year_end_date>])",
+  "parameters": [
+    {
+      "name": "dates",
+      "required": true,
+      "type": "Date column",
+      "description": "A column of dates from a marked date table. This defines the range from which the year-to-date period is computed.",
+      "examNote": "Must be a column from a table marked as a date table. The date table must contain a continuous, gap-free range of dates."
+    },
+    {
+      "name": "year_end_date",
+      "required": false,
+      "type": "Date string",
+      "description": "A text string specifying the last day of the fiscal year in MM/DD format. Defaults to 12/31 for a calendar year.",
+      "examNote": "Use '6/30' for a fiscal year ending June 30th. The fiscal year then starts July 1st. This is a common PL-300 scenario question."
+    }
+  ],
+  "returnType": "Table (a single-column table of dates from the start of the year to the last date in the current filter context)",
+  "summary": "DATESYTD returns a table of all dates from the start of the year (January 1st, or the fiscal year start) through the last date in the current filter context. It is used exclusively as a filter argument inside CALCULATE to produce year-to-date measures. TOTALYTD() is a convenient wrapper around CALCULATE(expression, DATESYTD(dates)) — both approaches are equally valid on the exam.",
+  "examples": [
+    {
+      "label": "Year-to-date sales using DATESYTD",
+      "expression": "Sales YTD = CALCULATE(SUM(Sales[Amount]), DATESYTD(DimDate[Date]))",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Monthly Sales",
+            "columns": ["Month", "Monthly Sales", "YTD Sales"],
+            "rows": [["Jan 2024", 100, 100], ["Feb 2024", 150, 250], ["Mar 2024", 200, 450]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "YTD at March 2024",
+        "columns": ["Sales YTD"],
+        "rows": [[450]]
+      },
+      "explanation": "For March 2024, DATESYTD returns all dates from January 1 2024 through March 31 2024. CALCULATE sums sales over that period: 100 + 150 + 200 = 450."
+    },
+    {
+      "label": "Fiscal year-to-date (fiscal year ending June 30)",
+      "expression": "FY Sales YTD = CALCULATE(SUM(Sales[Amount]), DATESYTD(DimDate[Date], \"6/30\"))",
+      "sampleData": null,
+      "expectedOutput": null,
+      "explanation": "With year_end_date = '6/30', the fiscal year runs July 1 to June 30. For a date in September, DATESYTD returns all dates from July 1 of that fiscal year through the current date."
+    }
+  ],
+  "filterFlow": {
+    "steps": [
+      "Current filter context has a date or date range (e.g., March 2024)",
+      "DATESYTD identifies the last date in that context (March 31 2024)",
+      "It builds a table of all dates from January 1 2024 (or fiscal year start) to March 31 2024",
+      "CALCULATE applies this date table as the new filter, replacing the existing date filter",
+      "The expression is evaluated across the full YTD date range"
+    ]
+  },
+  "iteratorFlow": null,
+  "commonTraps": [
+    "DATESYTD is a TABLE function — it cannot be used as a standalone measure. It must be used as a filter argument inside CALCULATE.",
+    "DATESYTD requires a continuous, gap-free date table. Missing dates will cause the YTD boundary to cut off early or behave unexpectedly.",
+    "DATESYTD and TOTALYTD are equivalent. TOTALYTD(SUM(Sales[Amount]), DimDate[Date]) is shorthand for CALCULATE(SUM(Sales[Amount]), DATESYTD(DimDate[Date])). The exam may present both and ask which is correct."
+  ],
+  "relatedFunctions": ["TOTALYTD", "DATESQTD", "DATESMTD", "DATEADD", "SAMEPERIODLASTYEAR", "CALCULATE"],
+  "examWeight": "High",
+  "difficulty": "Medium",
+  "sqlEquivalent": {
+    "expression": "WHERE Date >= DATEFROMPARTS(YEAR(CurrentDate), 1, 1) AND Date <= CurrentDate",
+    "note": "SQL uses a WHERE clause with explicit date boundary logic to achieve YTD. DATESYTD generates this boundary automatically based on the current filter context, eliminating the need to hardcode year-start dates."
+  }
+}

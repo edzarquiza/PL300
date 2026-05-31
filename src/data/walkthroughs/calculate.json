@@ -1,0 +1,72 @@
+{
+  "id": "calculate",
+  "concept": "CALCULATE",
+  "category": "DAX",
+  "tagline": "Modifies filter context — the most important DAX function",
+  "daxFunctionId": "calculate",
+  "relatedTags": ["CALCULATE", "Filter Context"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "What CALCULATE Does",
+      "icon": "⚙️",
+      "body": "CALCULATE evaluates an expression inside a modified filter context. It is the only DAX function that can change which filters are active during an evaluation.",
+      "keyPoint": "CALCULATE(Expression, Filter1, Filter2, ...) — each filter argument replaces existing context for that column."
+    },
+    {
+      "type": "table",
+      "title": "Starting Data — Sales Table",
+      "caption": "All four rows are visible before any filter is applied",
+      "headers": ["Product", "Region", "Amount"],
+      "rows": [
+        ["Bike", "North", 500],
+        ["Helmet", "North", 80],
+        ["Bike", "South", 300],
+        ["Gloves", "South", 40]
+      ]
+    },
+    {
+      "type": "dax",
+      "title": "The Expression",
+      "code": "Bike Sales North =\nCALCULATE(\n    SUM(Sales[Amount]),\n    Sales[Product] = \"Bike\",\n    Sales[Region] = \"North\"\n)",
+      "annotation": "Two filter arguments use AND logic. CALCULATE replaces the existing filter context with these constraints before evaluating SUM."
+    },
+    {
+      "type": "filtered-table",
+      "title": "Filters Applied",
+      "caption": "CALCULATE keeps only rows satisfying ALL filter arguments",
+      "headers": ["Product", "Region", "Amount"],
+      "rows": [
+        ["Bike", "North", 500],
+        ["Helmet", "North", 80],
+        ["Bike", "South", 300],
+        ["Gloves", "South", 40]
+      ],
+      "highlightRows": [0],
+      "dimRows": [1, 2, 3],
+      "filterNote": "Product = \"Bike\" AND Region = \"North\""
+    },
+    {
+      "type": "result",
+      "title": "Final Result",
+      "steps": [
+        "Product = 'Bike' keeps rows 0 and 2",
+        "Region = 'North' keeps rows 0 and 1",
+        "Intersection (both filters): only row 0 (Bike, North, 500)"
+      ],
+      "value": "500",
+      "unit": "SUM of Amount where Product = Bike AND Region = North"
+    },
+    {
+      "type": "text",
+      "title": "Key Rules to Remember",
+      "bullets": [
+        "Multiple filter arguments use AND logic — all conditions must be satisfied",
+        "A filter on the same column REPLACES (not adds to) the existing context for that column",
+        "CALCULATE is required to use time intelligence functions like SAMEPERIODLASTYEAR",
+        "ALL() or REMOVEFILTERS() inside CALCULATE removes an existing filter rather than adding one"
+      ],
+      "warning": "CALCULATE does NOT automatically ignore slicers. It modifies context — to ignore slicers, you must explicitly use ALL() or REMOVEFILTERS() on the relevant columns."
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "functionName": "DIVIDE",
+  "category": "Aggregation",
+  "syntax": "DIVIDE(<numerator>, <denominator>, [<alternateResult>])",
+  "parameters": [
+    {
+      "name": "numerator",
+      "required": true,
+      "type": "Scalar",
+      "description": "The value to be divided. Can be a measure, column reference, or numeric expression.",
+      "examNote": "Can be any expression returning a number. If the numerator is BLANK, DIVIDE returns BLANK regardless of the denominator."
+    },
+    {
+      "name": "denominator",
+      "required": true,
+      "type": "Scalar",
+      "description": "The value to divide by. If this equals zero or is BLANK, the alternateResult is returned instead of raising an error.",
+      "examNote": "DIVIDE protects against division by zero. Without DIVIDE, using the / operator on a zero denominator throws an error and breaks the visual."
+    },
+    {
+      "name": "alternateResult",
+      "required": false,
+      "type": "Scalar",
+      "description": "The value returned when the denominator is zero or BLANK. Defaults to BLANK() if not specified.",
+      "examNote": "Common choices are 0 (to show zero in visuals) or BLANK() (to hide the cell entirely). Choose based on whether a blank or zero is more meaningful for the business context."
+    }
+  ],
+  "returnType": "Decimal (result of numerator / denominator), or alternateResult when denominator is zero or blank",
+  "summary": "DIVIDE performs safe division by returning an alternate result instead of throwing a divide-by-zero error when the denominator is zero or blank. It is the recommended replacement for the / operator in any measure where the denominator may not always have a value. DIVIDE is especially important in ratios, percentages, and per-unit calculations that appear on report visuals where a single error cell can break the entire visual.",
+  "examples": [
+    {
+      "label": "Profit margin percentage",
+      "expression": "Profit Margin % = DIVIDE([Profit], [Revenue], 0)",
+      "sampleData": {
+        "tables": [
+          {
+            "name": "Scenario",
+            "columns": ["Product", "Revenue", "Profit"],
+            "rows": [["Bike", 1000, 300], ["Helmet", 200, 50], ["Lock", 0, 0]]
+          }
+        ]
+      },
+      "expectedOutput": {
+        "label": "Profit Margin",
+        "columns": ["Product", "Profit Margin %"],
+        "rows": [["Bike", 0.30], ["Helmet", 0.25], ["Lock", 0]]
+      },
+      "explanation": "For Bike: 300/1000 = 0.30. For Helmet: 50/200 = 0.25. For Lock: Revenue = 0 so DIVIDE returns the alternateResult 0 instead of an error."
+    },
+    {
+      "label": "Risky division without DIVIDE",
+      "expression": "Risky Ratio = [Profit] / [Revenue]",
+      "sampleData": null,
+      "expectedOutput": null,
+      "explanation": "When Revenue = 0, the / operator throws a division by zero error that shows as an error cell in the visual. DIVIDE(Profit, Revenue, 0) or DIVIDE(Profit, Revenue) would return 0 or BLANK instead."
+    }
+  ],
+  "filterFlow": null,
+  "iteratorFlow": null,
+  "commonTraps": [
+    "Using the / operator instead of DIVIDE causes error cells when the denominator is zero. Always prefer DIVIDE in measures used on report visuals.",
+    "DIVIDE(a, b) and DIVIDE(a, b, 0) behave differently when b = 0. The first returns BLANK (cell is empty), the second returns 0 (cell shows zero). Choose based on visual intent.",
+    "If the numerator is BLANK, DIVIDE returns BLANK regardless of the denominator value — this is intentional behavior, not a bug."
+  ],
+  "relatedFunctions": ["IF", "IFERROR", "BLANK", "SUMX", "CALCULATE"],
+  "examWeight": "High",
+  "difficulty": "Easy",
+  "sqlEquivalent": {
+    "expression": "CASE WHEN denominator = 0 THEN 0 ELSE numerator / denominator END",
+    "note": "SQL requires an explicit CASE WHEN to handle division by zero. DIVIDE encapsulates this logic in a single function call, making DAX measures much more concise and readable."
+  }
+}

@@ -61,6 +61,8 @@ function seededShuffle(arr, rng) {
   return out
 }
 
+export { mulberry32, seededShuffle }
+
 export function generateSeed() {
   return `PL300-${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`
 }

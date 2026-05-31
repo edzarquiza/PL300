@@ -1,0 +1,73 @@
+{
+  "id": "sumx",
+  "concept": "SUMX",
+  "category": "DAX",
+  "tagline": "Iterates row-by-row, evaluates an expression, then sums all results",
+  "daxFunctionId": "sumx",
+  "relatedTags": ["SUMX", "Iterator Functions"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "How SUMX Works",
+      "icon": "🔄",
+      "body": "SUMX takes a table and an expression. It visits every row of the table, evaluates the expression in that row's context, and finally sums all the row-level results.",
+      "keyPoint": "SUMX(Table, Expression) — think of it as a for-loop that calculates something per row, then adds everything up."
+    },
+    {
+      "type": "table",
+      "title": "Orders Table — Starting Data",
+      "caption": "Revenue is not a stored column — it must be calculated per row as Quantity × Unit Price",
+      "headers": ["Order", "Quantity", "Unit Price"],
+      "rows": [
+        ["ORD-001", 3, 25],
+        ["ORD-002", 1, 150],
+        ["ORD-003", 5, 10]
+      ]
+    },
+    {
+      "type": "dax",
+      "title": "The Expression",
+      "code": "Total Revenue =\nSUMX(\n    Orders,\n    Orders[Quantity] * Orders[Unit Price]\n)",
+      "annotation": "Orders[Quantity] * Orders[Unit Price] is evaluated in row context — DAX enters each row of Orders and computes the product before moving to the next row."
+    },
+    {
+      "type": "iterator",
+      "title": "Row-by-Row Evaluation",
+      "caption": "SUMX processes each row individually, then aggregates",
+      "formula": "Row expression: Orders[Quantity] * Orders[Unit Price]",
+      "headers": ["Order", "Quantity", "Unit Price"],
+      "rows": [
+        ["ORD-001", 3, 25],
+        ["ORD-002", 1, 150],
+        ["ORD-003", 5, 10]
+      ],
+      "resultHeader": "Row Revenue",
+      "results": [75, 150, 50],
+      "total": 275
+    },
+    {
+      "type": "result",
+      "title": "Final Sum",
+      "steps": [
+        "Row 1 (ORD-001): 3 × 25 = 75",
+        "Row 2 (ORD-002): 1 × 150 = 150",
+        "Row 3 (ORD-003): 5 × 10 = 50",
+        "SUM all row results: 75 + 150 + 50 = 275"
+      ],
+      "value": "275",
+      "unit": "Total Revenue across all orders"
+    },
+    {
+      "type": "text",
+      "title": "SUMX vs SUM — When to Use Each",
+      "bullets": [
+        "SUM(column) — aggregates a single existing column. No expression, no row logic.",
+        "SUMX(table, expression) — needed when the value to sum must be CALCULATED per row first.",
+        "Use SUM when the column you need is already in the table.",
+        "Use SUMX when you need row-level math first (e.g., Price × Qty, Discount × Amount)."
+      ],
+      "keyPoint": "If Revenue is not stored as a column, SUM cannot compute it. SUMX is required because it creates the per-row result before aggregating.",
+      "warning": "SUMX on a large table can be slow if the expression is complex. For simple column sums, always prefer SUM over SUMX(Table, Column)."
+    }
+  ]
+}
