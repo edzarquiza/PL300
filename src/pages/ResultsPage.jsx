@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import ReviewCard from '../components/ReviewCard'
+import { useExam } from '../context/ExamContext'
 import { formatTime } from '../utils/examUtils'
 import {
   getConfidenceAnalytics,
@@ -16,6 +17,7 @@ import { EXAM_TRACKS } from '../data/examTracks'
 export default function ResultsPage() {
   const { state } = useLocation()
   const navigate = useNavigate()
+  const { startExam } = useExam()
   const [seedCopied, setSeedCopied] = useState(false)
 
   useEffect(() => {
@@ -29,6 +31,17 @@ export default function ResultsPage() {
   const flaggedCount = Object.keys(flagged).length
   const isStudy = mode === 'study'
   const track = EXAM_TRACKS.find(t => t.id === trackId)
+
+  function handleRetryExact() {
+    const ids = questions.map(q => String(q.id))
+    startExam({
+      questionIds: ids,
+      questionCount: ids.length,
+      examMode: mode,
+      track: trackId,
+    })
+    navigate('/exam')
+  }
 
   function handleCopySeed() {
     if (!examSeed) return
@@ -401,12 +414,18 @@ export default function ResultsPage() {
             View History
           </button>
           <button
+            onClick={handleRetryExact}
+            className="flex-1 py-3 text-sm font-semibold text-white rounded-xl transition-colors bg-amber-500 hover:bg-amber-600"
+          >
+            ↺ Retry Same
+          </button>
+          <button
             onClick={() => navigate('/')}
             className={`flex-1 py-3 text-sm font-semibold text-white rounded-xl transition-colors ${
               isStudy ? 'bg-purple-600 hover:bg-purple-700' : 'bg-blue-600 hover:bg-blue-700'
             }`}
           >
-            Try Again
+            New Exam
           </button>
         </div>
 

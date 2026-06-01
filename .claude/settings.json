@@ -56,7 +56,8 @@
       "Bash(node scripts/fix-broken-questions.cjs)",
       "Bash(node scripts/add-case-study-solutions.cjs)",
       "Bash(node scripts/fix-cs-coverage.cjs)",
-      "Bash(node scripts/smoke-cs.mjs)"
+      "Bash(node scripts/smoke-cs.mjs)",
+      "Bash(node scripts/smoke-retry.mjs)"
     ]
   }
 }
