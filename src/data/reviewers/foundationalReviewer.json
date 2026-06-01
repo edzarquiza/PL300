@@ -7,6 +7,18 @@
     "estimatedReviewTime": 45,
     "tags": ["Star Schema", "Data Modeling", "Fact Table"],
     "summary": "A fact table stores measurable events — sales transactions, order lines, website clicks. Each row is one event. Fact tables are usually wide (many rows) and contain numeric values you want to aggregate (amounts, quantities, counts).",
+    "visual": {
+      "type": "table",
+      "title": "Fact Table Structure — Sales",
+      "headers": ["SaleID (PK)", "CustomerID (FK)", "ProductID (FK)", "Qty", "Amount"],
+      "rows": [
+        ["1001", "C05", "P12", "3", "$150"],
+        ["1002", "C10", "P07", "1", "$80"],
+        ["1003", "C05", "P12", "5", "$250"],
+        ["1004", "C22", "P03", "2", "$60"]
+      ],
+      "note": "Keys link to dimensions. Qty and Amount are the measurable FACTS — the values you SUM, COUNT, or AVERAGE."
+    },
     "keyInsight": "Fact tables answer the question: WHAT happened and HOW MUCH? They connect to dimension tables through foreign keys. On PL-300, fact tables almost always sit at the MANY side of a relationship.",
     "commonTrap": "Adding descriptive attributes (like product name or region name) directly to the fact table. These belong in dimension tables. Mixing them into the fact table creates redundancy and slows performance.",
     "miniQuiz": {
@@ -29,6 +41,17 @@
     "estimatedReviewTime": 45,
     "tags": ["Star Schema", "Data Modeling", "Dimension Table"],
     "summary": "A dimension table stores descriptive context about the things in your fact table — who the customer is, what the product is, where the store is. Dimension tables are usually narrow (fewer rows, more columns describing each item).",
+    "visual": {
+      "type": "table",
+      "title": "Dimension Table Structure — Products",
+      "headers": ["ProductID (PK)", "ProductName", "Category", "Brand"],
+      "rows": [
+        ["P03", "Laptop Stand", "Accessories", "ErgoDesk"],
+        ["P07", "USB Hub", "Accessories", "TechPro"],
+        ["P12", "Mechanical Keyboard", "Peripherals", "TypeMaster"]
+      ],
+      "note": "Each row is UNIQUE (ProductID is the primary key). No numeric measures here — only descriptive attributes used for filtering and grouping."
+    },
     "keyInsight": "Dimensions answer: WHO, WHAT, WHERE, WHEN, WHY. They provide the labels and groupings users see in slicers and chart axes. Each dimension row is unique (primary key). They sit on the ONE side of a relationship.",
     "commonTrap": "Confusing a lookup table with a dimension. A lookup table is a dimension. The term 'dimension table' just means: a table used to describe and filter the facts. Customer, Product, Date, Store, Region — these are all dimensions.",
     "miniQuiz": {
@@ -51,6 +74,18 @@
     "estimatedReviewTime": 60,
     "tags": ["Star Schema", "Data Modeling", "Relationships"],
     "summary": "A star schema places one central fact table surrounded by dimension tables connected through foreign keys. It looks like a star. This is the recommended Power BI model structure because it compresses well, queries fast, and simplifies DAX.",
+    "visual": {
+      "type": "before-after",
+      "title": "Flat Table vs Star Schema",
+      "before": {
+        "label": "Flat Table (Bad)",
+        "content": "Sales: SaleID | Qty | Amount | CustomerName | CustomerRegion | ProductName | Category | Brand | SaleDate | Year | Month\n→ Repeated names/regions per sale. Large model. Slow queries. Hard to maintain."
+      },
+      "after": {
+        "label": "Star Schema (Good)",
+        "content": "Sales (fact): SaleID | CustomerID | ProductID | DateKey | Qty | Amount\nCustomers: CustomerID | Name | Region\nProducts: ProductID | Name | Category | Brand\nDate: DateKey | Date | Year | Month\n→ No duplication. Compressed. Fast. Easy DAX."
+      }
+    },
     "keyInsight": "Star schema separates MEASUREMENTS (fact table) from DESCRIPTIONS (dimension tables). Power BI's Vertipaq engine is specifically optimised for this pattern. Flat single-table models and snowflake schemas perform worse for most BI workloads.",
     "commonTrap": "Building a snowflake schema (dimensions linked to other dimensions) when a star schema would work. Snowflakes add complexity without performance benefits in Power BI. Flatten dimension hierarchies into a single wide dimension table instead.",
     "miniQuiz": {
@@ -73,6 +108,17 @@
     "estimatedReviewTime": 60,
     "tags": ["Filter Context", "DAX", "CALCULATE"],
     "summary": "Filter context is the set of active filters when a DAX expression is evaluated. It comes from slicers, page filters, report filters, row/column fields in a matrix, and CALCULATE() calls. DAX measures always execute within the current filter context.",
+    "visual": {
+      "type": "flow",
+      "title": "How Filter Context is Created",
+      "steps": [
+        "User selects 'East' in Region slicer",
+        "Power BI creates a filter context: Region = 'East'",
+        "Matrix rows add another filter layer: each product name",
+        "Measure Total Sales = SUM(Sales[Amount]) evaluates within combined context",
+        "Result: only East sales for each product row are summed"
+      ]
+    },
     "keyInsight": "Every value you see in a Power BI visual is a DAX result evaluated inside a filter context. A simple measure like SUM(Sales[Amount]) automatically respects whatever filters are active — you do not have to write the filter logic into the measure itself.",
     "commonTrap": "Assuming a measure works differently based on WHERE it's placed. SUM(Sales[Amount]) on a card gives total sales. The same measure in a matrix by Region gives regional sales. The measure code is identical — the FILTER CONTEXT changes.",
     "miniQuiz": {
@@ -95,6 +141,17 @@
     "estimatedReviewTime": 60,
     "tags": ["Row Context", "DAX", "Calculated Columns", "Iterator Functions"],
     "summary": "Row context is the current row being processed during iteration. It exists in two situations: inside calculated columns (each row being computed), and inside iterator functions like SUMX, AVERAGEX, MAXX (each row of the table being iterated).",
+    "visual": {
+      "type": "flow",
+      "title": "Row Context in a Calculated Column",
+      "steps": [
+        "Power BI evaluates the calculated column Sales[Profit] = Sales[Amount] - Sales[Cost]",
+        "Row 1: Amount=$500, Cost=$320 → Profit = $180 (stored)",
+        "Row 2: Amount=$800, Cost=$510 → Profit = $290 (stored)",
+        "Row 3: Amount=$200, Cost=$140 → Profit = $60 (stored)",
+        "Each row evaluated independently — this is row context"
+      ]
+    },
     "keyInsight": "Row context lets you reference individual column values. In a calculated column, Sales[Profit] = Sales[Amount] - Sales[Cost] works because DAX knows which row it is. In a measure, you cannot reference Sales[Amount] directly — there is no single row. You must iterate with SUMX.",
     "commonTrap": "Writing a measure that references a column value like Sales[Amount] without an aggregation. This fails because measures have no row context. You must wrap it: SUM(Sales[Amount]) or use an iterator like SUMX(Sales, Sales[Amount]).",
     "miniQuiz": {
@@ -117,6 +174,29 @@
     "estimatedReviewTime": 60,
     "tags": ["Measures", "Calculated Columns", "DAX", "Row Context"],
     "summary": "A measure calculates at query time using the current filter context — it has no permanent column in the table. A calculated column is computed once at refresh and stored as a physical column in the table. Wrong choice = bloated model or broken DAX.",
+    "visual": {
+      "type": "comparison",
+      "title": "When to Use Each",
+      "left": {
+        "label": "Calculated Column — Use when:",
+        "items": [
+          "Need a per-row value stored permanently",
+          "Value is used as a slicer or filter target",
+          "Sorting or grouping by the computed value",
+          "Example: Price Category (Low/Med/High)"
+        ]
+      },
+      "right": {
+        "label": "Measure — Use when:",
+        "items": [
+          "Result changes based on slicer selection",
+          "Calculating totals, ratios, KPIs",
+          "Cannot be a slicer (no physical column)",
+          "Example: Total Sales %, Profit Margin"
+        ]
+      },
+      "winner": "right"
+    },
     "keyInsight": "Use a MEASURE when the result changes with slicers/filters (totals, KPIs, ratios). Use a CALCULATED COLUMN when you need a permanent per-row value for sorting, filtering, or as input to a relationship. Measures do not increase model size; calculated columns do.",
     "commonTrap": "Creating a calculated column for an aggregation like Total Sales. Calculated columns cannot aggregate across rows — they only see the current row. SUM(Sales[Amount]) in a calculated column gives the grand total on every row, which is almost never what you want.",
     "miniQuiz": {
@@ -139,6 +219,17 @@
     "estimatedReviewTime": 45,
     "tags": ["Cardinality", "Relationships", "Data Modeling"],
     "summary": "Cardinality describes the uniqueness of values on each side of a relationship. One-to-Many (1:*) is standard — one unique key in the dimension, many matching rows in the fact. Many-to-Many (*:*) means neither side is unique and usually requires a bridge table.",
+    "visual": {
+      "type": "table",
+      "title": "One-to-Many Cardinality — Date → Sales",
+      "headers": ["Date[DateKey] (ONE side)", "Sales[DateKey] (MANY side)", "Relationship Direction"],
+      "rows": [
+        ["2024-01-15 (unique)", "1001, 1004, 1007 (repeats)", "Date → Sales (1:*)"],
+        ["2024-01-16 (unique)", "1002 (repeats)", "Filter flows ONE → MANY"],
+        ["2024-01-17 (unique)", "1003, 1005 (repeats)", "Correct star schema pattern"]
+      ],
+      "note": "If DateKey is NOT unique in the Date table, Power BI sets cardinality to *:* and filter propagation becomes unpredictable."
+    },
     "keyInsight": "In a correctly designed star schema, dimension tables always have a unique primary key (the ONE side). Fact tables have foreign keys that repeat (the MANY side). Power BI auto-detects cardinality but you should verify it is always 1:* — not *:* which can cause unexpected results.",
     "commonTrap": "Accidentally creating a Many-to-Many relationship by joining on a non-unique column. If CustomerID in your Sales table appears in both Sales and Customers but isn't unique in Customers, Power BI will set the relationship as *:*. This often silently produces wrong totals.",
     "miniQuiz": {
@@ -161,6 +252,17 @@
     "estimatedReviewTime": 45,
     "tags": ["Query Folding", "Power Query", "Performance"],
     "summary": "Query folding is Power Query translating your transformation steps into a single native query (SQL, OData, etc.) sent to the data source. When steps fold, the source does the heavy lifting — fewer rows are pulled over the network. When steps don't fold, Power Query processes data locally in memory.",
+    "visual": {
+      "type": "flow",
+      "title": "Query Folding — SQL Generation",
+      "steps": [
+        "Power Query step: Filter rows where OrderDate > 2023-01-01",
+        "Power Query step: Remove columns (keep only 5 of 20)",
+        "Power Query translates both steps into SQL: SELECT col1,col2... WHERE OrderDate > '2023-01-01'",
+        "SQL Server executes the query and returns only filtered, narrow result",
+        "Power Query receives small dataset — fast refresh, less network traffic"
+      ]
+    },
     "keyInsight": "Folding = FAST. Non-folding = slow (data is pulled first, then transformed in memory). Adding a custom M column, using certain text functions, or merging with a local table breaks folding. Once broken, all subsequent steps cannot fold.",
     "commonTrap": "Adding a non-foldable step early in the query (like a custom column), then wondering why a filter applied later is slow. The filter was applied AFTER the non-foldable step so it could not be pushed to the server. Move foldable steps (filters, column selections, row removals) BEFORE non-foldable ones.",
     "miniQuiz": {
@@ -183,6 +285,19 @@
     "estimatedReviewTime": 60,
     "tags": ["RLS", "Security", "USERPRINCIPALNAME"],
     "summary": "RLS restricts which rows a user can see in a report. You define roles with DAX filter expressions in Power BI Desktop, then assign users (or Azure AD groups) to those roles in the Power BI Service. Users never see data they are not assigned to.",
+    "visual": {
+      "type": "filtered-table",
+      "headers": ["RegionMgrEmail", "Region", "SalesAmount"],
+      "rows": [
+        ["east.mgr@co.com", "East", "$450,000"],
+        ["west.mgr@co.com", "West", "$310,000"],
+        ["east.mgr@co.com", "East", "$220,000"],
+        ["north.mgr@co.com", "North", "$180,000"]
+      ],
+      "highlight": [0, 2],
+      "dim": [1, 3],
+      "filterNote": "Dynamic RLS: [RegionMgrEmail] = USERPRINCIPALNAME() → east.mgr@co.com sees only highlighted rows. Others are invisible at the data level."
+    },
     "keyInsight": "RLS is defined in the SEMANTIC MODEL (not the report). It filters at the data level, so every visual, page, and export is automatically restricted. The DAX function USERPRINCIPALNAME() returns the signed-in user's email, enabling dynamic RLS without creating one role per person.",
     "commonTrap": "Creating static RLS roles for every individual user. This is unmaintainable. The best practice is dynamic RLS: one role whose DAX filter uses USERPRINCIPALNAME() to match the signed-in user's email to a security mapping table.",
     "miniQuiz": {
@@ -205,6 +320,29 @@
     "estimatedReviewTime": 60,
     "tags": ["DirectQuery", "Import", "Storage Mode", "Performance"],
     "summary": "Import loads data into Power BI's in-memory Vertipaq engine at refresh time — queries are blazing fast but data is as fresh as the last refresh. DirectQuery sends live queries to the source on every visual interaction — always current but slower, and limited DAX support.",
+    "visual": {
+      "type": "comparison",
+      "title": "Import vs DirectQuery",
+      "left": {
+        "label": "DirectQuery",
+        "items": [
+          "Live queries on every visual click",
+          "Always current — no scheduled refresh",
+          "Slower visual interaction",
+          "Limited DAX — no calculated columns, some functions unsupported"
+        ]
+      },
+      "right": {
+        "label": "Import (recommended)",
+        "items": [
+          "Data loaded into Vertipaq in-memory engine",
+          "Blazing fast visual interaction",
+          "Data as fresh as last scheduled refresh",
+          "Full DAX support, all features available"
+        ]
+      },
+      "winner": "right"
+    },
     "keyInsight": "Import is the default and best choice for most reports. Choose DirectQuery only when: data freshness is critical (stock prices, live ops), the data is too large to import, or security policies prohibit copying data. Scheduled refresh (up to 48×/day with Premium) handles most freshness requirements.",
     "commonTrap": "Defaulting to DirectQuery for 'real-time' requirements that are actually satisfied by hourly Import refresh. DirectQuery has significant DAX limitations, slower visual interactions, and no support for some features (calculated columns, certain relationships). Import + frequent refresh is usually the better tradeoff.",
     "miniQuiz": {
@@ -227,6 +365,17 @@
     "estimatedReviewTime": 45,
     "tags": ["Relationships", "Data Modeling", "Cardinality"],
     "summary": "Relationships in Power BI connect tables so filters can propagate between them. A filter applied to a dimension (e.g. selecting 'Electronics' in Product Category) automatically filters the fact table (showing only electronics sales). Relationships replace the need to JOIN tables in every measure.",
+    "visual": {
+      "type": "flow",
+      "title": "Filter Propagation Through Relationships",
+      "steps": [
+        "User selects 'Electronics' in Products slicer",
+        "Filter created on Products table: Category = 'Electronics'",
+        "Filter propagates through the Products → Sales relationship (ONE to MANY)",
+        "Sales table now shows only rows where ProductID matches Electronics products",
+        "All measures re-evaluate — showing Electronics totals only"
+      ]
+    },
     "keyInsight": "Filter propagation flows from ONE side to MANY side by default (single direction). To cross-filter in both directions, you enable bi-directional filtering — but this should be used sparingly as it can cause ambiguity, slow performance, and unexpected double-filtering results.",
     "commonTrap": "Enabling bi-directional filtering everywhere 'just to be safe'. This often produces incorrect totals and circular filter paths. Use it only when genuinely needed (e.g. many-to-many with a bridge table). For standard star schema models, single-direction filtering is correct.",
     "miniQuiz": {
@@ -249,6 +398,18 @@
     "estimatedReviewTime": 45,
     "tags": ["Date Table", "Time Intelligence", "DAX"],
     "summary": "Time intelligence functions (TOTALYTD, DATEADD, SAMEPERIODLASTYEAR) require a dedicated Date table: a table with one row per calendar date, marked as the official Date table, containing a Date column with no gaps. Without it, time intelligence DAX breaks.",
+    "visual": {
+      "type": "table",
+      "title": "DimDate — Required Columns",
+      "headers": ["DateKey", "Date", "Year", "MonthNum", "MonthName"],
+      "rows": [
+        ["20240101", "2024-01-01", "2024", "1", "January"],
+        ["20240102", "2024-01-02", "2024", "1", "January"],
+        ["20240103", "2024-01-03", "2024", "1", "January"],
+        ["20240104", "2024-01-04", "2024", "1", "January"]
+      ],
+      "note": "Every calendar date must exist — no gaps. Mark as Date Table using the Date column. Connect to Sales via DateKey."
+    },
     "keyInsight": "Mark your Date table using 'Mark as Date Table' in Power BI Desktop. The Date column must be of Date type, cover the full range of dates in your fact table with no gaps, and have no duplicate dates. Relationships from the fact table connect to this Date table.",
     "commonTrap": "Using the date column from the fact table directly for time intelligence. Fact tables have gaps (no transaction on weekends or holidays) — this breaks YTD and DATEADD calculations. A proper Date table has every calendar date with no gaps.",
     "miniQuiz": {
@@ -271,6 +432,29 @@
     "estimatedReviewTime": 45,
     "tags": ["SUM", "SUMX", "Iterator Functions", "DAX"],
     "summary": "SUM(table[column]) adds up all values in a column — simple and fast. SUMX(table, expression) iterates row by row, evaluating the expression for each row, then sums the results. SUMX is needed when the calculation involves multiple columns per row.",
+    "visual": {
+      "type": "comparison",
+      "title": "SUM vs SUMX",
+      "left": {
+        "label": "SUM — Column Only",
+        "items": [
+          "SUM(Sales[Amount]) — sums a pre-existing column",
+          "Cannot do: SUM(Sales[Qty] * Sales[Price])",
+          "Single column reference only",
+          "Fast — column pre-aggregated by Vertipaq"
+        ]
+      },
+      "right": {
+        "label": "SUMX — Row Expression",
+        "items": [
+          "SUMX(Sales, Sales[Qty] * Sales[Price])",
+          "Iterates every row, evaluates expression, sums results",
+          "Required when column doesn't exist pre-computed",
+          "Slightly slower — row-by-row iteration"
+        ]
+      },
+      "winner": "right"
+    },
     "keyInsight": "SUM(Sales[Amount]) works when Amount is already stored. SUMX(Sales, Sales[Qty] * Sales[UnitPrice]) is needed when you must multiply two columns per row before summing. You CANNOT do SUM(Sales[Qty] * Sales[UnitPrice]) — SUM only accepts a single column reference.",
     "commonTrap": "Writing Total Revenue = SUM(Sales[Qty] * Sales[Price]) — this is invalid DAX syntax. SUM only accepts a column. The correct formula is SUMX(Sales, Sales[Qty] * Sales[Price]), which iterates each row, multiplies the two columns, and sums the results.",
     "miniQuiz": {
@@ -294,6 +478,17 @@
     "estimatedReviewTime": 60,
     "tags": ["DirectLake", "Microsoft Fabric", "Storage Mode", "Performance"],
     "summary": "DirectLake is a storage mode in Microsoft Fabric that reads data directly from OneLake parquet files without importing into memory or querying live. It combines Import speed with DirectQuery freshness — but only within the Microsoft Fabric ecosystem.",
+    "visual": {
+      "type": "flow",
+      "title": "DirectLake Data Path",
+      "steps": [
+        "Data engineers write transformed data to OneLake as Delta/Parquet files",
+        "Power BI semantic model is configured with DirectLake storage mode",
+        "Visual interaction triggers — Power BI reads parquet files directly from OneLake",
+        "No data copy to Vertipaq memory, no live SQL query to a source database",
+        "Near-Import speed performance with always-current data from OneLake"
+      ]
+    },
     "keyInsight": "DirectLake requires Microsoft Fabric and OneLake. It cannot connect to arbitrary external databases, on-premises sources, or Azure SQL. If the question mentions SQL Server or non-Fabric sources, DirectLake is NEVER the answer.",
     "commonTrap": "Selecting DirectLake as the answer whenever 'performance + freshness' is mentioned. DirectLake only works with data stored in OneLake (Fabric). For all other sources — Azure SQL, on-premises SQL Server, SharePoint — use Import or DirectQuery.",
     "miniQuiz": {
@@ -317,6 +512,17 @@
     "estimatedReviewTime": 60,
     "tags": ["Incremental Refresh", "Performance", "Power Query", "Premium"],
     "summary": "Incremental refresh partitions a large table so only new or changed data is refreshed, rather than reloading the entire table every time. Configured in Power BI Desktop using RangeStart and RangeEnd Power Query parameters.",
+    "visual": {
+      "type": "flow",
+      "title": "Incremental Refresh — Partition Strategy",
+      "steps": [
+        "Large Sales table split into partitions: Jan 2020, Feb 2020 ... Dec 2023 (historical, frozen)",
+        "Rolling window defined: refresh only last 90 days of data",
+        "Refresh triggered: only Oct–Dec 2024 partitions are re-queried from source",
+        "Historical partitions (2020–2023) are preserved unchanged in the model",
+        "Refresh time drops from 4 hours to minutes — full history still available for analysis"
+      ]
+    },
     "keyInsight": "Incremental refresh requires Power BI Premium or Premium Per User. It dramatically reduces refresh time for large tables by only loading data within the recent window. Historical partitions are preserved and not re-queried.",
     "commonTrap": "Expecting incremental refresh to work on Pro license workspaces — it requires Premium capacity. Also: incremental refresh requires the source to support query folding on the date filter. If the source cannot fold the date filter, the entire table is still downloaded.",
     "miniQuiz": {
@@ -340,6 +546,17 @@
     "estimatedReviewTime": 45,
     "tags": ["Dataflows", "Power Query", "Reuse", "ETL"],
     "summary": "Dataflows are reusable Power Query transformations executed in the Power BI Service and stored as tables in Azure Data Lake Storage. Multiple datasets can consume the same dataflow, centralizing ETL logic.",
+    "visual": {
+      "type": "flow",
+      "title": "Dataflow Pipeline — Shared ETL",
+      "steps": [
+        "Source: CRM API → raw customer and sales data",
+        "Dataflow in Power BI Service applies shared cleaning steps (remove nulls, standardize names, parse dates)",
+        "Cleaned output stored as tables in Azure Data Lake (managed storage)",
+        "Dataset A (Sales Report) connects to Dataflow output",
+        "Dataset B (Customer Report) and Dataset C (Executive Dashboard) also connect — same clean data, no duplication"
+      ]
+    },
     "keyInsight": "Dataflows separate data preparation from data modeling. Instead of each report's dataset performing its own transformations, one dataflow prepares the data once and multiple semantic models consume it — ensuring consistency and reducing source system query load.",
     "commonTrap": "Duplicating the same Power Query transformation steps in five different datasets. Dataflows allow you to define the transformation once in the Service and reference it from any dataset — the 'single source of truth' for data preparation.",
     "miniQuiz": {
@@ -363,6 +580,17 @@
     "estimatedReviewTime": 60,
     "tags": ["Query Folding", "Power Query", "Performance", "M Language"],
     "summary": "Query folding pushes transformation logic back to the data source as a native query. When folding breaks, Power Query downloads all data to memory and processes it locally. Breaking points include: custom M columns, certain text functions, merging with non-foldable queries, and some data type changes.",
+    "visual": {
+      "type": "flow",
+      "title": "Query Folding — Where the Chain Breaks",
+      "steps": [
+        "Step 1: Source (SQL Server) — folds OK",
+        "Step 2: Filter rows (date > 2020) — folds → pushed to SQL WHERE clause",
+        "Step 3: Add custom M column (Text.Proper([Name])) — BREAKS folding chain",
+        "Step 4: Remove duplicates — runs in memory (cannot fold after break)",
+        "Step 5: Sort rows — runs in memory (cannot fold after break)"
+      ]
+    },
     "keyInsight": "To diagnose folding: right-click a step in Power Query Editor — if 'View Native Query' is available, the step folds. Once broken, all subsequent steps run in memory. Design strategy: apply all foldable steps (filters, column selection, row removal) BEFORE any non-foldable steps.",
     "commonTrap": "Applying a row filter (which would normally fold) AFTER a custom column that breaks folding. The filter then runs in memory on the full downloaded dataset. Re-ordering steps so the filter precedes the custom column restores server-side filtering and can reduce refresh time from hours to minutes.",
     "miniQuiz": {
@@ -385,6 +613,18 @@
     "estimatedReviewTime": 45,
     "tags": ["Workspace Roles", "Security", "Power BI Service"],
     "summary": "Workspace roles control who can do what in a Power BI workspace. Viewer: read-only (consume reports). Contributor: create and edit content, cannot manage access. Member: everything Contributor can do, plus add Members. Admin: full control including deleting the workspace.",
+    "visual": {
+      "type": "table",
+      "title": "Workspace Role Permissions Matrix",
+      "headers": ["Permission", "Viewer", "Contributor", "Member", "Admin"],
+      "rows": [
+        ["View & consume reports", "Yes", "Yes", "Yes", "Yes"],
+        ["Create & edit reports", "No", "Yes", "Yes", "Yes"],
+        ["Add/remove Members", "No", "No", "Yes", "Yes"],
+        ["Delete workspace", "No", "No", "No", "Yes"]
+      ],
+      "note": "Workspace roles control ACTIONS. They do NOT restrict which data rows a user sees — that requires RLS configured separately."
+    },
     "keyInsight": "Workspace roles control ACCESS to the workspace and its content. They do NOT control which rows of data a user sees — that is RLS. A Viewer with no RLS sees all rows. A Viewer with RLS sees only their permitted rows. The two systems work at different levels.",
     "commonTrap": "Thinking Viewer role restricts data visibility. It only restricts actions (can't edit, can't publish). To restrict what DATA a viewer sees, you must configure RLS in the semantic model separately. Workspace role ≠ data security.",
     "miniQuiz": {

@@ -5,6 +5,29 @@
     "subtopic": "Power Query",
     "concept": "Merge vs Append",
     "summary": "Merge joins two queries horizontally (like a SQL JOIN) — combining columns from matching rows. Append stacks queries vertically (like UNION ALL) — combining rows from tables with the same structure.",
+    "visual": {
+      "type": "comparison",
+      "title": "Merge vs Append",
+      "left": {
+        "label": "Merge (JOIN — adds columns)",
+        "items": [
+          "Combines two tables on a matching key",
+          "Result has MORE columns",
+          "Like SQL LEFT/INNER JOIN",
+          "Use when tables share a key column"
+        ]
+      },
+      "right": {
+        "label": "Append (UNION — adds rows)",
+        "items": [
+          "Stacks tables with the same columns",
+          "Result has MORE rows",
+          "Like SQL UNION ALL",
+          "Use when tables have identical structure"
+        ]
+      },
+      "winner": "right"
+    },
     "keyInsight": "Merge = JOIN (adds columns). Append = UNION (adds rows). This distinction appears frequently on PL-300 and is often tested in scenario form.",
     "commonTrap": "Using Merge when data should be stacked. If two tables share the same column structure and you want all rows combined, use Append — not Merge.",
     "miniQuiz": {
@@ -28,6 +51,17 @@
     "subtopic": "Power Query",
     "concept": "Query Folding",
     "summary": "Query folding translates Power Query steps into native queries executed by the data source (SQL, OData, etc.). Folded queries run on the server, reducing data transfer and refresh time.",
+    "visual": {
+      "type": "flow",
+      "title": "How Query Folding Works",
+      "steps": [
+        "Power Query steps written in M (Filter rows, Select columns, Sort)",
+        "Power BI translates foldable steps into a native SQL WHERE/SELECT",
+        "SQL query runs on the database server — only matching rows returned",
+        "Non-foldable steps (custom columns, Table.Buffer) break the chain",
+        "Steps after break point run in Power Query memory on full dataset"
+      ]
+    },
     "keyInsight": "Query folding is a key performance concept. Once a non-foldable step is introduced, all subsequent steps cannot fold. Apply foldable steps (filter, sort, select columns) before non-foldable ones.",
     "commonTrap": "Adding a custom M column early in the query breaks folding for all subsequent steps. A filter applied after a non-foldable step will run in Power Query memory instead of on the server.",
     "miniQuiz": {
@@ -51,6 +85,29 @@
     "subtopic": "Power Query",
     "concept": "Reference vs Duplicate Query",
     "summary": "Duplicate creates an independent copy of a query. Reference creates a new query that builds on the output of an existing query — changes to the source propagate downstream.",
+    "visual": {
+      "type": "comparison",
+      "title": "Reference vs Duplicate",
+      "left": {
+        "label": "Reference (Recommended)",
+        "items": [
+          "Builds on source query's output",
+          "Source changes flow downstream",
+          "Source loaded only ONCE",
+          "Use for fact + dim from same CSV"
+        ]
+      },
+      "right": {
+        "label": "Duplicate (Independent Copy)",
+        "items": [
+          "Re-runs all source query steps",
+          "Independent of source changes",
+          "Source loaded TWICE",
+          "Use only when truly independent"
+        ]
+      },
+      "winner": "left"
+    },
     "keyInsight": "Use Reference when you want multiple shaped versions of the same source (e.g., a fact table and a dimension from one raw CSV). Use Duplicate for fully independent copies.",
     "commonTrap": "Duplicating when a reference is needed — causing redundant loads from the source and inflating model size.",
     "miniQuiz": {
@@ -74,6 +131,18 @@
     "subtopic": "Power Query",
     "concept": "Pivot and Unpivot",
     "summary": "Unpivot transforms columns into rows — useful for normalizing crosstab (wide) data. Pivot transforms rows into columns — useful for creating summary views from transactional data.",
+    "visual": {
+      "type": "before-after",
+      "title": "Unpivot — Wide to Normalized",
+      "before": {
+        "label": "Before — Wide (Bad for Power BI)",
+        "content": "Product    | Jan_Sales | Feb_Sales | Mar_Sales\nWidget Pro | 1,200     | 980       | 1,450\nGadget X   | 800       | 1,100     | 760"
+      },
+      "after": {
+        "label": "After — Normalized (Good for Power BI)",
+        "content": "Product    | Month     | Sales\nWidget Pro | Jan_Sales | 1,200\nWidget Pro | Feb_Sales | 980\nWidget Pro | Mar_Sales | 1,450\nGadget X   | Jan_Sales | 800\n..."
+      }
+    },
     "keyInsight": "PL-300 frequently tests Unpivot because real-world data often arrives in wide spreadsheet format that must be normalized for Power BI's columnar model.",
     "commonTrap": "Forgetting to select the correct columns before unpivoting. Selecting the wrong columns creates extra rows with unexpected null values.",
     "miniQuiz": {
@@ -97,6 +166,12 @@
     "subtopic": "Power Query",
     "concept": "Parameters",
     "summary": "Parameters are named values referenced in queries to make transformations dynamic — for example, a server name, a file path, or a filter threshold that varies by environment.",
+    "visual": {
+      "type": "code",
+      "language": "m",
+      "expression": "// Define a parameter (created in Manage Parameters UI)\nServerName = \"dev-sql-server\"  // Type: Text\n\n// Use the parameter in a Source step\nSource = Sql.Database(ServerName, \"SalesDB\")",
+      "result": "Changing ServerName from 'dev-sql-server' to 'prod-sql-server' updates the connection without editing any query step. Deployment pipeline rules automate this per environment."
+    },
     "keyInsight": "Parameters enable dynamic data source configuration and are commonly used with deployment pipelines to swap connection strings between Dev, Test, and Production.",
     "commonTrap": "Hardcoding file paths or server names directly in query steps. Parameters allow the value to be changed without editing M code.",
     "miniQuiz": {
@@ -120,6 +195,12 @@
     "subtopic": "Power Query",
     "concept": "Null Value Handling",
     "summary": "Nulls represent missing or unknown values. Options include: Replace Value, Fill Down, Remove Rows, or filtering — the correct choice depends on why the null exists.",
+    "visual": {
+      "type": "code",
+      "language": "m",
+      "expression": "// Fill Down — for repeated category labels\n#\"Filled Down\" = Table.FillDown(Source, {\"Category\"}),\n\n// Replace null with 0 — for numeric measures\n#\"Replaced Nulls\" = Table.ReplaceValue(\n    #\"Filled Down\",\n    null, 0,\n    Replacer.ReplaceValue, {\"SalesAmount\"}\n)",
+      "result": "Fill Down propagates the last non-null value. Replace Value substitutes null with a default. Choose based on WHY the null exists — not just to remove it."
+    },
     "keyInsight": "Choose the right null strategy for the scenario. Replacing nulls with 0 is wrong when 0 means 'zero sales' but a null means 'no record.' Fill Down is correct for repeated category values.",
     "commonTrap": "Removing null rows when they should be filled or replaced. Removing a row with null Sales deletes valid product records that simply had no transactions.",
     "miniQuiz": {
@@ -143,6 +224,18 @@
     "subtopic": "Power Query",
     "concept": "Data Types",
     "summary": "Power Query requires explicit data types for each column. Incorrect types prevent relationships, break DAX aggregations, and cause errors in visuals. Common types: Text, Whole Number, Decimal, Date, Date/Time, Boolean.",
+    "visual": {
+      "type": "table",
+      "title": "Common Power Query Data Types",
+      "headers": ["Power Query Type", "Icon", "Use For", "Common Mistake"],
+      "rows": [
+        ["Date", "calendar", "Date columns for time intelligence", "Leaving as Text — breaks TOTALYTD"],
+        ["Whole Number", "123", "Integer IDs, counts, keys", "Using Decimal for IDs wastes memory"],
+        ["Decimal Number", "1.2", "Revenue, rates, percentages", "Using Text — DAX SUM returns error"],
+        ["Text", "ABC", "Names, codes, categories", "Mixing types causes relationship errors"]
+      ],
+      "note": "Always set types explicitly — auto-detection can misidentify date strings as text."
+    },
     "keyInsight": "Always set data types explicitly — do not rely on auto-detection. Date columns stored as Text will break time intelligence functions and date relationships.",
     "commonTrap": "Leaving date columns as Text type. TOTALYTD, DATEADD, and all time intelligence functions require a proper Date data type, not a text representation.",
     "miniQuiz": {
@@ -166,6 +259,18 @@
     "subtopic": "Power Query",
     "concept": "Group By",
     "summary": "Group By aggregates rows based on one or more columns, applying aggregation functions (Sum, Count, Average, Min, Max) to remaining columns. It permanently reduces row-level granularity.",
+    "visual": {
+      "type": "before-after",
+      "title": "Group By — Reduce Granularity Before Load",
+      "before": {
+        "label": "Before — 10M Transaction Rows",
+        "content": "TransactionID | Date       | ProductID | CustomerID | Amount\n10001         | 2024-01-01 | P001      | C100       | 45.00\n10002         | 2024-01-01 | P001      | C201       | 45.00\n10003         | 2024-01-01 | P002      | C150       | 89.99\n... (10 million rows)"
+      },
+      "after": {
+        "label": "After — 365 Daily Summary Rows",
+        "content": "Date       | ProductID | DailyRevenue | OrderCount\n2024-01-01 | P001      | $12,450      | 276\n2024-01-01 | P002      | $8,990       | 100\n2024-01-02 | P001      | $11,200      | 248\n... (365 days × products)"
+      }
+    },
     "keyInsight": "Group By in Power Query is an ETL-level aggregation — use it to reduce row count before loading to the model. DAX measures are more flexible, but Group By is better for large pre-aggregated datasets.",
     "commonTrap": "Using Group By when you need row-level detail in the model. Grouping removes granularity — you cannot drill back to individual rows after the aggregation.",
     "miniQuiz": {
@@ -189,6 +294,17 @@
     "subtopic": "Power Query",
     "concept": "Semi-Structured Data (JSON and XML)",
     "summary": "Power Query can parse JSON and XML, expanding nested records and lists into tabular form. Use the Expand button on Record or List columns to flatten the structure.",
+    "visual": {
+      "type": "flow",
+      "title": "Flatten JSON API Response to Table",
+      "steps": [
+        "Connect to API — column shows [Record] or [List] values",
+        "Expand [Record] column → adds new columns (e.g., id, name, amount)",
+        "Expand [List] column → adds new rows (one per list item)",
+        "Set correct data types on all expanded columns",
+        "Table is now flat and ready to load into the model"
+      ]
+    },
     "keyInsight": "JSON from APIs and XML from legacy systems are common PL-300 data source types. Expanding always produces more rows (List) or more columns (Record).",
     "commonTrap": "Confusing a Record column with a List column. Records expand into new columns (horizontal), while Lists expand into new rows (vertical).",
     "miniQuiz": {
@@ -212,6 +328,17 @@
     "subtopic": "Power Query",
     "concept": "Staging Queries (Disable Load)",
     "summary": "Staging queries are intermediate transformation steps that are not loaded into the model. Set 'Enable Load' to false on a query to use it as a reusable transformation layer without adding a table to the model.",
+    "visual": {
+      "type": "flow",
+      "title": "Staging Query Architecture",
+      "steps": [
+        "Raw_Sales query → connects to CSV source (Enable Load: OFF)",
+        "Fact_Sales query → references Raw_Sales, selects fact columns (Enable Load: ON)",
+        "Dim_Customer query → references Raw_Sales, selects customer columns (Enable Load: ON)",
+        "Model contains only Fact_Sales + Dim_Customer — Raw_Sales invisible",
+        "One source load shared between both output tables"
+      ]
+    },
     "keyInsight": "The best practice pattern is: raw source → staging (load disabled) → fact/dimension tables (load enabled). This keeps the model clean and avoids redundant tables.",
     "commonTrap": "Loading every intermediate query as a table in the model. Intermediate transformation queries should have load disabled — loading them unnecessarily increases model size.",
     "miniQuiz": {
@@ -235,6 +362,17 @@
     "subtopic": "Power Query",
     "concept": "Privacy Levels",
     "summary": "Privacy levels classify data sources by sensitivity: Public, Organizational, or Private. When Power Query combines data from multiple sources, privacy levels control whether data from one source can be shared with another during query evaluation.",
+    "visual": {
+      "type": "table",
+      "title": "Privacy Level Comparison",
+      "headers": ["Level", "Can Combine With", "Example Source"],
+      "rows": [
+        ["Public", "Public, Organizational, Private", "Public API, Wikipedia"],
+        ["Organizational", "Public, Organizational", "Internal SQL Server, SharePoint"],
+        ["Private", "Private only (same level)", "Sensitive HR data, financials"]
+      ],
+      "note": "Formula Firewall error = privacy level mismatch. Fix by aligning levels (e.g., both Organizational)."
+    },
     "keyInsight": "Privacy level mismatches cause Formula Firewall errors — the most common reason a query works in Power BI Desktop but fails when connecting to another source. Setting both sources to Organizational (or matching levels) resolves most formula firewall errors in enterprise scenarios.",
     "commonTrap": "Ignoring privacy level warnings and setting all sources to Public for convenience. Public privacy means data can be sent to any other source — this is inappropriate for internal databases or confidential data. The correct practice is to set levels intentionally based on data sensitivity.",
     "miniQuiz": {
@@ -255,6 +393,12 @@
     "subtopic": "Power Query",
     "concept": "Error Handling — try...otherwise",
     "summary": "In M (Power Query formula language), try...otherwise handles transformation errors gracefully. try expression otherwise fallback returns the fallback value instead of propagating an error when the expression fails.",
+    "visual": {
+      "type": "code",
+      "language": "m",
+      "expression": "// Safe numeric conversion — handles 'N/A', blanks, text\n#\"Safe Revenue\" = Table.AddColumn(\n    Source,\n    \"Revenue_Clean\",\n    each try Number.From([Revenue])\n        otherwise null\n)",
+      "result": "Rows with 'N/A' or non-numeric text return null instead of an error. All rows are preserved. Downstream steps use Revenue_Clean instead of the original Revenue column."
+    },
     "keyInsight": "try [Column] otherwise null is the standard pattern for catching conversion errors (e.g., trying to convert 'N/A' to a number). It is commonly used with custom column formulas to prevent errors from propagating and breaking the entire query load.",
     "commonTrap": "Changing a column's data type directly when the column contains non-convertible values (like 'N/A' text in a numeric column). The direct type change errors on all bad values. The safer approach: add a custom column using try Number.From([Column]) otherwise null, then remove the original.",
     "miniQuiz": {
@@ -275,6 +419,29 @@
     "subtopic": "Power Query",
     "concept": "Reference vs Duplicate — When to Use Each",
     "summary": "Duplicate creates an independent copy that re-evaluates from the original data source. Reference creates a dependent query that builds on the OUTPUT of the source query — changes to the source propagate downstream automatically.",
+    "visual": {
+      "type": "comparison",
+      "title": "Reference vs Duplicate — Advanced",
+      "left": {
+        "label": "Reference (Shares Work)",
+        "items": [
+          "Builds on source output (in-memory)",
+          "Source transformations run ONCE",
+          "Changes to source auto-propagate",
+          "Use for fact + dim from same base"
+        ]
+      },
+      "right": {
+        "label": "Duplicate (Independent)",
+        "items": [
+          "Re-executes all source steps",
+          "Source transformations run TWICE",
+          "Changes to source do NOT propagate",
+          "Use only when fully separate logic"
+        ]
+      },
+      "winner": "left"
+    },
     "keyInsight": "The critical distinction: a Reference query shares transformation work with its source. If both queries apply the same 5 steps, Reference runs those 5 steps once. Duplicate runs them twice — doubling source load and refresh time for identical transformations.",
     "commonTrap": "Duplicating a query to create a dimension table from the same source as a fact table. This loads the source data twice. Referencing the base query (or a staging query) and applying different column selections creates both tables from a single source load.",
     "miniQuiz": {
@@ -295,6 +462,17 @@
     "subtopic": "Power Query",
     "concept": "Query Folding Break Points",
     "summary": "Common operations that break query folding: adding a custom M column (non-SQL-translatable), Buffer functions (Table.Buffer), sorting after a merge, Remove Duplicates, certain text transformations, and merging with a non-foldable query.",
+    "visual": {
+      "type": "flow",
+      "title": "Steps That Break Query Folding",
+      "steps": [
+        "Steps 1–2: Filter rows, Select columns → FOLD to SQL (fast, server-side)",
+        "Step 3: Table.Buffer() or custom M column → FOLDING BREAKS HERE",
+        "Steps 4–6: Any further filters, sorts, type changes → run IN MEMORY (slow)",
+        "Fix: Move all filters/sorts BEFORE the break point step",
+        "Result: Maximum SQL pushdown, minimum in-memory processing"
+      ]
+    },
     "keyInsight": "Once folding breaks at step N, ALL steps after N also lose folding — even if they would individually fold. The fix is to reorder: apply all foldable steps (filter rows, select columns, sort) before the first non-foldable step.",
     "commonTrap": "Applying a date filter AFTER a Table.Buffer step and wondering why the filter is slow. Table.Buffer explicitly breaks folding by loading data into memory. All subsequent steps — including a simple row filter — run in Power Query memory on the full buffered dataset.",
     "miniQuiz": {
@@ -315,6 +493,18 @@
     "subtopic": "Power Query",
     "concept": "Unpivot Columns — Normalizing Wide Data",
     "summary": "Unpivot transforms a wide (crosstab) table into a tall (normalized) table by converting selected column headers into rows. Each selected column becomes a row with an Attribute column (original column name) and a Value column (the cell value).",
+    "visual": {
+      "type": "before-after",
+      "title": "Unpivot Wide Survey Data",
+      "before": {
+        "label": "Before — Wide Excel Export",
+        "content": "Product    | Jan_Revenue | Feb_Revenue | Mar_Revenue\nWidget Pro | 12,000      | 9,800       | 14,500\nGadget X   | 8,000       | 11,000      | 7,600\n(Hard to filter by month in Power BI)"
+      },
+      "after": {
+        "label": "After — Normalized (Unpivoted)",
+        "content": "Product    | Month       | Revenue\nWidget Pro | Jan_Revenue | 12,000\nWidget Pro | Feb_Revenue | 9,800\nWidget Pro | Mar_Revenue | 14,500\nGadget X   | Jan_Revenue | 8,000\n(Easy to filter, slice, and aggregate)"
+      }
+    },
     "keyInsight": "PL-300 frequently tests Unpivot because real-world Excel exports, survey tools, and financial systems produce wide tables. Power BI's data model requires narrow, normalized tables. Unpivot is often the first transformation needed when loading spreadsheet data.",
     "commonTrap": "Selecting the wrong columns before unpivoting. You should select the MEASURE columns (Jan Sales, Feb Sales, Mar Sales) to unpivot — not the identifier columns (Product, Region). Selecting identifier columns produces a mangled result with product names as attribute values.",
     "miniQuiz": {
@@ -335,6 +525,12 @@
     "subtopic": "Power Query",
     "concept": "Parameters — Dynamic Configuration",
     "summary": "Power Query parameters are named typed values that can be referenced in query steps. They support dynamic data source URLs, file paths, server names, filter thresholds, and environment switching. Parameters can be modified in Power BI Desktop or updated via deployment pipeline rules.",
+    "visual": {
+      "type": "code",
+      "language": "m",
+      "expression": "// Parameter: ServerName = \"dev-sql-server\"\n// Parameter: DatabaseName = \"SalesDB_Dev\"\n// Parameter: RowLimit = 100000\n\nSource = Sql.Database(ServerName, DatabaseName),\nFiltered = Table.FirstN(Source, RowLimit)",
+      "result": "Deployment pipeline rule: ServerName → 'prod-sql-server', DatabaseName → 'SalesDB_Prod', RowLimit → null (no limit). Zero PBIX edits needed when promoting Dev → Production."
+    },
     "keyInsight": "Parameters enable ENVIRONMENT SWITCHING — a parameter for the server name set to 'dev-server' in development and 'prod-server' in production. Deployment pipeline parameter rules update the value automatically when promoting from Development to Production without touching the PBIX file.",
     "commonTrap": "Hardcoding environment-specific values (server names, API keys, file paths) directly in query steps. When the report is promoted from Dev to Production, the developer must manually edit the query — a maintenance risk. Parameters make this change a configuration step, not a code edit.",
     "miniQuiz": {

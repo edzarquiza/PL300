@@ -21,15 +21,46 @@
         "tables": [
           {
             "name": "Sales",
-            "columns": ["OrderID", "CustomerID", "Amount"],
-            "rows": [["O1", "C1", 400], ["O2", "C2", 300], ["O3", "C1", 200], ["O4", null, 150]]
+            "columns": [
+              "OrderID",
+              "CustomerID",
+              "Amount"
+            ],
+            "rows": [
+              [
+                "O1",
+                "C1",
+                400
+              ],
+              [
+                "O2",
+                "C2",
+                300
+              ],
+              [
+                "O3",
+                "C1",
+                200
+              ],
+              [
+                "O4",
+                null,
+                150
+              ]
+            ]
           }
         ]
       },
       "expectedOutput": {
         "label": "Unique Customers",
-        "columns": ["Unique Customers"],
-        "rows": [[2]]
+        "columns": [
+          "Unique Customers"
+        ],
+        "rows": [
+          [
+            2
+          ]
+        ]
       },
       "explanation": "CustomerID has values C1, C2, C1, and blank. DISTINCTCOUNT ignores the blank, sees C1 and C2 as the two distinct values, and returns 2."
     },
@@ -39,20 +70,39 @@
       "sampleData": null,
       "expectedOutput": {
         "label": "Unique Incl Blank",
-        "columns": ["Unique Incl Blank"],
-        "rows": [[3]]
+        "columns": [
+          "Unique Incl Blank"
+        ],
+        "rows": [
+          [
+            3
+          ]
+        ]
       },
       "explanation": "DISTINCT() preserves the blank row as a distinct entry. COUNTROWS then counts C1, C2, and BLANK = 3. This differs from DISTINCTCOUNT, which would return 2."
     }
   ],
-  "filterFlow": null,
+  "filterFlow": {
+    "steps": [
+      "Column passed to DISTINCTCOUNT",
+      "DAX scans all values in that column",
+      "Duplicate values are ignored",
+      "Returns count of unique values only"
+    ]
+  },
   "iteratorFlow": null,
   "commonTraps": [
     "DISTINCTCOUNT ignores BLANK() — if your column has blank rows and you need to count them, use COUNTROWS(DISTINCT(column)) instead.",
     "DISTINCTCOUNT only accepts a single column reference. It cannot accept a table expression. Use COUNTROWS(DISTINCT(...)) for table expressions.",
     "DISTINCTCOUNT is affected by the current filter context, so its result changes based on slicer selections — this is expected behavior, not a bug."
   ],
-  "relatedFunctions": ["COUNTROWS", "DISTINCT", "VALUES", "COUNT", "COUNTA"],
+  "relatedFunctions": [
+    "COUNTROWS",
+    "DISTINCT",
+    "VALUES",
+    "COUNT",
+    "COUNTA"
+  ],
   "examWeight": "Medium",
   "difficulty": "Easy",
   "sqlEquivalent": {

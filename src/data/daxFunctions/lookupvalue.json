@@ -42,20 +42,64 @@
         "tables": [
           {
             "name": "Sales",
-            "columns": ["OrderID", "SalesRepID"],
-            "rows": [["O1", "E101"], ["O2", "E102"], ["O3", "E101"]]
+            "columns": [
+              "OrderID",
+              "SalesRepID"
+            ],
+            "rows": [
+              [
+                "O1",
+                "E101"
+              ],
+              [
+                "O2",
+                "E102"
+              ],
+              [
+                "O3",
+                "E101"
+              ]
+            ]
           },
           {
             "name": "Employees",
-            "columns": ["EmployeeID", "ManagerName"],
-            "rows": [["E101", "Sarah Jones"], ["E102", "Mike Brown"]]
+            "columns": [
+              "EmployeeID",
+              "ManagerName"
+            ],
+            "rows": [
+              [
+                "E101",
+                "Sarah Jones"
+              ],
+              [
+                "E102",
+                "Mike Brown"
+              ]
+            ]
           }
         ]
       },
       "expectedOutput": {
         "label": "Manager Lookup",
-        "columns": ["OrderID", "Manager"],
-        "rows": [["O1", "Sarah Jones"], ["O2", "Mike Brown"], ["O3", "Sarah Jones"]]
+        "columns": [
+          "OrderID",
+          "Manager"
+        ],
+        "rows": [
+          [
+            "O1",
+            "Sarah Jones"
+          ],
+          [
+            "O2",
+            "Mike Brown"
+          ],
+          [
+            "O3",
+            "Sarah Jones"
+          ]
+        ]
       },
       "explanation": "For each row in Sales, LOOKUPVALUE searches Employees[EmployeeID] for the value in Sales[SalesRepID]. When E101 matches, it returns the corresponding Employees[ManagerName] value 'Sarah Jones'."
     },
@@ -67,14 +111,27 @@
       "explanation": "Both ProductID AND Year must match simultaneously. This is equivalent to a two-column VLOOKUP or INDEX/MATCH with multiple criteria. Both conditions are AND-ed together."
     }
   ],
-  "filterFlow": null,
+  "filterFlow": {
+    "steps": [
+      "Scan search_column in search_table for search_value",
+      "When a match is found, return the corresponding value from result_column",
+      "If no match found: return BLANK (or alternate_result if specified)",
+      "If multiple matches: error — use relationship or SELECTEDVALUE instead"
+    ]
+  },
   "iteratorFlow": null,
   "commonTraps": [
     "If multiple rows in the lookup table match all search conditions, LOOKUPVALUE returns an error — not BLANK. Use IFERROR(LOOKUPVALUE(...), BLANK()) or ensure uniqueness before relying on LOOKUPVALUE.",
     "LOOKUPVALUE works without a defined relationship. If a relationship already exists between the tables, use RELATED instead — it is simpler, faster, and leverages the model's relationship engine.",
     "LOOKUPVALUE returning BLANK on no match can silently hide data issues in an RLS scenario. Always validate that all expected values have matches, especially when used for security-sensitive calculations."
   ],
-  "relatedFunctions": ["RELATED", "RELATEDTABLE", "VALUES", "SELECTEDVALUE", "FILTER"],
+  "relatedFunctions": [
+    "RELATED",
+    "RELATEDTABLE",
+    "VALUES",
+    "SELECTEDVALUE",
+    "FILTER"
+  ],
   "examWeight": "Medium",
   "difficulty": "Medium",
   "sqlEquivalent": {

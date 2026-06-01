@@ -1,6 +1,13 @@
+import { useState } from 'react'
+import ConceptVisual from './ConceptVisual'
+import WalkthroughViewer from './WalkthroughViewer'
+import { getWalkthroughForTags } from '../data/walkthroughs'
+
 const CHOICE_LABELS = ['A', 'B', 'C', 'D']
 
 export default function ConceptCard({ card, quizAnswer, onAnswer }) {
+  const [showWalkthrough, setShowWalkthrough] = useState(false)
+  const walkthrough = getWalkthroughForTags(card.tags ?? [])
   const answered = quizAnswer !== null
   const isCorrect = answered && quizAnswer === card.miniQuiz.correctAnswer
 
@@ -29,6 +36,46 @@ export default function ConceptCard({ card, quizAnswer, onAnswer }) {
 
       {/* Summary */}
       <p className="text-sm text-gray-700 leading-relaxed mb-4">{card.summary}</p>
+
+      {/* Visual representation */}
+      {card.visual && <ConceptVisual visual={card.visual} />}
+
+      {/* Inline walkthrough (if no card.visual but a walkthrough matches) */}
+      {!card.visual && walkthrough && (
+        <div className="mb-4">
+          {showWalkthrough ? (
+            <WalkthroughViewer
+              walkthrough={walkthrough}
+              onClose={() => setShowWalkthrough(false)}
+            />
+          ) : (
+            <button
+              onClick={() => setShowWalkthrough(true)}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border-2 border-indigo-200 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-300 transition-colors text-xs font-semibold text-indigo-700"
+            >
+              <span>▶</span>
+              <span>Visual Walkthrough — {walkthrough.concept}</span>
+              <span className="text-indigo-400 font-normal">{walkthrough.slides?.length} slides</span>
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Walkthrough button when card has visual too */}
+      {card.visual && walkthrough && !showWalkthrough && (
+        <button
+          onClick={() => setShowWalkthrough(true)}
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 transition-colors text-xs font-medium text-indigo-600 mb-4"
+        >
+          <span>▶</span>
+          <span>Full Walkthrough — {walkthrough.slides?.length} slides</span>
+        </button>
+      )}
+      {card.visual && walkthrough && showWalkthrough && (
+        <div className="mb-4">
+          <WalkthroughViewer walkthrough={walkthrough} onClose={() => setShowWalkthrough(false)} />
+        </div>
+      )}
 
       {/* Key Insight */}
       <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-3">

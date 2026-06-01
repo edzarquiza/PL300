@@ -35,15 +35,60 @@
         "tables": [
           {
             "name": "SalesRep",
-            "columns": ["Rep", "Total Sales"],
-            "rows": [["Alice", 12000], ["Bob", 8500], ["Carol", 10000], ["Dave", 7200]]
+            "columns": [
+              "Rep",
+              "Total Sales"
+            ],
+            "rows": [
+              [
+                "Alice",
+                12000
+              ],
+              [
+                "Bob",
+                8500
+              ],
+              [
+                "Carol",
+                10000
+              ],
+              [
+                "Dave",
+                7200
+              ]
+            ]
           }
         ]
       },
       "expectedOutput": {
         "label": "Performance",
-        "columns": ["Rep", "Total Sales", "Performance"],
-        "rows": [["Alice", 12000, "Above Target"], ["Bob", 8500, "Below Target"], ["Carol", 10000, "Above Target"], ["Dave", 7200, "Below Target"]]
+        "columns": [
+          "Rep",
+          "Total Sales",
+          "Performance"
+        ],
+        "rows": [
+          [
+            "Alice",
+            12000,
+            "Above Target"
+          ],
+          [
+            "Bob",
+            8500,
+            "Below Target"
+          ],
+          [
+            "Carol",
+            10000,
+            "Above Target"
+          ],
+          [
+            "Dave",
+            7200,
+            "Below Target"
+          ]
+        ]
       },
       "explanation": "Alice (12000) and Carol (10000) meet the >= 10000 threshold and return Above Target. Bob and Dave fall below and return Below Target."
     },
@@ -55,14 +100,29 @@
       "explanation": "This pattern guards against division by zero. However, the preferred modern approach is to use DIVIDE([Profit], [Revenue]) which is more concise and handles blanks automatically."
     }
   ],
-  "filterFlow": null,
+  "filterFlow": {
+    "steps": [
+      "Evaluate logical_test expression",
+      "If TRUE: evaluate and return value_if_true",
+      "If FALSE or BLANK: evaluate and return value_if_false",
+      "Short-circuits — only one branch is evaluated"
+    ]
+  },
   "iteratorFlow": null,
   "commonTraps": [
     "DAX IF may evaluate both branches before checking the condition in some engine contexts, unlike typical short-circuit evaluation. Placing an expensive expression in only one branch does not guarantee the other branch is skipped.",
     "When IF returns BLANK() on the false path (omitted third argument), visuals may show empty cells instead of zeros. This can be intentional but is often unexpected. Pass 0 explicitly if you want zero displayed.",
     "Deeply nested IFs (IF inside IF inside IF) become hard to read and maintain. Use SWITCH(TRUE(), ...) instead for multiple conditions."
   ],
-  "relatedFunctions": ["SWITCH", "IFERROR", "BLANK", "AND", "OR", "NOT", "DIVIDE"],
+  "relatedFunctions": [
+    "SWITCH",
+    "IFERROR",
+    "BLANK",
+    "AND",
+    "OR",
+    "NOT",
+    "DIVIDE"
+  ],
   "examWeight": "High",
   "difficulty": "Easy",
   "sqlEquivalent": {

@@ -5,6 +5,18 @@
     "subtopic": "Visualization",
     "concept": "Choosing the Right Visual",
     "summary": "Visual selection depends on the analysis goal: comparisons use bar/column charts, trends use line charts, composition uses treemaps or pie charts (few categories only), relationships use scatter plots.",
+    "visual": {
+      "type": "table",
+      "title": "Visual Selection Guide",
+      "headers": ["Analysis Goal", "Best Visual", "Why"],
+      "rows": [
+        ["Trend over time", "Line chart", "Shows continuous change clearly"],
+        ["Compare categories", "Bar / Column chart", "Easy side-by-side comparison"],
+        ["Part of whole (few)", "Donut / Pie chart", "Works for 3–5 categories max"],
+        ["Correlation / outliers", "Scatter plot", "Shows relationship between two measures"]
+      ],
+      "note": "Pie/donut charts become unreadable above 5–7 categories — use a sorted bar chart instead"
+    },
     "keyInsight": "PL-300 tests visual selection in business scenarios. The exam expects you to choose the most appropriate visual — not just a valid one.",
     "commonTrap": "Using a pie chart for more than 5–7 categories. With many categories, slices become unreadable. A sorted bar chart is always the better choice for many-category composition.",
     "miniQuiz": {
@@ -28,6 +40,29 @@
     "subtopic": "Visualization",
     "concept": "Slicers and Filters",
     "summary": "Slicers are on-canvas filter controls visible to users. Filters pane provides report-level, page-level, and visual-level filtering. Report-level filters apply to all pages; page-level to the current page; visual-level to one visual.",
+    "visual": {
+      "type": "comparison",
+      "title": "Slicer vs Filter Pane",
+      "left": {
+        "label": "Slicer (winner for interactivity)",
+        "items": [
+          "Visible on report canvas",
+          "User-controlled interaction",
+          "Can sync across pages",
+          "Best for end-user filtering"
+        ]
+      },
+      "right": {
+        "label": "Filter Pane",
+        "items": [
+          "Hidden or locked by developer",
+          "Report / page / visual scope",
+          "Developer-controlled restrictions",
+          "Best for fixed business rules"
+        ]
+      },
+      "winner": "left"
+    },
     "keyInsight": "Slicers are user-facing and interactive. Filter pane filters can be locked or hidden, useful for developer-controlled restrictions. Sync Slicers connects a slicer across multiple pages.",
     "commonTrap": "Confusing page-level and report-level filters. A page-level filter only affects the current page. For cross-page filtering, use report-level filters or Sync Slicers.",
     "miniQuiz": {
@@ -51,6 +86,17 @@
     "subtopic": "Visualization",
     "concept": "Drillthrough",
     "summary": "Drillthrough allows users to right-click a data point and navigate to a dedicated detail page pre-filtered to that context. The detail page must have a drillthrough field defined.",
+    "visual": {
+      "type": "flow",
+      "title": "Drillthrough Navigation Flow",
+      "steps": [
+        "User views summary page — map visual shows regions",
+        "User right-clicks a region data point (e.g., East)",
+        "Drillthrough option appears in context menu",
+        "User selects 'Transaction Detail' page",
+        "Detail page opens pre-filtered to East region (final — context carried through)"
+      ]
+    },
     "keyInsight": "Drillthrough is for navigating to a detail page with context (e.g., selected product). It differs from drill-down, which expands a visual hierarchy within the same visual.",
     "commonTrap": "Confusing drillthrough with drill-down. Drill-down navigates within a visual hierarchy (year → quarter → month). Drillthrough navigates to a different page filtered by a selected value.",
     "miniQuiz": {
@@ -74,6 +120,17 @@
     "subtopic": "Visualization",
     "concept": "Bookmarks",
     "summary": "Bookmarks capture the current state of a report page — filter state, visual visibility, and slicer selections. They enable navigation, view toggling, and guided storytelling.",
+    "visual": {
+      "type": "flow",
+      "title": "Bookmark Toggle Pattern",
+      "steps": [
+        "Set up two visuals: bar chart and data table (same data)",
+        "Hide table → create Bookmark A ('Chart View')",
+        "Hide chart → create Bookmark B ('Table View')",
+        "Add two buttons: 'Chart' → Bookmark A, 'Table' → Bookmark B",
+        "User clicks button — bookmarked state restores instantly (final)"
+      ]
+    },
     "keyInsight": "Bookmarks are commonly used to toggle between two views (e.g., chart vs table) using a button, or to create a custom page navigation menu.",
     "commonTrap": "Expecting bookmarks to capture all page state by default. You can control per bookmark whether data, display (visibility), or current page state is captured.",
     "miniQuiz": {
@@ -97,6 +154,18 @@
     "subtopic": "Visualization",
     "concept": "Conditional Formatting",
     "summary": "Conditional formatting applies dynamic visual formatting — changing background color, font color, data bars, or icons based on data values, rules, or measures.",
+    "visual": {
+      "type": "table",
+      "title": "Conditional Formatting Color Rules",
+      "headers": ["Sales vs Target", "Color", "Rule Type"],
+      "rows": [
+        ["< 50% of target", "Red", "Below threshold"],
+        ["50%–79% of target", "Yellow", "Approaching target"],
+        [">= 80% of target", "Green", "On or above target"],
+        ["Per-region target (varies)", "Dynamic", "Measure-based rule required"]
+      ],
+      "note": "Use a DAX measure for per-row dynamic thresholds — fixed rules cannot vary by context"
+    },
     "keyInsight": "Conditional formatting can use field values, threshold rules, or DAX measures. Using a measure allows fully dynamic logic that responds to context — not possible with simple rules.",
     "commonTrap": "Using a fixed threshold rule when the threshold should vary by row or context. A fixed rule cannot compare against a per-row target — a measure is required.",
     "miniQuiz": {
@@ -120,6 +189,29 @@
     "subtopic": "Visualization",
     "concept": "Paginated Reports",
     "summary": "Paginated reports are designed for pixel-perfect, print-ready output. They display all data across multiple pages — unlike standard Power BI reports that limit visual data points. Built using Power BI Report Builder.",
+    "visual": {
+      "type": "comparison",
+      "title": "Standard vs Paginated Reports",
+      "left": {
+        "label": "Standard Power BI Report",
+        "items": [
+          "Interactive — slicers, drillthrough",
+          "Limits data points per visual",
+          "Optimized for exploration",
+          "Not ideal for printing"
+        ]
+      },
+      "right": {
+        "label": "Paginated Report (winner for compliance)",
+        "items": [
+          "Pixel-perfect, print-ready layout",
+          "All rows across multiple pages",
+          "Invoices, statements, disclosures",
+          "Built in Report Builder"
+        ]
+      },
+      "winner": "right"
+    },
     "keyInsight": "Paginated reports are the correct choice for: invoices, formal statements, regulated disclosures, or any scenario where every data row must appear. Standard reports are better for interactive exploration.",
     "commonTrap": "Using standard Power BI reports for high-volume printing. Standard visuals truncate data. Paginated reports are required when all data must appear across pages.",
     "miniQuiz": {
@@ -143,6 +235,18 @@
     "subtopic": "Visualization",
     "concept": "AI Visuals",
     "summary": "Power BI AI visuals include: Key Influencers (identifies statistical drivers of a metric), Decomposition Tree (manually breaks down a measure across dimensions), and Q&A (natural language queries).",
+    "visual": {
+      "type": "table",
+      "title": "AI Visual Selection Guide",
+      "headers": ["AI Visual", "Purpose", "When to Use"],
+      "rows": [
+        ["Key Influencers", "Finds statistical drivers of a metric", "Why is churn high? What drives revenue?"],
+        ["Decomposition Tree", "Manual breakdown across dimensions", "Explore a measure by any dimension interactively"],
+        ["Q&A", "Natural language queries", "Let users ask questions in plain English"],
+        ["Smart Narrative", "Auto-generated text summary", "Add dynamic written insights to a report"]
+      ],
+      "note": "Key Influencers = automatic analysis; Decomposition Tree = manual exploration"
+    },
     "keyInsight": "Know when to use each: Key Influencers = 'why is X high/low?'. Decomposition Tree = 'break down X by multiple dimensions interactively'. Q&A = 'let users ask natural language questions'.",
     "commonTrap": "Using Decomposition Tree when Key Influencers is the right answer. Decomposition Tree explores data manually; Key Influencers automatically identifies statistically significant drivers.",
     "miniQuiz": {
@@ -166,6 +270,17 @@
     "subtopic": "Visualization",
     "concept": "Mobile Layout Design",
     "summary": "Power BI Desktop allows you to create a dedicated phone layout for each report page. Visuals can be rearranged and resized independently of the desktop layout for optimal mobile viewing.",
+    "visual": {
+      "type": "flow",
+      "title": "Mobile Layout Configuration Steps",
+      "steps": [
+        "Design report in normal desktop canvas view",
+        "Go to View tab → click Mobile Layout",
+        "Phone canvas appears — drag existing visuals onto it",
+        "Resize and reorder visuals for portrait phone screen",
+        "Publish report — mobile users see the phone layout automatically (final)"
+      ]
+    },
     "keyInsight": "Mobile layouts are configured in View > Mobile Layout. Each page has its own mobile layout. Only visuals placed on the mobile canvas appear on mobile devices.",
     "commonTrap": "Assuming the desktop layout automatically adapts to mobile. It does not — without a configured mobile layout, Power BI shows a simplified, auto-arranged view that may not look professional.",
     "miniQuiz": {

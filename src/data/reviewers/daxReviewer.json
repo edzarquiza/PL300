@@ -5,6 +5,19 @@
     "subtopic": "DAX",
     "concept": "CALCULATE",
     "summary": "CALCULATE evaluates an expression under a modified filter context. It is the cornerstone of DAX — nearly every advanced measure uses it.",
+    "visual": {
+      "type": "filtered-table",
+      "headers": ["OrderID", "Region", "Amount"],
+      "rows": [
+        ["1001", "East", "$500"],
+        ["1002", "West", "$300"],
+        ["1003", "East", "$700"],
+        ["1004", "North", "$200"]
+      ],
+      "highlight": [0, 2],
+      "dim": [1, 3],
+      "filterNote": "CALCULATE(SUM(Sales[Amount]), Sales[Region] = \"East\") → evaluates only highlighted rows → $1,200"
+    },
     "keyInsight": "CALCULATE is the only DAX function capable of modifying filter context. Expect 3–5 PL-300 questions that depend on understanding it directly or indirectly.",
     "commonTrap": "Confusing row context with filter context. Inside an iterator like SUMX, CALCULATE performs context transition — converting the current row context into an equivalent filter context.",
     "miniQuiz": {
@@ -28,6 +41,17 @@
     "subtopic": "DAX",
     "concept": "ALL and REMOVEFILTERS",
     "summary": "ALL returns all rows of a table or all values of a column, ignoring any filters. REMOVEFILTERS explicitly removes filters and is functionally equivalent in most cases.",
+    "visual": {
+      "type": "flow",
+      "title": "ALL() Inside CALCULATE — Filter Removal",
+      "steps": [
+        "Slicer sets filter: Region = 'East'",
+        "CALCULATE() intercepts the current filter context",
+        "ALL(Sales) argument removes ALL filters on Sales table",
+        "Expression evaluates against the full unfiltered Sales table",
+        "Result: Grand Total regardless of any slicer selection"
+      ]
+    },
     "keyInsight": "ALL is most commonly used inside CALCULATE to ignore slicer or filter context — for example, calculating a percentage of grand total.",
     "commonTrap": "ALL used outside CALCULATE does NOT remove filters — it simply returns the full table. Filter removal only happens when ALL is a filter argument inside CALCULATE.",
     "miniQuiz": {
@@ -51,6 +75,19 @@
     "subtopic": "DAX",
     "concept": "FILTER function",
     "summary": "FILTER iterates over a table row by row and returns only rows that satisfy a condition. It always returns a table, never a scalar value.",
+    "visual": {
+      "type": "filtered-table",
+      "headers": ["OrderID", "Amount", "Region"],
+      "rows": [
+        ["1001", "$1,200", "East"],
+        ["1002", "$800", "West"],
+        ["1003", "$2,500", "East"],
+        ["1004", "$400", "North"]
+      ],
+      "highlight": [0, 2],
+      "dim": [1, 3],
+      "filterNote": "FILTER(Sales, Sales[Amount] > 1000) → returns only highlighted rows (Amount > $1,000)"
+    },
     "keyInsight": "FILTER is a table function used inside CALCULATE as a filter argument. It is slower than column-based filter arguments because it iterates row by row.",
     "commonTrap": "Using FILTER when a simple boolean predicate works. CALCULATE(SUM(Sales[Amount]), Sales[Region] = \"East\") is faster than wrapping the same logic in FILTER.",
     "miniQuiz": {
@@ -74,6 +111,18 @@
     "subtopic": "DAX",
     "concept": "Iterator Functions (SUMX, AVERAGEX, COUNTX)",
     "summary": "Iterator functions evaluate an expression for each row in a table and then aggregate the results. They operate in row context — each row's values are visible during iteration.",
+    "visual": {
+      "type": "table",
+      "title": "SUMX — Row-by-Row Evaluation",
+      "headers": ["OrderID", "Qty", "UnitPrice", "Row Revenue"],
+      "rows": [
+        ["1001", "3", "$50", "$150"],
+        ["1002", "5", "$30", "$150"],
+        ["1003", "2", "$80", "$160"],
+        ["", "", "SUMX Total →", "$460"]
+      ],
+      "note": "SUMX(Sales, Sales[Qty] * Sales[UnitPrice]) — each row multiplied first, then summed. SUM(Qty) * SUM(Price) would give 10 × $53.33 = $533 — WRONG."
+    },
     "keyInsight": "Iterators are essential when you need to compute row-level expressions before aggregating. SUMX(Sales, Sales[Qty] * Sales[UnitPrice]) multiplies per row, then sums all results.",
     "commonTrap": "Using SUM when SUMX is needed. SUM(Sales[Revenue]) only works if Revenue is a pre-computed column. If revenue must be calculated (Qty × Price), SUMX is required.",
     "miniQuiz": {
@@ -97,6 +146,17 @@
     "subtopic": "DAX",
     "concept": "RELATED and RELATEDTABLE",
     "summary": "RELATED retrieves a single value from a related table (many-to-one direction). RELATEDTABLE returns all rows from the related table on the many side.",
+    "visual": {
+      "type": "flow",
+      "title": "RELATED — Relationship Traversal",
+      "steps": [
+        "Calculated column created in Sales table (row context active)",
+        "Current row: SalesID=1001, ProductID=P05",
+        "RELATED(Products[Category]) — traverses the Sales→Products relationship",
+        "Looks up ProductID=P05 in the Products dimension table",
+        "Returns 'Electronics' into the Sales[Category] calculated column"
+      ]
+    },
     "keyInsight": "RELATED works in row context — it can only be used in calculated columns or inside iterators. You cannot use RELATED in a standalone measure.",
     "commonTrap": "Using RELATED in a measure context without an iterator. RELATED requires row context to know which row to look up.",
     "miniQuiz": {
@@ -120,6 +180,17 @@
     "subtopic": "DAX",
     "concept": "VALUES and SELECTEDVALUE",
     "summary": "VALUES returns a one-column table of unique values respecting the current filter context. SELECTEDVALUE returns the single selected value, or an alternate result if multiple values exist.",
+    "visual": {
+      "type": "table",
+      "title": "VALUES vs SELECTEDVALUE Behaviour",
+      "headers": ["Slicer Selection", "VALUES(Date[Year])", "SELECTEDVALUE(Date[Year], \"All\")"],
+      "rows": [
+        ["2024 only", "[2024] (1 row table)", "2024"],
+        ["2023 + 2024", "[2023, 2024] (2 row table)", "\"All\""],
+        ["All years", "[2022..2024] (n rows)", "\"All\""]
+      ],
+      "note": "SELECTEDVALUE safely returns a scalar. VALUES returns a table — cannot be used directly as a title string."
+    },
     "keyInsight": "SELECTEDVALUE is commonly used for dynamic report titles or to display the active slicer selection. It returns BLANK() when multiple values are in context unless an alternate is specified.",
     "commonTrap": "Using VALUES when SELECTEDVALUE is safer. If the filter context contains multiple values, VALUES returns multiple rows but SELECTEDVALUE handles ambiguity gracefully.",
     "miniQuiz": {
@@ -143,6 +214,17 @@
     "subtopic": "DAX",
     "concept": "Time Intelligence",
     "summary": "Time intelligence functions operate on a Date table to shift or accumulate date ranges. Common functions: DATEADD, TOTALYTD, SAMEPERIODLASTYEAR, DATESYTD, PREVIOUSMONTH.",
+    "visual": {
+      "type": "table",
+      "title": "Time Intelligence — Date Shift Comparison",
+      "headers": ["Month", "Sales (Current)", "SAMEPERIODLASTYEAR", "TOTALYTD"],
+      "rows": [
+        ["Jan 2024", "$120,000", "$105,000 (Jan 2023)", "$120,000"],
+        ["Feb 2024", "$135,000", "$118,000 (Feb 2023)", "$255,000"],
+        ["Mar 2024", "$98,000", "$102,000 (Mar 2023)", "$353,000"]
+      ],
+      "note": "All time intelligence functions require a marked Date table with no gaps in date range."
+    },
     "keyInsight": "Time intelligence requires a marked Date table with continuous dates covering the full range of your fact data. Any gap in dates will produce incorrect results.",
     "commonTrap": "Using time intelligence without a properly marked Date table. The table must be marked as a Date table in Power BI and must have no gaps across its date range.",
     "miniQuiz": {
@@ -166,6 +248,29 @@
     "subtopic": "DAX",
     "concept": "Measures vs Calculated Columns",
     "summary": "Measures are evaluated dynamically at query time based on filter context. Calculated columns are computed at data load and stored in the model, consuming memory.",
+    "visual": {
+      "type": "comparison",
+      "title": "Measure vs Calculated Column",
+      "left": {
+        "label": "Calculated Column",
+        "items": [
+          "Computed at data refresh time",
+          "Stored physically in model (uses RAM)",
+          "Has row context — sees current row",
+          "Cannot respond to slicers or filters"
+        ]
+      },
+      "right": {
+        "label": "Measure",
+        "items": [
+          "Computed at query time dynamically",
+          "Not stored — no model size impact",
+          "Has filter context — responds to slicers",
+          "Correct choice for KPIs and aggregations"
+        ]
+      },
+      "winner": "right"
+    },
     "keyInsight": "Use measures for aggregations that should respond to slicers and filters. Use calculated columns only when you need a value row-by-row for filtering or grouping purposes.",
     "commonTrap": "Creating calculated columns for values that should be measures. Calculated columns increase model size and do NOT respond to report-time filters or slicer selections.",
     "miniQuiz": {
@@ -189,6 +294,29 @@
     "subtopic": "DAX",
     "concept": "Row Context vs Filter Context",
     "summary": "Row context exists when DAX iterates row by row (calculated columns, iterators). Filter context restricts the data visible to a measure based on slicers, visuals, and CALCULATE arguments.",
+    "visual": {
+      "type": "comparison",
+      "title": "Row Context vs Filter Context",
+      "left": {
+        "label": "Row Context",
+        "items": [
+          "Exists inside calculated columns and iterators",
+          "Knows: which row is currently being processed",
+          "Allows: Sales[Amount] - Sales[Cost] per row",
+          "Created by: SUMX, AVERAGEX, calculated columns"
+        ]
+      },
+      "right": {
+        "label": "Filter Context",
+        "items": [
+          "Exists when a measure is evaluated in a visual",
+          "Knows: which subset of data is currently active",
+          "Created by: slicers, page filters, CALCULATE()",
+          "CALCULATE converts row context → filter context"
+        ]
+      },
+      "winner": "right"
+    },
     "keyInsight": "These are the two most fundamental DAX concepts. Confusing them causes incorrect results. CALCULATE converts row context into filter context — this is called context transition.",
     "commonTrap": "Assuming calculated columns see slicer selections. Calculated columns use row context only — they are computed at load time and do not respond to any report-time filters.",
     "miniQuiz": {
@@ -212,6 +340,18 @@
     "subtopic": "DAX",
     "concept": "RANKX",
     "summary": "RANKX ranks a value within a table. It requires a table expression, an expression to rank, and optional tie-handling (DENSE, SKIP). Commonly used for product or category rankings.",
+    "visual": {
+      "type": "table",
+      "title": "RANKX(ALL(Products), [Total Sales])",
+      "headers": ["Product", "Total Sales", "RANKX Result", "Without ALL()"],
+      "rows": [
+        ["Widget A", "$85,000", "1", "1 (wrong — only itself)"],
+        ["Widget B", "$62,000", "2", "1 (wrong — only itself)"],
+        ["Widget C", "$41,000", "3", "1 (wrong — only itself)"],
+        ["Widget D", "$29,000", "4", "1 (wrong — only itself)"]
+      ],
+      "note": "Without ALL(), each product is the only row in its own filter context — always rank 1. ALL() exposes all products for comparison."
+    },
     "keyInsight": "The most frequent RANKX mistake is forgetting ALL(). Without ALL(), each row is the only row in its filtered context and always ranks 1.",
     "commonTrap": "Using RANKX without ALL() produces a rank of 1 for every item because each item is compared only to itself in the current filter context.",
     "miniQuiz": {
@@ -235,6 +375,12 @@
     "subtopic": "DAX",
     "concept": "VAR and RETURN",
     "summary": "VAR stores an intermediate result that can be reused in the same expression. RETURN specifies the final output. Variables improve readability and performance by evaluating an expression only once.",
+    "visual": {
+      "type": "code",
+      "language": "dax",
+      "expression": "Profit Margin % =\nVAR TotalRevenue = SUM(Sales[Amount])\nVAR TotalCost = SUM(Sales[Cost])\nVAR GrossProfit = TotalRevenue - TotalCost\nRETURN\n    DIVIDE(GrossProfit, TotalRevenue, 0)",
+      "result": "Each sub-expression evaluated once. GrossProfit reuses TotalRevenue without recalculating it."
+    },
     "keyInsight": "Variables capture the filter context at the point of declaration. This is especially important when context changes inside an expression — the variable preserves the original context.",
     "commonTrap": "Expecting a VAR to re-evaluate at each row inside an iterator. Variables are evaluated once when declared — they do not refresh row by row inside SUMX.",
     "miniQuiz": {
@@ -258,6 +404,17 @@
     "subtopic": "DAX",
     "concept": "USERELATIONSHIP",
     "summary": "USERELATIONSHIP activates an inactive relationship within a CALCULATE expression. Only one relationship between two tables can be active at a time in the model.",
+    "visual": {
+      "type": "flow",
+      "title": "USERELATIONSHIP — Activating Inactive Relationship",
+      "steps": [
+        "Model has Date table connected to Sales[OrderDate] (ACTIVE) and Sales[ShipDate] (INACTIVE)",
+        "Default measure uses OrderDate relationship automatically",
+        "CALCULATE(..., USERELATIONSHIP(Sales[ShipDate], Date[Date]))",
+        "Temporarily deactivates OrderDate path, activates ShipDate path",
+        "Measure evaluates using ShipDate — only for this expression"
+      ]
+    },
     "keyInsight": "Role-playing dimensions use inactive relationships — for example, a Date table connected to both OrderDate and ShipDate. USERELATIONSHIP activates the required one per measure.",
     "commonTrap": "Expecting inactive relationships to work automatically. Inactive relationships are ignored unless explicitly activated with USERELATIONSHIP inside CALCULATE.",
     "miniQuiz": {
@@ -281,6 +438,12 @@
     "subtopic": "DAX",
     "concept": "DIVIDE",
     "summary": "DIVIDE(numerator, denominator, [alternateResult]) performs safe division in DAX. When the denominator is zero or blank, it returns the alternate result (default: BLANK) instead of throwing an error.",
+    "visual": {
+      "type": "code",
+      "language": "dax",
+      "expression": "-- UNSAFE: throws error when Revenue = 0\nMargin % = [Gross Profit] / [Revenue]\n\n-- SAFE: returns BLANK when Revenue = 0\nMargin % = DIVIDE([Gross Profit], [Revenue])\n\n-- SAFE with custom fallback:\nMargin % = DIVIDE([Gross Profit], [Revenue], 0)",
+      "result": "DIVIDE returns BLANK (or 0) for zero denominators instead of a division error."
+    },
     "keyInsight": "Always prefer DIVIDE over the / operator in DAX measures. The / operator throws an error on divide-by-zero; DIVIDE handles it gracefully and is the Microsoft-recommended pattern for all division in measures.",
     "commonTrap": "Writing [Profit %] = [Profit] / [Revenue] directly. When Revenue is zero for a product, the visual shows an error instead of BLANK. DIVIDE([Profit], [Revenue]) silently returns BLANK, keeping the report clean.",
     "miniQuiz": {
@@ -304,6 +467,18 @@
     "subtopic": "DAX",
     "concept": "AVERAGEX",
     "summary": "AVERAGEX iterates a table row by row, evaluates an expression for each row, then returns the average of all results. Like SUMX, it is needed when the per-row calculation involves multiple columns.",
+    "visual": {
+      "type": "table",
+      "title": "AVERAGEX — Row-by-Row Average",
+      "headers": ["OrderID", "Qty", "UnitPrice", "Row Revenue"],
+      "rows": [
+        ["1001", "4", "$25", "$100"],
+        ["1002", "2", "$60", "$120"],
+        ["1003", "6", "$15", "$90"],
+        ["", "", "AVERAGEX →", "$103.33"]
+      ],
+      "note": "AVERAGEX(Sales, Sales[Qty] * Sales[UnitPrice]) → averages $100, $120, $90. AVERAGE(Qty) × AVERAGE(Price) = 4 × $33.33 = $133.33 — WRONG."
+    },
     "keyInsight": "AVERAGEX(Sales, Sales[Qty] * Sales[UnitPrice]) calculates the average revenue per transaction — first computing Qty × UnitPrice per row, then averaging. AVERAGE(Sales[UnitPrice]) × AVERAGE(Sales[Qty]) is mathematically incorrect.",
     "commonTrap": "Using AVERAGE(Sales[UnitPrice]) * AVERAGE(Sales[Qty]) to get average revenue. This multiplies averages — a statistically meaningless result. The correct approach iterates per row with AVERAGEX.",
     "miniQuiz": {
@@ -327,6 +502,12 @@
     "subtopic": "DAX",
     "concept": "SWITCH",
     "summary": "SWITCH evaluates an expression and returns a result matching one of several conditions — a cleaner alternative to nested IF statements. SWITCH(TRUE(), condition1, result1, condition2, result2, ..., else) allows boolean conditions.",
+    "visual": {
+      "type": "code",
+      "language": "dax",
+      "expression": "Sales Tier =\nSWITCH(\n    TRUE(),\n    [Total Sales] < 1000, \"Low\",\n    [Total Sales] < 5000, \"Medium\",\n    [Total Sales] < 20000, \"High\",\n    \"Enterprise\"\n)",
+      "result": "Evaluates conditions top to bottom, returns first match. Cleaner than 4 nested IF statements."
+    },
     "keyInsight": "SWITCH(TRUE(), ...) is the most useful pattern — it evaluates each condition left to right and returns the first match. It replaces deeply nested IF(cond1, res1, IF(cond2, res2, IF(...))) chains that are hard to read.",
     "commonTrap": "Nesting five or more IF statements when SWITCH(TRUE()) would be cleaner. Also: each SWITCH condition is evaluated even if a previous one matched — unlike a short-circuit IF. For performance-critical code on very large tables, nested IF can be marginally faster.",
     "miniQuiz": {
@@ -350,6 +531,12 @@
     "subtopic": "DAX",
     "concept": "COUNTROWS",
     "summary": "COUNTROWS counts the number of rows in a table or table expression. It is the correct function for counting rows in a filtered table, counting related rows via RELATEDTABLE, or counting the result of FILTER().",
+    "visual": {
+      "type": "code",
+      "language": "dax",
+      "expression": "-- Count all sales rows\nTotal Orders = COUNTROWS(Sales)\n\n-- Count rows meeting a condition\nHigh Value Orders =\n    COUNTROWS(\n        FILTER(Sales, Sales[Amount] > 500)\n    )\n\n-- Count related rows from a dimension\nProducts Per Category =\n    COUNTROWS(RELATEDTABLE(Products))",
+      "result": "COUNTROWS always counts rows regardless of blanks. COUNT only counts non-blank column values."
+    },
     "keyInsight": "COUNTROWS(FILTER(Sales, condition)) is the standard pattern for counting rows meeting a condition. COUNT(column) counts non-blank values in a column. COUNTROWS is often faster and more semantically correct for row counts.",
     "commonTrap": "Using COUNT(Sales[SalesID]) when COUNTROWS(Sales) is cleaner. Also: COUNT ignores blank values while COUNTROWS counts every row regardless of column content. For fact table row counts, always use COUNTROWS.",
     "miniQuiz": {
@@ -373,6 +560,18 @@
     "subtopic": "DAX",
     "concept": "DISTINCTCOUNT",
     "summary": "DISTINCTCOUNT counts the number of unique values in a column, respecting the current filter context. It is the standard measure for counting unique customers, products, or any distinct identifier.",
+    "visual": {
+      "type": "table",
+      "title": "DISTINCTCOUNT — Deduplication Before Counting",
+      "headers": ["OrderID", "CustomerID", "COUNT result", "DISTINCTCOUNT result"],
+      "rows": [
+        ["1001", "C10", "Row 1", "C10 — counted"],
+        ["1002", "C10", "Row 2", "C10 — duplicate, skipped"],
+        ["1003", "C15", "Row 3", "C15 — counted"],
+        ["1004", "C10", "Row 4", "C10 — duplicate, skipped"]
+      ],
+      "note": "COUNT(Sales[CustomerID]) = 4. DISTINCTCOUNT(Sales[CustomerID]) = 2. Use DISTINCTCOUNT to count unique customers."
+    },
     "keyInsight": "DISTINCTCOUNT(Sales[CustomerID]) returns the number of unique customers who made purchases in the current filter context — automatically changing with slicers. It is equivalent to COUNTROWS(DISTINCT(Sales[CustomerID])).",
     "commonTrap": "Using COUNT(Sales[CustomerID]) to count distinct customers. COUNT counts every row — if a customer made 5 purchases, they are counted 5 times. DISTINCTCOUNT deduplicates before counting.",
     "miniQuiz": {
@@ -396,6 +595,17 @@
     "subtopic": "DAX",
     "concept": "EARLIER",
     "summary": "EARLIER references the value of a column in an outer row context when nested iterators create multiple row context levels. It is primarily used in calculated columns to compare the current row's value against other rows in the same table.",
+    "visual": {
+      "type": "flow",
+      "title": "EARLIER — Nested Row Context Reference",
+      "steps": [
+        "Calculated column iterates Products table — outer row context (Product A, Sales=$85k)",
+        "FILTER(ALL(Products), ...) starts an inner iteration over all products",
+        "Inner row context now points to each comparison product",
+        "EARLIER(Products[Sales]) retrieves $85k from the OUTER row context (Product A)",
+        "Counts how many products have Sales > $85k → that count + 1 = Product A's rank"
+      ]
+    },
     "keyInsight": "EARLIER is used in calculated columns for row-by-row comparisons — for example, ranking a product's sales against all products using COUNTROWS(FILTER(Products, Products[Sales] > EARLIER(Products[Sales]))). In modern DAX, VAR is almost always a cleaner alternative.",
     "commonTrap": "Using EARLIER in a measure (not a calculated column). EARLIER requires nested row context — it has no meaning in a measure's filter context. Modern best practice: replace EARLIER with VAR to capture the current row value before entering the inner FILTER.",
     "miniQuiz": {

@@ -36,14 +36,26 @@
       "explanation": "Each VAR is computed once. RETURN uses both to compute growth cleanly without repeating the SUM(Sales[Amount]) expression twice. The third argument of DIVIDE (0) handles division by zero."
     }
   ],
-  "filterFlow": null,
+  "filterFlow": {
+    "steps": [
+      "VAR declares a named variable and evaluates it once",
+      "RETURN evaluates the final expression with the variable in scope",
+      "Variables are evaluated in the filter context at the VAR line, not at RETURN",
+      "Variables are read-only — they cannot be updated inside the formula"
+    ]
+  },
   "iteratorFlow": null,
   "commonTraps": [
     "Variables are evaluated at the point of their declaration, not at RETURN — the filter context is frozen when the VAR line is reached.",
     "A VAR containing CALCULATE captures the filter context at the point of the VAR, not the RETURN scope.",
     "Variables are local to the measure — they cannot be shared or reused across different measures."
   ],
-  "relatedFunctions": ["CALCULATE", "IF", "SWITCH", "DIVIDE"],
+  "relatedFunctions": [
+    "CALCULATE",
+    "IF",
+    "SWITCH",
+    "DIVIDE"
+  ],
   "examWeight": "Medium",
   "difficulty": "Medium",
   "sqlEquivalent": {

@@ -5,6 +5,19 @@
     "subtopic": "Security",
     "concept": "Row-Level Security (RLS) — Static",
     "summary": "Static RLS defines fixed DAX filter rules per role in Power BI Desktop. Each role has one or more table filter expressions. Users assigned to a role see only rows matching those filters.",
+    "visual": {
+      "type": "filtered-table",
+      "headers": ["Region", "Sales", "Manager"],
+      "rows": [
+        ["East", "$120K", "Alice"],
+        ["West", "$98K", "Bob"],
+        ["North", "$75K", "Carol"],
+        ["South", "$60K", "Dan"]
+      ],
+      "highlight": [0],
+      "dim": [1, 2, 3],
+      "filterNote": "RLS Role: East Region — user sees only row 1"
+    },
     "keyInsight": "RLS is enforced in Power BI Service after publishing. RLS does NOT apply to workspace Admins, Members, or Contributors — they always see all data regardless of role assignments.",
     "commonTrap": "Thinking RLS applies to workspace members. Only users accessing data through Apps or as workspace Viewers have RLS enforced. Higher workspace roles bypass it entirely.",
     "miniQuiz": {
@@ -28,6 +41,12 @@
     "subtopic": "Security",
     "concept": "Dynamic RLS with USERPRINCIPALNAME()",
     "summary": "Dynamic RLS uses the current user's identity to filter data at runtime. The standard pattern matches [UserEmail] = USERPRINCIPALNAME() against a user-to-data mapping table.",
+    "visual": {
+      "type": "code",
+      "language": "dax",
+      "expression": "[Region] =\nLOOKUPVALUE(\n    UserAccess[Region],\n    UserAccess[Email],\n    USERPRINCIPALNAME()\n)",
+      "result": "Each user sees only rows matching their region in UserAccess table"
+    },
     "keyInsight": "Dynamic RLS requires a user-mapping table in the model. It scales to any number of users with a single role — adding a new user only requires adding a row to the mapping table.",
     "commonTrap": "Creating one static RLS role per user. With many users, static roles are unmanageable and require model republishing every time the user list changes.",
     "miniQuiz": {
@@ -51,6 +70,18 @@
     "subtopic": "Security",
     "concept": "Workspace Roles",
     "summary": "Power BI workspace roles in order of permission: Admin (full control), Member (publish, edit, manage access), Contributor (publish, edit), Viewer (read-only, RLS enforced).",
+    "visual": {
+      "type": "table",
+      "title": "Workspace Role Permissions",
+      "headers": ["Role", "Can Publish", "Can Edit", "RLS Enforced"],
+      "rows": [
+        ["Admin", "Yes", "Yes", "No"],
+        ["Member", "Yes", "Yes", "No"],
+        ["Contributor", "Yes", "Yes", "No"],
+        ["Viewer", "No", "No", "Yes"]
+      ],
+      "note": "Only Viewers have RLS enforced — all higher roles bypass it"
+    },
     "keyInsight": "Only the Viewer role enforces RLS. For broad, RLS-restricted read-only distribution to many users, publish an App — App audience members get Viewer-equivalent access with RLS applied.",
     "commonTrap": "Giving users Member or Contributor roles when they only need to view. These roles bypass RLS and expose all underlying data. Use Viewer or App distribution instead.",
     "miniQuiz": {
@@ -74,6 +105,16 @@
     "subtopic": "Security",
     "concept": "Sensitivity Labels",
     "summary": "Sensitivity labels (from Microsoft Purview) classify and protect Power BI content. Labels like Confidential or Highly Confidential can restrict sharing, export, and downstream use of data.",
+    "visual": {
+      "type": "flow",
+      "title": "Label Inheritance Chain",
+      "steps": [
+        "Semantic model labelled 'Confidential'",
+        "Report built from model inherits 'Confidential'",
+        "User exports to Excel",
+        "Excel file carries 'Confidential' label and encryption (final — protected outside Power BI)"
+      ]
+    },
     "keyInsight": "Sensitivity labels propagate downstream — when data is exported to Excel, the label follows it. This ensures protection outside of Power BI. Labels are configured in the Microsoft Purview compliance portal.",
     "commonTrap": "Thinking sensitivity labels enforce data access control (who can view). Labels classify and protect data after access — they do not restrict who can view a report. That is handled by workspace roles and RLS.",
     "miniQuiz": {
@@ -97,6 +138,16 @@
     "subtopic": "Security",
     "concept": "Data Gateway",
     "summary": "An on-premises data gateway bridges Power BI Service to data sources inside an organizational network. Required for scheduled refresh of on-premises sources (SQL Server, Oracle, files, etc.).",
+    "visual": {
+      "type": "flow",
+      "title": "Gateway Data Flow",
+      "steps": [
+        "On-premises SQL Server (corporate network)",
+        "On-premises Data Gateway (installed on always-on machine)",
+        "Encrypted tunnel over HTTPS",
+        "Power BI Service processes refresh (final — data reaches the cloud)"
+      ]
+    },
     "keyInsight": "Standard gateway supports multiple users and DirectQuery — required for enterprise use. Personal gateway is single-user only. Cloud sources (Azure SQL, SharePoint Online) do NOT need a gateway.",
     "commonTrap": "Assuming all data sources need a gateway. Gateways are only required for on-premises sources or sources within private VNets — not for cloud services.",
     "miniQuiz": {
@@ -120,6 +171,16 @@
     "subtopic": "Security",
     "concept": "Scheduled Refresh",
     "summary": "Scheduled refresh automatically updates imported datasets on a defined schedule. Requires: dataset credentials configured, a gateway for on-premises sources, and a license within refresh frequency limits.",
+    "visual": {
+      "type": "flow",
+      "title": "Scheduled Refresh Process",
+      "steps": [
+        "Refresh schedule triggers (e.g., 6:00 AM)",
+        "Gateway connects to on-premises source",
+        "Source query executes and returns data",
+        "VertiPaq engine reloads in-memory model (final — report shows updated data)"
+      ]
+    },
     "keyInsight": "Pro license: up to 8 refreshes per day. Premium / Fabric: up to 48 refreshes per day. DirectQuery and DirectLake datasets do NOT use scheduled refresh — they query live data.",
     "commonTrap": "Expecting DirectQuery datasets to benefit from scheduled refresh. DirectQuery always queries the live source — there is no cached data to refresh.",
     "miniQuiz": {
@@ -143,6 +204,29 @@
     "subtopic": "Security",
     "concept": "Endorsement — Promoted and Certified",
     "summary": "Endorsement labels mark datasets, reports, or dataflows as trustworthy. Promoted means the content owner vouches for it. Certified requires admin-level verification and carries the highest trust signal.",
+    "visual": {
+      "type": "comparison",
+      "title": "Promoted vs Certified",
+      "left": {
+        "label": "Promoted",
+        "items": [
+          "Applied by content owner",
+          "Self-service endorsement",
+          "No admin approval needed",
+          "Basic trust signal"
+        ]
+      },
+      "right": {
+        "label": "Certified",
+        "items": [
+          "Requires authorized certifier",
+          "Admin-configured approval process",
+          "Highest organizational trust",
+          "Prominent in dataset search"
+        ]
+      },
+      "winner": "right"
+    },
     "keyInsight": "Certified content is the authoritative signal for organizational data assets. It appears prominently in dataset search and Lineage View, encouraging analysts to reuse governed datasets.",
     "commonTrap": "Confusing Promoted with Certified. Any dataset owner can Promote their content. Only authorized certifiers (configured by admins) can Certify — it is a formal governance checkpoint.",
     "miniQuiz": {
@@ -166,6 +250,16 @@
     "subtopic": "Security",
     "concept": "Deployment Pipelines",
     "summary": "Deployment pipelines manage Power BI content lifecycle across Development, Test, and Production workspaces. Changes are promoted stage-by-stage with comparison views to see differences before deploying.",
+    "visual": {
+      "type": "flow",
+      "title": "Deployment Pipeline Stages",
+      "steps": [
+        "Development workspace — build and iterate",
+        "Deploy to Test — side-by-side comparison view",
+        "QA validation in Test workspace",
+        "Deploy to Production — users see stable, approved content (final)"
+      ]
+    },
     "keyInsight": "Deployment pipelines require Premium or Fabric capacity. They are the recommended ALM (Application Lifecycle Management) approach — ensuring changes are validated before reaching production users.",
     "commonTrap": "Manually copying PBIX files between workspaces as a deployment process. This is error-prone and does not preserve dataset configurations or data source settings. Deployment pipelines handle this automatically.",
     "miniQuiz": {
@@ -189,6 +283,19 @@
     "subtopic": "Security",
     "concept": "Dynamic RLS — USERPRINCIPALNAME() Deep Dive",
     "summary": "Dynamic RLS uses USERPRINCIPALNAME() to return the signed-in user's identity (email format, e.g., user@domain.com) and matches it against a security mapping table to determine what data the user can see. One role serves all users.",
+    "visual": {
+      "type": "filtered-table",
+      "headers": ["Region", "Email", "Sales"],
+      "rows": [
+        ["East", "alice@contoso.com", "$120K"],
+        ["West", "bob@contoso.com", "$98K"],
+        ["North", "carol@contoso.com", "$75K"],
+        ["South", "dan@contoso.com", "$60K"]
+      ],
+      "highlight": [1],
+      "dim": [0, 2, 3],
+      "filterNote": "Signed-in user bob@contoso.com — sees only West row via USERPRINCIPALNAME() match"
+    },
     "keyInsight": "The UPN format must exactly match the mapping table — case-insensitive in most deployments but case-sensitive in some. Common pitfalls: alias vs. primary UPN, domain suffixes (user@contoso.com vs user@contoso.onmicrosoft.com), and email casing differences. Use LOWER() on both sides when in doubt.",
     "commonTrap": "Not testing RLS with the View As feature before publishing. A developer can test their own UPN correctly but miss that other users' UPNs are formatted differently in the mapping table. Always use View As Roles with specific email addresses to validate all user scenarios.",
     "miniQuiz": {
@@ -212,6 +319,16 @@
     "subtopic": "Security",
     "concept": "Sensitivity Labels — Inheritance and Enforcement",
     "summary": "Sensitivity labels from Microsoft Purview classify Power BI content and follow data outside Power BI. When a dataset is labelled 'Confidential', reports built from it inherit the label automatically (downstream inheritance). Exported files also carry the label.",
+    "visual": {
+      "type": "flow",
+      "title": "Downstream Label Inheritance",
+      "steps": [
+        "Dataset labelled 'Confidential' in Purview",
+        "Report built from dataset auto-inherits 'Confidential'",
+        "Dashboard pinned from report also inherits label",
+        "Export to Excel — file encrypted with 'Confidential' label (final — protected outside Power BI)"
+      ]
+    },
     "keyInsight": "Sensitivity labels do NOT control who can VIEW a report — that is workspace roles and RLS. Labels control what happens TO the data after access: can it be exported, printed, forwarded? 'Highly Confidential' can encrypt exported Excel files and prevent forwarding.",
     "commonTrap": "Expecting sensitivity labels to prevent unauthorized access to reports. Labels are a DATA PROTECTION tool (what happens to data after access), not an ACCESS CONTROL tool (who can see the report). Use workspace roles and RLS for access control. Use labels for compliance and export restrictions.",
     "miniQuiz": {
@@ -235,6 +352,29 @@
     "subtopic": "Security",
     "concept": "External Sharing and Azure AD B2B",
     "summary": "Power BI can share content with external users (outside the organization) via Azure Active Directory B2B guest invitations. External users access content through Power BI Apps or direct share links. Licensing requirements depend on whether a Premium capacity is used.",
+    "visual": {
+      "type": "comparison",
+      "title": "Internal Pro User vs External B2B Guest",
+      "left": {
+        "label": "Internal Pro User",
+        "items": [
+          "Has Power BI Pro license",
+          "Access to workspaces directly",
+          "Standard workspace roles apply",
+          "No capacity requirement"
+        ]
+      },
+      "right": {
+        "label": "External B2B Guest (Premium)",
+        "items": [
+          "No Power BI license needed",
+          "Access via App in Premium workspace",
+          "Capacity covers consumption",
+          "Cost-effective for many externals"
+        ]
+      },
+      "winner": "right"
+    },
     "keyInsight": "External users need a Power BI Pro license OR the content must be in a Premium capacity workspace. In Premium capacity, external B2B guests can consume content without their own Pro license — the capacity license covers consumption. This is the cost-effective model for external distribution.",
     "commonTrap": "Attempting to add external users as workspace members without a Premium capacity. Without Premium, every external user needs their own Pro license. The cost-effective solution for many external viewers is a Premium capacity workspace with an App distributed to B2B guest accounts.",
     "miniQuiz": {
@@ -258,6 +398,18 @@
     "subtopic": "Security",
     "concept": "Power BI App Permissions and Audiences",
     "summary": "Power BI Apps provide a curated, managed view of workspace content to consumers. Apps support audience segments — different users or groups can see different content within the same app. Apps separate workspace content from consumer-facing content.",
+    "visual": {
+      "type": "table",
+      "title": "App Audience Segments",
+      "headers": ["Audience", "Reports Visible", "RLS Applied"],
+      "rows": [
+        ["North Managers", "North Sales Report", "North rows only"],
+        ["South Managers", "South Sales Report", "South rows only"],
+        ["Executives", "All Regional Reports", "No RLS — all data"],
+        ["HR Team", "HR Dashboard only", "HR data only"]
+      ],
+      "note": "One App, one workspace — different audiences see different content"
+    },
     "keyInsight": "App audiences allow the same app to show different reports to different groups without separate workspaces or reports. For example, a Sales App with two audiences: North Managers see North reports; South Managers see South reports. RLS provides row-level restriction; audiences provide report-level visibility.",
     "commonTrap": "Confusing workspace access with App access. Workspace members (Admin, Member, Contributor, Viewer) see the full workspace and all content in development. App audience members see only what is published to the App — a curated, consumer-friendly subset. Always distribute broadly via Apps, not workspace Viewer roles.",
     "miniQuiz": {
@@ -281,6 +433,18 @@
     "subtopic": "Security",
     "concept": "Object-Level Security (OLS)",
     "summary": "Object-Level Security restricts access to entire tables or specific columns in a semantic model. Users subject to OLS cannot see the restricted column or table anywhere in reports — it appears as if the column/table does not exist.",
+    "visual": {
+      "type": "before-after",
+      "title": "OLS — Column Visibility",
+      "before": {
+        "label": "Without OLS",
+        "content": "EmployeeID | Name | Department | Salary\n1001 | Alice | HR | $85,000\n1002 | Bob | Sales | $72,000\n(Salary column visible to all report builders)"
+      },
+      "after": {
+        "label": "With OLS on Salary",
+        "content": "EmployeeID | Name | Department\n1001 | Alice | HR\n1002 | Bob | Sales\n(Salary column hidden — does not appear in field list)"
+      }
+    },
     "keyInsight": "OLS complements RLS: RLS restricts ROWS (which data records a user sees), OLS restricts COLUMNS or TABLES (which fields are even visible). OLS is configured using Tabular Editor or SQL Server Management Studio — it cannot be configured in Power BI Desktop alone.",
     "commonTrap": "Using sensitivity labels when OLS is needed. Sensitivity labels protect data classification and export behavior — they do not hide specific columns from users. OLS is required when a user should not be able to see a column at all (e.g., salary, SSN, credit card number).",
     "miniQuiz": {
@@ -304,6 +468,17 @@
     "subtopic": "Security",
     "concept": "Data Gateway — Security and Configuration",
     "summary": "The on-premises data gateway acts as a secure bridge between Power BI Service (cloud) and on-premises data sources. It encrypts all credentials and communication. Gateways run as a Windows service and require a machine that remains always-on for scheduled refresh.",
+    "visual": {
+      "type": "flow",
+      "title": "Gateway Security Architecture",
+      "steps": [
+        "Power BI Service initiates refresh request",
+        "Gateway cluster receives encrypted request",
+        "Credentials decrypted locally — never sent to cloud",
+        "Source query sent to on-premises SQL Server",
+        "Results encrypted and returned to Power BI Service (final — data secured end-to-end)"
+      ]
+    },
     "keyInsight": "Standard (enterprise) gateway supports multiple users, datasets, and DirectQuery connections — required for enterprise deployments. Personal gateway only supports one user and no DirectQuery. Cloud sources (Azure SQL, SharePoint Online, Azure Data Lake) do NOT need a gateway.",
     "commonTrap": "Assuming all data connections require a gateway. Gateways are ONLY required for on-premises sources or sources within private networks (VNets). Azure SQL Database, SharePoint Online, and other cloud services connect directly from the Power BI Service without a gateway.",
     "miniQuiz": {

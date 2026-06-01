@@ -35,15 +35,55 @@
         "tables": [
           {
             "name": "Sales",
-            "columns": ["Region", "Amount"],
-            "rows": [["East", 400], ["West", 300], ["North", 200], ["South", 150]]
+            "columns": [
+              "Region",
+              "Amount"
+            ],
+            "rows": [
+              [
+                "East",
+                400
+              ],
+              [
+                "West",
+                300
+              ],
+              [
+                "North",
+                200
+              ],
+              [
+                "South",
+                150
+              ]
+            ]
           }
         ]
       },
       "expectedOutput": {
         "label": "Region Label",
-        "columns": ["Region", "Region Label"],
-        "rows": [["East", "East Coast"], ["West", "West Coast"], ["North", "Northern"], ["South", "Other"]]
+        "columns": [
+          "Region",
+          "Region Label"
+        ],
+        "rows": [
+          [
+            "East",
+            "East Coast"
+          ],
+          [
+            "West",
+            "West Coast"
+          ],
+          [
+            "North",
+            "Northern"
+          ],
+          [
+            "South",
+            "Other"
+          ]
+        ]
       },
       "explanation": "Each region is matched exactly. South does not match any pair so the else clause 'Other' is returned."
     },
@@ -55,14 +95,27 @@
       "explanation": "SWITCH(TRUE(), ...) evaluates each condition as a boolean. The first condition that equals TRUE wins. Score of 85 matches >= 70 (but not >= 90) so returns 'Good'. This replaces three nested IF statements with a flat, readable structure."
     }
   ],
-  "filterFlow": null,
+  "filterFlow": {
+    "steps": [
+      "Evaluate the expression (or use TRUE() for range conditions)",
+      "Compare expression value against each value argument in order",
+      "Return the result for the FIRST matching value",
+      "If no value matches: return else result (BLANK if omitted)"
+    ]
+  },
   "iteratorFlow": null,
   "commonTraps": [
     "SWITCH evaluates pairs in order and stops at the first match. Placing a more specific condition (>= 90) before a less specific one (>= 70) is critical in the SWITCH(TRUE()) pattern — reversing the order produces wrong results.",
     "SWITCH(TRUE(), ...) creates OR-style conditions internally. For very large numbers of conditions or high-performance scenarios, a lookup table approach may be faster.",
     "All result expressions in SWITCH may be evaluated before the match is found in some engine implementations, similar to IF. This can cause unexpected errors if a non-matched branch has an error-producing expression."
   ],
-  "relatedFunctions": ["IF", "IFERROR", "BLANK", "SELECTEDVALUE", "VALUES"],
+  "relatedFunctions": [
+    "IF",
+    "IFERROR",
+    "BLANK",
+    "SELECTEDVALUE",
+    "VALUES"
+  ],
   "examWeight": "High",
   "difficulty": "Medium",
   "sqlEquivalent": {

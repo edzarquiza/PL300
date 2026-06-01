@@ -21,32 +21,92 @@
         "tables": [
           {
             "name": "Sales (fact)",
-            "columns": ["ProductID", "Amount"],
-            "rows": [[1, 400], [2, 80], [1, 200]]
+            "columns": [
+              "ProductID",
+              "Amount"
+            ],
+            "rows": [
+              [
+                1,
+                400
+              ],
+              [
+                2,
+                80
+              ],
+              [
+                1,
+                200
+              ]
+            ]
           },
           {
             "name": "Products (dim)",
-            "columns": ["ProductID", "Category"],
-            "rows": [[1, "Bikes"], [2, "Accessories"]]
+            "columns": [
+              "ProductID",
+              "Category"
+            ],
+            "rows": [
+              [
+                1,
+                "Bikes"
+              ],
+              [
+                2,
+                "Accessories"
+              ]
+            ]
           }
         ]
       },
       "expectedOutput": {
         "label": "Sales with Category added",
-        "columns": ["ProductID", "Amount", "Category"],
-        "rows": [[1, 400, "Bikes"], [2, 80, "Accessories"], [1, 200, "Bikes"]]
+        "columns": [
+          "ProductID",
+          "Amount",
+          "Category"
+        ],
+        "rows": [
+          [
+            1,
+            400,
+            "Bikes"
+          ],
+          [
+            2,
+            80,
+            "Accessories"
+          ],
+          [
+            1,
+            200,
+            "Bikes"
+          ]
+        ]
       },
       "explanation": "RELATED follows the Sales→Products relationship on ProductID to retrieve the Category for each row. This works because each Sales row maps to exactly one Products row."
     }
   ],
-  "filterFlow": null,
+  "filterFlow": {
+    "steps": [
+      "Evaluate the current row context in the many-side table",
+      "Follow the active relationship to the one-side table",
+      "Return the column value from the matching row in the related table",
+      "Cannot be used when there is no active relationship path"
+    ]
+  },
   "iteratorFlow": null,
   "commonTraps": [
     "RELATED only works from the many-side to the one-side — you cannot use it inside a dimension table to look up fact data (use RELATEDTABLE for that).",
     "RELATED can only be used in calculated columns or inside iterators (SUMX, FILTER) — not in regular measures where there is no row context.",
     "If the relationship does not exist or is inactive, RELATED returns BLANK."
   ],
-  "relatedFunctions": ["RELATEDTABLE", "LOOKUPVALUE", "USERELATIONSHIP", "FILTER"],
+  "relatedFunctions": [
+    "RELATEDTABLE",
+    "LOOKUPVALUE",
+    "USERELATIONSHIP",
+    "FILTER"
+  ],
   "examWeight": "High",
   "difficulty": "Easy",
   "sqlEquivalent": {

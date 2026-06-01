@@ -49,8 +49,33 @@
         "tables": [
           {
             "name": "Result",
-            "columns": ["Product", "Total Sales", "Rank"],
-            "rows": [["Bike", 1000, 1], ["Gloves", 400, 2], ["Helmet", 300, 3], ["Lock", 80, 4]]
+            "columns": [
+              "Product",
+              "Total Sales",
+              "Rank"
+            ],
+            "rows": [
+              [
+                "Bike",
+                1000,
+                1
+              ],
+              [
+                "Gloves",
+                400,
+                2
+              ],
+              [
+                "Helmet",
+                300,
+                3
+              ],
+              [
+                "Lock",
+                80,
+                4
+              ]
+            ]
           }
         ]
       },
@@ -58,14 +83,26 @@
       "explanation": "ALL(Products) makes every product available for comparison. RANKX evaluates SUM(Sales[Amount]) for each product. Highest sales = Rank 1 (default DESC order)."
     }
   ],
-  "filterFlow": null,
+  "filterFlow": {
+    "steps": [
+      "Evaluate expression for the current row context",
+      "Iterate over the supplied table, evaluating expression for each row",
+      "Sort all values (default: DESC)",
+      "Return the rank position of the current row value (ties handled by order parameter)"
+    ]
+  },
   "iteratorFlow": null,
   "commonTraps": [
     "Without ALL(), RANKX ranks within the currently visible set. If a visual shows 5 products filtered by category, ranks go 1–5 even though there are 100 products in the model.",
     "The expression must exactly match the measure being ranked. If they differ, every item evaluates to the same rank.",
     "RANKX is a measure — it cannot be used directly as a calculated column in most scenarios due to its dependence on filter context."
   ],
-  "relatedFunctions": ["ALL", "TOPN", "CALCULATE", "DENSE_RANK"],
+  "relatedFunctions": [
+    "ALL",
+    "TOPN",
+    "CALCULATE",
+    "DENSE_RANK"
+  ],
   "examWeight": "Medium",
   "difficulty": "Hard",
   "sqlEquivalent": {

@@ -25,10 +25,19 @@
           "Reduce the slicer date range to 24 months using a report-level filter to limit the rows processed",
           "Switch to DirectLake storage mode, which handles aggregation columns more efficiently than DirectQuery"
         ],
-        "correctAnswers": [0],
+        "correctAnswers": [
+          0
+        ],
         "explanation": "Calculated columns in DirectQuery mode are computed by the Formula Engine on every query — they are not stored in VertiPaq. With 18.5M rows, each YTD calculation iterates the full row set per visual refresh. Converting to Import mode stores data in compressed columnar storage, and rewriting as measures (evaluated on aggregated results at query time) reduces Formula Engine overhead by orders of magnitude. DirectLake requires OneLake/Fabric and cannot connect to on-premises SQL Server.",
         "trapType": "Import vs DirectQuery",
-        "tags": ["Performance", "DirectQuery", "Import", "Calculated Columns", "Measures"]
+        "tags": [
+          "Performance",
+          "DirectQuery",
+          "Import",
+          "Calculated Columns",
+          "Measures"
+        ],
+        "coversRequirementIndex": 0
       },
       {
         "id": "cs_fabrikam_q2",
@@ -44,10 +53,19 @@
           "The RegionAccess table must have a model relationship to SalesActivity for LOOKUPVALUE to evaluate correctly",
           "The RLS filter should use USERNAME() instead of USERPRINCIPALNAME() when the source is an on-premises database"
         ],
-        "correctAnswers": [0],
+        "correctAnswers": [
+          0
+        ],
         "explanation": "This is a critical RLS security trap. When LOOKUPVALUE finds no matching email, it returns BLANK. The expression [SalesRegion] = BLANK() evaluates to TRUE for any row where SalesRegion is empty or null — inadvertently exposing those rows to every manager whose email is absent from RegionAccess. The 'intermittent' pattern (some managers affected, others not) is explained by which managers' emails are missing. The fix: IF(ISBLANK(LOOKUPVALUE(...)), FALSE(), [SalesRegion] = LOOKUPVALUE(...)).",
         "trapType": "RLS LOOKUPVALUE Blank Vulnerability",
-        "tags": ["RLS", "LOOKUPVALUE", "Security", "USERPRINCIPALNAME", "DAX"]
+        "tags": [
+          "RLS",
+          "LOOKUPVALUE",
+          "Security",
+          "USERPRINCIPALNAME",
+          "DAX"
+        ],
+        "coversRequirementIndex": 1
       },
       {
         "id": "cs_fabrikam_q3",
@@ -63,9 +81,49 @@
           "Assign the external distributors Viewer roles on the workspace and issue them free Fabric (free tier) licenses",
           "Publish the report with anonymous public access enabled and restrict access at the corporate network level"
         ],
-        "correctAnswers": [0],
+        "correctAnswers": [
+          0
+        ],
         "explanation": "Power BI Premium capacity allows external Azure AD B2B guest users to consume reports without per-user Pro licenses — the capacity license covers consumption. Distributing via a Power BI App provides controlled access, and Export restrictions can be enforced at workspace and tenant level. Viewer workspace roles (C) require Pro licenses in non-Premium workspaces. Anonymous access (D) bypasses all identity-based security controls. PDF export (B) is not a scalable operational solution.",
-        "tags": ["Distribution", "Premium", "B2B", "Licensing", "Export Restrictions"]
+        "tags": [
+          "Distribution",
+          "Premium",
+          "B2B",
+          "Licensing",
+          "Export Restrictions"
+        ],
+        "coversRequirementIndex": 3
+      }
+    ],
+    "recommendedSolutions": [
+      {
+        "requirementIndex": 2,
+        "title": "Rolling 12-Month Revenue Trend vs Prior Year",
+        "overview": "Create time intelligence DAX measures using SAMEPERIODLASTYEAR and display them in a matrix visual with months on rows. A marked, contiguous DimDate table is a prerequisite.",
+        "steps": [
+          {
+            "label": "Mark the Date Table",
+            "detail": "In Power BI Desktop, select DimDate → Table Tools → Mark as Date Table, setting the Date column as the date key. Verify the date range covers all historical data with no gaps."
+          },
+          {
+            "label": "Create the prior-year measure",
+            "detail": "Revenue LY = CALCULATE([Revenue], SAMEPERIODLASTYEAR(DimDate[Date]))\n\nThis shifts the current date filter context back exactly 12 months. When the report shows Jan 2024, [Revenue LY] returns Jan 2023 data."
+          },
+          {
+            "label": "Create the YoY % change measure",
+            "detail": "YoY % Change = DIVIDE([Revenue] - [Revenue LY], [Revenue LY])\n\nDIVIDE handles the divide-by-zero case where [Revenue LY] is BLANK for the earliest periods."
+          },
+          {
+            "label": "Build the CFO visual",
+            "detail": "Place a Matrix visual on the CFO page. Set Rows = DimDate[Year-Month] (formatted \"MMM YYYY\"), Values = [Revenue], [Revenue LY], [YoY % Change]. Apply a relative date filter to the last 13 months to show 12 complete months plus the current partial month."
+          },
+          {
+            "label": "Add conditional formatting",
+            "detail": "Apply conditional formatting to [YoY % Change] — green background for positive %, red for negative. This makes the monthly trend immediately readable without needing to read raw numbers."
+          }
+        ],
+        "daxCode": "-- Step 1: Prior year revenue\nRevenue LY =\nCALCULATE(\n    [Revenue],\n    SAMEPERIODLASTYEAR(DimDate[Date])\n)\n\n-- Step 2: Year-over-year % change\nYoY % Change =\nDIVIDE(\n    [Revenue] - [Revenue LY],\n    [Revenue LY]\n)",
+        "examNote": "SAMEPERIODLASTYEAR requires a marked Date Table with no gaps. If the date table ends before the current year, it returns BLANK for recent periods. Always extend the date table to Dec 31 of the current or next year."
       }
     ]
   },
@@ -95,10 +153,19 @@
           "DirectQuery for all three sources to eliminate scheduled refresh dependency and ensure real-time access",
           "DirectLake for Azure SQL Database and Import mode for the remaining sources — DirectLake provides sub-minute latency for Azure-hosted data"
         ],
-        "correctAnswers": [0],
+        "correctAnswers": [
+          0
+        ],
         "explanation": "A composite model allows each table to use the most appropriate storage mode. Azure SQL (frequent updates) benefits from DirectQuery — always current without refresh overhead. SharePoint Excel (weekly) and on-premises SQL (daily batch) are stable enough for scheduled Import refresh via the on-premises data gateway. Full Import with 2-hour refresh (B) continuously stresses all three source systems. DirectLake (D) requires Microsoft Fabric/OneLake and cannot connect to arbitrary external databases or on-premises systems.",
         "trapType": "Import vs DirectQuery",
-        "tags": ["Composite Model", "DirectQuery", "Import", "Data Gateway", "Storage Mode"]
+        "tags": [
+          "Composite Model",
+          "DirectQuery",
+          "Import",
+          "Data Gateway",
+          "Storage Mode"
+        ],
+        "coversRequirementIndex": 0
       },
       {
         "id": "cs_northwind_q2",
@@ -114,10 +181,19 @@
           "[ClientID] = LOOKUPVALUE(PortfolioAssignment[ClientID], PortfolioAssignment[AnalystUPN], USERPRINCIPALNAME())",
           "CALCULATE(COUNTROWS(FILTER(PortfolioAssignment, [AnalystUPN] = USERPRINCIPALNAME() && [ClientID] = EARLIER([ClientID])))) > 0"
         ],
-        "correctAnswers": [0],
+        "correctAnswers": [
+          0
+        ],
         "explanation": "The IN SELECTCOLUMNS(FILTER(...)) pattern correctly handles multi-value RLS from a disconnected mapping table — it returns the full set of ClientIDs assigned to the current user and filters ClientPortfolio to only those rows. LOOKUPVALUE (C) returns only the FIRST matching ClientID, so analysts managing multiple portfolios would see only one. Option B applies to the wrong table — ClientPortfolio has no AnalystUPN column. Option D uses EARLIER which is only valid inside calculated columns, not in RLS filter expressions.",
         "trapType": "RLS LOOKUPVALUE vs IN for multiple rows",
-        "tags": ["RLS", "Dynamic Security", "USERPRINCIPALNAME", "FILTER", "SELECTCOLUMNS"]
+        "tags": [
+          "RLS",
+          "Dynamic Security",
+          "USERPRINCIPALNAME",
+          "FILTER",
+          "SELECTCOLUMNS"
+        ],
+        "coversRequirementIndex": 1
       },
       {
         "id": "cs_northwind_q3",
@@ -133,9 +209,48 @@
           "Enable downstream sensitivity label inheritance — reports automatically inherit the label from their source semantic model when the model carries 'Highly Confidential'",
           "Restrict publishing rights to workspace Admins only, who verify labels are applied before publishing on behalf of analysts"
         ],
-        "correctAnswers": [2],
+        "correctAnswers": [
+          2
+        ],
         "explanation": "Downstream label inheritance (C) is the most automated approach for this scenario. When the source semantic model is labelled 'Highly Confidential', all reports built from it automatically inherit that label — no analyst action required. This is the standard Power BI + Purview integration pattern. Mandatory Purview policies (A) are the strongest enforcement control but require additional compliance licensing and admin configuration. Manual admin review (B, D) introduces human error and does not scale to a BI team publishing frequently.",
-        "tags": ["Sensitivity Labels", "Purview", "Compliance", "MiFID II", "Label Inheritance"]
+        "tags": [
+          "Sensitivity Labels",
+          "Purview",
+          "Compliance",
+          "MiFID II",
+          "Label Inheritance"
+        ],
+        "coversRequirementIndex": 2
+      }
+    ],
+    "recommendedSolutions": [
+      {
+        "requirementIndex": 3,
+        "title": "Self-Service Access Management via Power BI Apps",
+        "overview": "Create a Power BI App from the workspace with audience groups. Workspace Admins (the BI team) can add or remove users from app audiences at any time without IT involvement — no Azure AD group changes or IT tickets required.",
+        "steps": [
+          {
+            "label": "Configure workspace roles for the BI team",
+            "detail": "Assign BI team members the Admin or Member workspace role. This allows them to manage app audiences and workspace permissions independently of IT."
+          },
+          {
+            "label": "Create the Power BI App",
+            "detail": "In the workspace, select Create app. Configure the App name, description, and navigation. The App is the distribution vehicle — workspace content is not shared directly."
+          },
+          {
+            "label": "Define App audiences",
+            "detail": "Create two audiences: \"Senior Analysts\" (access to all reports) and \"Junior Analysts\" (access to portfolio-level reports only). Each audience can be mapped to different report tabs and permission levels."
+          },
+          {
+            "label": "Assign users to audiences",
+            "detail": "In the App Permissions section, add individual user emails or Azure AD security groups to each audience. The BI team can update this list directly in Power BI Service at any time — no IT support needed for routine changes like onboarding new analysts."
+          },
+          {
+            "label": "Connect App audiences to RLS roles",
+            "detail": "In the semantic model Security settings, assign the same user lists to the corresponding RLS roles (Senior Analyst role = no filter, Junior Analyst role = portfolio assignment filter). When users change, update both the App audience and the RLS role assignment."
+          }
+        ],
+        "examNote": "Power BI App audiences control which content users see in the App. Workspace roles control what operations users can perform on workspace items. RLS controls which data rows users can see. These are three distinct, complementary permission layers."
       }
     ]
   },
@@ -165,10 +280,22 @@
           "DirectLake mode pointing to the Synapse-backed OneLake delta tables for zero-ETL import with automatic framing at each batch load",
           "Composite model — DirectQuery for the current month's encounters for live data, Import for all prior months"
         ],
-        "correctAnswers": [0],
+        "correctAnswers": [
+          0
+        ],
         "explanation": "Import mode with incremental refresh is the standard PL-300 answer for large tables with daily batch loads and sub-second performance requirements. Incremental refresh partitions the table so only recent data is re-imported each cycle (here 3 days covers batch delays), while historical partitions remain frozen — avoiding a full 220M-row import daily. VertiPaq compression on Import mode delivers the sub-5-second executive load times. DirectQuery with materialized views (B) reduces load but cannot match Import compression ratios at 220M rows. DirectLake (C) requires Microsoft Fabric; Synapse dedicated SQL pools do not automatically expose OneLake delta tables without Fabric integration.",
         "trapType": "Import vs DirectQuery",
-        "tags": ["Incremental Refresh", "Import Mode", "DirectQuery", "Performance", "Synapse"]
+        "tags": [
+          "Incremental Refresh",
+          "Import Mode",
+          "DirectQuery",
+          "Performance",
+          "Synapse"
+        ],
+        "coversRequirementIndex": [
+          1,
+          2
+        ]
       },
       {
         "id": "cs_contoso_q2",
@@ -184,10 +311,19 @@
           "Create one role with the DAX filter: IF(USERPRINCIPALNAME() IN VALUES(ExecRoster[UPN]), TRUE(), [DepartmentHead_UPN] = USERPRINCIPALNAME()). Apply the filter to DimDepartment.",
           "Create a dynamic role using USERNAME() on the Encounter table: [DepartmentID] = LOOKUPVALUE(DimDepartment[DepartmentID], DimDepartment[DepartmentHead_UPN], USERNAME())"
         ],
-        "correctAnswers": [0],
+        "correctAnswers": [
+          0
+        ],
         "explanation": "The correct pattern uses separate named roles — one for department heads filtered via DimDepartment (which propagates to Encounter via the relationship), and one for executives with no filter. Power BI applies the most permissive role when a user belongs to multiple roles, so executives assigned to the 'Executive' role see all data. This avoids the maintenance burden of per-department roles. Option C places the executive check inside a DAX IF expression — this pattern is not reliably supported in Power BI RLS and can produce unexpected results. Option D uses USERNAME() which returns domain\\user format on-premises, not UPN — unreliable in the Power BI Service.",
         "trapType": "RLS Role Design",
-        "tags": ["RLS", "Dynamic Security", "USERPRINCIPALNAME", "Role Design", "PHI"]
+        "tags": [
+          "RLS",
+          "Dynamic Security",
+          "USERPRINCIPALNAME",
+          "Role Design",
+          "PHI"
+        ],
+        "coversRequirementIndex": 0
       },
       {
         "id": "cs_contoso_q3",
@@ -203,9 +339,41 @@
           "Set the semantic model sensitivity label to 'Highly Confidential — PHI' in Microsoft Purview and configure label-based protection to block download/export actions",
           "Configure workspace-level export restrictions to 'Allow export with restrictions' and instruct report authors to exclude PHI columns from table visuals"
         ],
-        "correctAnswers": [1],
+        "correctAnswers": [
+          1
+        ],
         "explanation": "The only reliable way to prevent PHI export is to exclude it from the model entirely for general reporting. If PHI is present in the semantic model, any user with Build permission or data export capability could access it regardless of visual-level hiding. De-identification at the model level (B) is the architecturally sound HIPAA-compliant approach — clinical detail is served through a separate, purpose-built restricted model. Sensitivity labels (C) add a governance layer but rely on Microsoft 365 label enforcement, which does not prevent all export paths. Admin portal export restrictions (A, D) are policy controls that can be bypassed by users with the right permissions or desktop tools.",
-        "tags": ["PHI", "HIPAA", "Export Restrictions", "Data Security", "Sensitivity Labels"]
+        "tags": [
+          "PHI",
+          "HIPAA",
+          "Export Restrictions",
+          "Data Security",
+          "Sensitivity Labels"
+        ],
+        "coversRequirementIndex": 3
+      }
+    ],
+    "recommendedSolutions": [
+      {
+        "requirementIndex": 2,
+        "title": "Scheduled Incremental Refresh for 6 AM Data Currency",
+        "overview": "The storage mode decision (Import + incremental refresh) is covered by Q1. This solution details the scheduling configuration needed to guarantee yesterday data is available by 6:00 AM.",
+        "steps": [
+          {
+            "label": "Define the incremental refresh policy in Desktop",
+            "detail": "Select the FactEncounters table, open incremental refresh settings. Set: Store rows from last 3 years (frozen historical partitions), Refresh rows from last 3 days (rolling incremental window). This ensures nightly batch data lands in the refresh window without re-importing all 220M rows."
+          },
+          {
+            "label": "Schedule the refresh at 3:00 AM",
+            "detail": "In Power BI Service, navigate to the semantic model settings, then Scheduled refresh. Set a daily refresh at 3:00 AM — the Synapse batch load completes by 2:30 AM. The incremental-only refresh finishes in 10-20 minutes, making data available well before 6:00 AM."
+          },
+          {
+            "label": "Enable refresh failure notifications",
+            "detail": "In the semantic model settings, enable email notifications on refresh failure. Designate the BI lead as the contact so a pre-6 AM failure triggers an immediate alert before clinical users arrive at shift start."
+          }
+        ],
+        "daxCode": null,
+        "examNote": "Incremental refresh policy is defined in Desktop (Power Query parameters + partition rules) and scheduled in the Service. Historical partitions are frozen and skipped on each refresh cycle — only the rolling window partition is re-queried."
       }
     ]
   },
@@ -235,10 +403,19 @@
           "Append all three sources and add a grain identifier column; aggregate to day-store grain using Group By on SalesDate and StoreID before loading",
           "Create a reference query from FactSales, filter by Channel, and use Merge to add wholesale data via a left outer join on ProductID"
         ],
-        "correctAnswers": [0],
+        "correctAnswers": [
+          0
+        ],
         "explanation": "When combining datasets with different grains, forcing them into the same fact table introduces data integrity risks. Appending store and e-commerce (same day-store grain) is valid. Wholesale at invoice-month grain with no StoreID cannot be cleanly appended — DistributorID does not map to StoreID, and aggregating to day would fabricate sub-invoice data. A separate FactWholesale table sharing DimProduct and DimDate allows accurate analysis at each table's natural grain. A full outer join (B) on ProductID alone is meaningless — one product can have millions of sales rows. Forced aggregation (C) loses the e-commerce hourly detail that was specified as a requirement.",
         "trapType": "Merge vs Append",
-        "tags": ["Append", "Merge", "Fact Table Grain", "Power Query", "Data Integration"]
+        "tags": [
+          "Append",
+          "Merge",
+          "Fact Table Grain",
+          "Power Query",
+          "Data Integration"
+        ],
+        "coversRequirementIndex": 0
       },
       {
         "id": "cs_aw_q2",
@@ -254,10 +431,19 @@
           "Sales vs SPLY % = DIVIDE([Total Sales], CALCULATE([Total Sales], SAMEPERIODLASTYEAR(DimDate[Date]))) - 1",
           "Sales vs SPLY % = ([Total Sales] - [Total Sales LY]) / [Total Sales LY]"
         ],
-        "correctAnswers": [2],
+        "correctAnswers": [
+          2
+        ],
         "explanation": "Option C is the most concise and correct form: DIVIDE(Current, PY) - 1 gives the percentage change. SAMEPERIODLASTYEAR respects the current date filter context from all slicers (date, store, category, channel) and is the standard PL-300 time intelligence function for this pattern. Option A is logically equivalent but unnecessarily calculates SAMEPERIODLASTYEAR twice (no variable reuse). Option B using DATEADD -1 YEAR is functionally similar but SAMEPERIODLASTYEAR is preferred for this exact use case. Option D references [Total Sales LY] as if it were a separate named measure — if that measure is undefined, the formula breaks; this pattern should be self-contained or use VAR.",
         "trapType": "Time Intelligence function selection",
-        "tags": ["SAMEPERIODLASTYEAR", "Time Intelligence", "DIVIDE", "Measures", "DAX"]
+        "tags": [
+          "SAMEPERIODLASTYEAR",
+          "Time Intelligence",
+          "DIVIDE",
+          "Measures",
+          "DAX"
+        ],
+        "coversRequirementIndex": 2
       },
       {
         "id": "cs_aw_q3",
@@ -273,10 +459,78 @@
           "Mark both relationships as active — Power BI will use the relationship that matches the slicer's connected date dimension",
           "Add a ShipYear, ShipMonth calculated column to FactSales using RELATED(DimDate[Year]) to avoid needing a second relationship"
         ],
-        "correctAnswers": [0],
+        "correctAnswers": [
+          0
+        ],
         "explanation": "Role-playing dimensions are handled in Power BI by keeping one relationship active and activating the inactive relationship within a CALCULATE using USERELATIONSHIP. The SAMEPERIODLASTYEAR function must be inside the same CALCULATE that activates the USERELATIONSHIP — both modifiers apply within that filter context scope. A duplicate DimDate table (B) is the alternative approach and works correctly, but USERELATIONSHIP is the preferred PL-300 pattern when a single dimension serves multiple roles. Power BI does not allow two active relationships between the same tables (C is invalid). Calculated columns via RELATED (D) would return the OrderDate dimension values, not ShipDate.",
         "trapType": "Role-Playing Dimensions",
-        "tags": ["USERELATIONSHIP", "Role-Playing Dimensions", "Time Intelligence", "Inactive Relationships", "DAX"]
+        "tags": [
+          "USERELATIONSHIP",
+          "Role-Playing Dimensions",
+          "Time Intelligence",
+          "Inactive Relationships",
+          "DAX"
+        ],
+        "coversRequirementIndex": 2
+      }
+    ],
+    "recommendedSolutions": [
+      {
+        "requirementIndex": 1,
+        "title": "SCD Type 2 — Attributing Sales to the Active Customer Profile",
+        "overview": "Connect FactSales to DimCustomer using the customer surrogate key active at the time of sale — not the current customer key. This ensures historical sales are attributed to the correct profile version even after the customer record changes.",
+        "steps": [
+          {
+            "label": "Understand the SCD Type 2 key structure",
+            "detail": "In a Type 2 SCD, each historical version of a customer record gets a unique surrogate key (e.g., CustomerSK). The IsCurrent = TRUE row is the active record. The CustomerID (natural key) repeats across versions but CustomerSK is unique per version."
+          },
+          {
+            "label": "Add CustomerSK to FactSales during ETL",
+            "detail": "During ETL, join the source orders table to DimCustomer on CustomerID WHERE OrderDate BETWEEN StartDate AND EndDate (or WHERE IsCurrent = TRUE at order time). Store the resulting CustomerSK in FactSales — this permanently records which version of the customer was active when the order was placed."
+          },
+          {
+            "label": "Build the relationship on the surrogate key",
+            "detail": "Create the relationship: FactSales[CustomerSK] → DimCustomer[CustomerSK] (many-to-one). This connects each order to the exact customer version active at sale time, not the current record."
+          },
+          {
+            "label": "Create a current-customer dimension (optional)",
+            "detail": "For visuals that need current customer attributes (e.g., current mailing address), create a DimCustomerCurrent calculated table: DimCustomerCurrent = FILTER(DimCustomer, DimCustomer[IsCurrent] = TRUE()). Connect this to FactSales via a separate inactive relationship for use with USERELATIONSHIP."
+          },
+          {
+            "label": "Validate historical attribution",
+            "detail": "Test: find a customer who changed region in the last year. Their orders before the change should show the old region; orders after should show the new region. If both show the same region, the surrogate key join is not working correctly."
+          }
+        ],
+        "examNote": "The key PL-300 insight: in SCD Type 2, the relationship between fact and dimension must use the SURROGATE key (unique per version), not the natural/business key (which repeats across versions). Using the natural key means all historical orders always reflect the current customer state — defeating the purpose of Type 2."
+      },
+      {
+        "requirementIndex": 3,
+        "title": "Hierarchical RLS — Store Managers and Regional Directors",
+        "overview": "Create two dynamic RLS roles using USERPRINCIPALNAME(): one filtering to a single store, one filtering to all stores in a region. A StoreAccess mapping table controls which stores/regions each user can see.",
+        "steps": [
+          {
+            "label": "Create the StoreAccess mapping table",
+            "detail": "Import a StoreAccess table with columns: UserEmail, StoreID, RegionID, Role ('Manager' or 'Director'). Each store manager has one row; each regional director has one row per store in their region (or one row with RegionID and a null StoreID)."
+          },
+          {
+            "label": "Create the StoreManager RLS role",
+            "detail": "In Manage Roles, create role \"StoreManager\". Apply this DAX filter to DimStore:\n\n[StoreID] IN\n  SELECTCOLUMNS(\n    FILTER(StoreAccess,\n      [UserEmail] = USERPRINCIPALNAME()\n      && [Role] = \"Manager\"\n    ),\n    \"SID\", [StoreID]\n  )\n\nThis restricts the user to their single assigned store."
+          },
+          {
+            "label": "Create the RegionalDirector RLS role",
+            "detail": "Create role \"RegionalDirector\". Apply this filter to DimStore:\n\n[RegionID] IN\n  SELECTCOLUMNS(\n    FILTER(StoreAccess,\n      [UserEmail] = USERPRINCIPALNAME()\n      && [Role] = \"Director\"\n    ),\n    \"RID\", [RegionID]\n  )\n\nThe filter propagates from DimStore through the relationship to FactSales."
+          },
+          {
+            "label": "Handle the LOOKUPVALUE BLANK risk",
+            "detail": "If a user's email is not in StoreAccess, the FILTER returns an empty table and IN returns FALSE — the user sees no data. This is safer than the LOOKUPVALUE = BLANK() vulnerability. Verify by testing with a user email not in the mapping table."
+          },
+          {
+            "label": "Assign users to roles in Power BI Service",
+            "detail": "In the semantic model Security settings, add store managers to \"StoreManager\" and regional directors to \"RegionalDirector\". Test using View As Role for each user type before going live."
+          }
+        ],
+        "daxCode": "-- StoreManager role filter on DimStore\n[StoreID] IN\n  SELECTCOLUMNS(\n    FILTER(StoreAccess,\n      [UserEmail] = USERPRINCIPALNAME()\n      && [Role] = \"Manager\"\n    ),\n    \"SID\", [StoreID]\n  )\n\n-- RegionalDirector role filter on DimStore\n[RegionID] IN\n  SELECTCOLUMNS(\n    FILTER(StoreAccess,\n      [UserEmail] = USERPRINCIPALNAME()\n      && [Role] = \"Director\"\n    ),\n    \"RID\", [RegionID]\n  )",
+        "examNote": "The IN + SELECTCOLUMNS(FILTER(...)) pattern is more reliable than LOOKUPVALUE for multi-row RLS scenarios. LOOKUPVALUE returns only the FIRST match — if a regional director manages 30 stores and LOOKUPVALUE is used, they would only see one store's data."
       }
     ]
   },
@@ -306,10 +560,19 @@
           "Add aggregation tables in Power Query that pre-aggregate FactOrders to Country-Month grain; load both the aggregation table and detail table, configuring the aggregation table as a dual-storage model",
           "Reduce the import date range from all history to the last 24 months using a query parameter; archive older data in a separate historical model"
         ],
-        "correctAnswers": [0],
+        "correctAnswers": [
+          0
+        ],
         "explanation": "Calculated columns are stored in memory per row — 31 columns on a 140M-row table creates massive VertiPaq pressure and causes slow compression scans. Converting display-only calculated columns to measures eliminates this overhead (measures compute at query time on aggregated data, not row-by-row). Bidirectional relationships force both-direction filter propagation which multiplies query complexity — removing unnecessary bidirectional filters significantly reduces DAX query plan branching. Correct data types (Integer IDs vs Text) dramatically improve VertiPaq dictionary compression. DirectQuery (B) eliminates in-memory storage but introduces network round-trips and typically increases, not decreases, load time for aggregation-heavy executive dashboards.",
         "trapType": "Calculated Column vs Measure",
-        "tags": ["Performance", "Calculated Columns", "Measures", "Bidirectional Relationships", "VertiPaq"]
+        "tags": [
+          "Performance",
+          "Calculated Columns",
+          "Measures",
+          "Bidirectional Relationships",
+          "VertiPaq"
+        ],
+        "coversRequirementIndex": 0
       },
       {
         "id": "cs_tailspin_q2",
@@ -325,10 +588,22 @@
           "Set the CSV source query to use schema-on-read inference disabled so Power Query accepts any schema without validation",
           "Create a Power Query parameter 'CSVSchema' that the product team updates manually each time they change the CSV structure before triggering refresh"
         ],
-        "correctAnswers": [0],
+        "correctAnswers": [
+          0
+        ],
         "explanation": "The root cause is a brittle column selection step that assumes a fixed schema. The resilient fix is to intersect the required column list with the actual column names available in the source — Table.SelectColumns only requests columns that exist. This allows the product team to add new columns to the CSV without breaking the pipeline; the Power Query step simply ignores columns it doesn't need. try/otherwise (B) would mask legitimate errors and could serve stale data silently — dangerous for a production pipeline. Schema-on-read disabling (C) is not a configurable option in this way. A manual parameter (D) defeats the goal of IT-free product team updates and is error-prone.",
         "trapType": "Power Query schema brittleness",
-        "tags": ["Power Query", "Parameters", "Schema", "Resilient Pipelines", "M Language"]
+        "tags": [
+          "Power Query",
+          "Parameters",
+          "Schema",
+          "Resilient Pipelines",
+          "M Language"
+        ],
+        "coversRequirementIndex": [
+          1,
+          3
+        ]
       },
       {
         "id": "cs_tailspin_q3",
@@ -344,10 +619,46 @@
           "The 'CountryManager' role has not been assigned to users in the Power BI Service — unassigned roles do not restrict access and default to showing all data.",
           "DimCountry uses a text CountryCode column but FactOrders stores a numeric CountryID — the relationship is on mismatched data types, so the filter does not propagate correctly."
         ],
-        "correctAnswers": [0],
+        "correctAnswers": [
+          0
+        ],
         "explanation": "This is a classic bidirectional relationship RLS leakage scenario. With bidirectional cross-filter on FactOrders ↔ DimProduct, filter context can flow FROM FactOrders TO DimProduct AND back. When PromotionFact is filtered, it can pull DimProduct rows from other countries' orders, and the bidirectional relationship then exposes those FactOrders rows — bypassing the DimCountry RLS filter that only directly filters DimCountry, not FactOrders through this cross-filter path. The fix is to revert to single-direction filtering where possible and use CROSSFILTER(FactOrders[ProductID], DimProduct[ProductID], NONE) in measures that need the reverse direction. Option B is plausible but if the filter always returned FALSE, NO data would be visible — the symptom is too much data, not too little.",
         "trapType": "Bidirectional Relationships and RLS",
-        "tags": ["RLS", "Bidirectional Relationships", "Security", "Cross-filter", "Data Leakage"]
+        "tags": [
+          "RLS",
+          "Bidirectional Relationships",
+          "Security",
+          "Cross-filter",
+          "Data Leakage"
+        ],
+        "coversRequirementIndex": 2
+      }
+    ],
+    "recommendedSolutions": [
+      {
+        "requirementIndex": 3,
+        "title": "Product Team Self-Service via Blob Storage Access",
+        "overview": "Q2 makes the pipeline resilient to schema changes. This solution covers the access and process configuration so the product team can upload updated CSVs directly without involving IT or the BI team.",
+        "steps": [
+          {
+            "label": "Grant Blob Storage write access to product team",
+            "detail": "In Azure Portal, assign product team members the Storage Blob Data Contributor role on the specific container holding product master CSVs. They can upload files without accessing other infrastructure."
+          },
+          {
+            "label": "Standardise the filename convention",
+            "detail": "Agree on a fixed filename (e.g., products_master.csv) so the Power Query source always points to the same path. The product team overwrites this file each time — they never change the path or filename."
+          },
+          {
+            "label": "Provide a user-friendly upload interface",
+            "detail": "If the product team is non-technical, configure Azure Storage Explorer with a saved connection, or sync the container to a SharePoint document library. This gives them a familiar drag-and-drop interface without needing Azure Portal access."
+          },
+          {
+            "label": "Schedule automatic refresh after upload window",
+            "detail": "Set the Power BI semantic model to refresh daily after the product team typical upload time. Optionally, configure an Azure Event Grid trigger connected to a Logic App that calls the Power BI REST API to refresh the model automatically when a new file is detected in the container."
+          }
+        ],
+        "daxCode": null,
+        "examNote": "PL-300 exam tip: self-service data update requirements are solved by granting write access to the data source (SharePoint, OneDrive, Blob Storage) and making the Power Query pipeline schema-resilient. The List.Intersect fix from Q2 means the product team can safely add CSV columns without breaking the pipeline."
       }
     ]
   }

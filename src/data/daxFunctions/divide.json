@@ -35,15 +35,51 @@
         "tables": [
           {
             "name": "Scenario",
-            "columns": ["Product", "Revenue", "Profit"],
-            "rows": [["Bike", 1000, 300], ["Helmet", 200, 50], ["Lock", 0, 0]]
+            "columns": [
+              "Product",
+              "Revenue",
+              "Profit"
+            ],
+            "rows": [
+              [
+                "Bike",
+                1000,
+                300
+              ],
+              [
+                "Helmet",
+                200,
+                50
+              ],
+              [
+                "Lock",
+                0,
+                0
+              ]
+            ]
           }
         ]
       },
       "expectedOutput": {
         "label": "Profit Margin",
-        "columns": ["Product", "Profit Margin %"],
-        "rows": [["Bike", 0.30], ["Helmet", 0.25], ["Lock", 0]]
+        "columns": [
+          "Product",
+          "Profit Margin %"
+        ],
+        "rows": [
+          [
+            "Bike",
+            0.3
+          ],
+          [
+            "Helmet",
+            0.25
+          ],
+          [
+            "Lock",
+            0
+          ]
+        ]
       },
       "explanation": "For Bike: 300/1000 = 0.30. For Helmet: 50/200 = 0.25. For Lock: Revenue = 0 so DIVIDE returns the alternateResult 0 instead of an error."
     },
@@ -55,14 +91,27 @@
       "explanation": "When Revenue = 0, the / operator throws a division by zero error that shows as an error cell in the visual. DIVIDE(Profit, Revenue, 0) or DIVIDE(Profit, Revenue) would return 0 or BLANK instead."
     }
   ],
-  "filterFlow": null,
+  "filterFlow": {
+    "steps": [
+      "Evaluate numerator expression",
+      "Evaluate denominator expression",
+      "If denominator = 0 (or BLANK): return alternate result (default: BLANK)",
+      "Otherwise: return numerator / denominator"
+    ]
+  },
   "iteratorFlow": null,
   "commonTraps": [
     "Using the / operator instead of DIVIDE causes error cells when the denominator is zero. Always prefer DIVIDE in measures used on report visuals.",
     "DIVIDE(a, b) and DIVIDE(a, b, 0) behave differently when b = 0. The first returns BLANK (cell is empty), the second returns 0 (cell shows zero). Choose based on visual intent.",
     "If the numerator is BLANK, DIVIDE returns BLANK regardless of the denominator value — this is intentional behavior, not a bug."
   ],
-  "relatedFunctions": ["IF", "IFERROR", "BLANK", "SUMX", "CALCULATE"],
+  "relatedFunctions": [
+    "IF",
+    "IFERROR",
+    "BLANK",
+    "SUMX",
+    "CALCULATE"
+  ],
   "examWeight": "High",
   "difficulty": "Easy",
   "sqlEquivalent": {

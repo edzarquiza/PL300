@@ -15,6 +15,8 @@ export function getCaseStudyQuestions() {
         scenario: cs.scenario,
         currentSetup: cs.currentSetup,
         requirements: cs.requirements,
+        questions: cs.questions,
+        recommendedSolutions: cs.recommendedSolutions || [],
       },
     }))
   )
