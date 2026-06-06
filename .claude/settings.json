@@ -57,7 +57,14 @@
       "Bash(node scripts/add-case-study-solutions.cjs)",
       "Bash(node scripts/fix-cs-coverage.cjs)",
       "Bash(node scripts/smoke-cs.mjs)",
-      "Bash(node scripts/smoke-retry.mjs)"
+      "Bash(node scripts/smoke-retry.mjs)",
+      "Bash(node -e \"const q = require\\('./src/data/questions.json'\\); console.log\\('Total:', q.length, '| Last ID:', Math.max\\(...q.map\\(x=>typeof x.id==='number'?x.id:0\\)\\)\\)\")",
+      "Bash(node scripts/append-quiz-questions.mjs)",
+      "Bash(node scripts/append-batch2.mjs)",
+      "Bash(node -e \"const q = require\\('./src/data/questions.json'\\); console.log\\('Total:', q.length, '| Last ID:', q[q.length-1].id, '| Last Q:', q[q.length-1].question.substring\\(0,60\\)\\)\")",
+      "Bash(node scripts/quality-check.mjs)",
+      "Bash(node scripts/fix-quality-issues.mjs)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5199)"
     ]
   }
 }
