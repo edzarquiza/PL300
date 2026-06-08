@@ -16,6 +16,9 @@ function getScheme(score) {
   return SCORE_COLORS.low
 }
 
+const STRONG_THRESHOLD = 80
+const RISK_THRESHOLD   = 65
+
 const TREND_ICON = { improving: '↑', declining: '↓', stable: '→' }
 const TREND_COLOR = { improving: 'text-green-600', declining: 'text-red-500', stable: 'text-gray-400' }
 
