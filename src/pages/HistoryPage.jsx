@@ -5,12 +5,25 @@ import { formatTime } from '../utils/examUtils'
 import { lookupQuestion } from '../utils/questionLookup'
 import { isAnswerCorrect } from '../utils/answerUtils'
 import { addToRetryQueue, removeFromRetryQueue, isInRetryQueue } from '../services/retryQueueService'
+import { useExam } from '../context/ExamContext'
 
 export default function HistoryPage() {
   const navigate = useNavigate()
+  const { startExam } = useExam()
   const [history, setHistory] = useState(() => getExamHistory())
   const [showConfirm, setShowConfirm] = useState(false)
   const [expandedIndex, setExpandedIndex] = useState(null)
+
+  function handleRetake(entry) {
+    if (!entry.questionIds?.length) return
+    startExam({
+      questionIds: entry.questionIds,
+      questionCount: entry.questionIds.length,
+      examMode: entry.mode ?? 'exam',
+      track: entry.trackId ?? 'full_pl300',
+    })
+    navigate('/exam')
+  }
 
   function handleClear() {
     clearHistory()
@@ -146,19 +159,27 @@ export default function HistoryPage() {
                   )}
 
                   {/* Answer review toggle */}
-                  {hasAnswers && (
-                    <div className="border-t border-gray-100 pt-3">
+                  <div className="border-t border-gray-100 pt-3 flex items-center justify-between gap-3">
+                    {hasAnswers ? (
                       <button
                         onClick={() => toggleExpand(i)}
                         className="text-xs font-medium text-blue-600 hover:text-blue-700 transition-colors"
                       >
                         {isExpanded ? '▲ Hide answers' : `▼ Review ${entry.questionIds.length} answers`}
                       </button>
+                    ) : <span />}
+                    {hasAnswers && (
+                      <button
+                        onClick={() => handleRetake(entry)}
+                        className="text-xs font-semibold text-white bg-amber-500 hover:bg-amber-600 px-3 py-1.5 rounded-lg transition-colors flex-shrink-0"
+                      >
+                        ↺ Retake
+                      </button>
+                    )}
+                  </div>
 
-                      {isExpanded && (
-                        <AnswerReview questionIds={entry.questionIds} answers={entry.answers} questionResults={entry.questionResults ?? {}} />
-                      )}
-                    </div>
+                  {isExpanded && hasAnswers && (
+                    <AnswerReview questionIds={entry.questionIds} answers={entry.answers} questionResults={entry.questionResults ?? {}} />
                   )}
                 </div>
               )
