@@ -1,10 +1,13 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useExam } from '../context/ExamContext'
 import { getExamHistory, getWeakDomains } from '../services/historyService'
 import { EXAM_TRACKS, TRACK_COLORS } from '../data/examTracks'
 import { parseSeed } from '../services/examGenerator'
 import { getRetryQueue, clearRetryQueue } from '../services/retryQueueService'
+import { getPoolCoverage, getTrackPool, getPrioritizeUnseen, setPrioritizeUnseen } from '../services/exposureTrackingService'
+import { getTopWeakConcepts } from '../services/conceptCoverageService'
+import ReadinessWidget from '../components/ReadinessWidget'
 import allQuestions from '../data/questions.json'
 
 const COUNT_OPTIONS = [10, 20, 30, 50]
@@ -24,10 +27,30 @@ export default function HomePage() {
   const [selectedDifficulties, setSelectedDifficulties] = useState(allDifficulties)
   const [examMode, setExamMode] = useState('exam')
   const [seedInput, setSeedInput] = useState('')
+  const [prioritizeUnseen, setPrioritizeUnseenState] = useState(() => getPrioritizeUnseen())
 
-  const history = getExamHistory()
+  const history    = getExamHistory()
   const weakDomains = getWeakDomains(history)
   const retryQueue = getRetryQueue()
+
+  // Coverage stats per track (computed once on mount)
+  const trackCoverage = useMemo(() => {
+    const out = {}
+    for (const t of EXAM_TRACKS) {
+      const pool = getTrackPool(allQuestions, t)
+      out[t.id] = getPoolCoverage(pool)
+    }
+    return out
+  }, [])
+
+  // Top weak concepts for the insight panel
+  const weakConcepts = useMemo(() => getTopWeakConcepts(allQuestions, 6), [])
+
+  function handleToggleUnseen() {
+    const next = !prioritizeUnseen
+    setPrioritizeUnseenState(next)
+    setPrioritizeUnseen(next)
+  }
 
   const track = EXAM_TRACKS.find(t => t.id === selectedTrack) ?? EXAM_TRACKS[0]
 
@@ -62,6 +85,7 @@ export default function HomePage() {
       examMode,
       track: selectedTrack,
       seed: seedInput.trim() || null,
+      prioritizeUnseen,
     })
     navigate('/exam')
   }
@@ -235,6 +259,24 @@ export default function HomePage() {
                   >
                     <p className={`text-xs font-semibold ${active ? c.text : 'text-gray-700'}`}>{t.name}</p>
                     <p className="text-xs text-gray-400 mt-0.5 leading-tight line-clamp-1">{t.description}</p>
+                    {(() => {
+                      const cov = trackCoverage[t.id]
+                      if (!cov || cov.seen === 0) return (
+                        <p className="text-xs text-gray-300 mt-1">{cov?.total ?? 0} questions</p>
+                      )
+                      return (
+                        <div className="mt-1.5">
+                          <div className="flex justify-between text-xs mb-0.5">
+                            <span className={active ? c.text : 'text-gray-500'}>{cov.seen} seen</span>
+                            <span className="text-gray-400">{cov.pct}%</span>
+                          </div>
+                          <div className="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+                            <div className={`h-full rounded-full ${active ? c.bg.replace('bg-','bg-').replace('-50','') : 'bg-gray-400'}`}
+                              style={{ width: `${cov.pct}%`, backgroundColor: active ? undefined : '#9ca3af' }}/>
+                          </div>
+                        </div>
+                      )
+                    })()}
                   </button>
                 )
               })}
@@ -322,6 +364,24 @@ export default function HomePage() {
             </div>
           </div>
 
+          {/* Prioritize Unseen toggle */}
+          <div className="mb-5 flex items-center justify-between gap-4 py-3 border-t border-gray-100">
+            <div>
+              <p className="text-sm font-medium text-gray-800">Prioritize unseen questions</p>
+              <p className="text-xs text-gray-400 mt-0.5">Exhausts new questions before repeating seen ones</p>
+            </div>
+            <button
+              onClick={handleToggleUnseen}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0 ${
+                prioritizeUnseen ? 'bg-blue-600' : 'bg-gray-300'
+              }`}
+            >
+              <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+                prioritizeUnseen ? 'translate-x-6' : 'translate-x-1'
+              }`} />
+            </button>
+          </div>
+
           {/* Replay seed */}
           <div>
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Replay Seed</p>
@@ -344,6 +404,36 @@ export default function HomePage() {
             )}
           </div>
         </div>
+
+        {/* Readiness prediction */}
+        <ReadinessWidget />
+
+        {/* Concept coverage insight */}
+        {weakConcepts.length > 0 && (
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 mb-5">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Concept Coverage</p>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {weakConcepts.map(({ concept, total, seen, masteryPct, coveragePct }) => (
+                <div key={concept} className="p-2.5 rounded-lg bg-gray-50 border border-gray-100">
+                  <p className="text-xs font-semibold text-gray-700 truncate">{concept}</p>
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="text-xs text-gray-400">{seen}/{total} seen</span>
+                    <span className={`text-xs font-bold ${
+                      masteryPct === null ? 'text-gray-400' :
+                      masteryPct < 50 ? 'text-red-600' :
+                      masteryPct < 70 ? 'text-amber-600' : 'text-green-600'
+                    }`}>
+                      {masteryPct === null ? 'New' : `${masteryPct}%`}
+                    </span>
+                  </div>
+                  <div className="w-full h-1 bg-gray-200 rounded-full mt-1.5 overflow-hidden">
+                    <div className="h-full bg-blue-400 rounded-full" style={{ width: `${coveragePct}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Availability summary */}
         <div className="flex items-center justify-between text-sm text-gray-500 mb-5 px-1">

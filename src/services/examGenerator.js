@@ -14,6 +14,7 @@ import { getExamHistory } from './historyService'
 import { getSubtopicMastery } from './masteryService'
 import { getTrackById } from '../data/examTracks'
 import { getCaseStudyQuestions } from './caseStudyEngine'
+import { getExposureData, getExposureScore, getUnseenQuestions, recordQuestionsExposed } from './exposureTrackingService'
 
 // ── Official PL-300 domain weighting ─────────────────────────────────────
 const DOMAIN_IDEAL = {
@@ -219,13 +220,14 @@ function allocateDifficultySlots(questions, totalSlots) {
  * @returns {object[]} shuffled question array
  */
 export function generateExam(allQuestions, {
-  questionCount  = 40,
-  trackId        = 'full_pl300',
-  domains        = [],
-  difficulties   = [],
-  examMode       = 'exam',
-  seed           = null,
-  weakAreaBoost  = false,
+  questionCount    = 40,
+  trackId          = 'full_pl300',
+  domains          = [],
+  difficulties     = [],
+  examMode         = 'exam',
+  seed             = null,
+  weakAreaBoost    = false,
+  prioritizeUnseen = true,
 } = {}) {
   const rng   = seed ? mulberry32(seed) : mulberry32(Math.random() * 0xffffffff)
   const track = getTrackById(trackId)
@@ -269,36 +271,58 @@ export function generateExam(allQuestions, {
   const deduped = selectVariants(pool)
 
   // ── 3. Score every candidate question ───────────────────────────────────
-  const repWeights  = getRepetitionWeights(deduped)
-  const weakBoosts  = (weakAreaBoost || examMode === 'weak_area')
+  const repWeights   = getRepetitionWeights(deduped)
+  const exposureData = getExposureData()
+  const weakBoosts   = (weakAreaBoost || examMode === 'weak_area')
     ? buildWeakBoosts(deduped)
     : {}
 
   function scoreQ(q) {
-    const rep  = repWeights[q.id] ?? 1.0
-    const weak = weakBoosts[q.id] ?? 0
-    return rep * (1 + weak)
+    const rep      = repWeights[q.id] ?? 1.0
+    const weak     = weakBoosts[q.id] ?? 0
+    const exposure = getExposureScore(q.id, exposureData)
+    // exposure:  2.0 = never seen, 0.1 = recently seen + correct
+    // rep:       recency weight from recent exam sessions
+    // Combined: exposure dominates to ensure unseen questions surface first
+    return exposure * rep * (1 + weak)
   }
 
-  // ── 4. Constrained selection ─────────────────────────────────────────────
+  // ── 4. Unseen-first partitioning ─────────────────────────────────────────
+  // When prioritizeUnseen is on and enough unseen questions exist, draw
+  // exclusively from the unseen pool. Otherwise fill unseen first then top
+  // up from the seen pool (weighted by exposure score).
   const cap = Math.min(questionCount, deduped.length)
+
+  let candidatePool = deduped
+  if (prioritizeUnseen) {
+    const unseen = getUnseenQuestions(deduped)
+    if (unseen.length >= cap) {
+      // Full exam from unseen — no repetition at all
+      candidatePool = unseen
+    } else if (unseen.length > 0) {
+      // Use all unseen + fill from seen (lowest exposure score = highest weight)
+      const seenPool = deduped.filter(q => !unseen.includes(q))
+      candidatePool = [...unseen, ...seenPool]
+      // unseen questions already have score 2.0 so they naturally win sampling
+    }
+  }
   let selected
 
   if (activeDomains.length <= 1) {
     // Single-domain track: use difficulty balance only
     if (difficulties.length === 0) {
-      const { slots, byDiff } = allocateDifficultySlots(deduped, cap)
+      const { slots, byDiff } = allocateDifficultySlots(candidatePool, cap)
       selected = []
       for (const [diff, count] of Object.entries(slots)) {
         selected.push(...weightedSample(byDiff[diff], count, scoreQ, rng))
       }
     } else {
-      selected = weightedSample(deduped, cap, scoreQ, rng)
+      selected = weightedSample(candidatePool, cap, scoreQ, rng)
     }
   } else {
     // Multi-domain: allocate by domain first, then difficulty within each
     const byDomain = {}
-    for (const q of deduped) {
+    for (const q of candidatePool) {
       if (!byDomain[q.domain]) byDomain[q.domain] = []
       byDomain[q.domain].push(q)
     }
@@ -328,10 +352,11 @@ export function generateExam(allQuestions, {
   const rendered = selected.map(q => shuffleQuestionChoices(renderScenario(q), seed ?? 'default'))
   const shuffled = seededShuffle(rendered, rng)
 
-  // ── 6. Record for future anti-repetition ─────────────────────────────────
+  // ── 6. Record for future anti-repetition and lifetime exposure ───────────
   const ids = shuffled.map(q => q.id)
   recordSeenQuestions(ids)
   recordExamQuestions(ids)
+  recordQuestionsExposed(ids)
 
   return shuffled
 }

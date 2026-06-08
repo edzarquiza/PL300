@@ -9109,7 +9109,10 @@
     "correctAnswers": [
       1
     ],
-    "daxExpression": "-- FALSE: CALCULATE CAN be nested inside another CALCULATE\nNested Example =\n    CALCULATE(\n        CALCULATE(\n            SUM(Sales[Amount]),\n            Sales[Region] = \"East\"\n        ),\n        Sales[Year] = 2024\n    )\n\n-- The inner CALCULATE applies the Region filter.\n-- The outer CALCULATE applies the Year filter.\n-- Both filters are active simultaneously — nested CALCULATE is a valid and common pattern."
+    "daxExpression": "-- FALSE: CALCULATE CAN be nested inside another CALCULATE\nNested Example =\n    CALCULATE(\n        CALCULATE(\n            SUM(Sales[Amount]),\n            Sales[Region] = \"East\"\n        ),\n        Sales[Year] = 2024\n    )\n\n-- The inner CALCULATE applies the Region filter.\n-- The outer CALCULATE applies the Year filter.\n-- Both filters are active simultaneously — nested CALCULATE is a valid and common pattern.",
+    "choiceExplanations": {
+      "0": "Incorrect. CALCULATE can be nested inside another CALCULATE — this is a common and powerful DAX pattern. The inner CALCULATE establishes a new filter context before the outer one applies its own filters."
+    }
   },
   {
     "id": 176,
@@ -9131,7 +9134,10 @@
     ],
     "correctAnswers": [
       0
-    ]
+    ],
+    "choiceExplanations": {
+      "1": "Incorrect. The statement correctly defines a star schema — all dimensions connect directly to the fact table with no intermediary tables. A model with intermediate bridge tables is called a snowflake schema, not a star schema."
+    }
   },
   {
     "id": 177,
@@ -9154,7 +9160,10 @@
     ],
     "correctAnswers": [
       1
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Incorrect. Import mode takes a snapshot of data at refresh time and stores it in Power BI's in-memory engine. Reports always show data from the last refresh — not live source data. Use DirectQuery or DirectLake for near-real-time needs."
+    }
   },
   {
     "id": 178,
@@ -9177,7 +9186,10 @@
     ],
     "correctAnswers": [
       0
-    ]
+    ],
+    "choiceExplanations": {
+      "1": "Incorrect. RLS is enforced at the semantic model level and applies to every report and dashboard built on that model, regardless of how users access it. The only exception is workspace Admins and owners, who bypass RLS by default."
+    }
   },
   {
     "id": 179,
@@ -9200,7 +9212,10 @@
     ],
     "correctAnswers": [
       0
-    ]
+    ],
+    "choiceExplanations": {
+      "1": "Incorrect. Calculated columns are materialised into the model at refresh time and behave identically to imported source columns — they can be placed in slicers, filters, relationships, and RLS expressions."
+    }
   },
   {
     "id": 180,
@@ -9236,7 +9251,12 @@
       1
     ],
     "questionStyle": "scenario",
-    "cognitiveLevel": "application"
+    "cognitiveLevel": "application",
+    "choiceExplanations": {
+      "0": "A line chart shows value trends over time but does not natively combine a goal/target indicator with a single callout value — you would need multiple separate visuals to show the same information as one KPI.",
+      "2": "A donut chart shows proportional parts of a whole and has no concept of a target goal or historical trend axis.",
+      "3": "A clustered column chart compares values across categories or periods but requires separate visuals to simultaneously show a headline value, a target, and a trend."
+    }
   },
   {
     "id": 181,
@@ -9273,7 +9293,12 @@
       0
     ],
     "questionStyle": "scenario",
-    "cognitiveLevel": "application"
+    "cognitiveLevel": "application",
+    "choiceExplanations": {
+      "1": "SUMX is an iterator that evaluates an expression row by row and totals the results — it operates within the existing filter context and cannot override or remove a slicer's filter on its own.",
+      "2": "RELATED retrieves a single scalar value from a related table's column — it does not modify or override filter context imposed by slicers.",
+      "3": "FILTER returns a filtered table and is commonly used as an argument inside CALCULATE — but on its own as the outermost function, it cannot override a slicer's filter context."
+    }
   },
   {
     "id": 182,
@@ -9310,7 +9335,12 @@
       0
     ],
     "questionStyle": "scenario",
-    "cognitiveLevel": "application"
+    "cognitiveLevel": "application",
+    "choiceExplanations": {
+      "1": "Import mode caches a copy of data inside Power BI's in-memory VertiPaq engine — this violates the governance policy prohibiting data storage outside the source system.",
+      "2": "Composite models mix Import and DirectQuery — at least some Import tables store data locally, which may violate data residency requirements.",
+      "3": "Dual mode tables are cached locally when acting as Import for performance — they still store data, making them inappropriate when data storage outside the source is prohibited."
+    }
   },
   {
     "id": 183,
@@ -9413,6 +9443,11 @@
           ]
         ]
       }
+    },
+    "choiceExplanations": {
+      "0": "Append Queries stacks two tables vertically by adding more rows — it does not convert column headers into row values.",
+      "1": "Merge Queries joins two tables horizontally using a matching key column — it does not reshape column headers into a normalised row format.",
+      "3": "Pivot Column is the reverse operation — it converts unique row values into column headers. Unpivot converts column headers into row values."
     }
   },
   {
@@ -9481,6 +9516,11 @@
           ]
         }
       ]
+    },
+    "choiceExplanations": {
+      "0": "Removing duplicates is a transformation step that requires data to already be loaded in Power Query Editor — you cannot apply it before the initial data connection exists.",
+      "2": "Filtering null values is a transformation step that requires the raw data to be present first — it cannot happen before the initial connection is made.",
+      "3": "Renaming columns requires the columns to exist in Power Query Editor — this transformation step always follows the initial data load."
     }
   },
   {
@@ -9516,7 +9556,12 @@
       1
     ],
     "questionStyle": "scenario",
-    "cognitiveLevel": "analysis"
+    "cognitiveLevel": "analysis",
+    "choiceExplanations": {
+      "0": "Assigning Azure AD users to roles happens in Power BI Service after the model has been published — you cannot assign users in Desktop, and this step cannot be completed before publishing.",
+      "2": "Creating RLS roles in the Manage Roles dialog is a prior step — the question states this is already complete. There is nothing left to create in Desktop.",
+      "3": "Testing with 'View as' in Desktop is a validation step done before publishing to confirm the role filter logic is correct — it is an earlier step, not the next step to complete implementation."
+    }
   },
   {
     "id": 186,
@@ -9551,7 +9596,12 @@
       2
     ],
     "questionStyle": "scenario",
-    "cognitiveLevel": "analysis"
+    "cognitiveLevel": "analysis",
+    "choiceExplanations": {
+      "0": "Defining measures and calculated columns is an early model development step — it happens well before publishing and certainly before distributing to end users.",
+      "1": "Creating report pages and configuring visuals is a development step that happens before publishing to the Service — it is a middle step, not the final one.",
+      "3": "Publishing to the Service is required, but it comes before permission configuration and distribution — you publish first so there is something to share, then configure access and distribute."
+    }
   },
   {
     "id": 187,
@@ -18543,7 +18593,12 @@
       "Power BI Desktop",
       "Data Source",
       "Get Data"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "'Load Data' is not a menu option in Power BI Desktop. Data loading occurs automatically after selecting a source through Get Data.",
+      "2": "'Open Data' is not a valid Power BI Desktop option. File > Open is for opening existing .pbix project files, not for connecting to new data sources.",
+      "3": "'Find Data' does not exist in Power BI Desktop. The only term used throughout the interface for connecting to data sources is 'Get Data'."
+    }
   },
   {
     "id": 362,
@@ -18572,7 +18627,12 @@
       "Focus Mode",
       "Visuals",
       "Report Canvas"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Data view is a workspace view in Power BI Desktop that shows raw table data — it is not a visual-level display feature and does not magnify individual visuals.",
+      "2": "'Zoom mode' is not a named feature in Power BI Desktop. The correct feature name is 'Focus mode'.",
+      "3": "'Expand' refers to expanding hierarchy rows in a matrix or tree visual — it is not a visual enlargement or full-screen feature."
+    }
   },
   {
     "id": 363,
@@ -18601,7 +18661,12 @@
       "Visual Types",
       "Visualization Pane",
       "Stacked Bar Chart"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Inserting a chart from Home > Insert when no visual is selected adds a new visual to the canvas — it does not convert an existing table into a different chart type.",
+      "1": "The Data/Fields pane shows available fields for drag-drop into visual sections — it does not contain chart type selection options, and with no visual selected any action creates a new visual.",
+      "3": "The Data/Fields pane manages which data fields are in the visual's sections — it does not contain options for changing the visual type."
+    }
   },
   {
     "id": 364,
@@ -18630,7 +18695,12 @@
       "Publish",
       "Power BI Service",
       "Power BI Desktop"
-    ]
+    ],
+    "choiceExplanations": {
+      "1": "'Upload' in Power BI Service allows importing a .pbix file via the browser — but from Power BI Desktop, the correct option is File > Publish > Publish to Power BI, not 'Upload'.",
+      "2": "'Share' is used in the Service to grant individual users access to specific reports — it is not a Desktop menu option for sending reports to the Service.",
+      "3": "'Move' is used in Power BI Service to relocate content between workspaces — it is not a publish mechanism available from Power BI Desktop."
+    }
   },
   {
     "id": 365,
@@ -18659,7 +18729,12 @@
       "Data Types",
       "Power BI Desktop",
       "Fields"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Whole number is a valid Power BI data type — it stores integer values and is one of the most commonly used types.",
+      "2": "Date/time is a valid Power BI data type that stores both date and time information and enables time intelligence functions.",
+      "3": "Text is a valid Power BI data type for string values and is one of the core supported types."
+    }
   },
   {
     "id": 366,
@@ -18688,7 +18763,12 @@
       "Aggregation",
       "Visualization Pane",
       "Measures"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Column tools changes the default aggregation for a field across the entire model — this affects all visuals using that column, not just the specific visual you want to change.",
+      "2": "Right-clicking on the visual canvas does not expose aggregation settings — you must interact with the field inside the Visualization pane (Build a Visual) to change the aggregation per visual.",
+      "3": "The Format pane controls visual appearance — colors, fonts, borders, backgrounds — and does not contain aggregation type options."
+    }
   },
   {
     "id": 367,
@@ -18717,7 +18797,12 @@
       "Format Painter",
       "Visual Formatting",
       "Home Tab"
-    ]
+    ],
+    "choiceExplanations": {
+      "1": "'Format Special > Formats' is not a real Power BI menu option. The Format Painter is the only built-in tool for copying visual formatting.",
+      "2": "Copying and pasting a visual in Power BI duplicates the entire visual including data — it does not selectively paste only formatting onto a different existing visual.",
+      "3": "Right-clicking a visual does not offer a 'Copy Formatting' or 'Copy Format' option. Format Painter in the Home ribbon is the correct and only built-in approach."
+    }
   },
   {
     "id": 368,
@@ -18746,7 +18831,12 @@
       "Multiple Selection",
       "Visuals",
       "Report Canvas"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Double-clicking a visual enters edit mode for that visual (e.g., editing a text box or title field) — it does not add it to a multi-selection with the first visual.",
+      "1": "Right-clicking a visual opens its context menu — it does not add it to a multi-selection alongside the first visual.",
+      "3": "Alt+click is not a multi-select keyboard shortcut in Power BI. The correct modifier key for multi-selection is Ctrl (Control)."
+    }
   },
   {
     "id": 369,
@@ -18775,7 +18865,12 @@
       "Visual Types",
       "Combo Chart",
       "Visualization Pane"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "There is no 'Line and clustered bar chart' built-in combined visual in Power BI. Bar charts are horizontal — Power BI provides a 'Line and clustered column chart' (vertical columns, not horizontal bars) as the combined visual.",
+      "1": "There is no built-in 'Line and pie chart' combined visual in Power BI — pie charts cannot be natively combined with a line chart into a single visual.",
+      "2": "There is no built-in 'Line chart and table' combined visual — these two are always separate visual types in Power BI."
+    }
   },
   {
     "id": 370,
@@ -18804,7 +18899,12 @@
       "Stacked Column Chart",
       "Visual Types",
       "Chart Identification"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "A clustered column chart shows separate vertical bars placed side by side for each category — the bars are NOT stacked on top of each other into one bar per X-axis value.",
+      "2": "A clustered bar chart shows horizontal bars side by side — the description shows vertical bars running upward from the X-axis, which are columns, not horizontal bars.",
+      "3": "A stacked bar chart stacks horizontal bars end-to-end — the description shows vertical bars (columns stacked upward), not horizontal bars."
+    }
   },
   {
     "id": 371,
@@ -18834,7 +18934,12 @@
       "Hierarchy",
       "Expand",
       "Date Hierarchy"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "In the standard Power BI date hierarchy, the level below Year is Quarter — not Month. Month comes below Quarter. 'Expand all down one level' moves from Year to Quarter.",
+      "2": "'Expand all down one level in the hierarchy' always expands ALL rows simultaneously — pre-selecting year 2024 does not restrict the expansion to that row only. To drill into a single row, use the drill-down arrows directly on that specific row.",
+      "3": "When expanding down, both hierarchy levels (Year and Quarter) remain visible — the Year level does not disappear. Having only Quarters replace Years describes drill-down, which removes the parent level."
+    }
   },
   {
     "id": 372,
@@ -18863,7 +18968,12 @@
       "Table Visual",
       "Matrix Visual",
       "Visual Comparison"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Both tables and matrices can summarise data using aggregation functions (SUM, COUNT, Average, etc.). The ability to summarise data is not what distinguishes them.",
+      "1": "This reverses the actual capabilities. Tables CAN summarise data; matrices also summarise but additionally support row/column pivoting.",
+      "3": "This reverses the correct relationship. A table has a FIXED column count (one column per field added). A matrix has a VARIABLE column count driven by the unique values in its Columns field well."
+    }
   },
   {
     "id": 373,
@@ -18891,7 +19001,11 @@
       "Sync Slicers",
       "Slicers",
       "Cross-page Filtering"
-    ]
+    ],
+    "choiceExplanations": {
+      "1": "Controlling which visuals on the same page are affected by a slicer is done through Edit Interactions (Format > Edit interactions) — not through Sync Slicers.",
+      "2": "Slicer style formatting (dropdown vs list vs tile, font, colors) is configured in the Format pane — Sync Slicers is exclusively for enabling cross-page slicer behaviour."
+    }
   },
   {
     "id": 374,
@@ -18920,7 +19034,12 @@
       "Slicers",
       "Filter Scope",
       "Report Pages"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "By default, a slicer affects ALL visuals on the current page — not just the nearest one. Selective control requires manually editing interactions for each visual.",
+      "1": "The Format pane for a slicer controls its visual appearance (style, font, colors). Selecting which visuals a slicer affects is done through Format > Edit Interactions, not the Format pane.",
+      "3": "Slicers do not affect other pages by default — only the current page. Cross-page syncing requires explicitly configuring View > Sync Slicers."
+    }
   },
   {
     "id": 375,
@@ -18949,7 +19068,12 @@
       "Advanced Filter",
       "Wildcards",
       "Filters Pane"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "'*' is also valid in Power BI Advanced Filters but represents zero or more characters — not exactly one. Use '?' when you need to match exactly one unknown character.",
+      "1": "'_' is a single-character wildcard in SQL and Excel LIKE expressions but is not recognised in Power BI's Advanced Filter panel, which uses '?' instead.",
+      "3": "'%' is the multi-character wildcard used in SQL — it is not used in Power BI's Advanced Filter, which uses '*' for multiple characters."
+    }
   },
   {
     "id": 376,
@@ -18978,7 +19102,12 @@
       "Advanced Filter",
       "Filter Types",
       "Filters Pane"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Basic filtering shows a checkbox list of known field values — it does not support text conditions like 'contains' or 'begins with', or combining multiple text conditions.",
+      "2": "Top N filtering shows only the top or bottom N items by a measure — it cannot apply text-matching conditions like 'contains East'.",
+      "3": "Relative date filtering applies rolling date windows (e.g., 'last 30 days') — it only works on date fields and cannot apply text matching conditions."
+    }
   },
   {
     "id": 377,
@@ -19007,7 +19136,12 @@
       "Selection Pane",
       "Hide Visual",
       "Report Canvas"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "The Format pane controls visual appearance — colors, fonts, borders — but does not have a visibility toggle. Hiding a visual requires the Selection pane.",
+      "1": "The Bookmarks pane records and manages saved report states. While bookmarks can capture a visual's hidden state, you use the Selection pane to actually toggle visibility.",
+      "2": "The Sync Slicers pane manages cross-page slicer synchronisation — it has no visual visibility controls."
+    }
   },
   {
     "id": 378,
@@ -19036,7 +19170,12 @@
       "Bookmarks",
       "Report State",
       "Filters"
-    ]
+    ],
+    "choiceExplanations": {
+      "1": "Saving filter, drill, and sort state IS something bookmarks do — capturing the current filter context is one of their primary purposes.",
+      "2": "Saving visual display state (visible/hidden, cross-highlight selections) IS something bookmarks do — this enables show/hide navigation patterns in reports.",
+      "3": "Capturing which report page is currently displayed IS something bookmarks do — this is what enables page navigation buttons when bookmarks are combined with button actions."
+    }
   },
   {
     "id": 379,
@@ -19065,7 +19204,12 @@
       "Small Multiples",
       "Visual Configuration",
       "Stacked Bar Chart"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Placing Department in the Y-axis makes departments the Y-axis categories within a single chart — all departments appear as separate bars in one chart, not as separate small charts.",
+      "1": "The Legend field color-codes data points by category within a single chart — placing Department in Legend creates colored series within one chart, not separate charts per department.",
+      "3": "The Tooltips field adds data shown on hover over a data point — it does not create separate chart instances for each category value."
+    }
   },
   {
     "id": 380,
@@ -19094,7 +19238,12 @@
       "Sorting",
       "Visuals",
       "More Options Menu"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "There is no standard '↓ down arrow' sort control directly visible on a visual in Power BI. Sort direction and field are accessed via the '...' more options menu.",
+      "2": "'View > Sort' is not a valid menu path in Power BI Desktop. Sorting is controlled per-visual through the visual's own '...' more options menu.",
+      "3": "The Format pane controls visual appearance and has no sort direction or sort field controls."
+    }
   },
   {
     "id": 381,
@@ -19123,7 +19272,12 @@
       "Bookmark Navigator",
       "Buttons",
       "Navigation"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "The Home tab's visual gallery contains standard chart and data visuals — bookmark navigators are navigation elements found under Insert > Buttons, not in the visual gallery.",
+      "2": "Insert > Shapes adds decorative shapes (rectangles, circles, lines) — interactive navigation elements like bookmark navigators are under Insert > Buttons.",
+      "3": "The Modeling menu contains DAX calculation tools and relationship management — it does not contain UI navigation elements like buttons or bookmark navigators."
+    }
   },
   {
     "id": 382,
@@ -19153,7 +19307,12 @@
       "Text Box",
       "Buttons",
       "Actions"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "You CAN insert a Q&A visual from Home > Insert dropdown under AI visuals — this is a valid method for adding Q&A to a report page.",
+      "2": "You CAN insert Q&A from the Insert menu directly — this is a standard, valid approach.",
+      "3": "You CAN configure a Button with Q&A as its action type via Insert > Buttons — this creates a clickable Q&A launcher button."
+    }
   },
   {
     "id": 383,
@@ -19182,7 +19341,12 @@
       "Buttons",
       "Actions",
       "Navigation"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "'Back' IS a valid button action — it navigates to the previously viewed report page.",
+      "1": "'Bookmark' IS a valid button action — it applies a specific saved bookmark state when clicked.",
+      "2": "'Q&A' IS a valid button action — it opens the Q&A natural language interface."
+    }
   },
   {
     "id": 384,
@@ -19211,7 +19375,12 @@
       "Drill-through",
       "Report Navigation",
       "Pages"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Changing the X-axis from Years to Quarters within the same visual is 'drill-down' — it navigates within a hierarchy inside one visual, not across report pages.",
+      "2": "Expanding to show both Years and sub-levels simultaneously within the same visual is 'Expand all down one level' — a hierarchy expansion that operates within a single visual.",
+      "3": "Focusing on one selected year and then showing its quarters within the same visual is also drill-down behavior — it operates within a single visual's hierarchy, not navigating to another page."
+    }
   },
   {
     "id": 385,
@@ -19241,7 +19410,12 @@
       "Scatter Chart",
       "Size Field",
       "Visual Configuration"
-    ]
+    ],
+    "choiceExplanations": {
+      "1": "'Area' is not a named field well in Power BI's scatter/bubble chart. Bubble size is controlled exclusively by the 'Size' field.",
+      "2": "The Y Axis field sets the vertical position of each bubble based on that measure's value — it does not control the size of the bubble.",
+      "3": "The Legend field assigns different colors to bubbles based on a category — it has no effect on bubble size."
+    }
   },
   {
     "id": 386,
@@ -19270,7 +19444,12 @@
       "Scatter Chart",
       "Play Axis",
       "Animation"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "'Time Axis' is not the name of any field well in Power BI's scatter chart. The animation field is specifically called 'Play Axis'.",
+      "2": "'Breakdown Axis' is used in waterfall charts to show individual category contributions — it is not a field section in scatter charts.",
+      "3": "The Legend field color-codes scatter points by category — it does not animate the chart across time periods."
+    }
   },
   {
     "id": 387,
@@ -19299,7 +19478,12 @@
       "Waterfall Chart",
       "Breakdown",
       "Visual Configuration"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "The Category area defines the X-axis groups in the waterfall chart — adding another field there creates a second grouping dimension, not a switch from cumulative to individual display.",
+      "1": "The Y-axis area holds the measure being visualised — changing the measure does not control whether values appear cumulatively or individually.",
+      "3": "There is no 'Cumulative Total' toggle in the waterfall chart's Format pane Totals section. The Breakdown field well is the correct mechanism for showing individual category contributions."
+    }
   },
   {
     "id": 388,
@@ -19328,7 +19512,12 @@
       "AppSource",
       "Custom Visuals",
       "Marketplace"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "'PowerBICenter' is not a real Microsoft service — it does not exist. Microsoft AppSource is the only official marketplace for Power BI custom visuals.",
+      "2": "Visual Studio is Microsoft's IDE for writing software code — it is not a marketplace for Power BI custom visuals.",
+      "3": "'AnalysisStore' is not a real Microsoft service. The correct marketplace is Microsoft AppSource."
+    }
   },
   {
     "id": 389,
@@ -19357,7 +19546,12 @@
       "Funnel Chart",
       "Conversion Rate",
       "Analytics"
-    ]
+    ],
+    "choiceExplanations": {
+      "1": "'Success rate' is a general-purpose term for positive outcomes — it is not the specific terminology Power BI uses for the funnel's start-to-finish completion percentage.",
+      "2": "'Completion rate' could describe the same concept informally but is not the standard label Power BI's funnel visual uses — it specifically calls this the 'conversion rate'.",
+      "3": "'Checkout rate' is e-commerce jargon for purchase flow completion — it is not the generic Power BI funnel visual terminology."
+    }
   },
   {
     "id": 390,
@@ -19388,7 +19582,12 @@
       "Details",
       "Colors",
       "Visual Configuration"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Color grouping behavior differs based on which field well you use — Category and Details behave differently for color assignment. Both sections do not result in all-different colors per region.",
+      "1": "Colors are not the same in either case — Category reassigns the color grouping; Details inherits the parent's color. They have opposite behaviors.",
+      "2": "This reverses the correct behavior. Adding Year to Category makes Year the color-defining dimension (different years = different colors within the same region). Adding Year to Details keeps RegionName as the color group (all a region's rectangles share the same color)."
+    }
   },
   {
     "id": 391,
@@ -19418,7 +19617,12 @@
       "Model View",
       "Properties Pane",
       "Data Modeling"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "The Fields pane in Report view lets you drag fields into visuals and expand tables — it does not provide drag-to-reorder functionality for hierarchy levels.",
+      "1": "The Modeling menu in Report view contains DAX calculation tools and relationship settings — it does not have a user interface for reordering hierarchy levels.",
+      "2": "The Data view shows table row data and allows column-level property changes via Column tools — hierarchies cannot be reordered from the Data pane in this view."
+    }
   },
   {
     "id": 392,
@@ -19448,7 +19652,12 @@
       "Column Tools",
       "Geography",
       "Map Visual"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Summarization controls how a field is aggregated by default across visuals (Sum, Average, Count, etc.) — it does not classify a field as representing a geographic concept.",
+      "1": "Data type specifies what kind of data the column stores (Text, Whole Number, Date/Time, etc.) — it does not tag the column as representing a geographic concept like City or Country.",
+      "3": "'Geographical location' is not a dropdown option in Power BI's Column tools. The correct setting is 'Data category', which contains geographic subcategories like City, Country, and Postal Code."
+    }
   },
   {
     "id": 393,
@@ -19477,7 +19686,12 @@
       "Heat Map",
       "Map Visual",
       "Geographic Visualization"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "A bubble map shows discrete sized circles at geographic coordinates based on a measure — the circles maintain distinct borders and do not merge or blend into gradient-colored zones.",
+      "2": "A filled map applies solid color fills to geographic boundaries (countries, states, regions) — it uses region-boundary fills rather than overlapping gradient zones.",
+      "3": "ArcGIS is a premium mapping visual with advanced geospatial capabilities — the description of overlapping circles blending into gradient areas specifically matches Power BI's built-in map heat layer behavior."
+    }
   },
   {
     "id": 394,
@@ -19506,7 +19720,12 @@
       "Map Visual",
       "Format Pane",
       "Controls"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Auto zoom IS an available map control — it automatically adjusts the zoom level to fit all displayed data points within the visual.",
+      "1": "Navigation controls (zoom in/out buttons) ARE available map controls.",
+      "2": "Selection (lasso selection tool for selecting multiple data points on the map) IS an available map control."
+    }
   },
   {
     "id": 395,
@@ -19535,7 +19754,12 @@
       "KPI Visual",
       "Visual Components",
       "Waterfall Chart"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Icons (trend direction indicators such as colored arrows or dots based on goal achievement) ARE available in the KPI visual to indicate performance direction.",
+      "1": "Trend axis IS part of the KPI visual — it shows the performance trend over the selected time range as a sparkline.",
+      "3": "Callout value IS part of the KPI visual — it is the prominently displayed large number showing the primary metric."
+    }
   },
   {
     "id": 396,
@@ -19564,7 +19788,12 @@
       "Conditional Formatting",
       "Rules",
       "Table Visual"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Gradient formatting applies a color scale between minimum and maximum numeric values — it cannot assign discrete categorical colors like 'if value equals Spring, use Green'.",
+      "2": "Field value formatting reads color values from a dedicated color column in the data model — since no color column exists, this option requires additional data preparation not described.",
+      "3": "Data bar formatting overlays a proportional bar inside each cell to visualise relative magnitude — it does not support discrete category-based color assignment."
+    }
   },
   {
     "id": 397,
@@ -19593,7 +19822,12 @@
       "Card Visual",
       "Single Number",
       "Measures"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "A Card visual does not contain any chart — it displays a single aggregate value as a number. An area chart is an entirely separate visual type.",
+      "1": "Icons indicating performance direction (arrows, colored dots) appear in KPI visuals — not in a standard Card visual.",
+      "3": "A bar chart is a separate visual type — a Card displays only a single aggregate number alongside the measure name."
+    }
   },
   {
     "id": 398,
@@ -19622,7 +19856,12 @@
       "Gauge Visual",
       "Callout Value",
       "Format Pane"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Data labels in a gauge refer to the numerical values at the minimum, maximum, and target markers on the arc scale — not the large central metric number.",
+      "1": "Target label shows the text label at the goal marker on the gauge arc — not the large central metric number.",
+      "3": "Title is the heading text shown above the visual — turning it off removes the title, not the large aggregate value displayed inside the gauge arc."
+    }
   },
   {
     "id": 399,
@@ -19652,7 +19891,12 @@
       "Line Chart",
       "Format Pane",
       "Analytics"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "'By field' IS a valid error bar type — it sets the upper/lower bar extent based on values from a measure or column in the data model.",
+      "1": "'By percentage' IS a valid error bar type — it sets the error bar size as a percentage of each data point's value.",
+      "3": "'By percentile' IS a valid error bar type — it sets the error bar range based on a statistical percentile of the underlying data."
+    }
   },
   {
     "id": 400,
@@ -19681,7 +19925,12 @@
       "Export Data",
       "Visual Data",
       "Clustered Column Chart"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Exporting always includes both the axis field and the value field that define the visual — Month appears on the X-axis, so it is exported alongside Sick Leave Hours.",
+      "2": "Year is not on this visual's axis — only Month is. Year exists in the dataset but was not included in this visual's configuration, so it is not exported.",
+      "3": "Only the fields making up this specific visual are exported. Both Vacation Hours and Year exist in the dataset but are not in this visual's configuration, so neither is included."
+    }
   },
   {
     "id": 401,
@@ -19710,7 +19959,12 @@
       "Export Data",
       "CSV",
       "Visual Export"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Exporting visual data from a visual in Power BI Desktop produces a CSV file — not an Excel workbook. In Power BI Service, the export can produce .xlsx, but Desktop exports as CSV.",
+      "1": "PDF export (File > Export > Export to PDF) exports entire report pages as a document — not raw row data from individual visuals.",
+      "2": "PowerPoint export (File > Export > Export to PowerPoint) creates a presentation of report page screenshots — not raw data rows from visuals."
+    }
   },
   {
     "id": 402,
@@ -19741,7 +19995,12 @@
       "DAX",
       "Date Intelligence"
     ],
-    "daxExpression": "-- Quick Measure: Year-to-date total of SalesVolume based on OrderDate\n-- Power BI generates this DAX automatically:\nSalesVolume YTD =\n    TOTALYTD(\n        SUM('Table'[SalesVolume]),\n        'Table'[OrderDate]\n    )\n\n-- In the Quick Measure wizard:\n--   Calculation: Year-to-date total\n--   Base value: SalesVolume\n--   Date: OrderDate"
+    "daxExpression": "-- Quick Measure: Year-to-date total of SalesVolume based on OrderDate\n-- Power BI generates this DAX automatically:\nSalesVolume YTD =\n    TOTALYTD(\n        SUM('Table'[SalesVolume]),\n        'Table'[OrderDate]\n    )\n\n-- In the Quick Measure wizard:\n--   Calculation: Year-to-date total\n--   Base value: SalesVolume\n--   Date: OrderDate",
+    "choiceExplanations": {
+      "0": "The Base value field must receive the measure to aggregate (SalesVolume). Placing OrderDate as Base and SalesVolume as Date is invalid — SalesVolume is numeric, not a date field.",
+      "1": "'OrderDate - Date Hierarchy - Day' is a hierarchy level, not the date column itself. Quick Measures require the actual date column (OrderDate) in the Date field — not a hierarchy level.",
+      "2": "'OrderDate - Date Hierarchy - Year' is also a hierarchy level. The Date field in Quick Measures must be the date column (OrderDate), not its Year level."
+    }
   },
   {
     "id": 403,
@@ -19770,7 +20029,12 @@
       "Smart Narrative",
       "AI Visuals",
       "Summarize"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "The '...' more options menu on a visual does not include a 'Smart Narrative' option — Smart Narrative is accessible by right-clicking the visual canvas.",
+      "1": "The '...' more options menu does not contain a 'Summarize' option. The correct path is to right-click the visual, not via the '...' menu.",
+      "2": "Right-clicking the visual does open a context menu, but the option is labelled 'Summarize' — not 'Smart Narrative'. The feature creates a Smart Narrative visual but the right-click label says 'Summarize'."
+    }
   },
   {
     "id": 404,
@@ -19800,7 +20064,12 @@
       "Binning",
       "Clustering",
       "Analytics"
-    ]
+    ],
+    "choiceExplanations": {
+      "1": "'Include Other group' is only available when Group type is 'List' — it creates a group for items not explicitly assigned to any user-defined group. Bin type does not support this option.",
+      "2": "'List' group type is for CATEGORICAL (text or discrete) fields — it lets you manually assign values into named groups. List is not primarily designed for numerical fields.",
+      "3": "For text value fields, only 'List' is available. 'Bin' requires numeric fields since it divides a continuous range into equal-sized intervals — it cannot be applied to text data."
+    }
   },
   {
     "id": 405,
@@ -19830,7 +20099,12 @@
       "Sensitivity",
       "Line Chart",
       "Analytics"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Increasing sensitivity narrows the expected range band, which causes MORE data points to fall outside it — the anomaly count goes UP, not down.",
+      "1": "Sensitivity directly controls the width of the expected range. Changing it changes which data points are flagged — the count will definitely change.",
+      "3": "Sensitivity IS configurable directly via its slider in the analytics panel. Expected Range is the resulting visual band on the chart — it updates as a consequence of changing sensitivity, not the other way around."
+    }
   },
   {
     "id": 406,
@@ -19860,7 +20134,12 @@
       "Scatter Chart",
       "AI Analytics",
       "More Options"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Right-clicking a field in the Build a Visual pane exposes field-level options (aggregation, sort) — not whole-visual analytics features like automatic cluster detection.",
+      "1": "Right-clicking a field in the Data pane exposes field-level options (rename, hide, format) — not visual-level analytics features.",
+      "3": "Right-clicking on the chart canvas exposes data point options (Include/Exclude, copy) — the 'Automatically find clusters' option is in the '...' more options menu at the visual level."
+    }
   },
   {
     "id": 407,
@@ -19890,7 +20169,12 @@
       "Outliers",
       "Visual Selection",
       "Analytics"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "A stacked column chart aggregates all employees' expenses into a single bar per time period — individual employees who are outliers are invisible because their data is summed together.",
+      "1": "A line chart with aggregated expense shows the total trend over time — individual employees who are outliers are hidden within the aggregated single line.",
+      "3": "A pie chart shows proportional parts of a whole at a single point in time — it cannot show individual data points across time and makes identifying specific outliers impossible."
+    }
   },
   {
     "id": 408,
@@ -19919,7 +20203,12 @@
       "Paginated Reports",
       "Report Builder",
       "Data Sources"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Microsoft Azure SQL Database IS a supported data source for Power BI Report Builder paginated reports.",
+      "2": "Microsoft SQL Server Analysis Services IS a supported data source for paginated reports — it is one of the most common sources for enterprise paginated reporting.",
+      "3": "Oracle Database IS a supported data source for Power BI Report Builder paginated reports."
+    }
   },
   {
     "id": 409,
@@ -19949,7 +20238,12 @@
       "Explain Decrease",
       "AI Analytics",
       "Bar Chart"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "You right-click on the LOWER value bar (2008) to explain the decrease — not the higher value (2007). Power BI explains why the value decreased from the prior reference point.",
+      "1": "Right-clicking the visual and selecting 'Summarize' creates a Smart Narrative visual summarising the whole visual — it does not provide AI analysis of why one specific period's value decreased.",
+      "3": "Right-clicking the visual and selecting 'Explain the distribution' analyses the overall spread of values across the visual — it does not compare two specific data points to explain a period-over-period decrease."
+    }
   },
   {
     "id": 410,
@@ -19977,7 +20271,11 @@
       "Decomposition Tree",
       "AI Visuals",
       "Key Influencers"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "'Analyze' IS used in the Decomposition Tree visual — it holds the metric you want to analyse (e.g., Sales Volume).",
+      "1": "'Explain by' IS used in the Decomposition Tree visual — it holds the dimensions used to break down the metric across tree levels."
+    }
   },
   {
     "id": 411,
@@ -20007,7 +20305,12 @@
       "AI Visuals",
       "Explain By",
       "Region"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "The Analyze section holds the metric being analysed (e.g., Sales Volume) — not the explanatory dimensions. Adding Region to Analyze would change what is being measured, not what explains it.",
+      "2": "The 'Expand by' section shows what a metric segment expands to in Key Influencers — it is not the field well for adding explanatory dimensions. The correct section is 'Explain by'.",
+      "3": "You do not need to remove existing 'Explain by' fields before adding new ones — Key Influencers supports multiple dimensions in 'Explain by' simultaneously. Simply drag Region Name into the existing section."
+    }
   },
   {
     "id": 412,
@@ -20036,7 +20339,12 @@
       "Power Query",
       "Remove Rows",
       "Transform"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Remove Top Rows IS a valid option under Home > Remove Rows — it removes a specified number of rows from the top of the dataset.",
+      "1": "Remove Bottom Rows IS a valid option — it removes a specified number of rows from the bottom of the dataset.",
+      "3": "Remove Blank Rows IS a valid option — it removes any row where all values are null or blank."
+    }
   },
   {
     "id": 413,
@@ -20066,7 +20374,12 @@
       "Remove Columns",
       "Choose Columns",
       "Go to Column"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "Choose Columns (Home > Choose Columns > Choose Columns) CAN remove the Comments column — by deselecting it in the dialog, it will not be included in the output.",
+      "2": "Remove Column (Home > Remove Columns > Remove Column) CAN directly remove the selected column.",
+      "3": "Remove Other Columns CAN remove Comments — you select the columns to KEEP, and all others (including Comments) are removed."
+    }
   },
   {
     "id": 414,
@@ -20120,6 +20433,11 @@
           ]
         }
       ]
+    },
+    "choiceExplanations": {
+      "0": "Duplicating does copy the query. However, Referencing does not merely copy the data source location — it creates a live dependency so changes to the original propagate to the reference.",
+      "2": "This reverses the definitions. Duplicating creates an independent copy; Referencing creates a dependency. It is not the other way around.",
+      "3": "This is entirely reversed. Duplicate creates an independent copy that does NOT auto-update; Reference creates a link that DOES reflect original changes."
     }
   },
   {
@@ -20150,7 +20468,12 @@
       "Power Query",
       "M Functions",
       "Syntax"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "'Text-Proper' uses a hyphen — M uses a dot (.) as the separator between the module name and function name, not hyphens.",
+      "1": "'Text_Proper' uses an underscore — M functions use a dot separator, not underscores.",
+      "2": "'TextProper' with no separator is not valid M syntax — all M functions have two capitalised words separated by a dot."
+    }
   },
   {
     "id": 416,
@@ -20180,7 +20503,12 @@
       "Power Query",
       "Any Data Type",
       "Column Properties"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "'ABC' alone represents the Text data type icon in Power Query — it indicates the column stores text values.",
+      "1": "'123' alone represents numeric data types (Whole Number or Decimal) in Power Query — not the 'any' type.",
+      "2": "A globe icon represents the Geography data type (for geospatial data) in Power Query — not the 'any' or unknown type."
+    }
   },
   {
     "id": 417,
@@ -20210,7 +20538,12 @@
       "Split Column",
       "Transform",
       "Text Transformation"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "'By Number of Characters' IS a valid Split Column option — it splits text after a specified number of characters.",
+      "1": "'By Positions' IS a valid Split Column option — it splits at specified character position numbers.",
+      "3": "'By Lowercase to Uppercase' IS a valid Split Column option — it splits when transitioning from a lowercase to uppercase character."
+    }
   },
   {
     "id": 418,
@@ -20290,6 +20623,11 @@
           "Re-apply sort on Last Name if needed"
         ]
       ]
+    },
+    "choiceExplanations": {
+      "0": "Clicking the filter dropdown on Town would modify the CURRENT (last) Applied Step — which is the Sort step, not the Filter step. You would create a new filter step rather than editing the existing Boston filter.",
+      "2": "Deleting the entire query and reloading destroys all previous Applied Steps unnecessarily — this is a destructive approach when the Applied Steps panel already lets you edit individual steps.",
+      "3": "Closing and applying returns to the Data view where you interact with the loaded data model — Power Query Applied Steps cannot be edited from Data view column filters."
     }
   },
   {
@@ -20320,7 +20658,12 @@
       "Combine Files",
       "Folder Connection",
       "Data Sources"
-    ]
+    ],
+    "choiceExplanations": {
+      "0": "'Merge Files' is not the correct option name. The correct Power Query button that appears when you connect to a folder is 'Combine Files'.",
+      "1": "'Append Files' is not a valid option name. Home > Append Queries combines already-loaded queries within Power Query — it is not used to initially import files from a folder.",
+      "3": "'Load Files' is not a valid option in Power Query or Power BI Desktop."
+    }
   },
   {
     "id": 420,
@@ -20429,6 +20772,11 @@
           200
         ]
       ]
+    },
+    "choiceExplanations": {
+      "0": "Appending creates a union of all unique columns from both queries. Query1 adds Subject; Query2 adds Cost; both share Date and Comments — giving 4 unique columns, not 3.",
+      "2": "Append does not duplicate shared columns — Date and Comments appear once in the result despite existing in both queries. The result has 4 columns (Date, Subject, Comments, Cost), not 6.",
+      "3": "Power Query handles type mismatches in same-named columns during Append by promoting types rather than erroring — it does not fail on column type differences between appended queries."
     }
   },
   {
@@ -20505,6 +20853,11 @@
           ]
         ]
       }
+    },
+    "choiceExplanations": {
+      "0": "The table icon in the top-left of Power Query navigates to the whole-query settings — it does not expand a nested table column created by a merge operation.",
+      "1": "Right-clicking the column header offers Rename, Remove Column, and Change Type options — it does not show an 'Expand' option for expanding nested merged table columns.",
+      "3": "Clicking on the word 'Table' in a single cell opens a preview of that one row's nested table data — it does not expand all rows' nested data into new columns across the full query."
     }
   },
   {
@@ -20534,7 +20887,11 @@
       "Merge Queries",
       "Limitations",
       "Append"
-    ]
+    ],
+    "choiceExplanations": {
+      "1": "Append Queries CAN combine more than two queries at once — Append Queries > Append Queries as New lets you add three or more queries to stack in one operation.",
+      "2": "Combine Files CAN process multiple files simultaneously from a folder source — it is designed to combine many files of the same format in a single operation."
+    }
   },
   {
     "id": 423,
@@ -20631,6 +20988,11 @@
           "Z"
         ]
       ]
+    },
+    "choiceExplanations": {
+      "0": "Returning all rows from BOTH queries (including non-matching rows on both sides) describes a Full Outer join — not a Left Outer join.",
+      "1": "Returning only the rows that match in BOTH queries describes an Inner join — not a Left Outer join.",
+      "2": "Returning all rows from the RIGHT (second) query with matching rows from the left describes a Right Outer join — not a Left Outer join."
     }
   },
   {
@@ -20728,6 +21090,11 @@
           ]
         ]
       }
+    },
+    "choiceExplanations": {
+      "0": "'Heading and Total' are not the column names Power Query creates during Unpivot — the standard output columns are named 'Attribute' and 'Value'.",
+      "2": "'Column A and Column B' are not the standard names — Power Query uses 'Attribute' for the former column headers and 'Value' for the cell data.",
+      "3": "'Key and Data' are not the column names used by Power Query's Unpivot — the standard output is 'Attribute' and 'Value'."
     }
   },
   {
@@ -20813,6 +21180,11 @@
           ]
         ]
       }
+    },
+    "choiceExplanations": {
+      "1": "Column position does not affect pivoting behavior. The problem is that Area and AreaCode columns are still present — Power Query tries to use them as grouping dimensions in the pivot, producing unexpected results.",
+      "2": "Power Query does not automatically ignore extra columns during a pivot — any column not being pivoted or used as the value is included as a grouping dimension. Extra columns must be removed first.",
+      "3": "Highlighting specific columns before clicking Pivot Column selects the Region column as the pivot key, which is correct — but it does not remove Area and AreaCode from the result. They must be explicitly deleted first."
     }
   },
   {
@@ -20912,6 +21284,11 @@
           ]
         ]
       }
+    },
+    "choiceExplanations": {
+      "0": "Using 'Date' as the Values Column is incorrect — the Values Column specifies the measure to aggregate (SalesVolume). Date should remain as an unpivoted row identifier, not serve as the aggregated value.",
+      "1": "Unpivot Column does the reverse of what is needed — it converts column headers into rows. Pivot Column is required to turn the Region row values into column headers.",
+      "2": "Unpivot with SalesVolume as Values Column is still the wrong operation direction — Unpivot adds rows, not creates columns. Pivot Column (not Unpivot) is the correct transformation."
     }
   },
   {
@@ -20996,6 +21373,10 @@
           ]
         ]
       }
+    },
+    "choiceExplanations": {
+      "0": "Fill Down does not overwrite the entire column with the top-most value — it only replaces null/blank cells by propagating the nearest non-null value above each null downward.",
+      "2": "Fill Down fills ALL consecutive null cells beneath a non-null value, not just one. It continues filling until it reaches the next non-null value in the column."
     }
   }
 ]

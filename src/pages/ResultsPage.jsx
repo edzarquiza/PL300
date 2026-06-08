@@ -13,6 +13,7 @@ import { getSubtopicMastery, getConceptTrapHistory } from '../services/masterySe
 import { getExamHistory } from '../services/historyService'
 import { getPsychologyAnalytics } from '../services/psychologyAnalyticsService'
 import { EXAM_TRACKS } from '../data/examTracks'
+import { recordExamAnswers } from '../services/exposureTrackingService'
 
 export default function ResultsPage() {
   const { state } = useLocation()
@@ -21,7 +22,9 @@ export default function ResultsPage() {
   const [seedCopied, setSeedCopied] = useState(false)
 
   useEffect(() => {
-    if (!state) navigate('/', { replace: true })
+    if (!state) { navigate('/', { replace: true }); return }
+    // Record correct/incorrect per question for lifetime exposure tracking
+    try { recordExamAnswers(state.questions, state.answers) } catch {}
   }, [state, navigate])
 
   if (!state) return null

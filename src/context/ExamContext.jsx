@@ -58,7 +58,7 @@ export function ExamProvider({ children }) {
     0
   )
 
-  function startExam({ questionCount = 10, domains = [], difficulties = [], examMode = 'exam', track = 'full_pl300', seed = null, questionIds = null } = {}) {
+  function startExam({ questionCount = 10, domains = [], difficulties = [], examMode = 'exam', track = 'full_pl300', seed = null, questionIds = null, prioritizeUnseen = true } = {}) {
     const finalSeed = parseSeed(seed) ?? generateSeed()
 
     let selected
@@ -80,6 +80,7 @@ export function ExamProvider({ children }) {
         examMode,
         seed: finalSeed,
         weakAreaBoost: examMode === 'weak_area',
+        prioritizeUnseen,
       })
     }
 

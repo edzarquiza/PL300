@@ -72,7 +72,15 @@
       "Bash(node scripts/add-visuals-batch3.mjs)",
       "Bash(awk -F/ '{print $NF}')",
       "Read(//tmp/**)",
-      "Bash(echo \"exit: $?\")"
+      "Bash(echo \"exit: $?\")",
+      "Bash(node -e \"const cs = require\\('./src/data/caseStudies.json'\\); console.log\\('Case studies:', cs.map\\(c => c.id + ' - ' + c.title + ' \\(' + c.questions.length + ' questions\\)'\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node -e \"const cs = require\\('./src/data/caseStudies.json'\\); console.log\\('Total items:', cs.length\\); console.log\\('Last ID:', cs[cs.length-1].id\\)\")",
+      "Bash(node -e \"const cs = require\\('./src/data/caseStudies.json'\\); console.log\\('Total case studies:', cs.length\\); cs.forEach\\(c => console.log\\(c.id, '-', c.title, '-', c.questions.length, 'questions'\\)\\)\")",
+      "Bash(node -e \"const fns = require\\('./src/data/daxFunctions/index.js'\\); console.log\\('DAX functions:', fns.DAX_FUNCTIONS.length\\); fns.DAX_FUNCTIONS.filter\\(f => ['ISFILTERED','RELATEDTABLE'].includes\\(f.name\\)\\).forEach\\(f => console.log\\('  OK:', f.name, '- category:', f.category\\)\\)\")",
+      "Bash(node -e \"const cs = require\\('./src/data/caseStudies.json'\\); const fns = [require\\('./src/data/daxFunctions/isfiltered.json'\\), require\\('./src/data/daxFunctions/relatedtable.json'\\)]; fns.forEach\\(f => console.log\\('OK:', f.name, '- category:', f.category, '- examples:', f.examples.length\\)\\)\")",
+      "Bash(node -e \"const qs=require\\('./src/data/questions.json'\\); const missing=qs.filter\\(q=>!q.choiceExplanations||\\(Array.isArray\\(q.choiceExplanations\\)?q.choiceExplanations.length===0:Object.keys\\(q.choiceExplanations\\).length===0\\)\\); const fs=require\\('fs'\\); fs.writeFileSync\\('missing_qs.json', JSON.stringify\\(missing.map\\(q=>\\({id:q.id,domain:q.domain,subtopic:q.subtopic,difficulty:q.difficulty,question:q.question,choices:q.choices,correctAnswers:q.correctAnswers,explanation:q.explanation}\\)\\),null,2\\)\\); console.log\\('Exported', missing.length, 'questions'\\)\")",
+      "Bash(node patch_choice_explanations.js)",
+      "Bash(node --input-type=commonjs -e ' *)"
     ]
   }
 }

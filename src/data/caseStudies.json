@@ -661,5 +661,239 @@
         "examNote": "PL-300 exam tip: self-service data update requirements are solved by granting write access to the data source (SharePoint, OneDrive, Blob Storage) and making the Power Query pipeline schema-resilient. The List.Intersect fix from Q2 means the product team can safely add CSV columns without breaking the pipeline."
       }
     ]
+  },
+  {
+    "id": "cs_lucerne_ecommerce",
+    "title": "Lucerne E-Commerce Customer Analytics",
+    "scenario": "Lucerne Publishing has transitioned from a physical book distributor to a digital e-commerce retailer. They sell e-books, audiobooks, and print-on-demand titles through their website and a marketplace channel. Their data team needs to build a Power BI solution for the marketing and product teams to analyse customer acquisition, conversion funnels, cart abandonment, and revenue attribution.",
+    "currentSetup": "Data sources: (1) An Azure SQL Database containing FactOrders (2.8M rows, 3 years history) and DimCustomers, (2) a Google Analytics 4 export to BigQuery containing 140M web session and event rows in nested JSON format, (3) a flat CSV of marketing campaign spend from the media agency updated weekly. Orders contain a CustomerKey, OrderDate, Channel ('Direct', 'Marketplace'), ProductKey, Revenue, and DiscountPct. There is no session-to-order linkage in the current data model — marketing cannot determine which campaign drove each order.",
+    "requirements": [
+      "Build a conversion funnel from session → product view → add-to-cart → purchase that updates weekly",
+      "Attribute revenue to the last marketing campaign the customer clicked before purchasing (last-click attribution model)",
+      "Allow the marketing team to analyse customer lifetime value (CLV) by cohort month and acquisition channel",
+      "The marketing manager must not see individual customer names or emails — only aggregated segment data"
+    ],
+    "questions": [
+      {
+        "id": "cs_lucerne_q1",
+        "type": "single",
+        "domain": "Prepare the data",
+        "subtopic": "Convert semi-structured data to a table",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_lucerne_ecommerce",
+        "question": "The Google Analytics 4 export in BigQuery stores event parameters as a repeated RECORD (nested JSON array). When the data analyst connects to BigQuery from Power Query, the event_params column appears as a [List] of [Record] objects. Each record has keys 'key' and 'value.string_value'. The analyst needs a column containing only the value where key = 'page_location'. Which Power Query transformation correctly extracts this?",
+        "choices": [
+          "Add a custom column: = Table.SelectRows([event_params], each [key] = \"page_location\"){0}[value.string_value], then expand the resulting column",
+          "Right-click the event_params column and choose Expand to New Rows, then filter the key column for 'page_location' and pivot on the value column",
+          "Add a custom column using: = List.First(List.Select([event_params], each _[key] = \"page_location\"), null)?[value.string_value], then promote it",
+          "Use Table.TransformColumns to apply Text.FromBinary to the event_params column, then use JSON.Document to re-parse each row"
+        ],
+        "correctAnswers": [2],
+        "explanation": "Option C uses List.Select to filter the nested list to matching records, List.First to safely get the first match (returning null if not found), and the ?[] null-safe accessor to extract the field. This pattern is robust when a session may not have the target event parameter. Option A would error when no matching row exists in the list. Option B (expand + filter + pivot) is valid but inefficient at 140M rows — it creates enormous intermediate tables before reducing. Option D applies Text transformation to structured data types, which would error or produce '[List]' string representation.",
+        "trapType": "Semi-structured Data Expansion",
+        "tags": ["Power Query", "Semi-structured", "JSON", "BigQuery", "List.Select"],
+        "coversRequirementIndex": 0
+      },
+      {
+        "id": "cs_lucerne_q2",
+        "type": "single",
+        "domain": "Model the data",
+        "subtopic": "Create model calculations by using DAX",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_lucerne_ecommerce",
+        "question": "The marketing team needs a [Customer Lifetime Value] measure showing total revenue per customer since their first order. They also want to slice by acquisition channel and cohort month (the month of the customer's first ever order). The model has FactOrders linked to DimCustomers (1:M) and DimDate linked to FactOrders on OrderDate. DimCustomers has a FirstOrderDate column and AcquisitionChannel. Which measure definition is MOST correct for CLV?",
+        "choices": [
+          "Customer LTV = CALCULATE(SUM(FactOrders[Revenue]), ALL(DimDate))",
+          "Customer LTV = SUMX(VALUES(DimCustomers[CustomerKey]), CALCULATE(SUM(FactOrders[Revenue])))",
+          "Customer LTV = CALCULATE(SUM(FactOrders[Revenue]), REMOVEFILTERS(DimDate[Date]))",
+          "Customer LTV = DIVIDE(SUM(FactOrders[Revenue]), DISTINCTCOUNT(FactOrders[CustomerKey]))"
+        ],
+        "correctAnswers": [1],
+        "explanation": "CLV should sum all revenue per customer regardless of any date slicer in the report — but respect customer-level filters (channel, cohort). SUMX over VALUES(CustomerKey) iterates each customer in the current filter context and CALCULATE within it sums that customer's total revenue without date restriction. Option A uses ALL(DimDate) which removes date filters globally but is a table-level function applied at measure level — this correctly removes date context but doesn't iterate per-customer correctly. Option C (REMOVEFILTERS on a single column) is similar to A but only removes the Date column filter, not filters on year/month slicers. Option D calculates average revenue per customer — not lifetime value.",
+        "trapType": "Iterator vs Aggregation Context",
+        "tags": ["DAX", "SUMX", "Customer LTV", "VALUES", "Iterator Functions"],
+        "coversRequirementIndex": 2
+      },
+      {
+        "id": "cs_lucerne_q3",
+        "type": "single",
+        "domain": "Visualize and analyze the data",
+        "subtopic": "Create reports",
+        "difficulty": "Medium",
+        "caseStudyId": "cs_lucerne_ecommerce",
+        "question": "The product team wants a conversion funnel visual showing four stages: Sessions → Product Views → Add to Cart → Purchase. Each stage should display the count and the drop-off percentage from the previous stage. The stages are stored as separate measures: [Sessions], [ProductViews], [AddToCart], [Purchases]. Which built-in Power BI visual BEST represents this scenario?",
+        "choices": [
+          "Stacked bar chart with stages on the Y-axis and count on the X-axis, formatted with data labels",
+          "Funnel chart with the four stage measures as values, sorted descending",
+          "Waterfall chart showing the decremental change between each funnel stage",
+          "Line chart with stages on the X-axis to show sequential progression"
+        ],
+        "correctAnswers": [1],
+        "explanation": "The Funnel chart is designed precisely for sequential stage analysis — it renders stages as proportional horizontal bars narrowing toward the bottom, making drop-off immediately visible. It natively supports value labels showing count and percentage of first stage. A stacked bar chart (A) shows parts-of-a-whole within categories, not sequential narrowing — it would require manual workarounds and loses the funnel metaphor. A waterfall chart (C) shows incremental additions/subtractions, not proportional stage flow. A line chart (D) implies continuous trend over time rather than discrete conversion stages.",
+        "trapType": "Visual Selection",
+        "tags": ["Funnel Chart", "Visualization", "Conversion", "Report Design"],
+        "coversRequirementIndex": 0
+      },
+      {
+        "id": "cs_lucerne_q4",
+        "type": "single",
+        "domain": "Manage and secure Power BI",
+        "subtopic": "Configure item-level access",
+        "difficulty": "Medium",
+        "caseStudyId": "cs_lucerne_ecommerce",
+        "question": "The marketing manager must analyse campaign performance without being able to see individual customer names, email addresses, or phone numbers stored in DimCustomers. The marketing manager is a Member of the Marketing workspace. The current report shows a Customer Detail table visual with all DimCustomers columns. What is the MOST appropriate solution?",
+        "choices": [
+          "Create an RLS role that filters DimCustomers to rows where [CustomerSegment] IS NOT NULL, excluding rows with personal identifiers",
+          "Remove the CustomerName, Email, and Phone columns from the semantic model in Power BI Desktop before publishing",
+          "Apply a sensitivity label marked 'Confidential' to the semantic model — this restricts column-level access for non-admin users",
+          "Grant the marketing manager Viewer access to the workspace instead of Member access to limit data visibility"
+        ],
+        "correctAnswers": [1],
+        "explanation": "Removing PII columns from the semantic model at publish time is the most effective and lowest-maintenance solution. If the columns don't exist in the published model, they cannot be accessed by any report or direct query — regardless of workspace role. RLS (A) operates at the row level, not the column level, and cannot hide specific columns from a role while showing the rest of the row. Sensitivity labels (C) control export and sharing policies but do not enforce column-level access in reports — the data remains visible in the visual. Workspace roles (D) control whether a user can edit or share content, not which data columns they can see within a report.",
+        "trapType": "RLS vs Column Security",
+        "tags": ["Data Security", "Column Security", "PII", "Sensitivity Labels", "Workspace Roles"],
+        "coversRequirementIndex": 3
+      }
+    ],
+    "recommendedSolutions": [
+      {
+        "requirementIndex": 1,
+        "title": "Last-Click Attribution Model in Power Query",
+        "overview": "Implement last-click attribution by joining campaign click data to orders based on the most recent click before each order date per customer.",
+        "steps": [
+          {
+            "label": "Prepare campaign click data",
+            "detail": "In Power Query, load the campaign click log (CustomerKey, CampaignName, ClickDateTime). Sort descending by ClickDateTime per customer so the most recent click appears first."
+          },
+          {
+            "label": "Merge clicks to orders",
+            "detail": "From FactOrders, merge with the campaign clicks table using a left outer join on CustomerKey. Use Table.SelectRows within a custom column to find the latest click where ClickDateTime <= OrderDate for that customer."
+          },
+          {
+            "label": "Extract attributing campaign",
+            "detail": "After the merge, expand only the CampaignName column. Null values indicate orders with no prior click (organic/direct). Add AttributedChannel = if CampaignName = null then 'Direct' else CampaignName."
+          }
+        ],
+        "daxCode": null,
+        "examNote": "Last-click attribution is a data preparation problem, not a DAX problem. The correct answer is always to resolve attribution during ETL/Power Query so the model contains a single AttributedCampaign column per order — not to use complex CALCULATE logic per visual."
+      }
+    ]
+  },
+  {
+    "id": "cs_wingtip_hr",
+    "title": "WingTip Toys HR Workforce Analytics",
+    "scenario": "WingTip Toys is a consumer goods company with 4,200 employees across 9 countries. The People Analytics team is building a Power BI solution for HR Business Partners (HRBPs) and senior leadership to track headcount, attrition, hiring velocity, and workforce diversity. The solution must comply with regional data privacy regulations — European HRBPs must not see North American employee records, and vice versa.",
+    "currentSetup": "Source data: an Azure SQL Database updated nightly containing DimEmployee (active and terminated employees, 4,200+ rows), FactHeadcountSnapshot (one row per employee per month-end, 12 months history), FactAttrition (all terminations with ReasonCode), and FactHires (all new hires with SourceChannel). HRBPs are mapped to regions in a BridgeHRBPRegion table that has columns HRBPEmail and Region. Each employee has a Region column. The current report shows a global headcount table with employee names, salaries, and performance ratings visible to all HRBPs.",
+    "requirements": [
+      "HRBPs must only see employees in their assigned region — enforced server-side, not through report filtering",
+      "Leadership requires a headcount trend visual showing net headcount change month-over-month across all regions",
+      "The attrition rate measure must calculate correctly whether sliced by region, department, or job level",
+      "Time-to-fill (average days between position open date and hire date) must reflect only filled positions, not open requisitions"
+    ],
+    "questions": [
+      {
+        "id": "cs_wingtip_q1",
+        "type": "single",
+        "domain": "Manage and secure Power BI",
+        "subtopic": "Implement row-level security roles",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_wingtip_hr",
+        "question": "HRBPs must be restricted to their assigned region's employee data. The BridgeHRBPRegion table maps HRBPEmail to Region. DimEmployee has a Region column. The two tables have no direct relationship — they are joined conceptually through region name. What is the MOST reliable RLS implementation?",
+        "choices": [
+          "Create an RLS role with the filter on DimEmployee: [Region] = LOOKUPVALUE(BridgeHRBPRegion[Region], BridgeHRBPRegion[HRBPEmail], USERPRINCIPALNAME())",
+          "Create an RLS role that uses PATHCONTAINS to traverse the employee hierarchy and return only direct reports of the HRBP",
+          "Use a workspace role-based security policy that assigns each HRBP to a separate workspace containing only their region's app",
+          "Add a calculated column to DimEmployee: IsMyRegion = IF(USERPRINCIPALNAME() = LOOKUPVALUE(...), 1, 0) and filter the RLS role on IsMyRegion = 1"
+        ],
+        "correctAnswers": [0],
+        "explanation": "LOOKUPVALUE inside an RLS DAX expression is the standard pattern for dynamic RLS when the user-to-data mapping is stored in a separate table without a model relationship. It returns the Region value for the currently authenticated user from BridgeHRBPRegion, and that value is compared to DimEmployee[Region] to filter visible rows. PATHCONTAINS (B) is for parent-child hierarchies (org charts), not region security. Workspace-per-region (C) is a distribution strategy, not security enforcement — determined users can still extract data. Calculated columns (D) evaluated at publish time cannot use USERPRINCIPALNAME() dynamically at runtime — the column value is fixed when the model is refreshed.",
+        "trapType": "Dynamic RLS",
+        "tags": ["RLS", "USERPRINCIPALNAME", "LOOKUPVALUE", "Dynamic Security", "Row-Level Security"],
+        "coversRequirementIndex": 0
+      },
+      {
+        "id": "cs_wingtip_q2",
+        "type": "single",
+        "domain": "Model the data",
+        "subtopic": "Create model calculations by using DAX",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_wingtip_hr",
+        "question": "The People Analytics team wants an [Attrition Rate] measure showing the percentage of employees who left during the selected period. The formula is: Terminations in period ÷ Average headcount in period. FactAttrition contains one row per termination with TerminationDate. FactHeadcountSnapshot has one row per employee per MonthEnd date. The measure must work correctly when sliced by Region, Department, or JobLevel. Which implementation is MOST correct?",
+        "choices": [
+          "Attrition Rate = DIVIDE(COUNTROWS(FactAttrition), AVERAGEX(VALUES(DimDate[MonthEnd]), CALCULATE(COUNTROWS(FactHeadcountSnapshot))))",
+          "Attrition Rate = DIVIDE(COUNT(FactAttrition[TerminationDate]), COUNT(FactHeadcountSnapshot[EmployeeKey]))",
+          "Attrition Rate = DIVIDE(DISTINCTCOUNT(FactAttrition[EmployeeKey]), CALCULATE(DISTINCTCOUNT(FactHeadcountSnapshot[EmployeeKey]), ALL(DimDate)))",
+          "Attrition Rate = [Total Terminations] / [Opening Headcount]"
+        ],
+        "correctAnswers": [0],
+        "explanation": "Option A correctly calculates average headcount by iterating over each MonthEnd value in the current date filter context using AVERAGEX and counts snapshot rows per month. This respects any Region/Department/JobLevel filter applied to the visual because those filters propagate through the relationships. Option B uses COUNT which counts non-blank values — it counts all snapshots (one per employee per month) rather than per-month averages. Option C uses ALL(DimDate) which removes the date filter completely from the denominator — this produces an average headcount across all history regardless of the selected period. Option D uses Opening Headcount as denominator instead of average, which is a different (less accurate) formula and introduces ambiguity when the period spans multiple months.",
+        "trapType": "Iterator vs Aggregation Context",
+        "tags": ["DAX", "AVERAGEX", "DIVIDE", "HR Metrics", "Attrition"],
+        "coversRequirementIndex": 2
+      },
+      {
+        "id": "cs_wingtip_q3",
+        "type": "single",
+        "domain": "Model the data",
+        "subtopic": "Identify use cases for calculated columns and calculated tables",
+        "difficulty": "Medium",
+        "caseStudyId": "cs_wingtip_hr",
+        "question": "The team needs a [Time to Fill] measure that calculates the average number of days between a position's open date and hire date, but only for positions that have been filled (FactHires has a HireDate). Open requisitions have no HireDate and should be excluded. FactHires contains: RequisitionKey, OpenDate, HireDate (nullable), SourceChannel. Which approach is MOST appropriate?",
+        "choices": [
+          "Create a calculated column in FactHires: DaysToFill = DATEDIFF([OpenDate], [HireDate], DAY), then create a measure: Time to Fill = AVERAGE(FactHires[DaysToFill])",
+          "Create a measure: Time to Fill = AVERAGEX(FILTER(FactHires, NOT ISBLANK(FactHires[HireDate])), DATEDIFF(FactHires[OpenDate], FactHires[HireDate], DAY))",
+          "Create a measure: Time to Fill = DIVIDE(SUMX(FactHires, DATEDIFF([OpenDate], [HireDate], DAY)), COUNTROWS(FactHires))",
+          "Add a calculated column IsFilled = IF(ISBLANK([HireDate]), 0, 1) then measure: Time to Fill = CALCULATE(AVERAGE(FactHires[DaysToFill]), FactHires[IsFilled] = 1)"
+        ],
+        "correctAnswers": [1],
+        "explanation": "Option B is correct: AVERAGEX with FILTER(FILTER handles the null exclusion dynamically, and DATEDIFF computes the duration per row within the iterator. This respects any report filters (SourceChannel, region, etc.) applied to the visual. Option A (calculated column) works but has a flaw: AVERAGE of a column that contains blank values from open requisitions will still include those rows in Power BI's column average unless explicitly filtered — calculated columns containing BLANK are excluded from aggregation, so actually A would work, but B is more explicit and filter-context-aware. Option C divides by COUNTROWS(FactHires) which includes open requisitions in the denominator — producing a lower average than correct. Option D requires maintaining two calculated columns and is unnecessarily complex.",
+        "trapType": "Calculated Column vs Measure",
+        "tags": ["DAX", "AVERAGEX", "FILTER", "ISBLANK", "HR Metrics", "Time to Fill"],
+        "coversRequirementIndex": 3
+      },
+      {
+        "id": "cs_wingtip_q4",
+        "type": "single",
+        "domain": "Visualize and analyze the data",
+        "subtopic": "Enhance reports for usability and storytelling",
+        "difficulty": "Medium",
+        "caseStudyId": "cs_wingtip_hr",
+        "question": "Senior leadership wants a headcount trend showing net change month-over-month (MoM) across all regions. The visual should make it immediately obvious which months had net headcount growth (more hires than attrition) vs net decline. The data is available as measures [Hires], [Terminations], and [Net Change] = Hires - Terminations by month. Which visual and configuration BEST meets this requirement?",
+        "choices": [
+          "A line chart with [Net Change] on the Y-axis and MonthEnd on the X-axis, with a reference line at 0 and conditional coloring above/below the line",
+          "A waterfall chart with [Hires] as an increase value and [Terminations] as a decrease value by month, showing the running headcount balance",
+          "A clustered bar chart with [Hires] and [Terminations] as two series by month, with a secondary axis for [Net Change]",
+          "A matrix visual with months as rows and [Hires], [Terminations], [Net Change] as columns, formatted with conditional formatting on [Net Change]"
+        ],
+        "correctAnswers": [0],
+        "explanation": "A line chart with a 0 reference line and conditional coloring is the clearest way to show signed net change — months above zero are positive (growth) and months below are negative (decline). The reference line creates an immediate visual anchor. In Power BI, you can use the line chart's analytics pane to add a constant line at 0. Option B (waterfall) is excellent for showing cumulative running totals but makes MoM change comparison harder across many months — it's better for YTD bridges. Option C uses two series which forces users to mentally subtract bars rather than showing the net signal directly. Option D (matrix) is a table — it requires reading numbers rather than visually identifying growth vs decline months.",
+        "trapType": "Visual Selection",
+        "tags": ["Visualization", "Line Chart", "Reference Lines", "MoM", "Headcount Trend"],
+        "coversRequirementIndex": 1
+      }
+    ],
+    "recommendedSolutions": [
+      {
+        "requirementIndex": 0,
+        "title": "Dynamic RLS with Regional HRBP Mapping",
+        "overview": "Implement server-side row-level security using a bridging table that maps HRBP email to region, enforced through DAX USERPRINCIPALNAME().",
+        "steps": [
+          {
+            "label": "Create the RLS role in Power BI Desktop",
+            "detail": "In Power BI Desktop, go to Modeling → Manage Roles. Create a role named 'HRBP'. Apply a table filter to DimEmployee with the DAX expression: [Region] = LOOKUPVALUE(BridgeHRBPRegion[Region], BridgeHRBPRegion[HRBPEmail], USERPRINCIPALNAME()). This expression runs at query time, looking up the current user's email in the bridge table."
+          },
+          {
+            "label": "Verify with View As",
+            "detail": "Use the 'View as role' feature in Desktop, specifying a test user email. Confirm that only employees in the mapped region appear. Test with a user who has multiple region mappings (if applicable) by checking that LOOKUPVALUE returns the correct single value — if one email maps to multiple regions, use a different pattern such as a disconnected security table with TREATAS."
+          },
+          {
+            "label": "Assign users in Power BI Service",
+            "detail": "After publishing, navigate to the semantic model security settings. Add each HRBP's Azure AD account or security group to the 'HRBP' role. Leadership accounts requiring full visibility should NOT be added to the HRBP role — they see all data by default. RLS only applies to non-admin workspace members assigned to a role."
+          }
+        ],
+        "daxCode": "[Region] = LOOKUPVALUE(BridgeHRBPRegion[Region], BridgeHRBPRegion[HRBPEmail], USERPRINCIPALNAME())",
+        "examNote": "USERPRINCIPALNAME() returns the authenticated user's email at query time — it cannot be used in calculated columns (evaluated at refresh time). Workspace admins and owners bypass RLS by default — this is a known PL-300 exam trap. Assign all HRBPs as Viewers or Members, never as Admins, when RLS enforcement is required."
+      }
+    ]
   }
 ]

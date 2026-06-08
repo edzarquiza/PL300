@@ -23,6 +23,8 @@ import switchFn from './switch.json'
 import averagexFn from './averagex.json'
 import lookupvalueFn from './lookupvalue.json'
 import hasonevalueFn from './hasonevalue.json'
+import isfilteredFn from './isfiltered.json'
+import relatedtableFn from './relatedtable.json'
 
 export const DAX_FUNCTIONS = [
   calculateFn,
@@ -50,6 +52,8 @@ export const DAX_FUNCTIONS = [
   averagexFn,
   lookupvalueFn,
   hasonevalueFn,
+  isfilteredFn,
+  relatedtableFn,
 ]
 
 export const DAX_CATEGORIES = [
@@ -63,10 +67,10 @@ export const DAX_CATEGORIES = [
 ]
 
 export const CATEGORY_META = {
-  Filter: { color: 'blue', description: 'CALCULATE, ALL, FILTER, REMOVEFILTERS, SELECTEDVALUE, HASONEVALUE, CALCULATETABLE' },
+  Filter: { color: 'blue', description: 'CALCULATE, ALL, FILTER, REMOVEFILTERS, SELECTEDVALUE, HASONEVALUE, ISFILTERED, CALCULATETABLE' },
   Iterator: { color: 'purple', description: 'SUMX, AVERAGEX, MAXX, COUNTX, EARLIER' },
   Aggregation: { color: 'green', description: 'SUM, COUNT, COUNTROWS, DISTINCTCOUNT, DIVIDE, RANKX' },
-  Relationship: { color: 'orange', description: 'RELATED, USERELATIONSHIP, LOOKUPVALUE' },
+  Relationship: { color: 'orange', description: 'RELATED, RELATEDTABLE, USERELATIONSHIP, LOOKUPVALUE' },
   'Time Intelligence': { color: 'teal', description: 'DATEADD, TOTALYTD, DATESYTD, SAMEPERIODLASTYEAR' },
   Logical: { color: 'gray', description: 'IF, SWITCH, VAR/RETURN' },
   Table: { color: 'indigo', description: 'VALUES, DISTINCT, TOPN' },
