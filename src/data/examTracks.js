@@ -7,7 +7,7 @@ export const EXAM_TRACKS = [
     domainWeights: {
       'Prepare the data': 0.2881,
       'Model the data': 0.2881,
-      'Visualize and analyze data': 0.2881,
+      'Visualize and analyze the data': 0.2881,
       'Manage and secure Power BI': 0.1356,
     },
     tagFilter: null,
@@ -56,7 +56,7 @@ export const EXAM_TRACKS = [
     name: 'Visualization',
     description: 'Visuals, formatting, navigation, AI analytics, mobile',
     color: 'teal',
-    domainWeights: { 'Visualize and analyze data': 1.0 },
+    domainWeights: { 'Visualize and analyze the data': 1.0 },
     tagFilter: null,
     defaultQuestionCount: 20,
   },
