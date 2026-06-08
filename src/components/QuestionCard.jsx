@@ -1,9 +1,10 @@
 import QuestionRenderer from './question-types/QuestionRenderer'
 import VisualQuestionContext from './VisualQuestionContext'
 import CaseStudyContext from './CaseStudyContext'
+import VisualChoicePreviews from './charts/VisualChoicePreviews'
 
 const TYPE_BADGE = {
-  multiple:        { label: 'Select all that apply', color: 'amber' },
+  multi:           { label: 'Select all that apply', color: 'amber' },
   true_false:      { label: 'True or False',         color: 'amber' },
   drag_drop:       { label: 'Drag & Drop',            color: 'amber' },
   rearrange_steps: { label: 'Arrange in Order',       color: 'amber' },
@@ -38,6 +39,7 @@ export default function QuestionCard({ question, selectedAnswer, onSelectAnswer 
       </div>
 
       <VisualQuestionContext question={question} />
+      <VisualChoicePreviews question={question} />
 
       <p className="text-base font-medium text-gray-900 leading-relaxed mt-4 mb-7">
         {question.question}

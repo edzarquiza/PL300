@@ -10,7 +10,7 @@ export default function QuestionRenderer({ question, answer, onAnswer, isReviewM
   const props = { question, answer, onAnswer, isReviewMode }
 
   switch (question.type) {
-    case 'multiple':        return <MultiSelectQuestion {...props} />
+    case 'multi':           return <MultiSelectQuestion {...props} />
     case 'true_false':      return <TrueFalseQuestion {...props} />
     case 'drag_drop':       return <DragDropQuestion {...props} />
     case 'rearrange_steps': return <RearrangeStepsQuestion {...props} />

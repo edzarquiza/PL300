@@ -63,6 +63,39 @@ function seededShuffle(arr, rng) {
 
 export { mulberry32, seededShuffle }
 
+// Shuffle the choices of a single question deterministically using the exam seed.
+// Remaps correctAnswers and choiceExplanations to match the new order.
+export function shuffleQuestionChoices(q, seed) {
+  if (!q.choices || q.choices.length <= 1) return q
+  const rng = mulberry32(`${seed ?? 'default'}-choices-${q.id}`)
+  // shuffledOldIndices[newPos] = oldPos
+  const origIndices = Array.from({ length: q.choices.length }, (_, i) => i)
+  const shuffledOldIndices = seededShuffle(origIndices, rng)
+  const oldToNew = {}
+  shuffledOldIndices.forEach((oldIdx, newIdx) => { oldToNew[oldIdx] = newIdx })
+
+  const result = {
+    ...q,
+    choices: shuffledOldIndices.map(old => q.choices[old]),
+    correctAnswers: q.correctAnswers.map(old => oldToNew[old]),
+  }
+
+  if (q.choiceExplanations) {
+    if (Array.isArray(q.choiceExplanations)) {
+      result.choiceExplanations = shuffledOldIndices.map(old => q.choiceExplanations[old])
+    } else {
+      const newExpl = {}
+      for (const [k, v] of Object.entries(q.choiceExplanations)) {
+        const old = parseInt(k)
+        if (!isNaN(old) && oldToNew[old] !== undefined) newExpl[oldToNew[old]] = v
+      }
+      result.choiceExplanations = newExpl
+    }
+  }
+
+  return result
+}
+
 export function generateSeed() {
   return `PL300-${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`
 }
@@ -291,8 +324,8 @@ export function generateExam(allQuestions, {
     }
   }
 
-  // ── 5. Render scenario variables, then shuffle ───────────────────────────
-  const rendered = selected.map(renderScenario)
+  // ── 5. Render scenario variables, shuffle choices, then shuffle order ───
+  const rendered = selected.map(q => shuffleQuestionChoices(renderScenario(q), seed ?? 'default'))
   const shuffled = seededShuffle(rendered, rng)
 
   // ── 6. Record for future anti-repetition ─────────────────────────────────

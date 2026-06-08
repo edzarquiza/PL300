@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import allQuestions from '../data/questions.json'
 import { EXAM_DOMAINS } from '../services/examBlueprint'
-import { generateExam, generateSeed, parseSeed, mulberry32, seededShuffle } from '../services/examGenerator'
+import { generateExam, generateSeed, parseSeed, mulberry32, seededShuffle, shuffleQuestionChoices } from '../services/examGenerator'
 import { getCaseStudyQuestions } from '../services/caseStudyEngine'
 import { isAnswerEmpty } from '../utils/answerUtils'
 
@@ -68,8 +68,8 @@ export function ExamProvider({ children }) {
         ...allQuestions.filter(q => idSet.has(String(q.id))),
         ...allCaseStudyQuestions.filter(q => idSet.has(String(q.id))),
       ]
-      const rng   = mulberry32(finalSeed)
-      const shuffled = seededShuffle(pool, rng)
+      const rng = mulberry32(finalSeed)
+      const shuffled = seededShuffle(pool, rng).map(q => shuffleQuestionChoices(q, finalSeed))
       selected = questionCount === Infinity ? shuffled : shuffled.slice(0, questionCount)
     } else {
       selected = generateExam(allQuestions, {

@@ -64,7 +64,15 @@
       "Bash(node -e \"const q = require\\('./src/data/questions.json'\\); console.log\\('Total:', q.length, '| Last ID:', q[q.length-1].id, '| Last Q:', q[q.length-1].question.substring\\(0,60\\)\\)\")",
       "Bash(node scripts/quality-check.mjs)",
       "Bash(node scripts/fix-quality-issues.mjs)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5199)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5199)",
+      "PowerShell(cd \"D:\\\\CLAUDE Projects\\\\PL300\"; $r = Invoke-WebRequest -Uri http://localhost:5199 -UseBasicParsing -TimeoutSec 5 2>&1; $r.StatusCode)",
+      "Bash(node scripts/verify-multi.mjs)",
+      "Bash(node scripts/add-visuals-batch1.mjs)",
+      "Bash(node scripts/add-visuals-batch2.mjs)",
+      "Bash(node scripts/add-visuals-batch3.mjs)",
+      "Bash(awk -F/ '{print $NF}')",
+      "Read(//tmp/**)",
+      "Bash(echo \"exit: $?\")"
     ]
   }
 }
