@@ -3,8 +3,8 @@ const MAX_ENTRIES = 20
 
 export function saveExamResult(result) {
   const history = getExamHistory()
-  const { score, domainBreakdown, subtopicBreakdown, mode, timeSpent, questionCount, confidence, questionTimes, trapStats, trackId, questionIds, answers } = result
-  history.unshift({ score, domainBreakdown, subtopicBreakdown, mode, timeSpent, questionCount, confidence, questionTimes, trapStats, trackId, questionIds: questionIds ?? [], answers: answers ?? {}, savedAt: Date.now() })
+  const { score, domainBreakdown, subtopicBreakdown, mode, timeSpent, questionCount, confidence, questionTimes, trapStats, trackId, questionIds, answers, questionResults } = result
+  history.unshift({ score, domainBreakdown, subtopicBreakdown, mode, timeSpent, questionCount, confidence, questionTimes, trapStats, trackId, questionIds: questionIds ?? [], answers: answers ?? {}, questionResults: questionResults ?? {}, savedAt: Date.now() })
   localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, MAX_ENTRIES)))
 }
 

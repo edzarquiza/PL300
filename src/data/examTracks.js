@@ -22,6 +22,7 @@ export const EXAM_TRACKS = [
     tagFilter: ['CALCULATE', 'Filter Context', 'DAX', 'Time Intelligence', 'SUMX', 'RELATED',
       'ALL', 'Row Context', 'Calculated Columns', 'Measures', 'Iterator Functions',
       'Relationships', 'Calculated Columns', 'RANKX', 'VAR'],
+    tagExclusive: true,
     defaultQuestionCount: 20,
   },
   {

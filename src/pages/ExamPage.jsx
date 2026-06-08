@@ -4,7 +4,7 @@ import { useExam } from '../context/ExamContext'
 import { useExamTimer } from '../hooks/useExamTimer'
 import { useKeyboardNav } from '../hooks/useKeyboardNav'
 import { calculateScore, getDomainBreakdown, getSubtopicBreakdown, computeNewAnswer } from '../utils/examUtils'
-import { isAnswerEmpty } from '../utils/answerUtils'
+import { isAnswerEmpty, isAnswerCorrect } from '../utils/answerUtils'
 import { saveExamResult } from '../services/historyService'
 import { getTrapAnalytics } from '../services/analyticsService'
 import QuestionCard from '../components/QuestionCard'
@@ -69,8 +69,15 @@ export default function ExamPage() {
     const domainBreakdown = getDomainBreakdown(questions, answers)
     const subtopicBreakdown = getSubtopicBreakdown(questions, answers)
     const trapStats = getTrapAnalytics(questions, answers, confidence)
+    // Store per-question correctness using the shuffled questions so history
+    // lookups don't need to re-derive correctness against unshuffled originals.
+    const questionResults = {}
+    questions.forEach(q => {
+      const ans = answers[q.id]
+      if (!isAnswerEmpty(ans, q)) questionResults[String(q.id)] = isAnswerCorrect(ans, q)
+    })
     endExam()
-    saveExamResult({ score, domainBreakdown, subtopicBreakdown, mode, timeSpent, questionCount: questions.length, confidence, questionTimes: finalTimes, trapStats, trackId, questionIds: questions.map(q => String(q.id)), answers })
+    saveExamResult({ score, domainBreakdown, subtopicBreakdown, mode, timeSpent, questionCount: questions.length, confidence, questionTimes: finalTimes, trapStats, trackId, questionIds: questions.map(q => String(q.id)), answers, questionResults })
     navigate('/results', {
       state: { questions, answers, score, timeSpent, flagged, mode, domainBreakdown, confidence, questionTimes: finalTimes, trackId, examSeed, answerChanges },
     })

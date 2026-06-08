@@ -156,7 +156,7 @@ export default function HistoryPage() {
                       </button>
 
                       {isExpanded && (
-                        <AnswerReview questionIds={entry.questionIds} answers={entry.answers} />
+                        <AnswerReview questionIds={entry.questionIds} answers={entry.answers} questionResults={entry.questionResults ?? {}} />
                       )}
                     </div>
                   )}
@@ -230,11 +230,14 @@ function RetryButton({ questionId }) {
   )
 }
 
-function AnswerReview({ questionIds, answers }) {
+function AnswerReview({ questionIds, answers, questionResults }) {
   const rows = questionIds.map((id, index) => {
     const q = lookupQuestion(id)
     const answer = answers[id] ?? answers[String(id)]
-    const correct = q ? isAnswerCorrect(answer, q) : null
+    // Use stored correctness (computed at exam time against shuffled questions).
+    // Fall back to live recomputation only for old history entries that lack questionResults.
+    const stored = questionResults[id] ?? questionResults[String(id)]
+    const correct = stored !== undefined ? stored : (q ? isAnswerCorrect(answer, q) : null)
     const detail = getAnswerDetail(q, answer)
     return { index, id, q, answer, correct, detail }
   })

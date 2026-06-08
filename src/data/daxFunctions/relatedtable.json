@@ -1,72 +1,47 @@
 {
-  "name": "RELATEDTABLE",
+  "functionName": "RELATEDTABLE",
   "category": "Relationship",
   "syntax": "RELATEDTABLE(<tableName>)",
-  "description": "Returns a table containing all rows from the specified table that are related to the current row through an active model relationship. Used inside row context (calculated columns or iterators) on the one-side of a relationship to retrieve the matching many-side rows.",
-  "whenToUse": "Use RELATEDTABLE when you are on the one-side of a relationship and need to access the related many-side rows — typically inside COUNTROWS, SUMX, MAXX, or other iterators in a calculated column. For measure context, CALCULATE with a relationship filter is usually preferred.",
+  "summary": "Returns a table containing all rows from the specified table that are related to the current row through an active model relationship. Used inside row context (calculated columns or iterators) on the one-side of a relationship to retrieve the matching many-side rows.",
+  "whenToUse": "Use RELATEDTABLE when you are on the one-side of a relationship and need to access the related many-side rows — typically inside COUNTROWS, SUMX, MAXX, or other iterators in a calculated column.",
   "parameters": [
     {
       "name": "tableName",
+      "required": true,
       "type": "Table Reference",
       "description": "The table on the many-side of the relationship. Must have an active relationship to the current row context table."
     }
   ],
-  "examTraps": [
+  "commonTraps": [
     "RELATEDTABLE works in row context (calculated columns, SUMX rows) — it does NOT work as a standalone measure without an iterator providing row context.",
     "RELATED traverses from many-side to one-side (returns a scalar). RELATEDTABLE traverses from one-side to many-side (returns a table). These are opposites — confusing them is a top exam trap.",
     "RELATEDTABLE only follows ACTIVE relationships. For inactive relationships, use CALCULATETABLE with USERELATIONSHIP.",
     "RELATEDTABLE returns an empty table (not BLANK) if there are no matching rows. Wrap with COUNTROWS to get 0 instead of an error."
   ],
-  "commonMistakes": [
-    "Using RELATEDTABLE in a measure without row context — it has no meaning outside of a row iterator.",
-    "Confusing with RELATED — RELATED returns a single value from the one-side, RELATEDTABLE returns rows from the many-side.",
-    "Using RELATEDTABLE across an inactive relationship without USERELATIONSHIP — it will return all rows or error."
-  ],
-  "sqlEquivalent": "Conceptually equivalent to a correlated subquery: SELECT * FROM Orders WHERE Orders.CustomerID = Customer.CustomerID — evaluated for each row of the outer table.",
-  "sampleData": {
-    "context": "DimCustomer (one-side) → FactOrders (many-side). Calculating order count per customer as a calculated column.",
-    "tables": {
-      "DimCustomer": [
-        { "CustomerKey": 1, "CustomerName": "Contoso" },
-        { "CustomerKey": 2, "CustomerName": "Fabrikam" },
-        { "CustomerKey": 3, "CustomerName": "WingTip" }
-      ],
-      "FactOrders": [
-        { "OrderKey": 101, "CustomerKey": 1, "Revenue": 5000 },
-        { "OrderKey": 102, "CustomerKey": 1, "Revenue": 3200 },
-        { "OrderKey": 103, "CustomerKey": 2, "Revenue": 1800 },
-        { "OrderKey": 104, "CustomerKey": 3, "Revenue": 9400 },
-        { "OrderKey": 105, "CustomerKey": 3, "Revenue": 2100 }
-      ]
-    },
-    "result": [
-      { "CustomerName": "Contoso",  "OrderCount": 2, "TotalRevenue": 8200  },
-      { "CustomerName": "Fabrikam", "OrderCount": 1, "TotalRevenue": 1800  },
-      { "CustomerName": "WingTip",  "OrderCount": 2, "TotalRevenue": 11500 }
-    ]
-  },
   "examples": [
     {
-      "title": "Count related orders as a calculated column",
-      "description": "Add OrderCount to DimCustomer — counts all related rows in FactOrders for each customer.",
-      "code": "OrderCount = COUNTROWS(RELATEDTABLE(FactOrders))"
+      "label": "Count related orders as a calculated column",
+      "expression": "OrderCount = COUNTROWS(RELATEDTABLE(FactOrders))",
+      "explanation": "Add OrderCount to DimCustomer — counts all related rows in FactOrders for each customer row."
     },
     {
-      "title": "Total revenue as a calculated column",
-      "description": "Sum revenue from all related orders per customer.",
-      "code": "TotalRevenue =\nSUMX(\n    RELATEDTABLE(FactOrders),\n    FactOrders[Revenue]\n)"
+      "label": "Total revenue per customer",
+      "expression": "TotalRevenue =\nSUMX(\n    RELATEDTABLE(FactOrders),\n    FactOrders[Revenue]\n)",
+      "explanation": "Sums revenue from all related FactOrders rows for each customer — SUMX iterates the related table returned by RELATEDTABLE."
     },
     {
-      "title": "Flag high-value customers",
-      "description": "Mark customers who have at least one order above $5,000 using RELATEDTABLE.",
-      "code": "IsHighValue =\nIF(\n    COUNTROWS(\n        FILTER(\n            RELATEDTABLE(FactOrders),\n            FactOrders[Revenue] > 5000\n        )\n    ) > 0,\n    \"High Value\",\n    \"Standard\"\n)"
+      "label": "Flag high-value customers",
+      "expression": "IsHighValue =\nIF(\n    COUNTROWS(\n        FILTER(\n            RELATEDTABLE(FactOrders),\n            FactOrders[Revenue] > 5000\n        )\n    ) > 0,\n    \"High Value\",\n    \"Standard\"\n)",
+      "explanation": "Marks customers who have at least one order above $5,000 by filtering the related table returned by RELATEDTABLE."
     },
     {
-      "title": "RELATED vs RELATEDTABLE comparison",
-      "description": "Demonstrating the directional difference.",
-      "code": "-- In FactOrders (many-side) — get ONE value from DimCustomer:\nCustomerName = RELATED(DimCustomer[CustomerName])   -- scalar\n\n-- In DimCustomer (one-side) — get MANY rows from FactOrders:\nOrderCount = COUNTROWS(RELATEDTABLE(FactOrders))    -- table → scalar"
+      "label": "RELATED vs RELATEDTABLE — direction comparison",
+      "expression": "-- In FactOrders (many-side) — get ONE value from DimCustomer:\nCustomerName = RELATED(DimCustomer[CustomerName])   -- scalar\n\n-- In DimCustomer (one-side) — get MANY rows from FactOrders:\nOrderCount = COUNTROWS(RELATEDTABLE(FactOrders))    -- table → scalar",
+      "explanation": "RELATED goes from many-side to one-side and returns a scalar. RELATEDTABLE goes from one-side to many-side and returns a table. Always consider which side of the relationship you are on."
     }
   ],
   "relatedFunctions": ["RELATED", "CALCULATETABLE", "USERELATIONSHIP", "COUNTROWS", "SUMX", "FILTER"],
-  "plExamRelevance": "RELATEDTABLE appears in PL-300 questions on calculated column design, relationship traversal direction, and iterator context. The RELATED vs RELATEDTABLE direction distinction is a reliable exam question pattern — candidates must know which side of the relationship they are on."
+  "sqlEquivalent": "Conceptually equivalent to a correlated subquery: SELECT * FROM Orders WHERE Orders.CustomerID = Customer.CustomerID — evaluated for each row of the outer table.",
+  "examWeight": "Medium",
+  "difficulty": "Medium"
 }

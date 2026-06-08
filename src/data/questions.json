@@ -8449,12 +8449,11 @@
       "DAX"
     ],
     "choiceExplanations": {
-      "0": "REMOVEFILTERS() removes an active filter — it expands what is visible rather than intersecting with the existing context. This is the opposite of what is needed; the goal is to retain existing slicer filters.",
-      "1": "KEEPFILTERS() is a CALCULATE modifier that intersects the new filter with the existing context rather than replacing it. However, KEEPFILTERS wraps a filter argument inside CALCULATE — the question asks which function returns values intersecting with context.",
-      "2": "Correct. VALUES() used as a filter argument inside CALCULATE returns the currently visible values (respecting existing slicer context), effectively intersecting the new filter with the current context rather than overriding it.",
-      "3": "ALL() removes all active filters, returning every value regardless of current context. It expands the filter context rather than merging or intersecting with existing slicer selections."
+      "0": "REMOVEFILTERS() removes an existing filter — it expands what is visible rather than intersecting with the existing context. This is the opposite of what is needed; the goal is to retain existing slicer filters, not remove them.",
+      "2": "VALUES() returns a table of currently visible column values and can be passed as a filter argument in CALCULATE, but it does not prevent filter replacement — it simply passes the current column values as a new filter constraint. KEEPFILTERS() is the explicit modifier designed to INTERSECT (merge) a new filter with the existing context rather than replacing it.",
+      "3": "ALL() removes all active filters on a column or table, returning every value regardless of current context. It expands the filter context rather than merging or intersecting with existing slicer selections — the opposite of what is required."
     },
-    "daxExpression": "-- Use VALUES() to pass existing slicer context INTO a CALCULATE filter\n-- Rather than replacing the slicer filter, VALUES() wraps it\nRevenue In Context =\n    CALCULATE(\n        SUM(Sales[Amount]),\n        VALUES(Products[Category])   -- preserves current category slicer\n    )\n\n-- Contrast with ALL(Products[Category]) which would REMOVE the slicer filter"
+    "daxExpression": "-- KEEPFILTERS() merges (intersects) the new filter with existing slicer context\n-- instead of replacing it, preserving the user's current selections\nRevenue Filtered =\n    CALCULATE(\n        SUM(Sales[Amount]),\n        KEEPFILTERS(Sales[Region] = \"East\")  -- merges with slicer\n    )\n\n-- Without KEEPFILTERS, the Region filter would REPLACE any existing slicer\n-- With KEEPFILTERS, it INTERSECTS — only rows matching both the slicer AND East are returned"
   },
   {
     "id": 157,

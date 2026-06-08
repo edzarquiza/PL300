@@ -1,53 +1,41 @@
 {
-  "name": "ISFILTERED",
+  "functionName": "ISFILTERED",
   "category": "Filter",
   "syntax": "ISFILTERED(<columnName>)",
-  "description": "Returns TRUE if the specified column has a direct filter applied in the current filter context — either from a slicer, visual-level filter, or CALCULATE argument. Returns FALSE if the column is only cross-filtered through a relationship.",
+  "summary": "Returns TRUE if the specified column has a direct filter applied in the current filter context — either from a slicer, visual-level filter, or CALCULATE argument. Returns FALSE if the column is only cross-filtered through a relationship.",
   "whenToUse": "Use ISFILTERED to make a measure behave differently depending on whether the user has explicitly filtered on a specific column. Common in dynamic titles, conditional formatting, and measures that must be suppressed when no filter is applied.",
   "parameters": [
     {
       "name": "columnName",
+      "required": true,
       "type": "Column Reference",
       "description": "The column to test for a direct filter. Must be a physical column — not a measure."
     }
   ],
-  "examTraps": [
+  "commonTraps": [
     "ISFILTERED detects DIRECT filters only. If a column is filtered via a relationship (cross-filter), ISFILTERED returns FALSE — use ISCROSSFILTERED for that.",
     "ISFILTERED on a hierarchy level returns TRUE only when that specific level has a direct filter, not when parent or child levels are filtered.",
     "ISFILTERED is evaluated inside a CALCULATE expression's filter context, so it can return different values depending on where it appears in a measure."
   ],
-  "commonMistakes": [
-    "Using ISFILTERED when ISCROSSFILTERED is needed — they are not interchangeable.",
-    "Assuming ISFILTERED returns TRUE when a visual renders a column on an axis — axis placement does not create a filter context.",
-    "Forgetting that ALL() and REMOVEFILTERS() will change what ISFILTERED returns downstream."
-  ],
-  "sqlEquivalent": "No direct SQL equivalent. Closest concept: checking whether a WHERE clause contains a specific column predicate.",
-  "sampleData": {
-    "context": "DimProduct table with [Category] column. User selects 'Electronics' in a Category slicer.",
-    "rows": [
-      { "Scenario": "Category slicer applied", "ISFILTERED(DimProduct[Category])": "TRUE" },
-      { "Scenario": "No slicer, Category on visual axis", "ISFILTERED(DimProduct[Category])": "FALSE" },
-      { "Scenario": "Country filter cross-filters via relationship", "ISFILTERED(DimProduct[Category])": "FALSE" },
-      { "Scenario": "CALCULATE([Measure], Category = 'Electronics')", "ISFILTERED(DimProduct[Category])": "TRUE" }
-    ]
-  },
   "examples": [
     {
-      "title": "Dynamic measure title",
-      "description": "Show 'All Products' when no category is selected, or the selected category name.",
-      "code": "Report Title =\nIF(\n    ISFILTERED(DimProduct[Category]),\n    \"Sales — \" & SELECTEDVALUE(DimProduct[Category], \"Multiple\"),\n    \"Sales — All Products\"\n)"
+      "label": "Dynamic measure title",
+      "expression": "Report Title =\nIF(\n    ISFILTERED(DimProduct[Category]),\n    \"Sales — \" & SELECTEDVALUE(DimProduct[Category], \"Multiple\"),\n    \"Sales — All Products\"\n)",
+      "explanation": "Returns a dynamic title that shows 'All Products' when no category slicer is applied, or the selected category name when one is active."
     },
     {
-      "title": "Suppress measure when no date selected",
-      "description": "Return BLANK instead of a misleading total when the user has not filtered by year.",
-      "code": "YTD Sales (Guarded) =\nIF(\n    ISFILTERED(DimDate[Year]),\n    TOTALYTD([Total Sales], DimDate[Date]),\n    BLANK()\n)"
+      "label": "Suppress measure when no date selected",
+      "expression": "YTD Sales (Guarded) =\nIF(\n    ISFILTERED(DimDate[Year]),\n    TOTALYTD([Total Sales], DimDate[Date]),\n    BLANK()\n)",
+      "explanation": "Returns BLANK instead of a misleading total when the user has not explicitly filtered by year."
     },
     {
-      "title": "ISFILTERED vs ISCROSSFILTERED comparison",
-      "description": "Show which type of filter is active on the Category column.",
-      "code": "Filter Status =\nSWITCH(\n    TRUE(),\n    ISFILTERED(DimProduct[Category]),    \"Direct filter\",\n    ISCROSSFILTERED(DimProduct[Category]), \"Cross-filter via relationship\",\n    \"No filter\"\n)"
+      "label": "ISFILTERED vs ISCROSSFILTERED comparison",
+      "expression": "Filter Status =\nSWITCH(\n    TRUE(),\n    ISFILTERED(DimProduct[Category]),     \"Direct filter\",\n    ISCROSSFILTERED(DimProduct[Category]), \"Cross-filter via relationship\",\n    \"No filter\"\n)",
+      "explanation": "Shows which type of filter is active on Category — direct (slicer/filter pane) vs indirect (via a related table filter)."
     }
   ],
   "relatedFunctions": ["ISCROSSFILTERED", "SELECTEDVALUE", "HASONEVALUE", "IF", "CALCULATE"],
-  "plExamRelevance": "ISFILTERED appears in PL-300 questions about dynamic measures, measure design traps, and filter context reasoning. Candidates must distinguish it from ISCROSSFILTERED — a common exam distractor."
+  "sqlEquivalent": "No direct SQL equivalent. Closest concept: checking whether a WHERE clause contains a specific column predicate.",
+  "examWeight": "Medium",
+  "difficulty": "Medium"
 }
