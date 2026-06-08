@@ -3,14 +3,14 @@ import { shuffleArray } from '../utils/arrayUtils'
 export const EXAM_DOMAINS = [
   'Prepare the data',
   'Model the data',
-  'Visualize and analyze data',
+  'Visualize and analyze the data',
   'Manage and secure Power BI',
 ]
 
 const DOMAIN_WEIGHTS = {
   'Prepare the data': 0.2881,
   'Model the data': 0.2881,
-  'Visualize and analyze data': 0.2881,
+  'Visualize and analyze the data': 0.2881,
   'Manage and secure Power BI': 0.1356,
 }
 

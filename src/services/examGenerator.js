@@ -20,7 +20,7 @@ import { getExposureData, getExposureScore, getUnseenQuestions, recordQuestionsE
 const DOMAIN_IDEAL = {
   'Prepare the data':           0.28,
   'Model the data':             0.28,
-  'Visualize and analyze data': 0.28,
+  'Visualize and analyze the data': 0.28,
   'Manage and secure Power BI': 0.16,
 }
 

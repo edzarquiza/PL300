@@ -26,6 +26,7 @@ export default function ExamPage() {
   const [showSubmitWarning, setShowSubmitWarning] = useState(false)
   const [showExitConfirm, setShowExitConfirm] = useState(false)
   const questionStartRef = useRef(Date.now())
+  const submittedRef = useRef(false)
 
   const currentQuestion = questions[currentIndex]
   const isLastQuestion = currentIndex === totalQuestions - 1
@@ -54,7 +55,8 @@ export default function ExamPage() {
   }
 
   function goToResults() {
-    if (!isActive || questions.length === 0) return
+    if (!isActive || questions.length === 0 || submittedRef.current) return
+    submittedRef.current = true
     // Build final times synchronously — state update from flushCurrentQuestionTime
     // is async, so we compute the last flush manually here to avoid stale closure.
     const elapsed = currentQuestion
