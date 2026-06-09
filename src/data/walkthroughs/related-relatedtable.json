@@ -1,0 +1,100 @@
+{
+  "id": "related-relatedtable",
+  "concept": "RELATED & RELATEDTABLE",
+  "category": "DAX",
+  "tagline": "Navigate relationships in DAX to fetch values and tables from related sides",
+  "daxFunctionId": "related",
+  "relatedTags": ["RELATED", "RELATEDTABLE", "Relationships", "Row Context", "Calculated Columns"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Two Functions, Two Directions",
+      "icon": "🔗",
+      "body": "RELATED() and RELATEDTABLE() both traverse relationships — but in opposite directions. RELATED() moves from the MANY side to the ONE side, returning a single scalar value. RELATEDTABLE() moves from the ONE side to the MANY side, returning a full table of matching rows.",
+      "keyPoint": "RELATED = many → one (returns a scalar). RELATEDTABLE = one → many (returns a table). Both require an active relationship and an active row context."
+    },
+    {
+      "type": "table",
+      "title": "The Model — Products and Sales",
+      "caption": "DimProduct (1) → FactSales (many) linked on ProductID",
+      "headers": ["Table", "Key Column", "Other Columns"],
+      "rows": [
+        ["DimProduct", "ProductID (PK)", "ProductName, Category, ListPrice"],
+        ["FactSales", "ProductID (FK)", "SaleID, Quantity, Revenue"]
+      ]
+    },
+    {
+      "type": "table",
+      "title": "DimProduct — The 'One' Side",
+      "caption": "Each product appears exactly once",
+      "headers": ["ProductID", "ProductName", "Category", "ListPrice"],
+      "rows": [
+        [101, "Road Bike Pro", "Bikes", 2499],
+        [102, "Helmet Classic", "Accessories", 89],
+        [103, "Water Bottle", "Accessories", 18]
+      ]
+    },
+    {
+      "type": "table",
+      "title": "FactSales — The 'Many' Side",
+      "caption": "Multiple sale rows can share the same ProductID",
+      "headers": ["SaleID", "ProductID", "Quantity", "Revenue"],
+      "rows": [
+        [1001, 101, 1, 2499],
+        [1002, 102, 3, 267],
+        [1003, 101, 2, 4998],
+        [1004, 103, 5, 90],
+        [1005, 102, 1, 89]
+      ]
+    },
+    {
+      "type": "dax",
+      "title": "RELATED() — Add Category to FactSales",
+      "caption": "Calculated column on FactSales pulls data from DimProduct",
+      "expression": "FactSales[Category] =\n    RELATED(DimProduct[Category])",
+      "explanation": "This calculated column is evaluated row-by-row on FactSales. For each row, RELATED() follows the active relationship from the current ProductID to DimProduct and returns the matching Category value. This works because we are on the MANY side navigating to the ONE side."
+    },
+    {
+      "type": "table",
+      "title": "Result — RELATED() Adds Category to Each Sale",
+      "caption": "Each sale row now shows its product category from DimProduct",
+      "headers": ["SaleID", "ProductID", "Revenue", "Category (via RELATED)"],
+      "rows": [
+        [1001, 101, 2499, "Bikes"],
+        [1002, 102, 267, "Accessories"],
+        [1003, 101, 4998, "Bikes"],
+        [1004, 103, 90, "Accessories"],
+        [1005, 102, 89, "Accessories"]
+      ]
+    },
+    {
+      "type": "dax",
+      "title": "RELATEDTABLE() — Count Sales per Product",
+      "caption": "Calculated column on DimProduct uses the ONE → MANY direction",
+      "expression": "DimProduct[SalesCount] =\n    COUNTROWS(RELATEDTABLE(FactSales))\n\nDimProduct[TotalRevenue] =\n    SUMX(RELATEDTABLE(FactSales), FactSales[Revenue])",
+      "explanation": "These calculated columns are evaluated row-by-row on DimProduct. For each product row, RELATEDTABLE() returns the full table of matching FactSales rows — allowing COUNTROWS, SUMX, MINX, or any table function to aggregate them."
+    },
+    {
+      "type": "table",
+      "title": "Result — RELATEDTABLE() Aggregates per Product",
+      "caption": "Each product row now has its sales count and total revenue",
+      "headers": ["ProductID", "ProductName", "SalesCount", "TotalRevenue"],
+      "rows": [
+        [101, "Road Bike Pro", 2, 7497],
+        [102, "Helmet Classic", 2, 356],
+        [103, "Water Bottle", 1, 90]
+      ]
+    },
+    {
+      "type": "text",
+      "title": "PL-300 Exam Traps",
+      "bullets": [
+        "RELATED() requires row context — it CANNOT be used directly in a measure without an iterator (SUMX, FILTER, AVERAGEX) that creates row context row by row.",
+        "RELATED() only traverses from many to one — using it from the one side causes an error. Use RELATEDTABLE() instead.",
+        "Both functions need an ACTIVE relationship. For inactive relationships (e.g., role-playing dimensions), use USERELATIONSHIP() inside CALCULATE.",
+        "RELATEDTABLE() can be used inside SUMX in a measure: SUMX(RELATEDTABLE(FactSales), FactSales[Revenue]) — this creates the row context needed.",
+        "Calculated columns using RELATED() increase model size because the column values are physically stored in VertiPaq. Prefer measures using RELATED() inside iterators when possible."
+      ]
+    }
+  ]
+}

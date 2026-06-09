@@ -1,0 +1,68 @@
+{
+  "id": "model-mm-bridge",
+  "concept": "Many-to-Many Relationships",
+  "category": "Data Modeling",
+  "tagline": "When M:M is wrong, what causes it, and how to fix it with shared dimensions",
+  "relatedTags": ["Many-to-Many", "Bridge Table", "Star Schema", "Fact Tables", "Filter Propagation"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Many-to-Many in Power BI",
+      "icon": "🔗",
+      "body": "Many-to-many (M:M) relationships occur when neither join key is unique on either side. Power BI supports M:M cardinality natively, but a direct M:M between two fact tables is a common modeling mistake that causes ambiguous filters and incorrect totals.",
+      "keyPoint": "M:M between a fact and a shared dimension is sometimes valid. Direct M:M between two fact tables is almost always an error — use shared dimension tables as the bridge instead."
+    },
+    {
+      "type": "relationship-diagram",
+      "title": "Anti-Pattern — Direct M:M Between Two Fact Tables",
+      "caption": "FactSales and FactBudget are directly related on CategoryID. Both sides have duplicate values — this is a genuine M:M.",
+      "tables": [
+        { "name": "FactSales", "type": "fact", "position": "left", "keyColumns": ["CategoryID"], "columns": ["SaleID", "Revenue", "RegionID"] },
+        { "name": "FactBudget", "type": "fact", "position": "right", "keyColumns": ["CategoryID"], "columns": ["BudgetID", "TargetAmount", "Year"] }
+      ],
+      "relationships": [
+        { "from": "FactSales", "to": "FactBudget", "cardinality": "many-to-many", "direction": "both", "active": true }
+      ],
+      "issue": "Bidirectional M:M between fact tables means clicking a row in FactSales filters FactBudget — budget totals become context-dependent on sales data. Budget vs Actual comparisons become incorrect."
+    },
+    {
+      "type": "text",
+      "title": "Why Fact-to-Fact M:M Breaks Reports",
+      "bullets": [
+        "Ambiguous filter path: a region selection in a FactSales visual propagates through the M:M to FactBudget — budget figures change based on sales context, which is usually wrong.",
+        "RLS exposure risk: bidirectional M:M allows security filters to propagate through both tables, potentially exposing restricted rows to unauthorized users.",
+        "DISTINCTCOUNT and aggregations become unreliable — filters crossing the M:M boundary can double-count or miscount values.",
+        "Performance: M:M joins prevent VertiPaq from building efficient join hash tables. Query performance degrades significantly on large tables.",
+        "The symptom: 'Budget vs Actual shows incorrect totals when any region or category is selected.'"
+      ],
+      "warning": "Never directly relate two fact tables with M:M cardinality. Fact tables should only relate to dimension tables."
+    },
+    {
+      "type": "relationship-diagram",
+      "title": "Correct Pattern — Shared Dimension as Bridge",
+      "caption": "DimProductCategory sits between both fact tables. Each fact table has a separate 1:M relationship TO the shared dimension. The two fact tables never directly relate.",
+      "tables": [
+        { "name": "FactSales", "type": "fact", "position": "left", "keyColumns": ["CategoryID"], "columns": ["SaleID", "Revenue", "RegionID"] },
+        { "name": "DimProductCategory", "type": "dimension", "position": "center", "keyColumns": ["CategoryID"], "columns": ["CategoryName", "Department"] },
+        { "name": "FactBudget", "type": "fact", "position": "right", "keyColumns": ["CategoryID"], "columns": ["BudgetID", "TargetAmount", "Year"] }
+      ],
+      "relationships": [
+        { "from": "DimProductCategory", "to": "FactSales", "cardinality": "one-to-many", "direction": "single", "active": true, "highlight": true },
+        { "from": "DimProductCategory", "to": "FactBudget", "cardinality": "one-to-many", "direction": "single", "active": true, "highlight": true }
+      ],
+      "filterNote": "DimProductCategory independently filters both fact tables via separate 1:M relationships. Selecting a category filters Sales and Budget in parallel — not one through the other."
+    },
+    {
+      "type": "text",
+      "title": "PL-300 Exam Key Points — M:M Patterns",
+      "bullets": [
+        "Shared dimension pattern: two fact tables relate to the same dimension via separate 1:M relationships — this is NOT M:M between facts, it is two independent 1:M joins.",
+        "Power BI's native M:M cardinality type is designed for composite model scenarios (e.g., DirectQuery + Import), not for fact-to-fact joins.",
+        "True M:M use case: users assigned to multiple security groups. Use a bridge table (UserGroupBridge) with UserID and GroupID as composite key.",
+        "Star schema rule: fact tables should never directly relate to each other. All joins flow through dimension tables.",
+        "Exam question: 'Budget vs Actual report shows incorrect totals when a product category is selected.' Root cause: direct M:M between FactBudget and FactSales with bidirectional filtering."
+      ],
+      "keyPoint": "Fix fact-to-fact M:M by identifying the shared business key and creating a dimension table on that key. Both fact tables then relate 1:M to that dimension."
+    }
+  ]
+}

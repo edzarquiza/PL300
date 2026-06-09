@@ -1,0 +1,95 @@
+{
+  "id": "values-selectedvalue",
+  "concept": "VALUES & SELECTEDVALUE",
+  "category": "DAX",
+  "tagline": "Return distinct values from a column and detect single slicer selections",
+  "daxFunctionId": "values",
+  "relatedTags": ["VALUES", "SELECTEDVALUE", "Filter Context", "HASONEVALUE", "DISTINCT"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "VALUES and SELECTEDVALUE",
+      "icon": "🔍",
+      "body": "VALUES(ColumnName) returns a one-column table of distinct, non-blank values from a column, respecting the current filter context. SELECTEDVALUE() is a shortcut that returns a scalar — the single selected value if exactly one is in context, otherwise an alternate result (default: BLANK()).",
+      "keyPoint": "VALUES = filtered table of distinct values. SELECTEDVALUE = scalar if exactly one value is in context, else alternate. Use them to detect slicer state and build dynamic calculations."
+    },
+    {
+      "type": "table",
+      "title": "FactSales — The Base Table",
+      "caption": "Used for all examples in this walkthrough",
+      "headers": ["SaleID", "Region", "Salesperson", "Revenue"],
+      "rows": [
+        [1, "North", "Alice", 500],
+        [2, "South", "Bob", 300],
+        [3, "North", "Carol", 700],
+        [4, "East", "Alice", 200],
+        [5, "South", "Carol", 450]
+      ]
+    },
+    {
+      "type": "dax",
+      "title": "VALUES() — No Filter Applied",
+      "caption": "All distinct Region values visible in the model",
+      "expression": "-- VALUES returns a 1-column table:\nVALUES(FactSales[Region])\n\n-- Result (3 rows):\n--   Region\n--   -------\n--   North\n--   South\n--   East",
+      "explanation": "With no slicer or report filter active, VALUES() returns all three distinct Region values from the table in the current filter context."
+    },
+    {
+      "type": "filtered-table",
+      "title": "User Selects 'North' in Region Slicer",
+      "caption": "Filter context now restricts visible rows to North only",
+      "headers": ["SaleID", "Region", "Salesperson", "Revenue"],
+      "rows": [
+        [1, "North", "Alice", 500],
+        [2, "South", "Bob", 300],
+        [3, "North", "Carol", 700],
+        [4, "East", "Alice", 200],
+        [5, "South", "Carol", 450]
+      ],
+      "highlightRows": [0, 2],
+      "dimRows": [1, 3, 4],
+      "filterNote": "Slicer sets: FactSales[Region] = 'North'"
+    },
+    {
+      "type": "dax",
+      "title": "VALUES() — With 'North' Filter Active",
+      "caption": "Now only one distinct value is visible",
+      "expression": "-- With 'North' slicer active:\nVALUES(FactSales[Region])\n\n-- Result (1 row):\n--   Region\n--   -------\n--   North",
+      "explanation": "When the filter restricts the context to North rows only, VALUES() returns just 'North'. This is the basis for SELECTEDVALUE() — if VALUES() produces exactly one row, SELECTEDVALUE() returns that scalar."
+    },
+    {
+      "type": "dax",
+      "title": "SELECTEDVALUE() — Dynamic Title or Label",
+      "caption": "Return the selected region name, or 'All Regions' if none/multiple",
+      "expression": "SelectedRegionTitle =\n    SELECTEDVALUE(\n        FactSales[Region],\n        \"All Regions\"  -- alternate result\n    )\n\n-- No slicer    → \"All Regions\"\n-- North only   → \"North\"\n-- North+South  → \"All Regions\"",
+      "explanation": "SELECTEDVALUE() checks: does VALUES(col) return exactly one row? If yes, return it as a scalar. If zero or more than one, return the alternate result. Use this for dynamic card titles, measure switches, or conditional logic."
+    },
+    {
+      "type": "dax",
+      "title": "SELECTEDVALUE() in Conditional Calculations",
+      "caption": "Switch calculation logic based on a slicer selection",
+      "expression": "-- Example: currency conversion controlled by slicer\nSelected Currency =\n    SELECTEDVALUE(DimCurrency[Code], \"USD\")\n\nRevenue Converted =\n    VAR currency = SELECTEDVALUE(DimCurrency[Code], \"USD\")\n    VAR rate = LOOKUPVALUE(\n        ExchangeRates[Rate],\n        ExchangeRates[Code], currency\n    )\n    RETURN [Total Revenue] * rate",
+      "explanation": "A common PL-300 pattern: use SELECTEDVALUE() to detect what the user selected in a disconnected slicer table, then use that value to conditionally change the measure's behaviour."
+    },
+    {
+      "type": "text",
+      "title": "VALUES vs DISTINCT vs ALL — Know the Difference",
+      "bullets": [
+        "VALUES(col) — distinct visible values in filter context, PLUS adds a blank row if a fact table references a key not in the dimension (referential integrity violation).",
+        "DISTINCT(col) — same as VALUES but NEVER includes the blank row from integrity violations. Use when you know your data is clean.",
+        "ALL(col) — ALL distinct values, IGNORING the current filter context. Used inside CALCULATE to remove filters: CALCULATE([Revenue], ALL(DimDate[Year])).",
+        "ALLEXCEPT(Table, col1, col2) — removes all filters from the table EXCEPT on the specified columns. Common in running total patterns.",
+        "Exam trap: VALUES() on a column with no referential integrity issues behaves identically to DISTINCT(). The difference only matters when an FK value in the fact table has no matching PK in the dimension."
+      ]
+    },
+    {
+      "type": "text",
+      "title": "Common Exam Patterns",
+      "bullets": [
+        "HASONEVALUE(col) is the boolean version: TRUE if exactly one value in context. Equivalent to COUNTROWS(VALUES(col)) = 1.",
+        "IF(HASONEVALUE(DimProduct[Category]), VALUES(DimProduct[Category]), \"Multiple\") is the same as SELECTEDVALUE(DimProduct[Category], \"Multiple\").",
+        "Pass VALUES() as a CALCULATE filter argument: CALCULATE([Sales], VALUES(DimDate[Year])) — this preserves the current year filter even inside a larger ALL context.",
+        "Use SELECTEDVALUE to build dynamic measure selectors (e.g., a slicer to choose between Revenue, Profit, or Margin as the displayed metric)."
+      ]
+    }
+  ]
+}

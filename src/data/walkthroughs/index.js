@@ -8,6 +8,12 @@ import starSchemaWt from './star-schema.json'
 import rlsDynamicWt from './rls-dynamic.json'
 import filterPropagationWt from './filter-propagation.json'
 import visualSelectionWt from './visual-selection.json'
+import relatedRelatedtableWt from './related-relatedtable.json'
+import valuesSelectedvalueWt from './values-selectedvalue.json'
+import cardinalityWt from './cardinality.json'
+import modelFilterFlowWt from './model-filter-flow.json'
+import modelMmBridgeWt from './model-mm-bridge.json'
+import modelRolePlayingWt from './model-role-playing.json'
 
 export const WALKTHROUGHS = [
   calculateWt,
@@ -20,6 +26,12 @@ export const WALKTHROUGHS = [
   rlsDynamicWt,
   filterPropagationWt,
   visualSelectionWt,
+  relatedRelatedtableWt,
+  valuesSelectedvalueWt,
+  cardinalityWt,
+  modelFilterFlowWt,
+  modelMmBridgeWt,
+  modelRolePlayingWt,
 ]
 
 // Lookup by walkthrough ID

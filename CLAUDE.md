@@ -2651,3 +2651,511 @@ Show 4 more
 
 
 Close
+
+
+# PL-300 Exam Simulator — Phase: Certification Readiness Refinement
+
+## IMPORTANT
+
+The platform has reached a mature feature set.
+
+DO NOT focus on adding large new systems unless they directly improve PL-300 pass probability.
+
+The next phase should focus on:
+
+* question quality
+* case studies
+* walkthrough coverage
+* explanation quality
+* Microsoft-style reasoning
+* certification realism
+
+The goal is:
+
+MAXIMIZE PL-300 READINESS.
+
+Not maximize feature count.
+
+---
+
+# CURRENT DEVELOPMENT PHILOSOPHY
+
+The simulator is no longer:
+
+* a quiz application
+* a flashcard application
+* a DAX reference
+
+It is now:
+
+A POWER BI CERTIFICATION REASONING PLATFORM.
+
+Future work should optimize:
+
+* business reasoning
+* conceptual understanding
+* analyst decision making
+* Microsoft-style ambiguity
+* exam confidence
+
+Avoid:
+
+* feature bloat
+* unnecessary analytics
+* gimmicks
+* cosmetic-only changes
+
+---
+
+# PRIORITY 1 — CASE STUDY SYSTEM
+
+Implement realistic PL-300 case studies.
+
+This is the largest remaining realism gap.
+
+Support:
+
+* shared business scenario
+* shared requirements
+* shared dataset descriptions
+* multiple linked questions
+* stakeholder-driven decisions
+
+---
+
+## CASE STUDY STRUCTURE
+
+Case Study
+
+Background
+
+Requirements
+
+Current Environment
+
+Problems
+
+Questions 1-5
+
+Questions should reference:
+
+* shared requirements
+* previous context
+* tradeoffs
+
+---
+
+## CASE STUDY THEMES
+
+Retail
+
+Healthcare
+
+Finance
+
+Manufacturing
+
+Supply Chain
+
+Human Resources
+
+Customer Analytics
+
+Governance & Security
+
+---
+
+## CASE STUDY STYLE
+
+Use:
+
+* ambiguity
+* competing requirements
+* realistic business language
+
+Avoid:
+
+* obvious answers
+* isolated trivia
+
+---
+
+# PRIORITY 2 — WALKTHROUGH COVERAGE EXPANSION
+
+Current walkthrough system is valuable.
+
+Expand coverage significantly.
+
+Target concepts:
+
+* CALCULATE
+* FILTER
+* SUMX
+* COUNTROWS
+* VALUES
+* ALL
+* REMOVEFILTERS
+* RELATED
+* RELATEDTABLE
+* Time Intelligence
+* Query Folding
+* Merge vs Append
+* Filter Propagation
+* RLS
+* Cardinality
+
+---
+
+## WALKTHROUGH REQUIREMENTS
+
+Every walkthrough should show:
+
+1. Starting state
+2. Transformation
+3. Reasoning
+4. Result
+5. Real-world interpretation
+
+The user should be able to visually understand:
+
+WHY the answer is correct.
+
+---
+
+# PRIORITY 3 — COMPLETE EXPLANATION COVERAGE
+
+Target:
+
+100% explanation coverage.
+
+Every question should contain:
+
+## Correct Answer Reasoning
+
+Why the answer is best.
+
+## Distractor Analysis
+
+Why each wrong answer is incorrect.
+
+## Alternative Valid Context
+
+When that answer WOULD be correct.
+
+Example:
+
+SUMX incorrect here because no row iteration is required.
+
+However:
+
+SUMX would be appropriate when calculating expressions row-by-row before aggregation.
+
+---
+
+# PRIORITY 4 — RELATIONSHIP VISUAL SIMULATIONS
+
+Expand modeling questions.
+
+Support:
+
+* one-to-many
+* many-to-many
+* inactive relationships
+* bidirectional filters
+* star schema
+* snowflake schema
+
+---
+
+## VISUAL REQUIREMENTS
+
+Show:
+
+Fact tables
+
+Dimension tables
+
+Relationship arrows
+
+Filter propagation
+
+Users should SEE:
+
+why filters succeed or fail.
+
+---
+
+# PRIORITY 5 — DAX LIBRARY EXPANSION
+
+Current library is useful.
+
+Expand toward:
+
+25-30 high-value functions.
+
+---
+
+## HIGH PRIORITY FUNCTIONS
+
+COUNTROWS
+
+DISTINCTCOUNT
+
+VALUES
+
+SELECTEDVALUE
+
+ALL
+
+REMOVEFILTERS
+
+RELATED
+
+RELATEDTABLE
+
+DATESYTD
+
+TOTALYTD
+
+SAMEPERIODLASTYEAR
+
+DATEADD
+
+RANKX
+
+HASONEVALUE
+
+ISFILTERED
+
+CALCULATETABLE
+
+---
+
+## FUNCTION PAGE REQUIREMENTS
+
+For every function include:
+
+* syntax
+* parameter explanations
+* sample data
+* expected output
+* SQL equivalent
+* exam traps
+* common mistakes
+* visual walkthrough
+
+---
+
+# PRIORITY 6 — MICROSOFT QUESTION QUALITY REFINEMENT
+
+Improve wording quality.
+
+Questions should increasingly resemble:
+
+Microsoft certification questions.
+
+Use:
+
+* business requirements
+* stakeholder needs
+* performance concerns
+* governance constraints
+* maintenance tradeoffs
+
+Focus on:
+
+BEST answer
+
+MOST appropriate
+
+LEAST maintenance
+
+MOST scalable
+
+HIGHEST performance
+
+---
+
+## AVOID
+
+Simple recall questions.
+
+Questions that reveal the answer.
+
+Unrealistic wording.
+
+---
+
+# PRIORITY 7 — CONCEPT REVIEWER EXPANSION
+
+Expand from 48 cards toward 100+.
+
+Add:
+
+Power Query
+
+Security
+
+Visualization
+
+Data Warehousing
+
+Analytics Concepts
+
+Performance Optimization
+
+Governance
+
+---
+
+## EACH CONCEPT SHOULD INCLUDE
+
+Simple Definition
+
+Why It Matters
+
+Real-World Example
+
+Common Beginner Mistakes
+
+Related Concepts
+
+PL-300 Relevance
+
+Optional SQL Comparison
+
+---
+
+# PRIORITY 8 — READINESS PREDICTION ENGINE
+
+Create a realistic readiness estimate.
+
+Do NOT use score alone.
+
+Combine:
+
+* recent exams
+* domain balance
+* confidence accuracy
+* trap frequency
+* mastery trends
+* weak concepts
+
+---
+
+## OUTPUT EXAMPLE
+
+Estimated PL-300 Readiness
+
+84%
+
+Strong Areas
+
+✓ Data Modeling
+
+✓ Visualization
+
+Risk Areas
+
+⚠ Query Folding
+
+⚠ Dynamic RLS
+
+⚠ Time Intelligence
+
+---
+
+# PRIORITY 9 — HARD QUESTION EXPANSION
+
+Increase hard-question ratio.
+
+Target:
+
+25–30%
+
+Focus on:
+
+* ambiguity
+* tradeoffs
+* stakeholder conflicts
+* performance decisions
+* security decisions
+
+Avoid:
+
+* complexity for complexity's sake
+
+The challenge should come from reasoning.
+
+---
+
+# PRIORITY 10 — REAL-WORLD ANALYST SCENARIOS
+
+Add more practical business situations.
+
+Examples:
+
+Messy names
+
+Duplicate customers
+
+Broken relationships
+
+Slow reports
+
+Large models
+
+Incremental refresh requirements
+
+Governance restrictions
+
+Cross-region security
+
+Data quality problems
+
+---
+
+# SUCCESS CRITERIA
+
+After this phase:
+
+The simulator should feel less like:
+
+A practice exam application.
+
+And more like:
+
+A POWER BI ANALYST TRAINING PLATFORM.
+
+Users should improve:
+
+* certification readiness
+* DAX reasoning
+* Power Query reasoning
+* modeling decisions
+* visualization decisions
+* business interpretation
+
+not merely question memorization.
+
+---
+
+# EDUCATIONAL REQUIREMENT
+
+For major implementation decisions:
+
+Explain:
+
+* educational reasoning
+* exam-readiness impact
+* architecture tradeoffs
+* scalability considerations
+
+At the end:
+
+1. summarize improvements
+2. explain case study design
+3. explain walkthrough expansion
+4. explain question-quality improvements
+5. explain readiness prediction logic
+6. explain how the simulator better prepares users for the actual PL-300 exam

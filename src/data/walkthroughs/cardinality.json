@@ -1,0 +1,90 @@
+{
+  "id": "cardinality",
+  "concept": "Relationship Cardinality",
+  "category": "Data Modeling",
+  "tagline": "How 1:1, 1:M and M:M relationships shape filtering, performance, and model design",
+  "relatedTags": ["Cardinality", "Relationships", "Star Schema", "Many-to-Many", "Role-playing Dimensions"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "What Is Cardinality?",
+      "icon": "🔢",
+      "body": "Cardinality defines how many rows on one side of a relationship match rows on the other side. Power BI supports three types: one-to-one (1:1), one-to-many (1:M), and many-to-many (M:M). Getting cardinality right is fundamental — wrong cardinality causes incorrect calculations, security gaps, and poor performance.",
+      "keyPoint": "Always prefer 1:M (star schema). 1:1 for extended attribute tables. M:M only when unavoidable — and usually requires a bridge table or specific Power BI M:M support."
+    },
+    {
+      "type": "table",
+      "title": "The Three Cardinality Types",
+      "caption": "Summary of when each type applies",
+      "headers": ["Type", "When It Applies", "Default Filter Direction"],
+      "rows": [
+        ["1:M (One-to-Many)", "Dimension → Fact table (star schema)", "One side → Many side"],
+        ["1:1 (One-to-One)", "Splitting a wide table into two joined on same key", "Single or Both directions"],
+        ["M:M (Many-to-Many)", "Fact-to-fact joins or shared dimensions", "Both (with caution — can break RLS)"]
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Standard Star Schema — 1:M",
+      "caption": "Each DimProduct row matches MANY FactSales rows — ideal for VertiPaq",
+      "headers": ["DimProduct (1 side)", "FactSales (many side)"],
+      "rows": [
+        ["ProductID=101, Bikes", "SaleID=1001 (ProductID=101)"],
+        ["ProductID=101, Bikes", "SaleID=1003 (ProductID=101)"],
+        ["ProductID=102, Accessories", "SaleID=1002 (ProductID=102)"],
+        ["ProductID=102, Accessories", "SaleID=1005 (ProductID=102)"]
+      ]
+    },
+    {
+      "type": "text",
+      "title": "The Blank Row Problem — Referential Integrity",
+      "bullets": [
+        "When a fact table contains a foreign key that has NO matching primary key in the dimension, Power BI adds a virtual blank row to the dimension to catch these orphaned fact rows.",
+        "Example: FactSales contains ProductID=999 but DimProduct has no row with ProductID=999.",
+        "Power BI adds a blank DimProduct row and assigns all orphaned sales to it.",
+        "This causes VALUES(DimProduct[ProductName]) to include a blank — often surprising in reports.",
+        "Fix: clean the data in Power Query (remove orphaned fact rows or add a placeholder dimension row), or ensure referential integrity in the source system."
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Role-Playing Dimensions — One Dimension, Multiple Relationships",
+      "caption": "DimDate used as OrderDate AND ShipDate in FactOrders",
+      "headers": ["Relationship", "Table", "Status"],
+      "rows": [
+        ["FactOrders[OrderDateID] → DimDate[DateID]", "DimDate", "Active"],
+        ["FactOrders[ShipDateID] → DimDate[DateID]", "DimDate", "Inactive (grey)"],
+        ["FactOrders[DueDateID] → DimDate[DateID]", "DimDate", "Inactive (grey)"]
+      ]
+    },
+    {
+      "type": "dax",
+      "title": "Activating Inactive Relationships with USERELATIONSHIP",
+      "caption": "Calculate revenue by ship date using the inactive relationship",
+      "expression": "Revenue by Ship Date =\n    CALCULATE(\n        [Total Revenue],\n        USERELATIONSHIP(\n            FactOrders[ShipDateID],\n            DimDate[DateID]\n        )\n    )\n\n-- USERELATIONSHIP deactivates the default (OrderDate)\n-- relationship and activates ShipDate for this calculation only",
+      "explanation": "Only ONE relationship between any two tables can be active at a time. USERELATIONSHIP() lets you temporarily swap which relationship is used inside a CALCULATE expression, without changing the model permanently."
+    },
+    {
+      "type": "text",
+      "title": "Many-to-Many — The Risky Pattern",
+      "bullets": [
+        "True M:M between two fact tables (e.g., FactSales and FactBudget with overlapping dimension keys) cannot be related directly without ambiguity.",
+        "The standard solution is a bridge (junction) table: FactA (M) → Bridge (1) → FactB (M).",
+        "Power BI's native M:M cardinality type is designed for the shared dimension pattern (e.g., DimDate used by two separate fact tables in a composite model) — NOT for fact-to-fact joins.",
+        "M:M with bidirectional cross-filtering can cause RLS bypass: filters propagate through the fact table unexpectedly, potentially exposing data to unauthorized users.",
+        "Performance impact: M:M relationships prevent VertiPaq from building efficient join indexes — query plan complexity increases significantly."
+      ]
+    },
+    {
+      "type": "text",
+      "title": "PL-300 Exam Key Points",
+      "bullets": [
+        "Always set the '1' side on the dimension table and the 'many' side on the fact table when creating relationships.",
+        "If two tables have no shared unique key, you need a bridge table — do NOT create a direct M:M without a bridge.",
+        "High cardinality columns (many distinct values — e.g., GUID or email addresses) as relationship keys reduce VertiPaq compression. Use integer surrogate keys instead.",
+        "Cross-filter direction 'Both' doubles query plan complexity and can break row-level security. Only enable it when explicitly required.",
+        "Circular relationships (A → B → C → A) are not allowed. Power BI will disable one relationship automatically and show it in grey."
+      ]
+    }
+  ]
+}

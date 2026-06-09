@@ -1,0 +1,91 @@
+{
+  "id": "model-filter-flow",
+  "concept": "Filter Flow in Star Schema",
+  "category": "Data Modeling",
+  "tagline": "See exactly how a slicer selection travels through your data model",
+  "relatedTags": ["Filter Propagation", "Star Schema", "Cross-filter Direction", "Relationships", "Bidirectional"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "How a Slicer Filters Your Data",
+      "icon": "🔀",
+      "body": "When you select a value in a slicer, Power BI propagates a filter through the model via relationships. Understanding exactly where that filter travels — and where it stops — is essential for correct DAX and safe model design.",
+      "keyPoint": "Filters travel from the ONE side (dimension) to the MANY side (fact table). They do NOT travel in reverse by default. This is single-direction cross-filtering."
+    },
+    {
+      "type": "relationship-diagram",
+      "title": "Step 1 — Base Star Schema, No Filters Active",
+      "caption": "Four tables connected by three 1:M relationships. All data visible, no slicers selected.",
+      "tables": [
+        { "name": "DimDate", "type": "dimension", "position": "left", "keyColumns": ["DateID"], "columns": ["Date", "Year", "Month"] },
+        { "name": "DimProduct", "type": "dimension", "position": "left", "keyColumns": ["ProductID"], "columns": ["Category", "SubCategory"] },
+        { "name": "FactSales", "type": "fact", "position": "center", "keyColumns": ["SaleID"], "columns": ["ProductID", "DateID", "RegionID", "Revenue"] },
+        { "name": "DimRegion", "type": "dimension", "position": "right", "keyColumns": ["RegionID"], "columns": ["RegionName", "Country"] }
+      ],
+      "relationships": [
+        { "from": "DimDate", "to": "FactSales", "cardinality": "one-to-many", "direction": "single", "active": true },
+        { "from": "DimProduct", "to": "FactSales", "cardinality": "one-to-many", "direction": "single", "active": true },
+        { "from": "DimRegion", "to": "FactSales", "cardinality": "one-to-many", "direction": "single", "active": true }
+      ]
+    },
+    {
+      "type": "relationship-diagram",
+      "title": "Step 2 — User Selects Category = 'Bikes'",
+      "caption": "Filter enters via DimProduct and flows down the 1:M relationship into FactSales. DimDate and DimRegion are unaffected.",
+      "tables": [
+        { "name": "DimDate", "type": "dimension", "position": "left", "keyColumns": ["DateID"], "columns": ["Date", "Year", "Month"] },
+        { "name": "DimProduct", "type": "dimension", "position": "left", "keyColumns": ["ProductID"], "columns": ["Category", "SubCategory"], "highlight": "filter-source" },
+        { "name": "FactSales", "type": "fact", "position": "center", "keyColumns": ["SaleID"], "columns": ["ProductID", "DateID", "RegionID", "Revenue"], "highlight": "filter-target" },
+        { "name": "DimRegion", "type": "dimension", "position": "right", "keyColumns": ["RegionID"], "columns": ["RegionName", "Country"] }
+      ],
+      "relationships": [
+        { "from": "DimDate", "to": "FactSales", "cardinality": "one-to-many", "direction": "single", "active": true },
+        { "from": "DimProduct", "to": "FactSales", "cardinality": "one-to-many", "direction": "single", "active": true, "highlight": true },
+        { "from": "DimRegion", "to": "FactSales", "cardinality": "one-to-many", "direction": "single", "active": true }
+      ],
+      "filterNote": "Category = 'Bikes' restricts FactSales to Bike rows only. DimDate and DimRegion are unaffected — single-direction filtering stops at the fact table."
+    },
+    {
+      "type": "text",
+      "title": "Why Doesn't the Filter Reach DimDate or DimRegion?",
+      "bullets": [
+        "Default cross-filter direction is SINGLE: filters flow from the ONE side (dimension) to the MANY side (fact) — not backwards.",
+        "DimDate and DimRegion are also ONE-side tables. Filters from DimProduct cannot jump across FactSales to reach them.",
+        "This is intentional: it prevents one slicer from inadvertently filtering another dimension's available values.",
+        "Result: COUNTROWS(DimDate) = 365 regardless of the Category slicer — dates are never reduced by a Product filter.",
+        "Exam: 'Why does the Region slicer still show all regions when Bikes is selected?' — Single-direction filtering. Regions are unaffected."
+      ],
+      "keyPoint": "In a star schema with single-direction filtering, each dimension is independently filterable. A filter on one dimension never propagates to another dimension through the fact table."
+    },
+    {
+      "type": "relationship-diagram",
+      "title": "Step 3 — Bidirectional Filter Enabled (Dangerous)",
+      "caption": "Enabling BOTH cross-filter direction lets filters flow fact → dimension. DimRegion now shows only regions where Bikes were sold.",
+      "tables": [
+        { "name": "DimDate", "type": "dimension", "position": "left", "keyColumns": ["DateID"], "columns": ["Date", "Year", "Month"] },
+        { "name": "DimProduct", "type": "dimension", "position": "left", "keyColumns": ["ProductID"], "columns": ["Category", "SubCategory"], "highlight": "filter-source" },
+        { "name": "FactSales", "type": "fact", "position": "center", "keyColumns": ["SaleID"], "columns": ["ProductID", "DateID", "RegionID", "Revenue"], "highlight": "filter-target" },
+        { "name": "DimRegion", "type": "dimension", "position": "right", "keyColumns": ["RegionID"], "columns": ["RegionName", "Country"], "highlight": "filter-target" }
+      ],
+      "relationships": [
+        { "from": "DimDate", "to": "FactSales", "cardinality": "one-to-many", "direction": "single", "active": true },
+        { "from": "DimProduct", "to": "FactSales", "cardinality": "one-to-many", "direction": "both", "active": true, "highlight": true },
+        { "from": "DimRegion", "to": "FactSales", "cardinality": "one-to-many", "direction": "single", "active": true }
+      ],
+      "filterNote": "Bikes filter flows DimProduct → FactSales → DimRegion. The Region slicer now only shows regions that sold Bikes.",
+      "issue": "Bidirectional filtering can bypass Row-Level Security. If FactSales has an RLS filter, it may propagate back into DimProduct, exposing dimension values that should be restricted."
+    },
+    {
+      "type": "text",
+      "title": "Bidirectional Filter — When to Use and When to Avoid",
+      "bullets": [
+        "Use SINGLE direction in almost all star schema designs. It is safe, predictable, and performant.",
+        "Use BOTH only when a dimension slicer must dynamically show only values that exist in the fact data — a specific, intentional UX choice.",
+        "Never enable BOTH when the model has Row-Level Security. Bidirectional can propagate security filters in unexpected directions, exposing restricted data.",
+        "Performance cost: BOTH doubles query plan complexity — VertiPaq must evaluate filter paths in both directions simultaneously.",
+        "Exam trap: 'After enabling bidirectional filtering, the Region slicer shows fewer options than expected.' This is correct and expected behavior."
+      ],
+      "warning": "Default to SINGLE cross-filter direction. Enable BOTH only with full understanding of its security and performance impact."
+    }
+  ]
+}

@@ -21377,5 +21377,1027 @@
       "0": "Fill Down does not overwrite the entire column with the top-most value — it only replaces null/blank cells by propagating the nearest non-null value above each null downward.",
       "2": "Fill Down fills ALL consecutive null cells beneath a non-null value, not just one. It continues filling until it reaches the next non-null value in the column."
     }
+  },
+  {
+    "id": 428,
+    "type": "single",
+    "domain": "Prepare the data",
+    "subtopic": "Transform and load the data",
+    "difficulty": "Hard",
+    "question": "A Power BI report connects to an Azure SQL database with 80 million rows. The Power Query transform pipeline performs the following steps in order: (1) Filter rows where Status = 'Active', (2) Remove columns, (3) Add a custom column using Text.Combine() to concatenate FirstName and LastName, (4) Group rows by RegionID and aggregate Revenue. Refresh takes 52 minutes. A data engineer says query folding has broken. Which step is MOST likely breaking query folding?",
+    "choices": [
+      "Step 1 — Filter rows where Status = 'Active'",
+      "Step 2 — Remove columns",
+      "Step 3 — Add custom column using Text.Combine()",
+      "Step 4 — Group rows by RegionID and aggregate Revenue"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "Text.Combine() is a native M function that cannot be translated into a SQL equivalent — it breaks query folding at the point it is applied. Steps 1 (WHERE clause), 2 (SELECT column pruning), and 4 (GROUP BY aggregation) all have direct SQL equivalents and fold natively. Once Text.Combine() breaks folding at Step 3, all subsequent steps also execute in the M engine rather than at the source, which is why refresh is slow despite the aggregation in Step 4.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Query Folding",
+      "Power Query",
+      "Performance",
+      "Text.Combine"
+    ],
+    "choiceExplanations": {
+      "0": "Filter rows maps directly to a SQL WHERE clause and folds natively. Row filters on typed columns are among the simplest operations to fold. This step does not break query folding.",
+      "1": "Remove columns maps to a SQL SELECT column list. Projection operations fold natively. This step does not break query folding.",
+      "2": "Correct. Text.Combine() is a native M transformation with no direct SQL equivalent. The M engine cannot translate this function into a SQL expression, so query folding stops at this step. All subsequent steps are processed locally by the M engine rather than at the Azure SQL source.",
+      "3": "Group rows (GROUP BY) with an aggregate like SUM folds natively to SQL. However, because Text.Combine() in Step 3 already broke folding, Step 4 also runs in the M engine — but Step 4 is not itself the cause of the break."
+    }
+  },
+  {
+    "id": 429,
+    "type": "single",
+    "domain": "Prepare the data",
+    "subtopic": "Get or connect to data",
+    "difficulty": "Hard",
+    "question": "A retail company has a 200 GB fact table in SQL Server that grows by approximately 500,000 rows per day. Full refreshes now take 4.5 hours. The business requires data to be current within 2 hours. The IT team cannot change the source database schema. The Power BI dataset uses Import mode. Which approach BEST addresses the refresh performance requirement while meeting the 2-hour currency window?",
+    "choices": [
+      "Switch the dataset to DirectQuery mode so all queries run live against SQL Server",
+      "Configure incremental refresh with a 3-year history window and a 2-day refresh period",
+      "Add an aggregation table over the fact table and import only pre-aggregated rows",
+      "Split the dataset into two separate datasets — one for historical data and one for recent data — and use composite models"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Incremental refresh solves the problem directly: it partitions the fact table by date, imports historical data once, and only refreshes the recent partition (last 2 days) on each cycle. A 2-day refresh period means any data within the rolling 2-day window is always refreshed, satisfying the 2-hour currency requirement. Full refreshes of 200 GB become obsolete — only the recent partition (500K rows × 2 days = ~1M rows) is processed each time, typically completing in minutes rather than hours.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Incremental Refresh",
+      "Import Mode",
+      "Performance",
+      "Partitioning"
+    ],
+    "choiceExplanations": {
+      "0": "DirectQuery would eliminate Import refresh entirely, but it shifts the performance problem to query time. Every report interaction issues live SQL queries against a 200 GB table. With no schema changes allowed and no source indexes for optimized DAX-generated queries, this will cause unacceptably slow report performance.",
+      "1": "Correct. Incremental refresh partitions the fact table by date range. The historical partition is loaded once and not refreshed again. Only the 'incremental' partition (configured as the most recent 2 days) is refreshed on each cycle. This satisfies the 2-hour currency requirement and reduces refresh time from 4.5 hours to minutes.",
+      "2": "An aggregation table reduces query time for summary visuals, but the underlying detail fact table still requires a full refresh. This approach does not address the 4.5-hour full refresh duration for the Import dataset.",
+      "3": "Composite models with split datasets add architectural complexity and require careful relationship management. This approach may help but is more complex than needed; incremental refresh directly solves the stated problem without requiring dataset splitting."
+    }
+  },
+  {
+    "id": 430,
+    "type": "single",
+    "domain": "Prepare the data",
+    "subtopic": "Get or connect to data",
+    "difficulty": "Hard",
+    "question": "An organization uses Microsoft Fabric. Their lakehouse stores 500 GB of Parquet files in OneLake. The analytics team needs near-real-time reports (data latency under 5 minutes) with fast query performance on complex DAX measures. Budget is limited — no dedicated capacity for large DirectQuery workloads. Which storage mode is MOST appropriate?",
+    "choices": [
+      "Import mode — load all 500 GB into a Power BI dataset",
+      "DirectQuery mode — query the lakehouse Parquet files directly on every visual interaction",
+      "DirectLake mode — read data directly from OneLake Delta tables without import or traditional DirectQuery overhead",
+      "Live Connection to Analysis Services — mirror the lakehouse data into SSAS Tabular"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "DirectLake is designed precisely for this scenario. It reads data directly from Delta/Parquet files in OneLake without importing data into VertiPaq or issuing DirectQuery SQL queries. The VertiPaq engine loads column data on demand from OneLake, providing near-Import performance without requiring a full import operation. Data latency is near-real-time because DirectLake reads from the current state of the Delta table. This avoids the budget constraint of large DirectQuery workloads and eliminates the 4+ hour import time for 500 GB.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "DirectLake",
+      "Microsoft Fabric",
+      "OneLake",
+      "Storage Mode",
+      "Import vs DirectQuery"
+    ],
+    "choiceExplanations": {
+      "0": "Importing 500 GB would provide the best query performance but violates the near-real-time requirement (5-minute latency) — full imports take hours. Incremental refresh could help but still cannot achieve 5-minute data freshness for large datasets without DirectLake.",
+      "1": "DirectQuery satisfies latency requirements but every visual interaction issues a SQL query against the lakehouse. Complex DAX measures over Parquet files without a dedicated large capacity may result in slow, expensive queries — violating the budget constraint.",
+      "2": "Correct. DirectLake is the purpose-built solution for OneLake/Fabric scenarios. It delivers near-Import query performance by loading VertiPaq column segments from Delta tables on demand, while providing near-real-time data freshness without a traditional import step.",
+      "3": "Live Connection to SSAS requires maintaining a separate SSAS Tabular instance which adds cost and operational complexity. It does not provide near-real-time latency for the lakehouse Parquet data and introduces additional synchronization lag."
+    }
+  },
+  {
+    "id": 431,
+    "type": "single",
+    "domain": "Prepare the data",
+    "subtopic": "Transform and load the data",
+    "difficulty": "Hard",
+    "question": "A Power Query mashup combines data from an on-premises SQL Server (via gateway) and a public REST API. When refreshing, Power BI shows an error: 'Formula.Firewall: Query references other queries or steps, so it may not directly access a data source. Please rebuild this data combination.' What is the PRIMARY cause and correct resolution?",
+    "choices": [
+      "The gateway is offline — restart the gateway service and retry the refresh",
+      "The two data sources have different privacy levels and Power BI is blocking the combination under default settings — set compatible privacy levels or enable the option to ignore privacy checks",
+      "Queries that reference other queries must be merged using Power Query Merge instead of direct column references",
+      "REST API connectors do not support Privacy Level settings — replace the REST API with an OData feed"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "The Formula.Firewall error occurs when two data sources with different or unset privacy levels are combined in a single query step. Power BI's privacy engine prevents one data source from 'leaking' data to another unless the analyst explicitly marks them as compatible. Resolution: set appropriate privacy levels for both sources (e.g., Organizational for the SQL Server, Public for the REST API) in the data source settings, or — for trusted enterprise environments — enable 'Ignore the Privacy Levels and potentially improve performance' in the dataset options (though this disables the privacy guardrail).",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Privacy Levels",
+      "Power Query",
+      "Formula Firewall",
+      "Data Source Settings"
+    ],
+    "choiceExplanations": {
+      "0": "A gateway offline error produces a different error message related to connectivity, not a Formula.Firewall error. Formula.Firewall is specifically a privacy-level enforcement error — the gateway status is unrelated to this issue.",
+      "1": "Correct. The Formula.Firewall error is the privacy firewall in action. Power BI blocks data combinations across sources with incompatible or unset privacy levels to prevent accidental data exposure (e.g., SQL Server credentials or schema being sent to a public API). Setting compatible privacy levels resolves the error.",
+      "2": "The error is not caused by how queries reference each other (direct reference vs. Merge). Both patterns encounter the same Formula.Firewall restriction when privacy levels are mismatched between data sources.",
+      "3": "REST API connectors fully support privacy level settings. The connector type is not the issue — the privacy level configuration is the cause and the fix."
+    }
+  },
+  {
+    "id": 432,
+    "type": "single",
+    "domain": "Prepare the data",
+    "subtopic": "Transform and load the data",
+    "difficulty": "Hard",
+    "question": "A Power Query step converts a JSON column called RawPayload into a structured table by expanding record fields. The column contains values like {\"region\":\"North\",\"revenue\":500,\"flags\":[\"urgent\",\"new\"]}. After expanding RawPayload, the analyst needs a single column showing only the first flag in the flags array. Which approach is MOST appropriate?",
+    "choices": [
+      "Use 'Extract Values' on the expanded flags column to concatenate all flags into a comma-separated text string",
+      "Expand the flags list column into new rows, then filter to keep only rows where an index equals 0",
+      "Add a custom column: List.First([flags]) to extract the first element of the flags list",
+      "Use Text.BeforeDelimiter([flags], \",\") to extract the text before the first comma in the list representation"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "After expanding the JSON record, the flags column contains a Power Query List value (type = list). List.First([flags]) returns the first element of the list as a scalar value — this is the correct and efficient approach. It avoids creating extra rows (Option B) and avoids losing information in concatenation (Option A). Option D fails because [flags] is a list type, not a text string — Text.BeforeDelimiter cannot operate on a list.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Power Query",
+      "JSON",
+      "Semi-structured Data",
+      "List Functions",
+      "M Language"
+    ],
+    "choiceExplanations": {
+      "0": "Extract Values concatenates all list elements into a single text string. This combines all flags rather than isolating the first one, and the result is a text type rather than a scalar flag value.",
+      "1": "Expanding a list into rows doubles the row count for records with multiple flags. You would then need to add an index column, filter to index = 0, and remove the index column — this is a multi-step workaround when List.First achieves the same result in one step.",
+      "2": "Correct. List.First() is the native M function for extracting the first element of a list. When the flags column holds a list value after JSON expansion, List.First([flags]) returns the first flag as a scalar text value in a single custom column step.",
+      "3": "Text.BeforeDelimiter operates on text (string) values. The [flags] column after JSON expansion is a native M List type, not a string representation of a list. Applying a text function to a list value will produce an error."
+    }
+  },
+  {
+    "id": 433,
+    "type": "single",
+    "domain": "Prepare the data",
+    "subtopic": "Transform and load the data",
+    "difficulty": "Hard",
+    "question": "A Power BI model has a 'SalesBase' query that loads 10 million rows from SQL Server and performs extensive transformations. Three other queries — SalesByRegion, SalesByProduct, SalesByMonth — each reference SalesBase and add domain-specific aggregations. During refresh, an analyst notices the SQL source is queried six times instead of once. What is the MOST likely cause, and what is the correct fix?",
+    "choices": [
+      "SalesBase is defined as a Reference query; change it to a Duplicate so the transformations run only once",
+      "SalesBase is not set to 'Enable Load' — enable it so Power BI caches the result before dependent queries run",
+      "SalesBase is defined as a Reference query but query folding is broken, so the M engine re-evaluates the full transformation pipeline for each dependent query — fix by enabling staging (Buffer the query result)",
+      "The three dependent queries each add incompatible steps that prevent the M engine from sharing the intermediate result — merge all three into a single query"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "When query folding is broken at SalesBase (e.g., due to a custom M function), the M engine cannot delegate the work to SQL Server. Without staging enabled, the M engine re-evaluates the full SalesBase pipeline for each downstream query that references it — causing 3+ separate evaluations of the expensive transformation chain and multiple SQL source queries. Enabling 'Enable staging' (or using Table.Buffer in SalesBase) caches the SalesBase result after its first evaluation so all three dependent queries read from the cached table rather than re-executing the pipeline.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Reference Query",
+      "Duplicate Query",
+      "Query Folding",
+      "Staging",
+      "Power Query Performance"
+    ],
+    "choiceExplanations": {
+      "0": "Reference and Duplicate queries behave identically in terms of evaluation caching — the distinction is that Duplicate copies the steps while Reference creates a logical reference. Neither inherently prevents re-evaluation. The type of query reference is not the cause of repeated source queries.",
+      "1": "Disabling 'Enable Load' hides the query result from the data model but does not cause repeated source queries for dependent queries. The staging/caching behavior is controlled differently from the load setting.",
+      "2": "Correct. When query folding is broken and staging is not enabled, the M engine treats each reference to SalesBase as a fresh evaluation of its full pipeline — including re-issuing SQL queries to the source. Table.Buffer() or enabling staging in Power BI Desktop's query options caches the result after the first evaluation.",
+      "3": "Merging all dependent queries into one defeats the purpose of having separate, maintainable queries for different business areas. It also doesn't address the root cause, which is the repeated evaluation of the source pipeline, not the existence of multiple downstream queries."
+    }
+  },
+  {
+    "id": 434,
+    "type": "single",
+    "domain": "Prepare the data",
+    "subtopic": "Profile and clean the data",
+    "difficulty": "Hard",
+    "question": "A Power Query dataset contains a CustomerID column used as the relationship key to a Customers dimension table. Column profiling shows: 2,400,000 distinct values, 15 null values, 3 error values, and 12 duplicate values in what should be a primary key column. The analyst must resolve data quality issues before building relationships. Which combination of steps is MOST appropriate?",
+    "choices": [
+      "Remove null rows, remove error rows, then group by CustomerID and filter to groups with count = 1 to remove duplicates",
+      "Replace nulls with '0', replace errors with 'UNKNOWN', and keep duplicates to avoid losing sales data",
+      "Remove null rows, replace errors with the most common CustomerID value, and remove duplicates by keeping first occurrence",
+      "Filter out all rows with null or error values, identify duplicate CustomerID rows in the source system and resolve upstream, then load only valid unique keys"
+    ],
+    "correctAnswers": [
+      3
+    ],
+    "explanation": "For a primary key column, the ideal resolution is upstream: identify and fix duplicate, null, and erroneous customer records in the source system before loading into Power BI. If upstream fixes are not immediately possible, filtering nulls and errors for the Power BI load is acceptable, but duplicates require investigation — keeping only the 'first occurrence' (Option C) may silently drop legitimate transactions. The best Power BI practice is to raise the data quality issue, document it, and load only verified unique keys. Options A and B introduce data loss or fabricated data without upstream investigation.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Data Quality",
+      "Column Profiling",
+      "Primary Key",
+      "Power Query",
+      "Data Cleaning"
+    ],
+    "choiceExplanations": {
+      "0": "Grouping and filtering to count = 1 removes all duplicate CustomerID rows — including potentially valid transactions. This approach silently discards sales data without understanding why duplicates exist in a supposed primary key column.",
+      "1": "Replacing nulls with '0' and errors with 'UNKNOWN' fabricates CustomerID values that do not exist in the Customers dimension. These fabricated keys will create orphaned fact rows or cause relationship errors — they do not resolve the underlying data quality issue.",
+      "2": "Replacing errors with the most common CustomerID value assigns arbitrary customer identities to unknown transactions, which corrupts analytical results. 'Keep first occurrence' for duplicates also silently discards data without understanding the business context.",
+      "3": "Correct. Data quality issues in primary key columns should be resolved at the source. In Power BI, filtering clearly invalid rows (nulls and errors) is acceptable as a short-term measure, but duplicate keys require upstream investigation since each duplicate likely represents a real business situation that needs proper resolution — not arbitrary deduplication."
+    }
+  },
+  {
+    "id": 435,
+    "type": "single",
+    "domain": "Prepare the data",
+    "subtopic": "Get or connect to data",
+    "difficulty": "Hard",
+    "question": "A company's Power BI dataset connects to an on-premises Oracle database via a gateway. The data team needs different report consumers to load different subsets of data based on their region assignment, without creating separate datasets or using RLS. The region values are stored in an Azure Key Vault. Which Power Query feature enables this parameterized data loading?",
+    "choices": [
+      "Row-level security roles defined in the Power BI dataset security settings",
+      "A Power Query parameter bound to a gateway parameter, with the query filtered using that parameter value at source query time",
+      "Power BI Dataflows with incremental refresh and partition-per-region configuration",
+      "DirectQuery mode with a WHERE clause in the native SQL query referencing the user's AAD group"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Power Query parameters allow the M query to receive runtime values that modify the SQL query sent to the source — for example, a Region parameter that inserts into a WHERE clause before the query reaches Oracle. Gateway parameters (defined in the On-premises data gateway settings) allow admins to centrally manage parameter values per data source connection, enabling different deployments to load different data subsets without changing the PBIX file. This is the correct pattern for parameterized data loading at the source level.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Power Query Parameters",
+      "Gateway",
+      "Parameterized Query",
+      "Data Loading"
+    ],
+    "choiceExplanations": {
+      "0": "RLS filters data after it is loaded into the dataset — it does not reduce the volume of data imported from the source. All rows are still fetched from Oracle; RLS only controls what each user sees at query time. RLS cannot reduce refresh time or source load.",
+      "1": "Correct. Power Query parameters can be declared in the M query and bound to gateway parameters configured in the On-premises data gateway. The parameter value is injected into the native query (e.g., a SQL WHERE clause) before the query is sent to Oracle, so only the relevant subset of rows is loaded into the dataset.",
+      "2": "Dataflows with incremental refresh partitions data by date range, not by region assignment. It also creates a separate Dataflow layer rather than directly loading from the source with parameterization.",
+      "3": "DirectQuery mode would not load data into the dataset at all — queries run live. Additionally, AAD group membership cannot be referenced in a static WHERE clause in a native SQL query at data source connection time without a dynamic RLS mechanism."
+    }
+  },
+  {
+    "id": 436,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Use the CALCULATE function",
+    "difficulty": "Hard",
+    "question": "A DAX measure is defined as: Total Sales All Years = CALCULATE([Total Sales], ALL(DimDate[Year])). When placed in a matrix visual with Year on columns and a slicer filtering to a single region, the measure correctly ignores the year column filter but still shows data only for the selected region. A second measure is needed that shows ALL sales regardless of both year AND region filters. Which expression is MOST appropriate?",
+    "choices": [
+      "Grand Total = CALCULATE([Total Sales], ALL(DimDate), ALL(DimRegion))",
+      "Grand Total = CALCULATE([Total Sales], REMOVEFILTERS())",
+      "Grand Total = CALCULATE([Total Sales], ALL(DimDate[Year]), ALL(DimRegion[RegionName]))",
+      "Grand Total = CALCULATE([Total Sales], ALLEXCEPT(FactSales, DimDate[Year]))"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "REMOVEFILTERS() with no arguments removes ALL filters from ALL tables in the current filter context — it is the most explicit and safe way to compute a completely unfiltered grand total. CALCULATE([Total Sales], REMOVEFILTERS()) evaluates [Total Sales] with no active filters from any table. Option A (ALL on individual tables) works but requires explicitly listing every dimension table that could filter the result — omitting any one dimension would leave its filters active. Option B (REMOVEFILTERS with no args) is more robust and maintainable.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "CALCULATE",
+      "REMOVEFILTERS",
+      "ALL",
+      "Filter Context",
+      "DAX"
+    ],
+    "choiceExplanations": {
+      "0": "ALL(DimDate) removes all filters from the date dimension, and ALL(DimRegion) removes all filters from the region dimension. This works IF those are the only two dimensions filtering the result. However, if additional slicers exist (Product, Channel, etc.), their filters would still apply — the measure would not be a true grand total.",
+      "1": "Correct. REMOVEFILTERS() with no arguments clears all filters from the entire filter context regardless of which tables or columns have active filters. It is the most reliable approach for a completely unconditional grand total that ignores all slicers and visual filters.",
+      "2": "ALL(DimDate[Year]) and ALL(DimRegion[RegionName]) remove filters only from those specific columns. Other columns in DimDate (Month, Quarter) and DimRegion (RegionCode) could still have active filters from other slicers, causing the 'grand total' to still be filtered by those remaining column filters.",
+      "3": "ALLEXCEPT(FactSales, DimDate[Year]) removes all filters from FactSales EXCEPT those applied through DimDate[Year] — this is the opposite of what is needed. It would keep the year filter active and remove other filters, which is not a grand total pattern."
+    }
+  },
+  {
+    "id": 437,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Create model calculations by using DAX",
+    "difficulty": "Hard",
+    "question": "A financial model tracks monthly bank account balances. The balance is non-additive: summing January and February balances gives a meaningless result — the correct figure for any time period is the LAST known balance. The DimDate table is a proper date table. Which DAX measure CORRECTLY returns the last balance in the current time period?",
+    "choices": [
+      "Last Balance = LASTDATE(FactBalance[BalanceDate])",
+      "Last Balance = CALCULATE(SUM(FactBalance[Balance]), LASTDATE(DimDate[Date]))",
+      "Last Balance = LASTNONBLANKX(DimDate[Date], SUM(FactBalance[Balance]))",
+      "Last Balance = CALCULATE(MAX(FactBalance[Balance]), LASTDATE(DimDate[Date]))"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "CALCULATE(SUM(FactBalance[Balance]), LASTDATE(DimDate[Date])) is the standard semi-additive closing balance pattern. LASTDATE() returns a one-row table containing the last date in the current filter context. CALCULATE then uses this as a filter, restricting the evaluation of SUM to only rows on that last date. This correctly returns the closing balance for whatever time period is in context (day, month, quarter, year). LASTNONBLANKX works but is more complex and typically used when multiple rows exist for the same last date. MAX(Balance) would return the highest balance row on that date, not necessarily the balance amount.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Semi-additive Measures",
+      "LASTDATE",
+      "LASTNONBLANK",
+      "Time Intelligence",
+      "DAX"
+    ],
+    "choiceExplanations": {
+      "0": "LASTDATE(FactBalance[BalanceDate]) returns a one-row date table, not a numeric balance value. Using it alone as a measure would evaluate to a date, not a balance amount. LASTDATE must be used as a filter argument inside CALCULATE to produce a meaningful balance result.",
+      "1": "Correct. LASTDATE(DimDate[Date]) returns a table containing only the last date in context. CALCULATE then restricts SUM(FactBalance[Balance]) to that single date, producing the closing balance. This is the canonical semi-additive closing balance pattern in DAX.",
+      "2": "LASTNONBLANKX(DimDate[Date], SUM(FactBalance[Balance])) iterates dates in descending order and returns the last date where SUM is non-blank. This is more expensive than LASTDATE and is typically used only when the last date with data may not be the last date in the calendar context. For a standard closing balance, LASTDATE is preferred.",
+      "3": "MAX(FactBalance[Balance]) returns the highest balance value on the last date — not the balance amount. If multiple rows exist for the last date with different balance values (e.g., opening and closing entries), MAX would return the wrong value."
+    }
+  },
+  {
+    "id": 438,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Use the CALCULATE function",
+    "difficulty": "Hard",
+    "question": "A measure [Total Revenue] = SUM(FactSales[Revenue]) is used inside the following expression: Revenue per Category = SUMX(DimProduct, [Total Revenue]). When evaluated in a matrix visual filtered to a single year, the measure returns the total revenue for ALL products repeated for each row — it does not break down by individual product. What is the cause?",
+    "choices": [
+      "SUMX iterates DimProduct rows but [Total Revenue] has no row context — it evaluates the full filter context sum once for each row, ignoring the product row iterator",
+      "Context transition is missing — wrapping [Total Revenue] in CALCULATE inside SUMX will convert row context to filter context and return per-product revenue",
+      "The relationship between FactSales and DimProduct is inactive — activate it with USERELATIONSHIP",
+      "SUM(FactSales[Revenue]) does not respect row context from DimProduct — use SUMX(FactSales, FactSales[Revenue]) instead"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "This is the context transition trap. When a measure like [Total Revenue] is called inside an iterator (SUMX), it does NOT automatically inherit the row context from SUMX. [Total Revenue] evaluates in the existing filter context — which does not include a filter on the current DimProduct row. To trigger context transition (converting the SUMX row context into a filter context on DimProduct), you must wrap the measure reference in CALCULATE: SUMX(DimProduct, CALCULATE([Total Revenue])). This automatically adds a filter for the current DimProduct row to the filter context, making [Total Revenue] return only revenue for that specific product.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Context Transition",
+      "SUMX",
+      "CALCULATE",
+      "Row Context",
+      "DAX"
+    ],
+    "choiceExplanations": {
+      "0": "This statement is partially correct but incomplete. SUMX does create row context over DimProduct rows. The issue is not that [Total Revenue] lacks row context awareness — it is that a MEASURE reference does not automatically perform context transition. The row context from SUMX does not filter the measure evaluation unless CALCULATE is used.",
+      "1": "Correct. Wrapping a measure reference in CALCULATE inside an iterator triggers context transition: the row context from SUMX (which includes the current DimProduct row) is converted into an equivalent filter context. [Total Revenue] then evaluates with FactSales filtered to only rows matching the current product — producing per-product revenue.",
+      "2": "An inactive relationship would cause [Total Revenue] to return BLANK for many rows, not return the full total for every row. If relationships were inactive, the measure would not sum all revenue for all products — it would produce blanks or errors.",
+      "3": "SUMX(FactSales, FactSales[Revenue]) returns the same result as SUM(FactSales[Revenue]) — both produce the total sum of the Revenue column. Changing the inner expression from SUM to SUMX does not change the context transition behavior; the issue is the lack of CALCULATE wrapping the measure reference."
+    }
+  },
+  {
+    "id": 439,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Create model calculations by using DAX",
+    "difficulty": "Hard",
+    "question": "A financial reporting model requires displaying the same Revenue measure in three currencies: USD (base), EUR (converted at a fixed rate), and GBP (converted at another fixed rate). Currently there are three separate measures: [Revenue USD], [Revenue EUR], and [Revenue GBP]. A report matrix needs to show all three as columns dynamically based on a user's selection in a disconnected slicer. New currencies may be added quarterly. Which approach BEST balances flexibility and maintainability?",
+    "choices": [
+      "Create a measure switcher using SELECTEDVALUE() on a disconnected Currency slicer table to dynamically pick the conversion rate",
+      "Create three separate report pages — one per currency — and use bookmarks to navigate between them",
+      "Use calculation groups with a single [Revenue] measure and one calculation item per currency, controlled by a currency slicer",
+      "Use a SWITCH(TRUE(), ...) pattern inside [Revenue USD] to return different values based on a currency parameter table"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "Calculation groups are the purpose-built DAX feature for this exact scenario. A calculation group creates 'calculation items' that modify how a base measure ([Revenue]) is evaluated — for example, multiplying by EUR or GBP exchange rates. Any measure in the model can then be displayed in any currency by placing the calculation group field on the matrix column axis. When new currencies are added, you add one new calculation item to the calculation group — no changes to any existing measures are needed. This is far more scalable than measure proliferation (Option A/D) and avoids the UI complexity of bookmark-based navigation (Option B).",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Calculation Groups",
+      "Currency Conversion",
+      "DAX",
+      "SELECTEDVALUE",
+      "Maintainability"
+    ],
+    "choiceExplanations": {
+      "0": "A SELECTEDVALUE() measure switcher works but requires creating a dedicated measure for each currency AND writing complex IF/SWITCH logic in a central measure. When new currencies are added, the SWITCH expression must be updated. This approach does not scale well as the currency list grows.",
+      "1": "Separate pages per currency with bookmarks creates report navigation complexity and does not allow users to compare currencies side by side in a single matrix. Adding a new currency requires creating a new page. This approach does not scale and provides poor user experience.",
+      "2": "Correct. Calculation groups were introduced specifically to solve measure modification patterns like currency conversion. A single calculation group with one calculation item per currency applies the conversion logic to any base measure automatically. Adding a new currency requires only adding one new calculation item.",
+      "3": "SWITCH(TRUE(), ...) inside a single measure creates a monolithic measure that handles all currency logic. It requires modifying the measure expression every time a new currency is added and prevents the pattern from being applied to other measures (like Cost, Profit, Margin) without duplicating the SWITCH logic."
+    }
+  },
+  {
+    "id": 440,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Design and implement a data model",
+    "difficulty": "Hard",
+    "question": "A data model has two fact tables: FactSales (containing individual sale transactions) and FactBudget (containing monthly budget targets per ProductCategory). Both tables share a DimDate dimension and a DimProductCategory dimension. A report needs to compare actual sales against budget in the same visual. The analyst sets up a direct M:M relationship between FactSales and FactBudget. What is the MOST significant risk of this approach?",
+    "choices": [
+      "M:M relationships between fact tables cause refresh failures in Power BI Desktop",
+      "Power BI does not support M:M cardinality between fact tables — the model will fail to load",
+      "The direct M:M relationship causes ambiguous filter propagation: filters from one fact table can inadvertently affect aggregations in the other, producing incorrect cross-table calculations",
+      "M:M cardinality between fact tables doubles the model size because VertiPaq stores both relationship directions"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "When two fact tables are directly related with M:M cardinality, filters propagate bi-directionally between them. A slicer on a product category in FactSales can propagate to FactBudget, causing budget figures to be filtered by sales-side criteria in unexpected ways — and vice versa. This creates non-intuitive and often incorrect report calculations. The correct architecture is to relate both fact tables to the shared dimension tables (DimDate, DimProductCategory) independently, using those shared dimensions as the bridge — the classic 'shared dimension' star schema. The two fact tables never directly relate to each other.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Many-to-Many",
+      "Star Schema",
+      "Data Modeling",
+      "Filter Propagation",
+      "Fact Tables"
+    ],
+    "choiceExplanations": {
+      "0": "M:M relationships do not cause refresh failures. They are a supported cardinality type in Power BI. The issue is with the analytical correctness of calculations, not the technical ability to refresh.",
+      "1": "Power BI does support M:M cardinality between any two tables. The problem is not a technical limitation but an analytical one — using M:M between fact tables produces logically incorrect filter behavior in reports.",
+      "2": "Correct. The M:M relationship between fact tables creates a bidirectional filter path between FactSales and FactBudget. Measures from FactBudget become context-sensitive to filters from FactSales (and vice versa) in ways that produce incorrect or misleading comparisons in reports.",
+      "3": "VertiPaq compression and model size are not significantly impacted by M:M cardinality designation between tables. The storage impact is negligible compared to the analytical incorrectness introduced by the M:M pattern between fact tables."
+    }
+  },
+  {
+    "id": 441,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Optimize model performance",
+    "difficulty": "Hard",
+    "question": "Performance Analyzer in Power BI Desktop shows a matrix visual that takes 8.2 seconds to render. The breakdown is: DAX Query = 7.9 seconds, Visual Display = 0.1 seconds, Other = 0.2 seconds. The DAX query uses a measure containing SUMX(FactSales, [UnitPrice] * FactSales[Quantity]). FactSales has 50 million rows. What is the MOST effective optimization?",
+    "choices": [
+      "Reduce the number of visuals on the report page to lower the concurrent DAX query count",
+      "Convert the SUMX expression to a pre-calculated column: FactSales[LineRevenue] = FactSales[UnitPrice] * FactSales[Quantity], then use SUM(FactSales[LineRevenue]) in the measure",
+      "Switch the dataset from Import mode to DirectQuery to offload the calculation to the source database",
+      "Increase the Power BI Pro license to a Premium capacity to gain additional VertiPaq CPU resources"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "The bottleneck is a 50-million-row SUMX iterator. SUMX evaluates the expression [UnitPrice] * [Quantity] row by row in the formula engine — this is expensive at 50M rows. Converting it to a calculated column computes the multiplication once during refresh and stores the result compressed in VertiPaq. The measure then uses SUM() which uses the highly optimized VertiPaq storage engine (SE) instead of the formula engine (FE) — cutting DAX query time from seconds to milliseconds. This is a fundamental VertiPaq optimization: push computation from query time to refresh time.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Performance Analyzer",
+      "SUMX",
+      "Calculated Columns",
+      "VertiPaq",
+      "Formula Engine",
+      "Storage Engine"
+    ],
+    "choiceExplanations": {
+      "0": "Reducing visual count reduces concurrent DAX queries but does not address the 7.9-second individual query time. The matrix will still take 7.9 seconds to load — you would just be waiting sequentially rather than concurrently.",
+      "1": "Correct. Replacing SUMX with a pre-calculated column moves the row-by-row multiplication from query time (formula engine, slow) to refresh time (VertiPaq compression engine). SUM of a stored column is a storage engine operation — typically 100x faster than an equivalent formula engine SUMX over 50M rows.",
+      "2": "Switching to DirectQuery offloads the computation to the source database but introduces new latency for every visual interaction. For a 50M row table, the source database must execute the query on demand — this typically produces worse interactive performance than VertiPaq at query time, not better.",
+      "3": "Premium capacity provides more parallel query threads and more memory, but it does not change the fundamental algorithmic complexity of SUMX over 50M rows. The formula engine is still invoked for every SUMX evaluation — more CPU helps marginally but does not eliminate the performance problem."
+    }
+  },
+  {
+    "id": 442,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Design and implement a data model",
+    "difficulty": "Hard",
+    "question": "A Power BI model contains a date table created with CALENDAR(DATE(2020,1,1), DATE(2024,12,31)). An analyst adds a TOTALYTD measure and a SAMEPERIODLASTYEAR comparison. During testing, both measures return BLANK for all dates. The relationships between the date table and fact tables appear correct. What is the MOST likely cause?",
+    "choices": [
+      "TOTALYTD and SAMEPERIODLASTYEAR require a DateKey integer column — they cannot operate on a Date data type column",
+      "The date table has not been marked as a 'Date Table' in Power BI, so the built-in time intelligence functions cannot identify the date column",
+      "The CALENDAR function creates a table with blanks — use CALENDARAUTO() instead to automatically detect the correct date range",
+      "The date table end date (2024-12-31) is in the future, which causes time intelligence functions to return BLANK for future periods"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Power BI's built-in time intelligence functions (TOTALYTD, SAMEPERIODLASTYEAR, DATEADD, etc.) require the date table to be marked as a Date Table in the model. Without this designation, Power BI cannot identify which column contains contiguous dates, and the time intelligence functions return BLANK. Mark the date table via 'Mark as Date Table' in Power BI Desktop (right-click the table in the Fields pane → Mark as Date Table) and specify the Date column. The date column must contain contiguous daily values with no gaps, no duplicates, and no nulls.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Date Table",
+      "Time Intelligence",
+      "TOTALYTD",
+      "SAMEPERIODLASTYEAR",
+      "Mark as Date Table"
+    ],
+    "choiceExplanations": {
+      "0": "DAX time intelligence functions operate on date data type columns, not integer DateKey columns. Using a Date data type is correct. The integer DateKey format is used for relationship performance (integer joins compress better in VertiPaq) but is not required by time intelligence functions.",
+      "1": "Correct. Power BI's built-in time intelligence functions require the date table to be explicitly marked as a Date Table so the engine can validate that the date column contains a complete, contiguous date sequence. Without this marking, time intelligence functions do not know which column to use as the date axis and return BLANK.",
+      "2": "CALENDARAUTO() auto-detects date ranges from the model but both CALENDAR() and CALENDARAUTO() produce valid date tables. The function used to create the calendar is not the cause of time intelligence blanks — the missing 'Mark as Date Table' designation is.",
+      "3": "Time intelligence functions do not return BLANK simply because the date table extends into future dates. TOTALYTD and SAMEPERIODLASTYEAR evaluate based on the current filter context date range — dates beyond the fact table data simply produce zero or BLANK due to no matching fact rows, not due to the date table's end date being in the future."
+    }
+  },
+  {
+    "id": 443,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Use the CALCULATE function",
+    "difficulty": "Hard",
+    "question": "A report uses a slicer to filter by Product Category. A measure is defined as: Bikes Revenue = CALCULATE([Total Revenue], DimProduct[Category] = \"Bikes\"). When the user selects 'Accessories' in the Category slicer, Bikes Revenue still returns the total Bikes revenue correctly. A new requirement states: if the user selects 'Bikes' in the slicer, the measure should show only Bikes revenue; if any other category is selected, the measure should return BLANK. Which expression BEST meets this requirement?",
+    "choices": [
+      "Bikes Revenue v2 = CALCULATE([Total Revenue], KEEPFILTERS(DimProduct[Category] = \"Bikes\"))",
+      "Bikes Revenue v2 = IF(SELECTEDVALUE(DimProduct[Category]) = \"Bikes\", [Total Revenue], BLANK())",
+      "Bikes Revenue v2 = CALCULATE([Total Revenue], DimProduct[Category] = \"Bikes\", ALLEXCEPT(DimProduct, DimProduct[Category]))",
+      "Bikes Revenue v2 = CALCULATE([Total Revenue], FILTER(DimProduct, DimProduct[Category] = \"Bikes\"))"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "KEEPFILTERS modifies how CALCULATE applies its filter arguments: instead of overriding any existing filter on DimProduct[Category], it INTERSECTS the new filter with the existing filter context. If the slicer has 'Accessories' selected (Category = 'Accessories'), KEEPFILTERS applies DimProduct[Category] = 'Bikes' as an intersection — ('Accessories' AND 'Bikes') = empty set → returns BLANK. If 'Bikes' is selected (Category = 'Bikes'), the intersection is ('Bikes' AND 'Bikes') = 'Bikes' → returns Bikes revenue. This is exactly the required behavior using the correct DAX semantic.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "KEEPFILTERS",
+      "CALCULATE",
+      "Filter Context",
+      "DAX",
+      "Slicer Interaction"
+    ],
+    "choiceExplanations": {
+      "0": "Correct. KEEPFILTERS(DimProduct[Category] = 'Bikes') intersects the Bikes filter with whatever the slicer currently has active. When slicer = 'Bikes', the intersection includes Bikes and revenue is shown. When slicer = 'Accessories', the intersection is empty and BLANK is returned.",
+      "1": "IF(SELECTEDVALUE(...) = 'Bikes', [Total Revenue], BLANK()) returns the total revenue for ALL products (not just Bikes) when the slicer = 'Bikes', because [Total Revenue] already respects the slicer filter. When the slicer = 'Bikes', [Total Revenue] is already filtered to Bikes. This works accidentally in this specific case but misrepresents the intent — for a multi-value slicer or more complex scenarios it would break.",
+      "2": "ALLEXCEPT(DimProduct, DimProduct[Category]) removes all filters from DimProduct except the Category filter. Combined with DimProduct[Category] = 'Bikes', this first overrides the slicer filter with 'Bikes' and then removes all other DimProduct filters. This does NOT return BLANK when 'Accessories' is selected — it still returns Bikes revenue.",
+      "3": "FILTER(DimProduct, DimProduct[Category] = 'Bikes') as a CALCULATE argument overrides the Category filter context with 'Bikes' only — this behaves the same as the original measure and returns Bikes revenue regardless of the slicer selection. FILTER inside CALCULATE replaces the existing Category filter rather than intersecting with it."
+    }
+  },
+  {
+    "id": 444,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Design and implement a data model",
+    "difficulty": "Hard",
+    "question": "A Power BI model has three relationships from FactOrders to DimDate: OrderDate (active), ShipDate (inactive), and DueDate (inactive). An analyst writes the following measure: Overdue Orders = CALCULATE(COUNTROWS(FactOrders), USERELATIONSHIP(FactOrders[DueDateID], DimDate[DateID]), FactOrders[Status] = \"Open\", DimDate[Date] < TODAY()). This measure is placed in a card visual. The analyst expects it to count open orders where the due date has already passed, but the result appears too high. What is the MOST likely issue?",
+    "choices": [
+      "USERELATIONSHIP cannot be combined with additional CALCULATE filter arguments — the Status and Date filters are being ignored",
+      "The DimDate[Date] < TODAY() filter is evaluated against the date table's full range including the OrderDate relationship — USERELATIONSHIP only activates the DueDateID relationship but the date filter applies to the active relationship by default",
+      "TODAY() is not a valid DAX function inside a CALCULATE filter argument — use DATE(YEAR(NOW()), MONTH(NOW()), DAY(NOW())) instead",
+      "The relationship between FactOrders and DimDate on OrderDateID remains active alongside the USERELATIONSHIP — both relationships are active simultaneously, causing double-counting"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "USERELATIONSHIP activates the DueDateID relationship for the purpose of evaluating FactOrders rows through DimDate, but the filter DimDate[Date] < TODAY() is a filter on the DimDate table. This DimDate filter propagates to FactOrders via the ACTIVE relationship (OrderDateID) by default, not through the DueDateID relationship being activated by USERELATIONSHIP. As a result, the date filter restricts FactOrders rows based on OrderDate being before today, not DueDate. To correctly filter by DueDate, the analyst should filter the FactOrders[DueDateID] column directly or use a different approach rather than filtering DimDate[Date].",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "USERELATIONSHIP",
+      "Role-playing Dimensions",
+      "Filter Propagation",
+      "DAX",
+      "Relationships"
+    ],
+    "choiceExplanations": {
+      "0": "USERELATIONSHIP can be combined with additional CALCULATE filter arguments. Multiple filter arguments in CALCULATE are applied simultaneously. The Status and Date filters are not being ignored — they are active, but the Date filter is propagating through the wrong relationship.",
+      "1": "Correct. USERELATIONSHIP activates the DueDateID path for row traversal, but DimDate[Date] < TODAY() still filters FactOrders via the active OrderDate relationship. The date filter reaches FactOrders through two paths: the activated DueDate path (from USERELATIONSHIP) and the default active OrderDate path (from the DimDate date filter). This causes both date conditions to combine, counting orders where OrderDate < TODAY AND DueDate is in context — producing too many rows.",
+      "2": "TODAY() is a valid DAX function in CALCULATE filter arguments and behaves correctly as a dynamic date reference. Using DATE(YEAR(NOW()), ...) is equivalent to TODAY() — both return the current date. This is not the cause of the incorrect count.",
+      "3": "USERELATIONSHIP deactivates the normal active relationship for the duration of the CALCULATE evaluation and activates the specified inactive relationship instead. Both relationships cannot be simultaneously active — Power BI enforces this constraint. Double-counting from simultaneous active relationships is not the mechanism of this bug."
+    }
+  },
+  {
+    "id": 445,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Optimize model performance",
+    "difficulty": "Hard",
+    "question": "A Power BI model contains a DimProduct table with columns: ProductID, ProductName, SubcategoryID, SubcategoryName, CategoryID, CategoryName. All four name columns are text with high cardinality. The model also has DimDate (365 rows) and FactSales (40 million rows). Performance Analyzer shows that all visuals filter on CategoryName and SubcategoryName, and query times are 4–6 seconds. What modeling change would MOST improve performance while maintaining current reporting capability?",
+    "choices": [
+      "Change DimProduct[CategoryID] and DimProduct[SubcategoryID] from integer to text type to improve relationship compression",
+      "Normalize DimProduct into DimProduct + DimSubcategory + DimCategory with integer surrogate key relationships, and remove SubcategoryName and CategoryName from DimProduct",
+      "Create calculated columns CategoryNameUpper and SubcategoryNameUpper using UPPER() to improve string comparison performance",
+      "Reduce the number of columns in FactSales by removing unused columns to reduce the model's overall footprint"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "The DimProduct table is denormalized — it stores CategoryName and SubcategoryName redundantly for every product row. With many products, these text columns have high cardinality (though category names repeat, they still compress less efficiently than a small integer FK). Normalizing into DimProduct + DimSubcategory + DimCategory creates small dimension tables with very low cardinality integer join keys. VertiPaq compresses integer columns far better than text. Filters on CategoryName now hit a tiny DimCategory table (e.g., 10 rows) rather than scanning text in DimProduct (thousands of rows). The filter then propagates via integer FK to DimProduct to FactSales — a highly efficient path.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Normalization",
+      "VertiPaq",
+      "Performance",
+      "Data Modeling",
+      "Star Schema",
+      "Cardinality"
+    ],
+    "choiceExplanations": {
+      "0": "Changing integer to text would DECREASE compression and worsen performance. VertiPaq compresses integers (especially surrogate keys with sequential values) far more efficiently than text strings. Relationship columns should always be integers.",
+      "1": "Correct. Normalizing out the high-repetition text columns (CategoryName, SubcategoryName) into separate small dimension tables reduces the cardinality of those text columns in the main DimProduct table and creates tiny lookup tables. VertiPaq can compress a DimCategory table with 10 rows almost completely — filter operations on CategoryName become trivially fast.",
+      "2": "UPPER() creates new calculated columns that are additional stored columns in VertiPaq — this increases model size and worsens performance. DAX string comparisons are already case-insensitive by default. This approach provides no benefit and adds overhead.",
+      "3": "Removing unused columns from FactSales can improve model size and refresh performance, but the question states that the bottleneck is 4–6 second query times on DimProduct filter operations. Reducing FactSales columns does not address the high-cardinality text column issue in DimProduct causing slow filter scans."
+    }
+  },
+  {
+    "id": 446,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Configure drillthrough navigation, including pages, filters, and buttons",
+    "difficulty": "Hard",
+    "question": "A report has a summary page with a bar chart showing Revenue by Region. Users need to right-click a region bar and see a detail page for that region, AND they need to be able to view the detail page from a different report entirely (a procurement report that shares the same DimRegion dimension). Which configuration supports BOTH requirements?",
+    "choices": [
+      "Configure standard drillthrough on the detail page using Region as the drillthrough field, and share the report file with the procurement team",
+      "Configure cross-report drillthrough on the detail page, and enable the 'Allow visuals in this dataset to be used in cross-report drillthrough' option in the source report",
+      "Duplicate the detail page in the procurement report and sync both pages using a shared bookmark",
+      "Create a shared URL to the detail page with a Region query parameter and embed it in the procurement report using a web content visual"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Cross-report drillthrough allows a drill-through target page in one report to be accessed from visuals in a different report, provided both reports use the same dataset (or a shared dataset that includes DimRegion). Configuration requires: (1) enabling cross-report drillthrough on the target report's detail page, (2) setting the drillthrough filter field (Region), and (3) enabling 'Allow cross-report drillthrough' in the target report's options. The source procurement report gains the right-click drillthrough option automatically for any visual with the shared Region field. Standard drillthrough only works within the same report file.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Cross-report Drillthrough",
+      "Drillthrough",
+      "Navigation",
+      "Report Design"
+    ],
+    "choiceExplanations": {
+      "0": "Standard drillthrough enables right-click navigation only within the same report file. Sharing the file with the procurement team gives them access to all pages including the detail page, but the drillthrough from the procurement report's visuals (in a different PBIX) will not work. Standard drillthrough cannot reach across report files.",
+      "1": "Correct. Cross-report drillthrough is specifically designed for this scenario: a detail page in Report A can be the drillthrough target for visuals in Report B when both reports share the same underlying dataset. The DimRegion dimension is shared, satisfying the requirement for the cross-report context to be passed correctly.",
+      "2": "Duplicating the detail page in the procurement report maintains two separate copies that must be kept in sync — a maintenance burden. Bookmarks cannot synchronize filter state across different report files in Power BI Service.",
+      "3": "Embedding a URL with a query parameter in a web content visual creates a static link that does not dynamically pass the context of the right-clicked region. It would also require the procurement team to click a URL rather than use native right-click drillthrough, and URL filter parameters in embedded web views have limited support."
+    }
+  },
+  {
+    "id": 447,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Create reports",
+    "difficulty": "Hard",
+    "question": "A finance team requires a monthly revenue report that must: (1) display exactly 12 months per page with no pagination controls, (2) support pixel-perfect formatting including specific row heights and exact cell borders, (3) be exported as a multi-page PDF with consistent headers and footers, and (4) be embedded in the company's existing SSRS portal. Which Power BI report type BEST meets ALL four requirements?",
+    "choices": [
+      "A standard Power BI report (PBIX) with a table visual, exported via the Power BI Service export to PDF feature",
+      "A Power BI paginated report (RDLX) published to Power BI Service",
+      "A standard Power BI report with a matrix visual using custom conditional formatting for borders and fixed row heights",
+      "A Power BI report embedded in an iframe within the SSRS portal using a publish-to-web URL"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Paginated reports (RDLX, built in Power BI Report Builder) are designed precisely for pixel-perfect, printable, multi-page reports. Key capabilities: (1) exact page layout control — specify precise column widths, row heights, and cell borders; (2) repeating headers and footers across pages; (3) native multi-page PDF export with consistent formatting; (4) SSRS compatibility — paginated reports use the same rendering engine as SSRS and can be embedded in SSRS portals. Standard Power BI reports (PBIX) are designed for interactive analytics, not pixel-perfect print layouts, and their PDF export does not provide precise page break control or consistent multi-page header/footer support.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Paginated Reports",
+      "RDLX",
+      "Report Builder",
+      "PDF Export",
+      "SSRS"
+    ],
+    "choiceExplanations": {
+      "0": "A standard Power BI table visual exported to PDF does not support pixel-perfect formatting (exact row heights, cell borders) or consistent multi-page headers/footers. The export renders the report visually but does not provide the pagination control or layout precision required by finance teams for formal printed reports.",
+      "1": "Correct. Power BI paginated reports are the modern replacement for SSRS-style reports within the Power BI ecosystem. They provide exact pixel-level layout control, repeating page headers and footers, precise pagination, and native high-fidelity PDF export. They can also be published to Power BI Service and integrated with SSRS environments.",
+      "2": "Standard Power BI report matrix visuals cannot define exact cell border styles, precise row heights in physical units (inches/mm), or consistent page headers/footers. The visual rendering engine is optimized for screen interaction, not print-perfect output.",
+      "3": "Publish-to-web creates a public embed URL not suitable for enterprise portal integration with authentication. It also embeds a standard Power BI report that does not meet the pixel-perfect PDF export or SSRS compatibility requirements."
+    }
+  },
+  {
+    "id": 448,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Create reports",
+    "difficulty": "Hard",
+    "question": "A report contains a clustered bar chart showing sales by product. The report owner wants each bar to be automatically colored green if the product exceeded its budget target, red if it fell below target by more than 10%, and amber for everything in between. The thresholds must update dynamically as budget data changes. Which approach MOST directly meets this requirement?",
+    "choices": [
+      "Add a conditional formatting rule to the bar chart's Color field using a DAX measure that returns hex color codes based on the performance ratio",
+      "Create three separate bar chart visuals — one for green products, one for red, one for amber — using page-level filters",
+      "Use a slicer to let users manually select a color threshold and apply it using bookmarks",
+      "Write a calculated column ProductColorCode in DAX and use it as the Legend field on the bar chart"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Conditional formatting with a field value (using a DAX measure that returns hex color strings like '#00B050', '#FF0000', '#FFC000') is the correct approach for dynamic, measure-driven color coding in Power BI. The measure calculates the performance ratio against budget and returns the appropriate color. As budget data updates, the color measure recalculates and the visual colors update automatically. This requires enabling 'Format by field value' in the visual's color formatting settings.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Conditional Formatting",
+      "Hex Color",
+      "DAX Measure",
+      "Format by Field Value",
+      "Visualization"
+    ],
+    "choiceExplanations": {
+      "0": "Correct. A DAX measure returning hex color codes (e.g., IF([Budget Ratio] > 1, '#00B050', IF([Budget Ratio] >= 0.9, '#FFC000', '#FF0000'))) can be applied as a 'Format by field value' color rule in the bar chart's conditional formatting settings. The measure recalculates dynamically as filter context or data changes.",
+      "1": "Using three separate bar chart visuals with static page-level filters hard-codes the category boundaries and requires manually updating three visuals whenever thresholds change. It also produces a cluttered layout with three separate charts instead of one unified view.",
+      "2": "Bookmarks capture static filter state — they cannot respond to dynamic data changes in budget figures. Having users select color thresholds manually defeats the purpose of automatic performance-based coloring.",
+      "3": "A calculated column is evaluated at refresh time with no filter context — it cannot compare against a budget measure that responds to slicer selections or visual cross-filters. Calculated columns also add stored data to the model unnecessarily. A measure is the correct tool for dynamic context-sensitive calculations."
+    }
+  },
+  {
+    "id": 449,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Enhance reports for usability and storytelling",
+    "difficulty": "Hard",
+    "question": "A report has three pages: Overview, Sales Detail, and Inventory Detail. A Region slicer exists on Overview and Sales Detail pages. The analyst configures the Region slicer to sync across both pages. A product manager reports that selecting a region on the Overview page unexpectedly also filters the Inventory Detail page even though the slicer is not visible there. What is the MOST likely cause?",
+    "choices": [
+      "The slicer sync settings have 'Sync' enabled for all three pages but 'Visible' disabled on Inventory Detail — the slicer is invisible but still active",
+      "Page-level filters on the Inventory Detail page are inheriting filters from the Overview slicer via the data model relationships",
+      "The slicer is visible on all three pages but the report was saved before the visibility toggle was applied — republishing the report will fix it",
+      "Cross-report drillthrough is propagating the Region filter from Overview to Inventory Detail through a shared bookmark"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Power BI's slicer sync feature has two independent toggles per page: 'Sync' (the slicer value is active as a filter on this page) and 'Visible' (the slicer widget is shown on this page). A page with 'Sync ON' and 'Visible OFF' will have the slicer's filter applied but the slicer widget will not be shown — users cannot see or directly interact with it, but its filter is active. If the Inventory Detail page was accidentally set to 'Sync ON / Visible OFF', selections from any synced page will filter Inventory Detail silently. This is a common configuration mistake when setting up synced slicers across multiple pages.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Sync Slicers",
+      "Slicer Visibility",
+      "Report Design",
+      "Filter State",
+      "Usability"
+    ],
+    "choiceExplanations": {
+      "0": "Correct. The Sync Slicers pane has two checkboxes per page: 'Sync' and 'Visible'. Enabling 'Sync' without 'Visible' makes the slicer invisible on that page but its filter is still applied. The product manager cannot see the slicer on Inventory Detail, but the Region filter is active — causing the unexpected filtering behavior.",
+      "1": "Page-level filters in Power BI are defined explicitly per page in the Filters pane. Slicer selections from another page do not automatically propagate to a page that is not in the sync group via data model relationships. Relationships govern how filters propagate between tables within a DAX query, not between report pages.",
+      "2": "Publish state does not affect the slicer sync configuration — the settings are saved in the report file and take effect immediately upon saving, not upon republishing. Additionally, republishing would not change a misconfigured sync/visible toggle.",
+      "3": "Cross-report drillthrough passes filter context when a user explicitly triggers a drillthrough navigation action. It does not passively propagate slicer selections from one page to another within the same report. Bookmarks also capture static state rather than dynamically forwarding slicer selections."
+    }
+  },
+  {
+    "id": 450,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Enhance reports for usability and storytelling",
+    "difficulty": "Hard",
+    "question": "A report designer wants to create a guided storytelling experience: users see a narrative overview first, then step through five regional 'chapters' in sequence using a custom button. Each chapter shows the same set of visuals but filtered to a different region, with a different highlighted insight card visible per region. The filter state and which visuals are visible must change per chapter. Which approach is MOST appropriate?",
+    "choices": [
+      "Create five separate report pages — one per region — and use page navigation buttons to link them in sequence",
+      "Use a Region slicer with a button for each region value and apply conditional visibility using report tooltips",
+      "Create bookmarks for each chapter state (region filter + specific card visible) and wire navigation buttons to trigger the corresponding bookmark",
+      "Use the drill-down feature on the region visual to navigate from national to regional level data"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "Bookmarks capture and restore full report state: filter context (region filter active), slicer selections, visual visibility, scroll position, and spotlight state. Creating one bookmark per chapter — each capturing the correct region filter and the correct insight card visibility — and connecting navigation buttons to trigger the sequential bookmarks is the correct Power BI pattern for guided storytelling. The 'Next' and 'Previous' buttons simply call the next/previous bookmark in sequence. This approach uses a single report page and one set of visuals, reusing them across all chapters efficiently.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Bookmarks",
+      "Navigation",
+      "Storytelling",
+      "Visual Visibility",
+      "Report Design"
+    ],
+    "choiceExplanations": {
+      "0": "Separate pages per region work but require maintaining five separate page layouts. When the visual design changes, it must be updated on all five pages independently. This approach also cannot easily control which specific insight card is highlighted unless each page has a completely different layout — high maintenance burden.",
+      "1": "Report tooltips show supplementary information when hovering over a visual — they are not a mechanism for changing visible visuals or active filter state in the main report canvas. A button-per-region-value approach would require the user to make a selection rather than following a guided sequence.",
+      "2": "Correct. Bookmarks are the built-in Power BI mechanism for capturing and restoring complex report state. By creating one bookmark per chapter (encoding region filter + card visibility state), and using action buttons with 'Bookmark' action type, the designer achieves a fully guided, sequenced storytelling experience with a single page layout.",
+      "3": "Drill-down navigates within a visual's data hierarchy (e.g., from Country to Region to City). It does not change which visuals are visible on the page, does not control an insight card, and does not support the sequenced 'chapter' navigation structure required for this guided experience."
+    }
+  },
+  {
+    "id": 451,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Identify patterns and trends",
+    "difficulty": "Hard",
+    "question": "An analyst adds an Anomaly Detection visual to a line chart showing daily sales over 18 months. After configuring it, the visual marks 47 data points as anomalies. The business stakeholders say most of these are not real anomalies — they are expected seasonal peaks and troughs. The sensitivity is currently set to the default (50). What is the MOST appropriate adjustment?",
+    "choices": [
+      "Increase the sensitivity setting above 50 to make anomaly detection more strict and reduce the number of flagged points",
+      "Decrease the sensitivity setting below 50 to widen the expected range band, so only truly unexpected deviations are flagged",
+      "Remove the anomaly detection and use reference lines at the mean ± 2 standard deviations instead",
+      "Add a forecast overlay to the line chart — anomaly detection requires a forecast to distinguish seasonal patterns from true anomalies"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "In Power BI's anomaly detection for line charts, the Sensitivity setting controls how wide or narrow the 'expected range' band is. A LOWER sensitivity value creates a WIDER expected range, meaning more variation is considered normal and fewer points are flagged as anomalies. A HIGHER sensitivity value creates a narrower band, flagging more points. Since 47 points are being flagged incorrectly (seasonal variation being treated as anomalies), decreasing the sensitivity (widening the expected range) will encompass the seasonal peaks and troughs within the normal band, reducing false positives.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Anomaly Detection",
+      "AI Visuals",
+      "Sensitivity",
+      "Line Chart",
+      "Patterns and Trends"
+    ],
+    "choiceExplanations": {
+      "0": "Increasing sensitivity narrows the expected range band and flags MORE data points as anomalies — the opposite of what is needed. With 47 false positives, increasing sensitivity would likely produce even more flagged points.",
+      "1": "Correct. Decreasing the sensitivity setting widens the expected range that the anomaly detection algorithm considers normal. Seasonal peaks and troughs that fall within this wider band will no longer be flagged. Only truly unexpected deviations outside the wider band will be highlighted as anomalies.",
+      "2": "Reference lines at ±2 standard deviations are a static measure — they do not adapt to seasonal patterns or trends in the data. Anomaly detection in Power BI uses a dynamic algorithm that accounts for trend and seasonality. Removing it and using static reference lines is a less sophisticated approach.",
+      "3": "Anomaly detection and forecast are independent features. Anomaly detection uses an algorithm that inherently accounts for trend and seasonal patterns — it does not require a forecast overlay to function. They can be used together but neither depends on the other."
+    }
+  },
+  {
+    "id": 452,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Create reports",
+    "difficulty": "Hard",
+    "question": "A report page contains four visuals: a bar chart (Sales by Region), a donut chart (Sales by Category), a table (Product Details), and a KPI card (Total Revenue). The report designer wants the following behavior: clicking a region bar should filter the donut chart and the table, but the KPI card must always show the unfiltered grand total regardless of any selection. What is the MOST appropriate configuration?",
+    "choices": [
+      "Set the KPI card visual's interactions to 'No Impact' for the bar chart, donut chart, and table",
+      "Wrap the KPI card's measure in ALL(): Grand Total Revenue = CALCULATE([Total Revenue], ALL(DimRegion))",
+      "Set the KPI card visual's interactions to 'No Impact' for the bar chart only, since the donut and table do not affect the KPI card",
+      "Both A and B are required — the visual interaction setting prevents cross-filtering, and the ALL() measure removes filter context from the measure itself"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "The KPI card's measure should ignore the Region slicer/cross-filter by wrapping in ALL(DimRegion). This is a DAX solution: the measure itself removes the Region filter context regardless of what is selected in the bar chart. Visual interaction settings control whether a visual's selection propagates to other visuals — but they only affect the current report page's visual interactions, not the underlying filter context from slicers. Using ALL() in the DAX measure is robust, report-portable, and works regardless of how the filters reach the measure (visual interaction, slicer, page filter, or report filter).",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Visual Interactions",
+      "ALL",
+      "CALCULATE",
+      "Filter Context",
+      "Report Design"
+    ],
+    "choiceExplanations": {
+      "0": "Setting 'No Impact' visual interaction prevents the bar chart's clicks from cross-filtering the KPI card. However, if a Region slicer is added to the page later, or if the bar chart is replaced, the KPI card would start being filtered again. Visual interaction settings are per-visual configuration — they are brittle to report changes and do not address filter context at the DAX level.",
+      "1": "Correct. A DAX measure with ALL(DimRegion) removes the Region filter from the evaluation context at the measure level. This works regardless of how the Region filter reaches the measure — visual interactions, slicers, page filters, or drillthrough. It is the most robust and portable solution.",
+      "2": "Setting 'No Impact' only for the bar chart still allows the donut chart or table to cross-filter the KPI card (if both are configured with filter impact). This does not fully isolate the KPI card from all region filters.",
+      "3": "If the measure uses ALL(DimRegion), visual interaction settings become redundant for Region-based filtering. The measure already handles the filter removal at the DAX level — there is no need to also configure 'No Impact' interactions for every visual on the page."
+    }
+  },
+  {
+    "id": 453,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Create reports",
+    "difficulty": "Hard",
+    "question": "A company publishes a Power BI report to Power BI Service. The report must be accessible to 200 external partners who do not have Azure AD accounts or Power BI licenses. The report contains sensitive financial data — anonymous public access is not permitted. Which distribution method is MOST appropriate?",
+    "choices": [
+      "Publish the report using 'Publish to web' and share the generated URL with all 200 partners",
+      "Create a Power BI app, grant the partners access as external users via Azure AD B2B guest accounts, and distribute via the app",
+      "Embed the report in a public website using an embedding token generated from a service principal",
+      "Export the report as a PDF and distribute it via encrypted email to all 200 partners"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Azure AD B2B (Business-to-Business) guest accounts allow external users to authenticate with their own organizational identities and access Power BI content under a controlled, permissioned model. Partners receive guest invitations, sign in with their own credentials, and access the Power BI app with the datasets and reports the organization has shared. This satisfies both requirements: (1) external partners without AAD accounts can receive guest accounts, (2) access is authenticated and not public — each partner is individually permissioned. A Premium capacity or Premium Per User license is required to share content with guests who don't have Power BI Pro licenses.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Azure AD B2B",
+      "External Users",
+      "App Distribution",
+      "Power BI Service",
+      "Security"
+    ],
+    "choiceExplanations": {
+      "0": "'Publish to web' generates an anonymous public embed URL — anyone with the URL can see the report without authentication. This explicitly violates the requirement that anonymous public access is not permitted for sensitive financial data.",
+      "1": "Correct. Azure AD B2B guest accounts provide authenticated access for external partners. They can use their existing organizational credentials (or create a Microsoft account) to authenticate. The Power BI administrator controls which content each guest can access, and access can be revoked at any time.",
+      "2": "Embedding with a service principal-generated token for a public website would require the embedding application to authenticate on behalf of users. Without AAD authentication for each partner in the embedding flow, this effectively creates anonymous or shared-credential access — not compliant with the security requirement.",
+      "3": "Exporting to PDF removes all interactivity, is a static snapshot at one point in time, and does not scale to 200 partners receiving updated financial data. It also does not provide controlled access revocation and creates an audit and compliance risk from PDF files distributed externally."
+    }
+  },
+  {
+    "id": 454,
+    "type": "single",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Implement row-level security roles",
+    "difficulty": "Hard",
+    "question": "A multinational company has a Power BI dataset with a FactSales table and a DimEmployee table. Employees should see only sales records associated with their own EmployeeID. The relationship FactSales[ManagerID] → DimEmployee[EmployeeID] uses a different column name than the report's user identity. The IT team stores employee email addresses in DimEmployee[WorkEmail]. Dynamic RLS should automatically restrict each user to their own data based on their Power BI login. Which DAX filter expression in the RLS role definition is MOST correct?",
+    "choices": [
+      "[WorkEmail] = USERNAME()",
+      "[WorkEmail] = USERPRINCIPALNAME()",
+      "[EmployeeID] = LOOKUPVALUE(DimEmployee[EmployeeID], DimEmployee[WorkEmail], USERNAME())",
+      "[WorkEmail] = LOOKUPVALUE(DimEmployee[WorkEmail], DimEmployee[EmployeeID], USERPRINCIPALNAME())"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "For dynamic RLS in Power BI Service with Azure AD authentication, USERPRINCIPALNAME() returns the authenticated user's UPN (typically their work email address, e.g., john.smith@company.com). If DimEmployee[WorkEmail] stores the same format as the AAD UPN, then [WorkEmail] = USERPRINCIPALNAME() correctly restricts the DimEmployee table to only the current user's row. This filter then propagates through the relationship to FactSales, showing only that employee's sales records. USERNAME() returns the same value in Power BI Service for AAD authentication and is acceptable, but USERPRINCIPALNAME() is the explicit, recommended function for AAD identity.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Dynamic RLS",
+      "USERPRINCIPALNAME",
+      "Row-level Security",
+      "DAX",
+      "Azure AD"
+    ],
+    "choiceExplanations": {
+      "0": "USERNAME() in Power BI Service with AAD authentication returns the same value as USERPRINCIPALNAME() — the user's UPN. While this may work in practice, USERNAME() is the legacy function originally designed for on-premises Analysis Services. USERPRINCIPALNAME() is the recommended function for Power BI Service with AAD identity and is more explicit about its intent.",
+      "1": "Correct. USERPRINCIPALNAME() returns the authenticated user's Azure AD UPN (e.g., john.smith@company.com). If DimEmployee[WorkEmail] contains the same format, this filter restricts the dimension to the current user's row. The filter then propagates via the relationship to FactSales, implementing dynamic per-user data isolation.",
+      "2": "LOOKUPVALUE to find EmployeeID by email via USERNAME() is an unnecessarily complex expression for this scenario. Since [WorkEmail] already contains the UPN format, a direct equality comparison is cleaner and more performant. Additionally, using USERNAME() is less precise than USERPRINCIPALNAME() for AAD authentication.",
+      "3": "This expression looks up a WorkEmail using EmployeeID as the lookup key and the current user's UPN as the value — the logic is circular and incorrect. The filter expression should identify which employee matches the current user's identity; using USERPRINCIPALNAME() as the lookup target column value with EmployeeID as the result doesn't achieve this."
+    }
+  },
+  {
+    "id": 455,
+    "type": "single",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Create and manage workspaces and assets",
+    "difficulty": "Hard",
+    "question": "A company's Power BI deployment has the following requirements: (1) The data team builds and manages reports in a controlled development environment, (2) Reports must be promoted through Test and Production stages before business users see them, (3) Business users should access a curated, branded portal experience with only approved reports, (4) Dataset connection strings must change automatically between Dev and Prod without manual PBIX re-publishing. Which combination of features BEST satisfies ALL requirements?",
+    "choices": [
+      "Three separate workspaces (Dev, Test, Prod) with manual PBIX uploads between stages and an app published from the Prod workspace",
+      "A single workspace with folder organization, separate report versions named by stage, and publish-to-web for the production reports",
+      "Power BI deployment pipelines to manage the Dev → Test → Prod promotion, with a Power BI app published from the Prod pipeline stage, and deployment pipeline rules to override data source connection strings per stage",
+      "Power BI dataflows for data transformation, DirectQuery connections in each workspace, and row-level security to control which users see which stage of reports"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "Power BI deployment pipelines provide a structured Dev → Test → Production promotion workflow. Reports, datasets, and dashboards are promoted between pipeline stages with a single click. Deployment rules allow per-stage overrides of data source connections (e.g., Dev connects to a dev SQL Server; Prod connects to the production SQL Server) without editing the PBIX file. Publishing an app from the Prod stage workspace provides the curated branded portal for business users — they only see content that has been approved and promoted to Production. This satisfies all four requirements with a native, purpose-built Power BI feature.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Deployment Pipelines",
+      "Power BI App",
+      "Workspace Management",
+      "Deployment Rules",
+      "DevOps"
+    ],
+    "choiceExplanations": {
+      "0": "Manual PBIX uploads between workspaces require developers to re-publish files, manually re-configure data source connections, and create error-prone manual processes. This approach does not satisfy requirement 4 (automatic connection string changes). Publishing an app from Prod does satisfy requirement 3, but the overall process is fragile and labor-intensive.",
+      "1": "A single workspace with folder organization does not provide environment separation — all users with workspace access see all stages. Publish-to-web creates anonymous public access, which is inappropriate for internal business reporting. This approach satisfies none of the four requirements.",
+      "2": "Correct. Deployment pipelines address all requirements: structured promotion workflow (Req 1, 2), app publishing for curated user experience (Req 3), and deployment rules for automatic connection string substitution per pipeline stage (Req 4). This is the purpose-built Power BI solution for ALM (Application Lifecycle Management).",
+      "3": "Dataflows and DirectQuery address data transformation and refresh architecture, not deployment lifecycle management. DirectQuery with separate workspace connections still requires manual connection changes when promoting between environments. RLS controls data visibility, not environment separation."
+    }
+  },
+  {
+    "id": 456,
+    "type": "single",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Create and manage workspaces and assets",
+    "difficulty": "Hard",
+    "question": "A company uses Power BI Service with data hosted in an on-premises SQL Server 2019 instance. They also use an Azure SQL Database for real-time operational data. Three reports use Import mode for the on-premises SQL data. Two reports use DirectQuery against the Azure SQL Database. Report A uses a composite model combining both sources. What is the minimum gateway configuration needed to refresh ALL five reports?",
+    "choices": [
+      "One Personal mode gateway installed on the developer's local machine to handle both on-premises and Azure connections",
+      "One On-premises data gateway (standard mode) installed on a server with network access to the on-premises SQL Server; Azure SQL requires no gateway",
+      "One On-premises data gateway (standard mode) for the on-premises SQL Server, and one separate Personal mode gateway for Azure SQL Database",
+      "Two On-premises data gateways in cluster mode — one for Import mode reports and one for DirectQuery reports"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "The On-premises data gateway (standard mode) is required for on-premises SQL Server access from Power BI Service. Azure SQL Database is a cloud service accessible directly from Power BI Service — no gateway is required for Azure SQL. The single standard gateway on a server handles: (1) Import refresh for the three on-premises reports, (2) DirectQuery live connections to the Azure SQL through Power BI Service directly (no gateway hop), and (3) the composite model which uses the gateway only for the on-premises component. Personal mode gateways are single-user, cannot be shared across workspaces, and are unsuitable for organizational deployment.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Gateway",
+      "On-premises Data Gateway",
+      "Azure SQL",
+      "DirectQuery",
+      "Import Mode"
+    ],
+    "choiceExplanations": {
+      "0": "Personal mode gateways are designed for individual developer use — they cannot be shared with other users in Power BI Service workspaces. A developer's local machine is also not suitable for production refresh scheduling. Additionally, Azure SQL does not require a gateway.",
+      "1": "Correct. The on-premises data gateway (standard mode) handles the on-premises SQL Server data. Azure SQL Database is a public cloud endpoint that Power BI Service can reach directly without routing through a gateway. The single standard gateway serves all five reports: Import refreshes for the three on-prem reports, and the on-prem component of the composite model in Report A.",
+      "2": "Azure SQL Database does not require a gateway — it is accessible directly from Power BI Service. Installing an additional personal gateway for Azure SQL adds unnecessary complexity and is architecturally incorrect.",
+      "3": "Separate gateway cluster nodes are used for high availability and load balancing, not for separating Import vs DirectQuery traffic. A single standard gateway can handle both Import and DirectQuery connections. The cost and complexity of a two-gateway cluster is not justified here."
+    }
+  },
+  {
+    "id": 457,
+    "type": "single",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Secure and govern Power BI items",
+    "difficulty": "Hard",
+    "question": "A Power BI dataset contains healthcare patient records classified as 'Highly Confidential' under the organization's data governance policy. Reports built on this dataset are published to a workspace. The CISO requires: (1) sensitive data must be labeled to prevent accidental sharing, (2) labeled reports must not be exportable to unsecured formats like CSV or unencrypted Excel, (3) the label must automatically extend to any downstream content derived from this dataset. Which Power BI feature BEST meets ALL requirements?",
+    "choices": [
+      "Row-level security roles restricting patient data to authorized users only",
+      "Microsoft Purview sensitivity labels with automatic label inheritance and protection settings that block unsupported export formats",
+      "Workspace access roles (Viewer, Contributor) limiting who can access the workspace and export content",
+      "Column-level security in the dataset settings to hide sensitive columns from unauthorized users"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Microsoft Purview (formerly Microsoft Information Protection) sensitivity labels in Power BI satisfy all three requirements: (1) Sensitive data is labeled — labels are visible on the report and in the Power BI Service UI; (2) Labels with protection settings (via Azure Rights Management) can enforce encryption and block export to unsupported/insecure formats (CSV, unencrypted Excel); (3) Power BI supports label inheritance — when a report is built from a labeled dataset, it inherits the label automatically, and downstream reports and dashboards derived from labeled content also inherit the classification. This is a governance-layer solution that works across the Microsoft 365 ecosystem.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Sensitivity Labels",
+      "Microsoft Purview",
+      "Data Governance",
+      "Information Protection",
+      "Label Inheritance"
+    ],
+    "choiceExplanations": {
+      "0": "RLS restricts which rows a user can see in a dataset — it is an analytical data access control, not a data classification or export restriction mechanism. RLS does not prevent a user who HAS access to data from exporting it to CSV.",
+      "1": "Correct. Microsoft Purview sensitivity labels provide data classification, protection policies (blocking insecure exports), and automatic label inheritance in Power BI. When the dataset is labeled 'Highly Confidential,' all reports, dashboards, and downstream content automatically inherit this label and its associated protection settings.",
+      "2": "Workspace roles control who can publish content, create reports, and view reports within the workspace. They do not provide data classification labels, do not restrict specific export formats based on data sensitivity, and do not extend protections to downstream content outside the workspace.",
+      "3": "Column-level security (via Object-Level Security in Analysis Services/XMLA) hides specific columns from certain roles. This is a data access control, not a governance classification tool. It does not label data, does not restrict export formats, and does not propagate to downstream derived content."
+    }
+  },
+  {
+    "id": 458,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Create model calculations by using DAX",
+    "difficulty": "Hard",
+    "question": "A measure is defined as: Running Total = CALCULATE(SUM(FactSales[Revenue]), FILTER(ALL(DimDate[Date]), DimDate[Date] <= MAX(DimDate[Date]))). The measure is placed on a matrix with Year and Month on rows. The running total accumulates correctly within a year but resets to the monthly amount at the start of each new year — it does not accumulate across years. What is MOST likely the cause?",
+    "choices": [
+      "ALL(DimDate[Date]) should be replaced with ALLEXCEPT(DimDate, DimDate[Year]) to preserve the year context",
+      "MAX(DimDate[Date]) is evaluated within the current filter context, which already restricts dates to the current year — replace DimDate[Date] with DimDate[FullDate] column",
+      "The FILTER is correct but the matrix row hierarchy is causing each year to reset the running total — disable drill-down hierarchy in the matrix visual settings",
+      "ALL(DimDate[Date]) removes the date filter but the year hierarchy in the matrix still applies a year-level filter not removed by ALL(DimDate[Date]) — use ALL(DimDate) to remove ALL columns on the date table from context"
+    ],
+    "correctAnswers": [
+      3
+    ],
+    "explanation": "When the matrix places Year and Month on rows, Power BI applies two separate filters: one from the Year level and one from the Month level. ALL(DimDate[Date]) removes the filter only on the Date column — but the Year column filter (applied by the matrix row hierarchy) remains active because it is a different column. So MAX(DimDate[Date]) is still constrained to only dates within the current year. Using ALL(DimDate) removes ALL column filters from the DimDate table (Date, Year, Month, Quarter, etc.), allowing MAX(DimDate[Date]) to return the truly maximum date in context. This is the standard fix for cross-year running totals in a hierarchy matrix.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Running Total",
+      "ALL",
+      "CALCULATE",
+      "Filter Context",
+      "Date Hierarchy",
+      "DAX"
+    ],
+    "choiceExplanations": {
+      "0": "ALLEXCEPT(DimDate, DimDate[Year]) removes all filters from DimDate EXCEPT Year — this would intentionally preserve the year boundary, making the running total reset at year boundaries rather than accumulate across them. This is the opposite of what is needed.",
+      "1": "There is no separate FullDate vs Date column issue here. MAX(DimDate[Date]) returns the maximum visible date in context. The problem is which filters restrict what is visible — not which column is being max'd.",
+      "2": "The running total calculation is the issue, not the matrix visual's drill-down configuration. Disabling hierarchy drill-down changes the visual layout but does not change the filter context behavior. The year-level filter still propagates to the DAX evaluation.",
+      "3": "Correct. ALL(DimDate[Date]) only removes the Date column filter. The Year column filter applied by the matrix hierarchy is a separate column filter that remains active. ALL(DimDate) — with no column argument — removes ALL column filters from the entire DimDate table, allowing the FILTER predicate to compare against all dates from all years."
+    }
+  },
+  {
+    "id": 459,
+    "type": "single",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Secure and govern Power BI items",
+    "difficulty": "Hard",
+    "question": "A company has a Power BI dataset used by reports across four different workspaces. The data team wants to implement RLS so that users from Workspace A see Region = North, users from Workspace B see Region = South, and users from Workspace C and D see all regions. The user-to-region mapping is stored in a separate Azure AD security group per region. Which approach correctly implements this WITHOUT creating separate datasets per workspace?",
+    "choices": [
+      "Create two static RLS roles (North and South) in the dataset, and manually assign each workspace member to the appropriate role via the dataset security settings",
+      "Create a dynamic RLS role that uses USERPRINCIPALNAME() to look up the user's assigned region from a mapping table loaded into the dataset, and assign all workspace users to that dynamic role",
+      "Configure workspace-level row filters in the Power BI Admin portal to restrict data by region per workspace",
+      "Use object-level security (OLS) to hide the Region column from users in workspaces A and B, and create calculated columns that substitute the hidden column"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Dynamic RLS with a user-to-region mapping table is the scalable, single-dataset solution. Load a UserRegionMapping table (columns: UserEmail, AllowedRegion) into the dataset from a controlled source (e.g., SharePoint list, SQL table, or Azure AD group resolved via a data flow). Create one dynamic RLS role: [AllowedRegion] = USERPRINCIPALNAME() or use LOOKUPVALUE to match the user email against the mapping table and filter the Region dimension accordingly. Users assigned to no region row in the mapping table see all regions (or BLANK filter matches nothing — depends on design). All workspace members are assigned to this single dynamic role. When region assignments change, update the mapping table — no PBIX or role changes required.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Dynamic RLS",
+      "Row-level Security",
+      "USERPRINCIPALNAME",
+      "User Mapping",
+      "Dataset Security"
+    ],
+    "choiceExplanations": {
+      "0": "Static RLS roles require manually re-assigning users whenever their region changes. Managing four workspaces worth of users across two static roles is operationally fragile and does not scale. It also does not handle the Workspace C/D case (all regions) without creating a third role.",
+      "1": "Correct. A dynamic RLS role with a user mapping table provides self-maintaining security — update the mapping table to change a user's access, no dataset role changes needed. The single role assignment covers all workspaces. Users in the mapping table with no region restriction can be handled by an IS BLANK() or ALL() condition.",
+      "2": "Power BI Admin portal does not have workspace-level row filter settings. Row-level security is defined in the dataset model, not in workspace or admin portal settings. This option does not exist as a Power BI feature.",
+      "3": "Object-level security hides columns or tables entirely from specific roles — it is not a row filter mechanism. Hiding the Region column does not restrict which rows a user can see; it only prevents them from seeing the column name and values. Users could still query the underlying data through other columns or DAX measures."
+    }
   }
 ]

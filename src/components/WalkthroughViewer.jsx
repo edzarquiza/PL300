@@ -9,6 +9,7 @@ import TransformSlide from './walkthrough/TransformSlide'
 import ComparisonSlide from './walkthrough/ComparisonSlide'
 import RlsSlide from './walkthrough/RlsSlide'
 import TextSlide from './walkthrough/TextSlide'
+import RelationshipSlide from './walkthrough/RelationshipSlide'
 
 const SLIDE_COMPONENTS = {
   intro: IntroSlide,
@@ -21,6 +22,7 @@ const SLIDE_COMPONENTS = {
   comparison: ComparisonSlide,
   rls: RlsSlide,
   text: TextSlide,
+  'relationship-diagram': RelationshipSlide,
 }
 
 const CATEGORY_COLORS = {

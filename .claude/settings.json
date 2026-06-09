@@ -80,7 +80,21 @@
       "Bash(node -e \"const cs = require\\('./src/data/caseStudies.json'\\); const fns = [require\\('./src/data/daxFunctions/isfiltered.json'\\), require\\('./src/data/daxFunctions/relatedtable.json'\\)]; fns.forEach\\(f => console.log\\('OK:', f.name, '- category:', f.category, '- examples:', f.examples.length\\)\\)\")",
       "Bash(node -e \"const qs=require\\('./src/data/questions.json'\\); const missing=qs.filter\\(q=>!q.choiceExplanations||\\(Array.isArray\\(q.choiceExplanations\\)?q.choiceExplanations.length===0:Object.keys\\(q.choiceExplanations\\).length===0\\)\\); const fs=require\\('fs'\\); fs.writeFileSync\\('missing_qs.json', JSON.stringify\\(missing.map\\(q=>\\({id:q.id,domain:q.domain,subtopic:q.subtopic,difficulty:q.difficulty,question:q.question,choices:q.choices,correctAnswers:q.correctAnswers,explanation:q.explanation}\\)\\),null,2\\)\\); console.log\\('Exported', missing.length, 'questions'\\)\")",
       "Bash(node patch_choice_explanations.js)",
-      "Bash(node --input-type=commonjs -e ' *)"
+      "Bash(node --input-type=commonjs -e ' *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(node -e \"const r = require\\('./src/data/reviewers/daxReviewer.json'\\); console.log\\('dax:', r.length\\); const m = require\\('./src/data/reviewers/modelingReviewer.json'\\); console.log\\('modeling:', m.length\\); const s = require\\('./src/data/reviewers/securityReviewer.json'\\); console.log\\('security:', s.length\\); const pq = require\\('./src/data/reviewers/powerQueryReviewer.json'\\); console.log\\('pq:', pq.length\\); const f = require\\('./src/data/reviewers/foundationalReviewer.json'\\); console.log\\('foundational:', f.length\\); const t = require\\('./src/data/reviewers/trapReviewer.json'\\); console.log\\('trap:', t.length\\); const v = require\\('./src/data/reviewers/visualizationReviewer.json'\\); console.log\\('visualization:', v.length\\);\")",
+      "Bash(node -e \"const cs = require\\('./src/data/caseStudies.json'\\); console.log\\('Case studies:', cs.length\\); cs.forEach\\(c => console.log\\('-', c.id, ':', c.questions.length, 'questions'\\)\\);\")",
+      "Bash(node -e \"const q = require\\('./src/data/questions.json'\\); console.log\\('Total questions:', q.length\\); const byDiff = {}; q.forEach\\(x => { byDiff[x.difficulty] = \\(byDiff[x.difficulty]||0\\)+1; }\\); console.log\\('By difficulty:', JSON.stringify\\(byDiff\\)\\);\")",
+      "Bash(node -e \"const q = require\\('./src/data/questions.json'\\); console.log\\('Last 3 IDs:', q.slice\\(-3\\).map\\(x=>x.id\\)\\);\")",
+      "Bash(node -e \"const q = require\\('./src/data/questions.json'\\); console.log\\('Total:', q.length, 'Max ID:', Math.max\\(...q.map\\(x=>x.id\\)\\), 'Min ID:', Math.min\\(...q.map\\(x=>x.id\\)\\)\\);\")",
+      "Bash(node scripts/add_hard_questions.js)",
+      "Bash(cp \"D:\\\\CLAUDE Projects\\\\PL300\\\\scripts\\\\add_hard_questions.js\" \"D:\\\\CLAUDE Projects\\\\PL300\\\\scripts\\\\add_hard_questions.cjs\")",
+      "Bash(node scripts/add_hard_questions.cjs)",
+      "Bash(curl -s http://localhost:5174/)",
+      "Bash(powershell -Command ' *)",
+      "Bash(grep -v \"^$\")"
     ]
   }
 }

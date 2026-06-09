@@ -1,0 +1,65 @@
+{
+  "id": "model-role-playing",
+  "concept": "Role-Playing Dimensions",
+  "category": "Data Modeling",
+  "tagline": "One date table, three relationships, three time perspectives",
+  "relatedTags": ["Role-playing Dimensions", "USERELATIONSHIP", "Inactive Relationships", "DimDate", "Cardinality"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Role-Playing Dimensions",
+      "icon": "🗓️",
+      "body": "A role-playing dimension is a single dimension table connected to a fact table via multiple relationships, each representing a different business concept. The classic example: one DimDate table connected as OrderDate, ShipDate, and DueDate — the same date dimension 'plays three different roles.'",
+      "keyPoint": "Only ONE relationship between any two tables can be ACTIVE at a time. Additional relationships are INACTIVE (grey dashed). Use USERELATIONSHIP() inside CALCULATE to temporarily activate an inactive one."
+    },
+    {
+      "type": "relationship-diagram",
+      "title": "Three Date Relationships — Only OrderDate is Active",
+      "caption": "DimDate connects to FactOrders three times. One active (solid), two inactive (dashed). DAX and slicers use OrderDate by default.",
+      "tables": [
+        { "name": "DimDate", "type": "dimension", "position": "left", "keyColumns": ["DateID"], "columns": ["Date", "Year", "Month", "Quarter"] },
+        { "name": "FactOrders", "type": "fact", "position": "center", "keyColumns": ["OrderID"], "columns": ["OrderDateID", "ShipDateID", "DueDateID", "Revenue"] }
+      ],
+      "relationships": [
+        { "from": "DimDate", "to": "FactOrders", "cardinality": "one-to-many", "direction": "single", "active": true, "label": "OrderDate", "arrowOffset": -22 },
+        { "from": "DimDate", "to": "FactOrders", "cardinality": "one-to-many", "direction": "single", "active": false, "label": "ShipDate", "arrowOffset": 0 },
+        { "from": "DimDate", "to": "FactOrders", "cardinality": "one-to-many", "direction": "single", "active": false, "label": "DueDate", "arrowOffset": 22 }
+      ],
+      "filterNote": "Without USERELATIONSHIP, all time intelligence functions and date slicers use the active OrderDate relationship."
+    },
+    {
+      "type": "dax",
+      "title": "USERELATIONSHIP — Activate ShipDate for One Measure",
+      "caption": "Switch the active relationship just for this calculation, without changing the model",
+      "expression": "Revenue by Ship Date =\n    CALCULATE(\n        SUM(FactOrders[Revenue]),\n        USERELATIONSHIP(\n            FactOrders[ShipDateID],\n            DimDate[DateID]\n        )\n    )\n\n-- Inside this CALCULATE:\n--  1. Active OrderDateID relationship is DEACTIVATED\n--  2. ShipDateID relationship becomes ACTIVE\n--  3. Year slicer now filters by ship date\n--  4. Original state restored when CALCULATE exits",
+      "explanation": "USERELATIONSHIP takes the two columns that form the inactive relationship you want to activate. It swaps active/inactive status only within the CALCULATE expression — the model's relationships are unchanged everywhere else."
+    },
+    {
+      "type": "relationship-diagram",
+      "title": "Inside CALCULATE — ShipDate Now Active",
+      "caption": "USERELATIONSHIP temporarily activates the ShipDate path. OrderDate and DueDate become inactive for this calculation only.",
+      "tables": [
+        { "name": "DimDate", "type": "dimension", "position": "left", "keyColumns": ["DateID"], "columns": ["Date", "Year", "Month", "Quarter"] },
+        { "name": "FactOrders", "type": "fact", "position": "center", "keyColumns": ["OrderID"], "columns": ["OrderDateID", "ShipDateID", "DueDateID", "Revenue"] }
+      ],
+      "relationships": [
+        { "from": "DimDate", "to": "FactOrders", "cardinality": "one-to-many", "direction": "single", "active": false, "label": "OrderDate", "arrowOffset": -22 },
+        { "from": "DimDate", "to": "FactOrders", "cardinality": "one-to-many", "direction": "single", "active": true, "label": "ShipDate", "arrowOffset": 0, "highlight": true },
+        { "from": "DimDate", "to": "FactOrders", "cardinality": "one-to-many", "direction": "single", "active": false, "label": "DueDate", "arrowOffset": 22 }
+      ],
+      "filterNote": "USERELATIONSHIP(FactOrders[ShipDateID], DimDate[DateID]) is active. The Year slicer now restricts orders by their ShipDate."
+    },
+    {
+      "type": "text",
+      "title": "PL-300 Exam Traps — Role-Playing Dimensions",
+      "bullets": [
+        "You cannot have two active relationships between the same two tables. Power BI automatically inactivates subsequent relationships and shows them as grey dashed lines.",
+        "USERELATIONSHIP must be inside CALCULATE — it cannot be used in a standalone calculated column or as a direct model change.",
+        "Time intelligence functions (TOTALYTD, SAMEPERIODLASTYEAR, DATEADD) use the ACTIVE relationship by default. Wrap them in CALCULATE with USERELATIONSHIP to target an inactive one.",
+        "Alternative: duplicate DimDate in Power Query into DimOrderDate, DimShipDate, DimDueDate — all active relationships, no USERELATIONSHIP needed. Trade-off: larger model size.",
+        "Exam question: 'Revenue by Ship Date returns the same totals as Revenue by Order Date.' Fix: verify USERELATIONSHIP(FactOrders[ShipDateID], DimDate[DateID]) is inside a CALCULATE expression and both columns are spelled correctly."
+      ],
+      "keyPoint": "Role-playing dimension = one dimension table, multiple relationships to the same fact table, only one active at a time. USERELATIONSHIP inside CALCULATE is the standard pattern to switch between them."
+    }
+  ]
+}
