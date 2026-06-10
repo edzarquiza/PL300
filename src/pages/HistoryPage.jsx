@@ -209,7 +209,7 @@ function getAnswerDetail(q, answer) {
         isCorrect: answer === correctIdx,
       }
     }
-    case 'multiple': {
+    case 'multi': {
       if (!Array.isArray(answer)) return null
       const correct = [...(q.correctAnswers ?? [])].sort((a, b) => a - b)
       return {
@@ -224,6 +224,23 @@ function getAnswerDetail(q, answer) {
         userText: answer ? 'True' : 'False',
         correctText: q.correctAnswer ? 'True' : 'False',
         isCorrect: answer === q.correctAnswer,
+      }
+    }
+    case 'drag_drop': {
+      if (typeof answer !== 'object' || Array.isArray(answer)) return null
+      return {
+        dragDropPrompts: q.prompts ?? [],
+        dragDropUser: answer,
+        dragDropCorrect: q.correctMapping ?? {},
+        isCorrect: isAnswerCorrect(answer, q),
+      }
+    }
+    case 'rearrange_steps': {
+      if (!Array.isArray(answer)) return null
+      return {
+        rearrangeUser: answer,
+        rearrangeCorrect: q.correctOrder ?? [],
+        isCorrect: isAnswerCorrect(answer, q),
       }
     }
     default:
@@ -365,6 +382,32 @@ function AnswerReview({ questionIds, answers, questionResults }) {
                   )}
                 </>
               )}
+
+              {/* Drag & Drop matching */}
+              {detail.dragDropPrompts && detail.dragDropPrompts.map(prompt => {
+                const userChoice = detail.dragDropUser[prompt]
+                const correctChoice = detail.dragDropCorrect[prompt]
+                const ok = userChoice === correctChoice
+                return (
+                  <div key={prompt} className={ok ? 'text-green-800' : 'text-red-800'}>
+                    <span className="font-semibold">{prompt}: </span>
+                    {userChoice ?? '—'}
+                    {!ok && <span className="ml-1.5 text-green-800">· correct: {correctChoice}</span>}
+                  </div>
+                )
+              })}
+
+              {/* Sequence ordering */}
+              {detail.rearrangeCorrect && detail.rearrangeCorrect.map((step, i) => {
+                const userIdx = detail.rearrangeUser.indexOf(step)
+                const ok = userIdx === i
+                return (
+                  <div key={step} className={ok ? 'text-green-800' : 'text-red-800'}>
+                    <span className="font-semibold">{i + 1}. </span>{step}
+                    {!ok && <span className="ml-1.5">· you placed #{userIdx >= 0 ? userIdx + 1 : '—'}</span>}
+                  </div>
+                )
+              })}
             </div>
           )}
 

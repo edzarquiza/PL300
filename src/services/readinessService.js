@@ -35,7 +35,7 @@ function weightedAvgScore(recent) {
   let weight = 0
   for (let i = 0; i < recent.length; i++) {
     const w = RECENCY_WEIGHTS[i] ?? 0.1
-    score  += recent[i].score * w
+    score  += (recent[i].score.percentage / 100) * w
     weight += w
   }
   return weight > 0 ? score / weight : 0
@@ -44,8 +44,8 @@ function weightedAvgScore(recent) {
 function scoreTrend(history) {
   // Compare avg of last 2 vs avg of entries 3-5
   if (history.length < 3) return 'stable'
-  const recent  = (history[0].score + history[1].score) / 2
-  const older   = history.slice(2, 5).reduce((s, e) => s + e.score, 0) / Math.min(3, history.slice(2, 5).length)
+  const recent  = (history[0].score.percentage + history[1].score.percentage) / 2 / 100
+  const older   = history.slice(2, 5).reduce((s, e) => s + e.score.percentage, 0) / Math.min(3, history.slice(2, 5).length) / 100
   if (recent > older + 0.08) return 'improving'
   if (recent < older - 0.08) return 'declining'
   return 'stable'

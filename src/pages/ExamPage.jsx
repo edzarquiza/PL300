@@ -94,7 +94,7 @@ export default function ExamPage() {
 
   function handleSelectChoice(choiceIndex) {
     const type = currentQuestion?.type
-    if (!type || !['single', 'multiple'].includes(type)) return
+    if (!type || !['single', 'multi'].includes(type)) return
     const current = answers[currentQuestion.id] ?? null
     handleSelectAnswer(computeNewAnswer(currentQuestion, current, choiceIndex))
   }

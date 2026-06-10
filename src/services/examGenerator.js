@@ -78,7 +78,12 @@ export function shuffleQuestionChoices(q, seed) {
   const result = {
     ...q,
     choices: shuffledOldIndices.map(old => q.choices[old]),
-    correctAnswers: q.correctAnswers.map(old => oldToNew[old]),
+  }
+
+  // drag_drop questions use a value-keyed correctMapping instead of
+  // index-based correctAnswers, so there's nothing to remap there.
+  if (q.correctAnswers) {
+    result.correctAnswers = q.correctAnswers.map(old => oldToNew[old])
   }
 
   if (q.choiceExplanations) {

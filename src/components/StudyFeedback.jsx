@@ -21,7 +21,7 @@ export default function StudyFeedback({ question, userAnswer }) {
             · Correct: {question.correctAnswers.map(i => CHOICE_LABELS[i]).join(', ')}
           </span>
         )}
-        {!correct && question.type === 'multiple' && (
+        {!correct && question.type === 'multi' && (
           <span className="text-xs text-gray-600">
             · Correct: {question.correctAnswers.map(i => CHOICE_LABELS[i]).join(', ')}
           </span>
@@ -58,7 +58,7 @@ export default function StudyFeedback({ question, userAnswer }) {
 
 function getWrongExplanations(question, userAnswer) {
   if (!question.choiceExplanations) return []
-  const selected = question.type === 'multiple'
+  const selected = question.type === 'multi'
     ? (Array.isArray(userAnswer) ? userAnswer : [])
     : (userAnswer !== null && userAnswer !== undefined ? [userAnswer] : [])
   const wrong = selected.filter(i => !question.correctAnswers?.includes(i))

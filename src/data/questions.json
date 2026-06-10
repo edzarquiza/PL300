@@ -22399,5 +22399,257 @@
       "2": "Power BI Admin portal does not have workspace-level row filter settings. Row-level security is defined in the dataset model, not in workspace or admin portal settings. This option does not exist as a Power BI feature.",
       "3": "Object-level security hides columns or tables entirely from specific roles — it is not a row filter mechanism. Hiding the Region column does not restrict which rows a user can see; it only prevents them from seeing the column name and values. Users could still query the underlying data through other columns or DAX measures."
     }
+  },
+  {
+    "id": 460,
+    "type": "drag_drop",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Select an appropriate visual",
+    "difficulty": "Easy",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application",
+    "examObjective": "Visualize and analyze data > Select an appropriate visual",
+    "commonTrap": "Choosing visually appealing charts (e.g., pie or donut) over the chart type that communicates the data most clearly",
+    "trapType": "Visualization Selection",
+    "question": "A report author is choosing visuals for a new sales dashboard. Match each business requirement to the visual that best satisfies it.",
+    "prompts": [
+      "Show how monthly revenue has changed over the past two years",
+      "Display year-to-date sales progress against an annual target",
+      "Show how total IT spend breaks down across departments and sub-departments",
+      "Compare total sales achieved by each of 10 regional sales managers"
+    ],
+    "choices": ["Line chart", "Gauge", "Treemap", "Clustered bar chart"],
+    "correctMapping": {
+      "Show how monthly revenue has changed over the past two years": "Line chart",
+      "Display year-to-date sales progress against an annual target": "Gauge",
+      "Show how total IT spend breaks down across departments and sub-departments": "Treemap",
+      "Compare total sales achieved by each of 10 regional sales managers": "Clustered bar chart"
+    },
+    "explanation": "Line charts are best for showing trends over a continuous time axis. Gauges communicate progress toward a single target value. Treemaps show hierarchical part-to-whole relationships using nested, size-proportional rectangles. Clustered bar charts are ideal for comparing a metric across a moderate number of discrete categories, especially when category labels are long.",
+    "estimatedTimeSeconds": 90,
+    "tags": ["Visualization", "Select an appropriate visual", "Report Design"],
+    "questionGroupId": "visual_selection_matching",
+    "variantId": "full_pl300_01"
+  },
+  {
+    "id": 461,
+    "type": "drag_drop",
+    "domain": "Model the data",
+    "subtopic": "Write DAX measures",
+    "difficulty": "Medium",
+    "questionStyle": "direct",
+    "cognitiveLevel": "understanding",
+    "examObjective": "Model the data > Create model calculations by using DAX",
+    "commonTrap": "Confusing iterator functions with simple aggregations, or assuming RELATED works inside measures without row context",
+    "trapType": "DAX Function Confusion",
+    "question": "Match each DAX function to the description that best explains its behavior.",
+    "prompts": [
+      "Iterates a table row by row, evaluates an expression for each row, then sums the results",
+      "Evaluates an expression under a modified filter context",
+      "Retrieves a column value from the one-side of a relationship for use in a calculated column",
+      "Returns a one-column table of the unique values currently visible in a column"
+    ],
+    "choices": ["SUMX", "CALCULATE", "RELATED", "VALUES"],
+    "correctMapping": {
+      "Iterates a table row by row, evaluates an expression for each row, then sums the results": "SUMX",
+      "Evaluates an expression under a modified filter context": "CALCULATE",
+      "Retrieves a column value from the one-side of a relationship for use in a calculated column": "RELATED",
+      "Returns a one-column table of the unique values currently visible in a column": "VALUES"
+    },
+    "explanation": "SUMX is an iterator — it computes a row-level expression first, then aggregates the results. CALCULATE is the only function that can directly modify filter context, making it the foundation of advanced DAX. RELATED traverses a many-to-one relationship and requires row context, so it only works in calculated columns or inside iterators. VALUES returns the distinct values of a column under the current filter context as a table, commonly used with SELECTEDVALUE or COUNTROWS.",
+    "estimatedTimeSeconds": 90,
+    "tags": ["DAX", "SUMX", "CALCULATE", "RELATED", "VALUES"],
+    "questionGroupId": "dax_function_matching",
+    "variantId": "full_pl300_01"
+  },
+  {
+    "id": 462,
+    "type": "drag_drop",
+    "domain": "Prepare the data",
+    "subtopic": "Merge and append queries",
+    "difficulty": "Medium",
+    "questionStyle": "direct",
+    "cognitiveLevel": "understanding",
+    "examObjective": "Prepare the data > Merge and append queries",
+    "commonTrap": "Confusing Merge (joining columns) with Append (stacking rows), or Duplicate with Reference",
+    "trapType": "Merge vs Append Confusion",
+    "question": "Match each Power Query operation to the description of what it does to your data.",
+    "prompts": [
+      "Joins columns from a second table based on matching key values",
+      "Stacks rows from two queries with the same column structure into a single table",
+      "Rotates unique values from one column into new column headers",
+      "Creates a fully independent copy of a query, with no dependency on the original"
+    ],
+    "choices": ["Merge", "Append", "Pivot", "Duplicate"],
+    "correctMapping": {
+      "Joins columns from a second table based on matching key values": "Merge",
+      "Stacks rows from two queries with the same column structure into a single table": "Append",
+      "Rotates unique values from one column into new column headers": "Pivot",
+      "Creates a fully independent copy of a query, with no dependency on the original": "Duplicate"
+    },
+    "explanation": "Merge performs a join, adding columns from a second query based on matching key values (similar to a SQL JOIN). Append stacks rows from queries with compatible columns into one table (similar to UNION). Pivot turns distinct values from a column into new columns, redistributing related values into the new structure. Duplicate creates a completely independent copy — changes to the original query do not affect it. Reference, by contrast, creates a new query that depends on and is affected by changes to the original.",
+    "estimatedTimeSeconds": 90,
+    "tags": ["Power Query", "Merge", "Append", "Pivot", "Duplicate Query"],
+    "questionGroupId": "power_query_operation_matching",
+    "variantId": "full_pl300_01"
+  },
+  {
+    "id": 463,
+    "type": "drag_drop",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Secure and govern Power BI items",
+    "difficulty": "Medium",
+    "questionStyle": "direct",
+    "cognitiveLevel": "understanding",
+    "examObjective": "Manage and secure Power BI > Secure and govern Power BI items",
+    "commonTrap": "Confusing RLS (row filtering) with OLS (column/object hiding), or sensitivity labels with workspace roles",
+    "trapType": "Security Layer Confusion",
+    "question": "Match each governance requirement to the Power BI feature that addresses it.",
+    "prompts": [
+      "Restrict which rows of data a user can see based on their identity",
+      "Restrict which columns or measures a user is allowed to view",
+      "Classify a semantic model as containing confidential information for compliance tracking",
+      "Control who can edit, publish, or manage content within a workspace"
+    ],
+    "choices": ["Row-level security (RLS)", "Object-level security (OLS)", "Sensitivity label", "Workspace role"],
+    "correctMapping": {
+      "Restrict which rows of data a user can see based on their identity": "Row-level security (RLS)",
+      "Restrict which columns or measures a user is allowed to view": "Object-level security (OLS)",
+      "Classify a semantic model as containing confidential information for compliance tracking": "Sensitivity label",
+      "Control who can edit, publish, or manage content within a workspace": "Workspace role"
+    },
+    "explanation": "RLS filters the rows returned to a user based on role rules and their identity. OLS hides entire tables, columns, or measures from members of a role — it is a visibility control, not a row filter. Sensitivity labels (from Microsoft Purview) classify and protect content based on data sensitivity, independent of who can query it. Workspace roles (Admin, Member, Contributor, Viewer) govern what actions a user can take on the content within a workspace.",
+    "estimatedTimeSeconds": 90,
+    "tags": ["RLS", "OLS", "Sensitivity Labels", "Workspace Roles", "Security"],
+    "questionGroupId": "security_layer_matching",
+    "variantId": "full_pl300_01"
+  },
+  {
+    "id": 464,
+    "type": "rearrange_steps",
+    "domain": "Prepare the data",
+    "subtopic": "Transform and clean data",
+    "difficulty": "Medium",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application",
+    "examObjective": "Prepare the data > Transform and load the data",
+    "commonTrap": "Setting data types before removing errors and duplicates, or loading to the model before profiling for quality issues",
+    "trapType": "Power Query Transformation Order",
+    "question": "A data analyst is preparing a new source table in Power Query before loading it into the data model. Arrange the following steps in the order they should typically be performed.",
+    "steps": [
+      "Set the correct data type for each remaining column",
+      "Connect to the data source and preview the raw data",
+      "Load the transformed query into the data model",
+      "Remove errors, duplicate rows, and unnecessary columns",
+      "Profile the columns to identify data quality issues"
+    ],
+    "correctOrder": [
+      "Connect to the data source and preview the raw data",
+      "Profile the columns to identify data quality issues",
+      "Remove errors, duplicate rows, and unnecessary columns",
+      "Set the correct data type for each remaining column",
+      "Load the transformed query into the data model"
+    ],
+    "explanation": "Power Query preparation follows a logical pipeline: connect and preview the source, profile the data to understand quality issues using the Column Quality, Column Distribution, and Column Profile tools, clean by removing errors, duplicates, and unneeded columns, set correct data types now that the values are clean, and finally load the result into the model. Setting data types before cleaning can cause type-conversion errors on dirty data, and loading before cleaning pushes data quality problems into the model.",
+    "estimatedTimeSeconds": 100,
+    "tags": ["Power Query", "Data Cleaning", "Workflow", "Data Profiling"],
+    "questionGroupId": "pq_prep_workflow",
+    "variantId": "full_pl300_01"
+  },
+  {
+    "id": 465,
+    "type": "rearrange_steps",
+    "domain": "Model the data",
+    "subtopic": "Design and implement a data model",
+    "difficulty": "Medium",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application",
+    "examObjective": "Model the data > Design and implement a data model",
+    "commonTrap": "Writing DAX measures before relationships exist, or building a date table after time intelligence measures are already written",
+    "trapType": "Schema Design",
+    "question": "An analyst is building a new star-schema data model from scratch. Arrange the following steps in the order they should typically be performed.",
+    "steps": [
+      "Hide unused columns and organize fields for report authors",
+      "Create relationships between fact and dimension tables",
+      "Create DAX measures for key business calculations",
+      "Import the required fact and dimension tables",
+      "Build or mark a dedicated date table for time intelligence"
+    ],
+    "correctOrder": [
+      "Import the required fact and dimension tables",
+      "Create relationships between fact and dimension tables",
+      "Build or mark a dedicated date table for time intelligence",
+      "Create DAX measures for key business calculations",
+      "Hide unused columns and organize fields for report authors"
+    ],
+    "explanation": "A typical modeling workflow starts by importing the fact and dimension tables, then establishing relationships so filters can propagate correctly. A marked date table should be in place before writing time intelligence measures, since functions like TOTALYTD and SAMEPERIODLASTYEAR depend on it. DAX measures are created once the relationships and date table exist. Finally, the model is polished — hiding foreign keys and unused columns and organizing fields into folders — to improve the report-authoring experience.",
+    "estimatedTimeSeconds": 100,
+    "tags": ["Data Modeling", "Star Schema", "Workflow", "Relationships"],
+    "questionGroupId": "model_building_workflow",
+    "variantId": "full_pl300_01"
+  },
+  {
+    "id": 466,
+    "type": "rearrange_steps",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Implement row-level security roles",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application",
+    "examObjective": "Manage and secure Power BI > Implement row-level security roles",
+    "commonTrap": "Creating roles before the user-mapping table and relationship exist, or publishing before testing with View As Roles",
+    "trapType": "RLS Misconfiguration",
+    "question": "A company wants to implement dynamic row-level security so each salesperson only sees their own region's data. Arrange the following implementation steps in the correct order.",
+    "steps": [
+      "Test the role using View As Roles in Power BI Desktop",
+      "Add a relationship between the security table and the region dimension table",
+      "Publish the report and assign workspace members to the role",
+      "Create a security table that maps each user's email to their allowed region",
+      "Create a role in Model view with a DAX filter using USERPRINCIPALNAME() or LOOKUPVALUE"
+    ],
+    "correctOrder": [
+      "Create a security table that maps each user's email to their allowed region",
+      "Add a relationship between the security table and the region dimension table",
+      "Create a role in Model view with a DAX filter using USERPRINCIPALNAME() or LOOKUPVALUE",
+      "Test the role using View As Roles in Power BI Desktop",
+      "Publish the report and assign workspace members to the role"
+    ],
+    "explanation": "Dynamic RLS depends on a user-mapping table being present and related to the model before a role's DAX filter can reference it. The setup order is: build the security table, relate it to the relevant dimension, define the role's filter expression — typically USERPRINCIPALNAME() compared against the mapping table, or LOOKUPVALUE to retrieve the allowed value — validate the role locally with View As Roles before publishing, and only then publish and assign real users to the role in the Power BI service. Skipping the View As Roles step risks publishing a misconfigured role that exposes or hides the wrong data.",
+    "estimatedTimeSeconds": 110,
+    "tags": ["Dynamic RLS", "Row-level Security", "USERPRINCIPALNAME", "Workflow"],
+    "questionGroupId": "dynamic_rls_workflow",
+    "variantId": "full_pl300_01"
+  },
+  {
+    "id": 467,
+    "type": "rearrange_steps",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Manage deployment lifecycle",
+    "difficulty": "Medium",
+    "questionStyle": "direct",
+    "cognitiveLevel": "application",
+    "examObjective": "Manage and secure Power BI > Choose a distribution method",
+    "commonTrap": "Creating an app before configuring refresh, or distributing content before validating the report",
+    "trapType": "Content Distribution",
+    "question": "Arrange the following steps in the order they should typically occur when delivering a new report to business users.",
+    "steps": [
+      "Configure a gateway connection and schedule a data refresh",
+      "Distribute the app to the target audience",
+      "Build and validate the report in Power BI Desktop",
+      "Create an app from the workspace content",
+      "Publish the .pbix file to a workspace"
+    ],
+    "correctOrder": [
+      "Build and validate the report in Power BI Desktop",
+      "Publish the .pbix file to a workspace",
+      "Configure a gateway connection and schedule a data refresh",
+      "Create an app from the workspace content",
+      "Distribute the app to the target audience"
+    ],
+    "explanation": "After building and validating the report locally, it is published to a workspace. Before users rely on it, a gateway (if the source is on-premises) and a scheduled refresh should be configured so the data stays current. Once the workspace content is ready and refreshing correctly, an app is created to package the content for end users, and finally the app is distributed to the target audience. Distributing before refresh is configured can expose stale or broken data to end users.",
+    "estimatedTimeSeconds": 100,
+    "tags": ["Deployment", "Apps", "Workflow", "Gateway", "Scheduled Refresh"],
+    "questionGroupId": "publish_deploy_workflow",
+    "variantId": "full_pl300_01"
   }
 ]

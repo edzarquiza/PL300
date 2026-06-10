@@ -6,7 +6,7 @@ export function isAnswerEmpty(answer, question) {
   if (answer === undefined || answer === null) return true
 
   switch (question?.type) {
-    case 'multiple':
+    case 'multi':
       return Array.isArray(answer) && answer.length === 0
 
     case 'true_false':
@@ -41,7 +41,7 @@ export function isAnswerCorrect(answer, question) {
     case 'single':
       return answer === question.correctAnswers[0]
 
-    case 'multiple': {
+    case 'multi': {
       const a = [...answer].sort((x, y) => x - y)
       const b = [...question.correctAnswers].sort((x, y) => x - y)
       return a.length === b.length && a.every((v, i) => v === b[i])

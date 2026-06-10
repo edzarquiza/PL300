@@ -47,7 +47,7 @@ export function getDomainBreakdown(questions, answers) {
 
 // Only valid for single/multiple question types; guarded at call sites for other types.
 export function computeNewAnswer(question, currentAnswer, choiceIndex) {
-  if (question.type === 'multiple') {
+  if (question.type === 'multi') {
     const current = Array.isArray(currentAnswer) ? currentAnswer : []
     return current.includes(choiceIndex)
       ? current.filter(i => i !== choiceIndex).sort((a, b) => a - b)

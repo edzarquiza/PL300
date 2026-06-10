@@ -15,7 +15,7 @@ const DAX_MAP = Object.fromEntries(
 )
 
 const TYPE_LABEL = {
-  multiple:        'Multiple choice',
+  multi:           'Multiple choice',
   true_false:      'True or False',
   drag_drop:       'Drag & Drop',
   rearrange_steps: 'Arrange in Order',

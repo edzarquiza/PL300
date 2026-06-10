@@ -9,6 +9,7 @@ const HistoryPage   = lazy(() => import('./pages/HistoryPage'))
 const ReviewerPage  = lazy(() => import('./pages/ReviewerPage'))
 const DaxLibraryPage      = lazy(() => import('./pages/DaxLibraryPage'))
 const WalkthroughsPage    = lazy(() => import('./pages/WalkthroughsPage'))
+const TerminologyPage     = lazy(() => import('./pages/TerminologyPage'))
 
 function PageLoader() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
             <Route path="/reviewer" element={<ReviewerPage />} />
             <Route path="/dax"           element={<DaxLibraryPage />} />
             <Route path="/walkthroughs"  element={<WalkthroughsPage />} />
+            <Route path="/terminology"   element={<TerminologyPage />} />
           </Routes>
         </Suspense>
       </BrowserRouter>

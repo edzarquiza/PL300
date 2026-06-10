@@ -11,7 +11,7 @@ export function useExamTimer(durationSeconds, onExpire) {
 
   useEffect(() => {
     if (timeLeft <= 0) {
-      onExpireRef.current()
+      onExpireRef.current?.()
       return
     }
     const id = setTimeout(() => setTimeLeft(t => t - 1), 1000)
