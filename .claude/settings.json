@@ -123,7 +123,16 @@
       "Bash(timeout 60 node .tmp_test/readiness_check.cjs)",
       "Bash(node .tmp_test/reference_pages.cjs)",
       "Bash(node .tmp_test/timer_expiry.cjs)",
-      "Bash(node .tmp_test/repro_50.cjs)"
+      "Bash(node .tmp_test/repro_50.cjs)",
+      "Bash(node --input-type=module -e ' *)",
+      "Bash(node -e \"console.log\\(require\\('./src/data/daxFunctions/all.json'\\).map\\(f=>f.functionName\\)\\)\")",
+      "Bash(git checkout *)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('./src/data/questions.json','utf8'\\)\\); console.log\\('valid JSON, questions:', require\\('./src/data/questions.json'\\).length\\)\")",
+      "Bash(node .tmp_test/visual_leak.cjs)",
+      "Bash(find . -path ./node_modules -prune -o -name \"daxFunctions*\" -print)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill //F //PID 11384)",
+      "Bash(rm -f .tmp_dev_server.log)"
     ]
   }
 }

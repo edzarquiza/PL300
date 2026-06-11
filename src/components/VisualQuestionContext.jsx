@@ -4,7 +4,7 @@ import ResultTable from './ResultTable'
 import TransformationPreview from './TransformationPreview'
 import RelationshipDiagram from './RelationshipDiagram'
 
-export default function VisualQuestionContext({ question }) {
+export default function VisualQuestionContext({ question, revealAnswers = false }) {
   const { sampleData, daxExpression, expectedOutput, transformationPreview, visualContext } = question
 
   const hasVisuals = sampleData?.tables?.length > 0 || daxExpression || expectedOutput || transformationPreview || visualContext?.relationshipDiagram
@@ -23,11 +23,11 @@ export default function VisualQuestionContext({ question }) {
       )}
 
       {transformationPreview && (
-        <TransformationPreview preview={transformationPreview} />
+        <TransformationPreview preview={transformationPreview} revealAnswers={revealAnswers} />
       )}
 
-      {expectedOutput && (
-        <ResultTable output={expectedOutput} />
+      {expectedOutput && (revealAnswers || !expectedOutput.revealsAnswer) && (
+        <ResultTable output={expectedOutput} revealAnswers={revealAnswers} />
       )}
 
       {visualContext?.relationshipDiagram && (

@@ -1,4 +1,14 @@
-export default function ResultTable({ output }) {
+// Strips checkmark/cross annotations (e.g. "9,800 ✅ (latest balance)") that
+// would otherwise point straight at the correct answer in Exam Mode.
+function stripAnswerMarkers(value) {
+  if (typeof value !== 'string') return value
+  return value
+    .replace(/\s*←\s*answer\b/gi, '')
+    .replace(/\s*[✅❌]\s*(\([^)]*\))?\s*(answer\b)?/gi, '')
+    .trim()
+}
+
+export default function ResultTable({ output, revealAnswers = false }) {
   const label = output.label || 'Result'
   return (
     <div className="rounded-lg border border-green-200 overflow-hidden text-xs">
@@ -23,7 +33,7 @@ export default function ResultTable({ output }) {
                   <td key={j} className="px-3 py-1.5 text-gray-700 whitespace-nowrap font-medium">
                     {cell === null || cell === undefined
                       ? <span className="text-gray-300 italic">null</span>
-                      : String(cell)}
+                      : revealAnswers ? String(cell) : stripAnswerMarkers(String(cell))}
                   </td>
                 ))}
               </tr>

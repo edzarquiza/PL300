@@ -147,7 +147,7 @@ function DaxReferencePanel({ question }) {
                 <SampleDataTable table={t} />
               </div>
             ))}
-            {example.expectedOutput && <ResultTable output={example.expectedOutput} />}
+            {example.expectedOutput && <ResultTable output={example.expectedOutput} revealAnswers />}
             {example.explanation && (
               <p className="text-xs text-gray-600 leading-relaxed mt-2 bg-gray-50 rounded-lg px-3 py-2 border border-gray-100">
                 {example.explanation}
@@ -255,7 +255,7 @@ export default function ReviewCard({ question, userAnswer, questionNumber, confi
           </div>
         )}
 
-        <VisualQuestionContext question={question} />
+        <VisualQuestionContext question={question} revealAnswers />
 
         <p className="text-sm font-medium text-gray-900 leading-relaxed mb-4">
           {question.question}

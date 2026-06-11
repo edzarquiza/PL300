@@ -75,7 +75,7 @@ export default function DaxFunctionDetail({ fn }) {
               {ex.sampleData?.tables?.map(t => (
                 <SampleDataTable key={t.name} table={t} />
               ))}
-              {ex.expectedOutput && <ResultTable output={ex.expectedOutput} />}
+              {ex.expectedOutput && <ResultTable output={ex.expectedOutput} revealAnswers />}
               {ex.explanation && (
                 <p className="text-xs text-gray-600 leading-relaxed bg-gray-50 rounded-lg px-3 py-2.5 border border-gray-100">
                   {ex.explanation}

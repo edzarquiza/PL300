@@ -578,9 +578,9 @@
     "question": "What happens when a measure is referenced inside a calculated column in DAX?",
     "choices": [
       "A context transition occurs — the current row context is converted to an equivalent filter context",
-      "The measure is evaluated without any filter or row context",
-      "The measure evaluates using the row context of the calculated column directly",
-      "The calculated column inherits the query context from the most recent report visual"
+      "The measure is evaluated without any filter or row context — measures referenced this way still undergo context transition rather than losing context entirely",
+      "The measure evaluates using the row context of the calculated column directly — measures cannot consume row context directly; it must first be converted",
+      "The calculated column inherits the query context from the most recent report visual — calculated columns are computed at refresh time and have no awareness of report visuals"
     ],
     "correctAnswers": [
       0
@@ -4061,7 +4061,7 @@
     "choices": [
       "The value 550 — total Price of Sports products",
       "A BLANK — FILTER cannot be used as a standalone expression",
-      "A table containing only the two Sports rows",
+      "A table containing only the two Sports rows — FILTER returns a filtered table with all original columns intact, not a scalar",
       "The number 2 — count of Sports products"
     ],
     "correctAnswers": [
@@ -5032,10 +5032,10 @@
     "variantId": "visual_01",
     "question": "A TOTALYTD measure is returning incorrect results. The Date table shown only includes dates where transactions occurred. What is the most likely cause of the problem?",
     "choices": [
-      "TOTALYTD requires a fiscal year end date parameter to work in January",
-      "The Sales table is missing a relationship to the Date table",
+      "TOTALYTD requires a fiscal year end date parameter to work in January — that parameter is optional and only needed for non-calendar fiscal years",
+      "The Sales table is missing a relationship to the Date table — a missing relationship would return blank or unfiltered totals, not merely incorrect cumulative values",
       "The Date table has gaps — it must contain every calendar day with no missing dates",
-      "The Date table must be created using CALENDARAUTO() to be marked as a Date table"
+      "The Date table must be created using CALENDARAUTO() to be marked as a Date table — a Date table can be marked as such regardless of how it was generated"
     ],
     "correctAnswers": [
       2
@@ -5565,10 +5565,10 @@
     "difficulty": "Medium",
     "question": "A developer writes this DAX as a standalone measure: High Value = FILTER(Sales, Sales[Amount] > 500). What problem does this cause?",
     "choices": [
-      "FILTER requires a date column as its first argument",
+      "FILTER requires a date column as its first argument — FILTER's first argument can be any table, not specifically one with a date column",
       "The measure returns a table instead of a scalar — DAX measures must return a single scalar value",
-      "FILTER is not allowed inside measure definitions",
-      "Sales[Amount] cannot be compared to a numeric literal"
+      "FILTER is not allowed inside measure definitions — FILTER is commonly used inside measures, typically wrapped in CALCULATE or an aggregation",
+      "Sales[Amount] cannot be compared to a numeric literal — comparing a numeric column to a literal is valid DAX syntax"
     ],
     "correctAnswers": [
       1
@@ -5904,10 +5904,10 @@
     "difficulty": "Easy",
     "question": "A calculated column Category = RELATED(Products[Category]) is added to the Sales fact table. When is this column's values computed?",
     "choices": [
-      "When the report page is first opened by a user",
-      "Only when the column is used inside a DAX measure",
+      "When the report page is first opened by a user — calculated column values are already stored and are not recomputed when reports open",
+      "Only when the column is used inside a DAX measure — calculated columns are computed for every row regardless of whether a measure references them",
       "During data refresh — the values are computed and stored in the model",
-      "Each time a visual queries the Sales table"
+      "Each time a visual queries the Sales table — stored calculated column values are simply read by visual queries, not recalculated"
     ],
     "correctAnswers": [
       2
@@ -7026,7 +7026,7 @@
       "PREVIOUSYEAR(DimDate[Date]) — returns the full prior calendar year",
       "DATEADD(DimDate[Date], -1, YEAR) — shifts dates backward, does not accumulate",
       "SAMEPERIODLASTYEAR(DimDate[Date]) — returns the equivalent prior-year period",
-      "TOTALYTD(SUM(Sales[Amount]), DimDate[Date])"
+      "TOTALYTD(SUM(Sales[Amount]), DimDate[Date]) — wraps an expression to total it from the start of the year through the current date"
     ],
     "correctAnswers": [
       3
@@ -7309,7 +7309,7 @@
     "choices": [
       "PREVIOUSYEAR(DimDate[Date]) — returns all dates of the previous full calendar year",
       "DATEADD(DimDate[Date], -1, YEAR) — shifts dates backward by a year interval",
-      "DATESYTD(DimDate[Date])",
+      "DATESYTD(DimDate[Date]) — returns the set of dates from January 1 through the current date in context",
       "SAMEPERIODLASTYEAR(DimDate[Date]) — returns the same period from the prior year"
     ],
     "correctAnswers": [
@@ -7433,7 +7433,7 @@
     "question": "A report has a product category slicer. A card visual should display the selected category name when exactly one category is chosen, or show 'All Categories' when multiple are selected. Which DAX expression implements this?",
     "choices": [
       "VALUES(Products[Category]) — returns a table, not a scalar string",
-      "SELECTEDVALUE(Products[Category], \"All Categories\")",
+      "SELECTEDVALUE(Products[Category], \"All Categories\") — returns a single value when context is unambiguous, or a default otherwise",
       "DISTINCT(Products[Category]) — returns a table of distinct values, not a single text value",
       "HASONEVALUE(Products[Category]) — returns a Boolean, not the category name"
     ],
@@ -7464,7 +7464,7 @@
     "difficulty": "Medium",
     "question": "A developer creates a disconnected category slicer using a calculated table of distinct product category names. Unmatched foreign key values exist in the model, which would cause VALUES() to include a blank entry in the slicer. Which function should be used to exclude the blank?",
     "choices": [
-      "DISTINCT(Products[Category])",
+      "DISTINCT(Products[Category]) — returns the distinct values physically present in a column",
       "ALL(Products[Category]) — removes filters rather than returning a deduplicated list",
       "SELECTEDVALUE(Products[Category]) — returns a scalar, not a table suitable for a slicer",
       "VALUES(Products[Category]) — includes a blank row for unmatched foreign keys, which would appear in the slicer"
@@ -7499,7 +7499,7 @@
     "choices": [
       "LOOKUPVALUE(Orders[CustomerID], Customers[CustomerID]) — returns a single value, not all related rows",
       "VALUES(Orders[OrderID]) — returns all visible order IDs, not filtered to the current customer",
-      "COUNTROWS(RELATEDTABLE(Orders))",
+      "COUNTROWS(RELATEDTABLE(Orders)) — counts rows in a related table for the current row's context",
       "RELATED(Orders[OrderID]) — traverses from many-to-one, not from one-to-many"
     ],
     "correctAnswers": [
@@ -7573,7 +7573,7 @@
       "SAMEPERIODLASTYEAR(DimDate[Date]) — returns the same relative period from last year, not the full year",
       "DATEADD(DimDate[Date], -1, YEAR) — shifts the current selection back by one year, not the full prior year",
       "DATESYTD(DimDate[Date]) — returns year-to-date for the current year",
-      "PREVIOUSYEAR(DimDate[Date])"
+      "PREVIOUSYEAR(DimDate[Date]) — shifts the date context back to the prior calendar year"
     ],
     "correctAnswers": [
       3
@@ -7624,7 +7624,7 @@
     "question": "A developer needs a 'Sales Prior Year' measure. When the visual shows March 2024 data, the measure should return March 2023 sales. When the visual shows Q3 2024, it should return Q3 2023. Which function most explicitly and concisely expresses this same-period prior-year shift?",
     "choices": [
       "PREVIOUSYEAR(DimDate[Date]) — returns the entire prior calendar year, not just the equivalent period",
-      "SAMEPERIODLASTYEAR(DimDate[Date])",
+      "SAMEPERIODLASTYEAR(DimDate[Date]) — shifts the current date selection back exactly one year",
       "DATESYTD(DimDate[Date]) — returns the year-to-date date range",
       "TOTALYTD(SUM(Sales[Amount]), DimDate[Date]) — computes year-to-date cumulative total"
     ],
@@ -7679,7 +7679,7 @@
       "Scatter chart — plots two numeric measures for correlation, not proportions of a whole",
       "Clustered bar chart — compares absolute values between categories but does not naturally show part-to-whole proportions",
       "Line chart — shows trends over time, not proportional distribution",
-      "Pie chart"
+      "Pie chart — represents each category as a slice sized by its share of the total"
     ],
     "correctAnswers": [
       3
@@ -7710,7 +7710,7 @@
       "Clustered bar chart — aggregates and visualizes, doesn't display detailed row-level records",
       "Card visual — displays a single summary number, not multiple columns of row data",
       "Matrix visual — supports row and column groupings with subtotals, but is structured for aggregated cross-tabular analysis, not raw row-level detail",
-      "Table visual"
+      "Table visual — lists individual records in rows and columns"
     ],
     "correctAnswers": [
       3
@@ -7852,7 +7852,7 @@
     "question": "In a Power BI model, each sales transaction can be attributed to more than one territory, and each territory can be associated with many transactions. The Territory dimension has one row per territory. What relationship cardinality is required between Sales and Territory?",
     "choices": [
       "One-to-many (1:*) from Territory to Sales — assumes each transaction belongs to exactly one territory",
-      "Many-to-many (*:*) between Sales and Territory",
+      "Many-to-many (*:*) between Sales and Territory — matches the stated requirement that a transaction can span multiple territories and a territory can span multiple transactions",
       "One-to-one (1:1) — assumes each transaction and territory uniquely correspond",
       "No relationship — use LOOKUPVALUE to retrieve territory data per transaction"
     ],
@@ -7882,7 +7882,7 @@
     "difficulty": "Medium",
     "question": "A developer needs a measure that always returns total company revenue regardless of any Country slicer selection. The measure should ignore the Country filter but respect all other active filters. Which expression achieves this?",
     "choices": [
-      "CALCULATE(SUM(Sales[Amount]), ALL(Sales[Country]))",
+      "CALCULATE(SUM(Sales[Amount]), ALL(Sales[Country])) — wraps an aggregation with a filter argument that adjusts the evaluation context",
       "FILTER(ALL(Sales[Country]), 1=1) — returns a table, not a scalar measure value",
       "ALL(Sales[Country]) — removes a filter but cannot stand alone as a measure",
       "SUM(Sales[Amount]) — respects all active filters including Country"
@@ -7915,7 +7915,7 @@
     "question": "A developer states: 'I need to evaluate an expression in a modified filter context — specifically, I want to override the existing slicer filter with my own condition.' Which DAX function is the only one capable of modifying the filter context when evaluating an expression?",
     "choices": [
       "SUMX — an iterator that evaluates per-row expressions but cannot modify the outer filter context",
-      "CALCULATE",
+      "CALCULATE — evaluates an expression after applying filter arguments that adjust the surrounding context",
       "ALL — removes filters when used inside CALCULATE, but cannot modify context independently",
       "FILTER — iterates a table and returns a subset, but does not modify the filter context for an expression"
     ],
@@ -8049,7 +8049,7 @@
       "Treemap — encodes a single measure as area, cannot show two measures per category",
       "Stacked bar chart — shows how a total is composed of parts, not two independent parallel measures",
       "Line chart — connects data points over a sequence, not suited for parallel measure comparison per category",
-      "Clustered bar chart"
+      "Clustered bar chart — displays separate bars per measure grouped together for each category"
     ],
     "correctAnswers": [
       3
@@ -8080,7 +8080,7 @@
       "Append Queries — stacks two tables vertically, not for joining on a key column",
       "Reference Query — creates a dependency on an existing query, not a join",
       "Duplicate Query — creates an independent copy, does not join two different tables",
-      "Merge Queries joining Employees to Salaries on EmployeeID"
+      "Merge Queries joining Employees to Salaries on EmployeeID — combines columns from both tables side-by-side based on a matching key"
     ],
     "correctAnswers": [
       3
@@ -9875,10 +9875,10 @@
     "difficulty": "Medium",
     "question": "A developer loads data from Azure SQL Database using Power Query. After a 'Merge Queries' step, they apply 'Remove Duplicates' then 'Sort Rows'. The model refresh takes 45 minutes despite the source table having only 2M rows. What is the MOST likely root cause?",
     "choices": [
-      "The Merge Queries step always performs a full table scan regardless of keys",
-      "Azure SQL Database has a query timeout that interrupts Power Query after 30 minutes",
+      "The Merge Queries step always performs a full table scan regardless of keys — Merge can fold to the source database when both queries support folding",
+      "Azure SQL Database has a query timeout that interrupts Power Query after 30 minutes — a timeout would cause the refresh to fail with an error, not run slowly to completion",
       "'Remove Duplicates' breaks query folding — all subsequent steps execute in-memory after downloading the full dataset to Power Query",
-      "Sort Rows forces a second connection to the database to re-read the data in order"
+      "Sort Rows forces a second connection to the database to re-read the data in order — Sort Rows operates on data already retrieved and does not open a second connection"
     ],
     "correctAnswers": [
       2
@@ -10115,9 +10115,9 @@
     "difficulty": "Hard",
     "question": "A large organisation implements dynamic RLS using the filter on an Employees table: `[Department] IN SELECTCOLUMNS(FILTER(DeptAccess, [ManagerUPN] = USERPRINCIPALNAME()), \"Dept\", [Department])`. Senior managers report seeing no data. The DeptAccess table has no model relationship. What is the MOST likely cause?",
     "choices": [
-      "SELECTCOLUMNS cannot be used inside an RLS DAX expression",
-      "A model relationship must exist between DeptAccess and Employees for the filter to evaluate",
-      "The filter should be applied to the DeptAccess table rather than the Employees table",
+      "SELECTCOLUMNS cannot be used inside an RLS DAX expression — SELECTCOLUMNS is valid inside RLS expressions and is a common pattern for dynamic security",
+      "A model relationship must exist between DeptAccess and Employees for the filter to evaluate — FILTER and SELECTCOLUMNS operate on DeptAccess as a standalone table expression and do not require a model relationship",
+      "The filter should be applied to the DeptAccess table rather than the Employees table — the role is defined on Employees because that is the table being secured; DeptAccess is only a lookup table within the expression",
       "USERPRINCIPALNAME() returns the manager's email in a different case or domain format than stored in DeptAccess[ManagerUPN], causing FILTER to return an empty table — SELECTCOLUMNS then returns an empty set, matching no departments"
     ],
     "correctAnswers": [
@@ -10232,10 +10232,10 @@
     "difficulty": "Medium",
     "question": "A Power BI model has an RLS role filtering the Product dimension table. A report shows product sales correctly filtered. However, a matrix visual showing 'Products with no sales this period' still shows products from other regions. Why does the RLS filter not restrict this visual?",
     "choices": [
-      "The matrix visual requires a separate RLS role defined specifically for that visual type",
+      "The matrix visual requires a separate RLS role defined specifically for that visual type — RLS is enforced at the semantic model level for every visual type; no per-visual-type role exists",
       "The 'Products with no sales' visual uses CROSSFILTER or a DAX measure that explicitly bypasses the Product filter — or the visual uses ALL(Product) to show unfiltered product members",
-      "Inactive relationships used by the visual bypass RLS enforcement",
-      "RLS filters on dimension tables do not apply to matrix visuals"
+      "Inactive relationships used by the visual bypass RLS enforcement — inactive relationships require USERELATIONSHIP to activate and would cause measures to return BLANK, not surface extra rows",
+      "RLS filters on dimension tables do not apply to matrix visuals — RLS is enforced uniformly across all visual types regardless of how the data is presented"
     ],
     "correctAnswers": [
       1
@@ -10264,10 +10264,10 @@
     "difficulty": "Easy",
     "question": "A company wants an external contractor to create new reports using the organisation's shared semantic model but must not be able to modify the existing published reports in the workspace. Which permission assignment is MOST appropriate?",
     "choices": [
-      "Assign Contributor role in the workspace so the contractor can publish new content",
-      "Assign Member role in the workspace with restricted dataset access",
+      "Assign Contributor role in the workspace so the contractor can publish new content — Contributor also allows editing existing reports and datasets, exceeding the requirement that published reports stay unmodified",
+      "Assign Member role in the workspace with restricted dataset access — Member grants even broader management capabilities than Contributor and still permits editing existing reports",
       "Grant Build permission on the semantic model only — the contractor can create new reports in their own workspace from the shared model but cannot edit reports in the shared workspace",
-      "Assign Viewer role in the workspace and enable Content Pack distribution"
+      "Assign Viewer role in the workspace and enable Content Pack distribution — Viewer is read-only and cannot publish new reports, and Content Pack distribution is a legacy feature unrelated to this scenario"
     ],
     "correctAnswers": [
       2
@@ -10485,10 +10485,10 @@
     "difficulty": "Medium",
     "question": "After importing data from a CRM system, Power BI auto-detects a Many-to-Many relationship between the Customers table and the Contracts table on the CustomerID column. The developer accepts this and builds the report. Customer totals appear doubled for some customers. What should the developer do FIRST?",
     "choices": [
-      "Accept the many-to-many relationship and add a DISTINCTCOUNT measure to deduplicate",
-      "Immediately create a bridge table to handle the many-to-many correctly",
+      "Accept the many-to-many relationship and add a DISTINCTCOUNT measure to deduplicate — this can mask the symptom but does not fix the underlying duplicate-key data issue and may still produce incorrect totals",
+      "Immediately create a bridge table to handle the many-to-many correctly — a bridge table is the right fix for a genuine many-to-many, but jumping to it before investigating risks adding unnecessary complexity for what may simply be dirty data",
       "Investigate whether CustomerID is unique in the Contracts table — if it is not, duplicate contracts per customer are causing duplicated aggregations; clean the data before defining a one-to-many relationship",
-      "Switch the relationship to one-to-one cardinality to eliminate the duplication"
+      "Switch the relationship to one-to-one cardinality to eliminate the duplication — forcing 1:1 cardinality when neither table has unique keys would cause row mismatches rather than fix the duplication"
     ],
     "correctAnswers": [
       2
@@ -11272,9 +11272,9 @@
     "question": "You have a base query that loads and cleans a large dataset. You need two separate output tables — one filtered to retail sales, one filtered to wholesale sales — both starting from the cleaned data. Which approach is most efficient?",
     "choices": [
       "Reference the base query twice, creating two derived queries — one with each filter",
-      "Load all data into one table and use DAX CALCULATE to separate retail and wholesale",
-      "Create two separate connections to the source and apply the cleaning steps in each",
-      "Duplicate the base query twice and add filters to each duplicate"
+      "Load all data into one table and use DAX CALCULATE to separate retail and wholesale — this produces a single table when two separate outputs are required, and skips the more efficient Power Query branching pattern",
+      "Create two separate connections to the source and apply the cleaning steps in each — this reloads the source data twice and duplicates all cleaning effort",
+      "Duplicate the base query twice and add filters to each duplicate — duplicating copies the source connection and every cleaning step, so each copy re-executes from source"
     ],
     "correctAnswers": [
       0
@@ -11970,10 +11970,10 @@
     "trapType": "Time Intelligence Requirements",
     "question": "A data model uses TOTALYTD() but returns incorrect cumulative values. The date column in the fact table ranges from 2019-01-01 to 2023-12-31 with some missing weekend dates. What is the most likely cause?",
     "choices": [
-      "TOTALYTD() requires a fiscal year parameter when calendar years are used",
+      "TOTALYTD() requires a fiscal year parameter when calendar years are used — the year_end_date parameter is optional and only needed for non-calendar fiscal years",
       "The fact table's date column has gaps — time intelligence functions require a continuous date table with no missing dates",
-      "The date column data type must be DateTime, not Date",
-      "TOTALYTD() only works in DirectQuery mode, not Import mode"
+      "The date column data type must be DateTime, not Date — both Date and DateTime types work correctly with time intelligence functions",
+      "TOTALYTD() only works in DirectQuery mode, not Import mode — TOTALYTD behaves identically in both Import and DirectQuery storage modes"
     ],
     "correctAnswers": [
       1
@@ -12491,10 +12491,10 @@
     "trapType": "Report Performance Optimization",
     "question": "A Power BI report page has 14 visuals and loads in 12 seconds. You use Performance Analyzer and find that 5 visuals each have DAX query times over 3 seconds. Which action will MOST effectively reduce page load time?",
     "choices": [
-      "Enable automatic page refresh to keep the cache warm and reduce apparent load time",
-      "Move some visuals to separate pages to reduce the number of visuals loaded simultaneously",
+      "Enable automatic page refresh to keep the cache warm and reduce apparent load time — automatic page refresh triggers repeated queries and would increase query load rather than reduce it",
+      "Move some visuals to separate pages to reduce the number of visuals loaded simultaneously — this redistributes when the slow measures run but doesn't fix the underlying inefficient DAX",
       "Investigate and optimize the DAX measures used by the slow visuals — remove unnecessary CALCULATE filters, use variables, or pre-aggregate in the model",
-      "Switch the entire dataset to DirectQuery mode to avoid in-memory processing delays"
+      "Switch the entire dataset to DirectQuery mode to avoid in-memory processing delays — DirectQuery sends every interaction as a live query and is typically slower than Import for complex DAX"
     ],
     "correctAnswers": [
       2
@@ -13034,9 +13034,9 @@
     "trapType": "Parameters vs Hardcoded Connection Strings",
     "question": "A Power BI developer maintains a report that connects to different SQL Server instances for development and production environments. Each environment switch requires editing the server name deep in the M code. What is the BEST approach to simplify environment switching?",
     "choices": [
-      "Store the server name in a SharePoint list and use Power Automate to pass it to Power BI at refresh time",
-      "Create two separate queries, one for dev and one for prod, and manually enable the correct one before publishing",
-      "Use a calculated table in the data model with a DAX IF statement to switch between server connections",
+      "Store the server name in a SharePoint list and use Power Automate to pass it to Power BI at refresh time — this introduces unnecessary external dependencies and complexity for something Power Query parameters solve natively",
+      "Create two separate queries, one for dev and one for prod, and manually enable the correct one before publishing — this doubles maintenance and risks accidentally publishing with the wrong query enabled",
+      "Use a calculated table in the data model with a DAX IF statement to switch between server connections — DAX calculated tables evaluate at the data model level and cannot affect Power Query connection strings or data sources",
       "Create a Power Query parameter named \"ServerName\", set its current value to the dev server, and reference it in the connection step — switching environments only requires changing the parameter value"
     ],
     "correctAnswers": [
@@ -13257,9 +13257,9 @@
     "trapType": "Reference vs Duplicate Query",
     "question": "A Power Query workspace has a complex Customer query loading 3 million rows from a cloud database, with 15 transformation steps. A developer needs two derived tables: ActiveCustomers (Status = \"Active\") and InactiveCustomers (Status = \"Inactive\"). Which approach CORRECTLY avoids loading the source 3 million rows twice?",
     "choices": [
-      "Use the \"Append Queries\" function to combine both results after applying filters separately",
-      "Duplicate the Customer query twice and apply a different status filter to each copy",
-      "Create both filters in the Customer query using SWITCH logic and split the output into two tables",
+      "Use the \"Append Queries\" function to combine both results after applying filters separately — Append combines two queries into one, the opposite of splitting one query into two, and doesn't address the single-source-load requirement",
+      "Duplicate the Customer query twice and apply a different status filter to each copy — Duplicate creates fully independent queries that each re-run all 15 steps against the source, loading the 3M-row dataset twice",
+      "Create both filters in the Customer query using SWITCH logic and split the output into two tables — SWITCH is a DAX function, not a Power Query M function, and this still doesn't produce two separate queries from one source load",
       "Reference the Customer query to create two new queries — each Reference query inherits the Customer query result without re-running the source extraction"
     ],
     "correctAnswers": [
@@ -13295,9 +13295,9 @@
     "trapType": "Unpivot vs Transpose vs Pivot",
     "question": "A source Excel file has sales data in this structure: each row is a Product, and each column represents a month (Jan, Feb, Mar, Apr) with sales values. A data modeler needs this in a normalized structure: Product, Month, Sales — one row per Product-Month combination. Which Power Query operation should be applied to the month columns?",
     "choices": [
-      "Apply \"Group By\" on Product and aggregate the monthly values",
-      "Apply \"Transpose\" to rotate the table so months become rows and products become columns",
-      "Apply \"Pivot Column\" on the Product column using Sales as the value",
+      "Apply \"Group By\" on Product and aggregate the monthly values — Group By aggregates existing rows based on a grouping column; it doesn't create new Month rows from column headers",
+      "Apply \"Transpose\" to rotate the table so months become rows and products become columns — Transpose swaps rows and columns entirely, rotating the wide structure rather than normalizing it",
+      "Apply \"Pivot Column\" on the Product column using Sales as the value — Pivot does the opposite of Unpivot, spreading row values across columns and widening the table further",
       "Select the month columns (Jan, Feb, Mar, Apr) and apply \"Unpivot Columns\" — this creates two new columns: Attribute (month name) and Value (sales amount)"
     ],
     "correctAnswers": [
@@ -13597,9 +13597,9 @@
     "question": "A Power Query solution combines data from a public internet API (customer reviews) with an internal SQL Server database containing employee compensation data. Power BI displays a privacy warning when combining these sources. What is the CORRECT privacy level configuration?",
     "choices": [
       "Set the SQL Server source to \"Organizational\" and the API source to \"Public\" — this prevents organizational data from being sent to external sources while allowing the API (public) data to flow through",
-      "Set both sources to \"Public\" to allow data combination and suppress the privacy warning",
-      "Set both sources to \"Private\" to apply the most restrictive protection",
-      "Set the SQL Server source to \"Private\" and the API source to \"Organizational\""
+      "Set both sources to \"Public\" to allow data combination and suppress the privacy warning — marking the internal SQL Server as Public could allow sensitive employee data to be transmitted to the external API during query evaluation",
+      "Set both sources to \"Private\" to apply the most restrictive protection — Private sources cannot be combined with any other source at all, so the query would fail entirely",
+      "Set the SQL Server source to \"Private\" and the API source to \"Organizational\" — Private isolates the SQL source from all combination, and a third-party public API should be classified as Public, not Organizational"
     ],
     "correctAnswers": [
       0
@@ -13846,10 +13846,10 @@
     "trapType": "DirectLake vs DirectQuery vs Import",
     "question": "A company uses Microsoft Fabric DirectLake mode for their Power BI reports against a Lakehouse. A report developer notices that after a large batch load into the Lakehouse Delta tables, the DirectLake semantic model still returns stale data in Power BI. No scheduled refresh is configured. What should the developer do to ensure the model reflects the latest data?",
     "choices": [
-      "Switch the semantic model to Import mode and configure a scheduled refresh after each batch load",
-      "Switch to DirectQuery mode, which automatically picks up source changes without any refresh step",
+      "Switch the semantic model to Import mode and configure a scheduled refresh after each batch load — Import mode would lose DirectLake's performance benefits and reintroduce a full data copy and refresh window",
+      "Switch to DirectQuery mode, which automatically picks up source changes without any refresh step — DirectQuery via the SQL endpoint sends every interaction as a live query and is typically much slower than DirectLake for complex DAX",
       "Run 'Refresh' on the semantic model in the Power BI Service — DirectLake requires a refresh to re-read new Delta file segments",
-      "Re-publish the PBIX file from Power BI Desktop every time the Lakehouse data is updated"
+      "Re-publish the PBIX file from Power BI Desktop every time the Lakehouse data is updated — re-publishing the report definition does not refresh the semantic model's cached Delta file segments"
     ],
     "correctAnswers": [
       2
@@ -13949,9 +13949,9 @@
     },
     "choices": [
       "The bidirectional cross-filter on Customer↔Sales allows Product[Category] to filter Customer, causing DISTINCTCOUNT(Customer[CustomerKey]) to count only customers who bought that category — making the denominator smaller and inflating the average",
-      "The Sales table is missing a surrogate key, causing many-to-many cardinality errors in the calculation",
-      "The Product→Sales relationship should also be bidirectional for the filter to propagate correctly",
-      "The measure should use RELATEDTABLE instead of DISTINCTCOUNT to count customers accurately"
+      "The Sales table is missing a surrogate key, causing many-to-many cardinality errors in the calculation — surrogate keys are present (CustomerKey, ProductKey), and the diagram shows standard many-to-one relationships, not many-to-many",
+      "The Product→Sales relationship should also be bidirectional for the filter to propagate correctly — adding another bidirectional filter would compound the ambiguity rather than fix the inflated average",
+      "The measure should use RELATEDTABLE instead of DISTINCTCOUNT to count customers accurately — RELATEDTABLE returns related rows for a single row context and is not a substitute for DISTINCTCOUNT in an aggregated measure"
     ],
     "correctAnswers": [
       0
@@ -14141,10 +14141,10 @@
       }
     },
     "choices": [
-      "Create a calculated table using CROSSJOIN to pre-compute all Order-Promotion combinations",
-      "Keep the direct many-to-many relationship but disable bidirectional filtering to prevent row duplication",
+      "Create a calculated table using CROSSJOIN to pre-compute all Order-Promotion combinations — CROSSJOIN produces a Cartesian product of every row in both tables, which would be massive and still wouldn't fix the structural many-to-many relationship",
+      "Keep the direct many-to-many relationship but disable bidirectional filtering to prevent row duplication — this removes the Promotion slicer's ability to filter Sales entirely; the real problem is the direct M:M relationship itself",
       "Use a bridge table (OrderPromotion) with many-to-one relationships from both Sales and Promotions into it, with single-direction cross-filtering — the diagram already shows the correct architecture",
-      "Add a surrogate key to the Promotions table and use LOOKUPVALUE to match orders to promotions"
+      "Add a surrogate key to the Promotions table and use LOOKUPVALUE to match orders to promotions — LOOKUPVALUE retrieves a single matching value and cannot resolve a genuine many-to-many mapping"
     ],
     "correctAnswers": [
       2
@@ -14179,9 +14179,9 @@
     "commonTrap": "Assuming SUMX behaves like SUM inside CALCULATE",
     "question": "A data analyst writes the following measure and gets unexpected results when filtered by customer segment:\n\nRevenue per Customer = DIVIDE(SUMX(Sales, Sales[Qty] * Sales[UnitPrice]), DISTINCTCOUNT(Sales[CustomerKey]))\n\nWhen the report is filtered to \"Enterprise\" customers only, the measure returns the grand total revenue per customer rather than Enterprise-only. Which part of the measure is causing this?",
     "choices": [
-      "DIVIDE always uses unfiltered values to prevent division by zero errors",
-      "SUMX iterates Sales but ignores the current filter context, always returning the full table sum",
-      "DISTINCTCOUNT does not filter by the current context when used outside CALCULATE",
+      "DIVIDE always uses unfiltered values to prevent division by zero errors — DIVIDE doesn't override or ignore filter context; it safely handles zero denominators while applying to whatever filtered values its arguments produce",
+      "SUMX iterates Sales but ignores the current filter context, always returning the full table sum — SUMX iterates the table passed to it as filtered by the current context; it does not ignore active filters",
+      "DISTINCTCOUNT does not filter by the current context when used outside CALCULATE — DISTINCTCOUNT respects filter context just like other aggregation functions and counts distinct values among the currently visible rows",
       "Neither part — SUMX and DISTINCTCOUNT both respect the filter context; the issue is that the filter is applied via a cross-filtered Customers table, not directly on Sales"
     ],
     "correctAnswers": [
@@ -14356,10 +14356,10 @@
     "commonTrap": "Creating calculated columns for values that should be measures",
     "question": "A Power BI developer creates a calculated column [DiscountedPrice] = Sales[UnitPrice] * (1 - Sales[DiscountPct]) on a 40-million-row Sales fact table. Report authors then use this column in 15 different measures. Performance Analyzer shows these measures are fast, but the dataset file size has increased by 2.8 GB. Which refactoring reduces file size while maintaining measure performance?",
     "choices": [
-      "Keep the calculated column but compress it by changing the data type to Integer by multiplying by 100 to remove decimals",
+      "Keep the calculated column but compress it by changing the data type to Integer by multiplying by 100 to remove decimals — this still stores 40M integer values in VertiPaq, yielding only a modest size reduction while losing precision",
       "Delete [DiscountedPrice] and rewrite all 15 measures to compute Sales[UnitPrice] * (1 - Sales[DiscountPct]) inline — or better, define it as a VAR inside a shared base measure that others reference",
-      "Move the DiscountedPrice calculation to Power Query as a native column to avoid VertiPaq overhead",
-      "Create a separate DiscountedPrice table with pre-computed values and relate it back to Sales"
+      "Move the DiscountedPrice calculation to Power Query as a native column to avoid VertiPaq overhead — an imported column also materializes 40M values in VertiPaq storage, so the file size problem persists",
+      "Create a separate DiscountedPrice table with pre-computed values and relate it back to Sales — a 40M-row table adds equal or more storage than the calculated column plus extra relationship overhead"
     ],
     "correctAnswers": [
       1
@@ -14395,10 +14395,10 @@
     "commonTrap": "Loading denormalized tables directly instead of splitting into fact/dimension",
     "question": "A Power Query developer is loading a flat CSV export from an ERP system. The file has 5 million rows with columns: OrderID, OrderDate, CustomerName, CustomerCity, CustomerCountry, ProductCode, ProductName, ProductCategory, Qty, UnitPrice, DiscountPct. The developer needs to create a proper star schema. What is the CORRECT sequence of Power Query transformations?",
     "choices": [
-      "Use Merge Queries to join the flat file against itself on CustomerName to extract unique customers",
-      "Load the flat file as-is into a single table and create the star schema using DAX calculated tables in the model",
+      "Use Merge Queries to join the flat file against itself on CustomerName to extract unique customers — a self-join produces a complex nested result and doesn't cleanly create a deduplicated dimension table with a surrogate key",
+      "Load the flat file as-is into a single table and create the star schema using DAX calculated tables in the model — this still loads the fully denormalized flat table with all redundant columns and limits query folding",
       "Create reference queries from the source: one reference filtered/deduplicated for Customers (CustomerName, City, Country + surrogate key), one for Products (ProductCode, Name, Category + surrogate key), one for the fact table retaining numeric keys and measures — loading all three into the model",
-      "Pivot the ProductCategory column to create separate columns for each category, enabling faster filtering"
+      "Pivot the ProductCategory column to create separate columns for each category, enabling faster filtering — pivoting creates wide sparse columns and is the opposite of normalization, making the fact table harder to model relationally"
     ],
     "correctAnswers": [
       2
@@ -14566,9 +14566,9 @@
     "question": "A Power BI report has the following filters applied to a bar chart showing Revenue by Region: (1) A visual-level filter: Revenue > 10000, (2) A page-level filter: Year = 2024, (3) A report-level filter: Country = \"USA\", (4) A slicer on the page: Region = \"East\". A report consumer asks why the South region with $8,000 Revenue is not visible. Which filter is responsible?",
     "choices": [
       "The visual-level filter (Revenue > 10000) hides the South region because $8,000 does not meet the threshold — visual-level filters are the most granular and override slicers for display purposes",
-      "The page-level filter (Year = 2024) is limiting data to only 2024 which excludes South region sales",
-      "The slicer (Region = \"East\") is filtering out South because slicers take precedence over all other filter types",
-      "The report-level filter (Country = \"USA\") excludes South because it does not match the country filter"
+      "The page-level filter (Year = 2024) is limiting data to only 2024 which excludes South region sales — South's $8,000 Revenue is stated as existing in the current context, so a year filter alone wouldn't make it disappear",
+      "The slicer (Region = \"East\") is filtering out South because slicers take precedence over all other filter types — slicers act as page-level filters and do not override or take precedence over visual-level filters",
+      "The report-level filter (Country = \"USA\") excludes South because it does not match the country filter — a report-level filter would hide South from every visual on the report, not just this one bar chart"
     ],
     "correctAnswers": [
       0
@@ -16261,6 +16261,7 @@
     ],
     "daxExpression": "-- MOD returns the remainder after integer division\nMOD(20012, 100)\n\n-- Calculation:\n-- 20012 ÷ 100 = 200 remainder 12\n-- So MOD(20012, 100) = 12\n\n-- General rule: MOD(number, divisor) = number - divisor × INT(number / divisor)",
     "expectedOutput": {
+      "revealsAnswer": true,
       "label": "Step-by-step",
       "columns": [
         "Expression",
@@ -16280,7 +16281,9 @@
           "12  ← answer"
         ]
       ]
-    }
+    },
+    "questionGroupId": "dax_formula_mod",
+    "variantId": "v1"
   },
   {
     "id": 310,
@@ -16506,6 +16509,7 @@
     ],
     "daxExpression": "-- FIXED(number, decimals, no_commas)\nFIXED(12345.67, 0, FALSE())\n\n-- 0 decimal places → rounds 12345.67 to 12346\n-- FALSE() → include comma separators\n-- Result: \"12,346\" (as a text string)",
     "expectedOutput": {
+      "revealsAnswer": true,
       "label": "FIXED function examples",
       "columns": [
         "Expression",
@@ -16529,7 +16533,9 @@
           "2 decimal places"
         ]
       ]
-    }
+    },
+    "questionGroupId": "dax_formula_fixed",
+    "variantId": "v1"
   },
   {
     "id": 314,
@@ -16565,6 +16571,7 @@
     ],
     "daxExpression": "-- MID(text, start_position, num_chars)\n-- Positions are 1-based\nMID(\"HELLOTHERE\", 3, 5)\n\n-- String: H E L L O T H E R E\n-- Index:  1 2 3 4 5 6 7 8 9 10\n-- Start at position 3 (L), take 5 chars\n-- → L L O T H → \"LLOTH\"",
     "expectedOutput": {
+      "revealsAnswer": true,
       "label": "MID character extraction",
       "columns": [
         "Position",
@@ -16607,7 +16614,9 @@
           ""
         ]
       ]
-    }
+    },
+    "questionGroupId": "dax_formula_mid",
+    "variantId": "v1"
   },
   {
     "id": 315,
@@ -22651,5 +22660,397 @@
     "tags": ["Deployment", "Apps", "Workflow", "Gateway", "Scheduled Refresh"],
     "questionGroupId": "publish_deploy_workflow",
     "variantId": "full_pl300_01"
+  },
+  {
+    "id": 468,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Create model calculations by using DAX",
+    "difficulty": "Easy",
+    "questionStyle": "direct",
+    "cognitiveLevel": "application",
+    "examObjective": "Model the data > MOD function",
+    "question": "What is the result of this DAX formula? MOD(157, 12)",
+    "choices": [
+      "1",
+      "13",
+      "156",
+      "157"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "MOD returns the remainder of a division. 157 divided by 12 = 13 remainder 1. So MOD(157, 12) = 1.",
+    "estimatedTimeSeconds": 60,
+    "tags": [
+      "DAX",
+      "MOD",
+      "Math Functions"
+    ],
+    "choiceExplanations": [
+      "Correct. 157 / 12 = 13 remainder 1, so MOD returns 1.",
+      "13 is the quotient (how many times 12 divides into 157), not the remainder.",
+      "156 is 13 × 12 — i.e., 157 minus the remainder.",
+      "157 is the original number, not the result of MOD."
+    ],
+    "daxExpression": "-- MOD returns the remainder after integer division\nMOD(157, 12)\n\n-- Calculation:\n-- 157 ÷ 12 = 13 remainder 1\n-- So MOD(157, 12) = 1\n\n-- General rule: MOD(number, divisor) = number - divisor × INT(number / divisor)",
+    "expectedOutput": {
+      "revealsAnswer": true,
+      "label": "Step-by-step",
+      "columns": [
+        "Expression",
+        "Value"
+      ],
+      "rows": [
+        [
+          "INT(157 / 12)",
+          "13"
+        ],
+        [
+          "13 × 12",
+          "156"
+        ],
+        [
+          "157 − 156",
+          "1  ← answer"
+        ]
+      ]
+    },
+    "questionGroupId": "dax_formula_mod",
+    "variantId": "v2"
+  },
+  {
+    "id": 469,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Create model calculations by using DAX",
+    "difficulty": "Easy",
+    "questionStyle": "direct",
+    "cognitiveLevel": "application",
+    "examObjective": "Model the data > MOD function",
+    "question": "What is the result of this DAX formula? MOD(45, 7)",
+    "choices": [
+      "3",
+      "6",
+      "42",
+      "45"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "MOD returns the remainder of a division. 45 divided by 7 = 6 remainder 3. So MOD(45, 7) = 3.",
+    "estimatedTimeSeconds": 60,
+    "tags": [
+      "DAX",
+      "MOD",
+      "Math Functions"
+    ],
+    "choiceExplanations": [
+      "Correct. 45 / 7 = 6 remainder 3, so MOD returns 3.",
+      "6 is the quotient (how many times 7 divides into 45), not the remainder.",
+      "42 is 6 × 7 — i.e., 45 minus the remainder.",
+      "45 is the original number, not the result of MOD."
+    ],
+    "daxExpression": "-- MOD returns the remainder after integer division\nMOD(45, 7)\n\n-- Calculation:\n-- 45 ÷ 7 = 6 remainder 3\n-- So MOD(45, 7) = 3\n\n-- General rule: MOD(number, divisor) = number - divisor × INT(number / divisor)",
+    "expectedOutput": {
+      "revealsAnswer": true,
+      "label": "Step-by-step",
+      "columns": [
+        "Expression",
+        "Value"
+      ],
+      "rows": [
+        [
+          "INT(45 / 7)",
+          "6"
+        ],
+        [
+          "6 × 7",
+          "42"
+        ],
+        [
+          "45 − 42",
+          "3  ← answer"
+        ]
+      ]
+    },
+    "questionGroupId": "dax_formula_mod",
+    "variantId": "v3"
+  },
+  {
+    "id": 470,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Create model calculations by using DAX",
+    "difficulty": "Medium",
+    "questionStyle": "direct",
+    "cognitiveLevel": "application",
+    "examObjective": "Model the data > MID function",
+    "question": "What is the result of this DAX formula? MID(\"POWERBI\", 2, 4)",
+    "choices": [
+      "OWE",
+      "OWER",
+      "POWE",
+      "WERB"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "MID(text, start_position, num_chars). Starting at position 2 (O) and returning 4 characters: O, W, E, R = \"OWER\".",
+    "estimatedTimeSeconds": 75,
+    "tags": [
+      "DAX",
+      "MID",
+      "Text Functions"
+    ],
+    "choiceExplanations": [
+      "\"OWE\" is only 3 characters — the function returns 4.",
+      "Correct. Starting at position 2 (O) and taking 4 chars: O-W-E-R = \"OWER\".",
+      "\"POWE\" starts at position 1 — incorrect starting position.",
+      "\"WERB\" starts at position 3 — incorrect starting position."
+    ],
+    "daxExpression": "-- MID(text, start_position, num_chars)\n-- Positions are 1-based\nMID(\"POWERBI\", 2, 4)\n\n-- String: P O W E R B I\n-- Index:  1 2 3 4 5 6 7\n-- Start at position 2 (O), take 4 chars\n-- → O W E R → \"OWER\"",
+    "expectedOutput": {
+      "revealsAnswer": true,
+      "label": "MID character extraction",
+      "columns": [
+        "Position",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "rows": [
+        [
+          "Character",
+          "P",
+          "O",
+          "W",
+          "E",
+          "R",
+          "B",
+          "I"
+        ],
+        [
+          "MID(…,2,4)",
+          "",
+          "✅O",
+          "W",
+          "E",
+          "R",
+          "",
+          ""
+        ]
+      ]
+    },
+    "questionGroupId": "dax_formula_mid",
+    "variantId": "v2"
+  },
+  {
+    "id": 471,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Create model calculations by using DAX",
+    "difficulty": "Medium",
+    "questionStyle": "direct",
+    "cognitiveLevel": "application",
+    "examObjective": "Model the data > MID function",
+    "question": "What is the result of this DAX formula? MID(\"DASHBOARD\", 4, 4)",
+    "choices": [
+      "SHBO",
+      "HBOA",
+      "HBO",
+      "BOAR"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "MID(text, start_position, num_chars). Starting at position 4 (H) and returning 4 characters: H, B, O, A = \"HBOA\".",
+    "estimatedTimeSeconds": 75,
+    "tags": [
+      "DAX",
+      "MID",
+      "Text Functions"
+    ],
+    "choiceExplanations": [
+      "\"SHBO\" starts at position 3 — incorrect starting position.",
+      "Correct. Starting at position 4 (H) and taking 4 chars: H-B-O-A = \"HBOA\".",
+      "\"HBO\" is only 3 characters — the function returns 4.",
+      "\"BOAR\" starts at position 5 — incorrect starting position."
+    ],
+    "daxExpression": "-- MID(text, start_position, num_chars)\n-- Positions are 1-based\nMID(\"DASHBOARD\", 4, 4)\n\n-- String: D A S H B O A R D\n-- Index:  1 2 3 4 5 6 7 8 9\n-- Start at position 4 (H), take 4 chars\n-- → H B O A → \"HBOA\"",
+    "expectedOutput": {
+      "revealsAnswer": true,
+      "label": "MID character extraction",
+      "columns": [
+        "Position",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "rows": [
+        [
+          "Character",
+          "D",
+          "A",
+          "S",
+          "H",
+          "B",
+          "O",
+          "A",
+          "R",
+          "D"
+        ],
+        [
+          "MID(…,4,4)",
+          "",
+          "",
+          "",
+          "✅H",
+          "B",
+          "O",
+          "A",
+          "",
+          ""
+        ]
+      ]
+    },
+    "questionGroupId": "dax_formula_mid",
+    "variantId": "v3"
+  },
+  {
+    "id": 472,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Create model calculations by using DAX",
+    "difficulty": "Medium",
+    "questionStyle": "direct",
+    "cognitiveLevel": "application",
+    "examObjective": "Model the data > FIXED function",
+    "question": "What is the result of this DAX formula? FIXED(9876.54, 1, TRUE())",
+    "choices": [
+      "\"9876.5\"",
+      "\"9,876.5\"",
+      "\"9877\"",
+      "\"9876.54\""
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "FIXED(number, decimals, no_commas). With 1 decimal place and TRUE() for no_commas (meaning commas are excluded), 9876.54 rounds to 9876.5 and is formatted without a comma separator: \"9876.5\".",
+    "estimatedTimeSeconds": 90,
+    "tags": [
+      "DAX",
+      "FIXED",
+      "Text Functions",
+      "Number Formatting"
+    ],
+    "choiceExplanations": [
+      "Correct. TRUE() means no comma separators, and 1 decimal place rounds 9876.54 to 9876.5.",
+      "\"9,876.5\" would be the result if no_commas were FALSE (commas included).",
+      "\"9877\" would be the result with 0 decimal places.",
+      "\"9876.54\" is the original unrounded value with 2 decimals, not 1."
+    ],
+    "daxExpression": "-- FIXED(number, decimals, no_commas)\nFIXED(9876.54, 1, TRUE())\n\n-- 1 decimal place → rounds 9876.54 to 9876.5\n-- TRUE() → exclude comma separators\n-- Result: \"9876.5\" (as a text string)",
+    "expectedOutput": {
+      "revealsAnswer": true,
+      "label": "FIXED function examples",
+      "columns": [
+        "Expression",
+        "Result (text)",
+        "Notes"
+      ],
+      "rows": [
+        [
+          "FIXED(9876.54, 1, TRUE())",
+          "\"9876.5\"",
+          "Rounded, no comma ✅"
+        ],
+        [
+          "FIXED(9876.54, 1, FALSE())",
+          "\"9,876.5\"",
+          "With comma"
+        ],
+        [
+          "FIXED(9876.54, 0, FALSE())",
+          "\"9,877\"",
+          "0 decimal places"
+        ]
+      ]
+    },
+    "questionGroupId": "dax_formula_fixed",
+    "variantId": "v2"
+  },
+  {
+    "id": 473,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Create model calculations by using DAX",
+    "difficulty": "Medium",
+    "questionStyle": "direct",
+    "cognitiveLevel": "application",
+    "examObjective": "Model the data > FIXED function",
+    "question": "What is the result of this DAX formula? FIXED(1500, 2, FALSE())",
+    "choices": [
+      "\"1,500.00\"",
+      "\"1500.00\"",
+      "\"1,500\"",
+      "\"1500\""
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "FIXED(number, decimals, no_commas). With 2 decimal places and FALSE() for no_commas (meaning commas ARE included), 1500 is formatted as \"1,500.00\".",
+    "estimatedTimeSeconds": 90,
+    "tags": [
+      "DAX",
+      "FIXED",
+      "Text Functions",
+      "Number Formatting"
+    ],
+    "choiceExplanations": [
+      "Correct. FALSE() means include comma separators, and 2 decimal places format 1500 as \"1,500.00\".",
+      "\"1500.00\" would be the result if no_commas were TRUE (commas excluded).",
+      "\"1,500\" would be the result with 0 decimal places (commas included).",
+      "\"1500\" would be the result with 0 decimal places and no commas."
+    ],
+    "daxExpression": "-- FIXED(number, decimals, no_commas)\nFIXED(1500, 2, FALSE())\n\n-- 2 decimal places → 1500.00\n-- FALSE() → include comma separators\n-- Result: \"1,500.00\" (as a text string)",
+    "expectedOutput": {
+      "revealsAnswer": true,
+      "label": "FIXED function examples",
+      "columns": [
+        "Expression",
+        "Result (text)",
+        "Notes"
+      ],
+      "rows": [
+        [
+          "FIXED(1500, 2, FALSE())",
+          "\"1,500.00\"",
+          "With comma ✅"
+        ],
+        [
+          "FIXED(1500, 2, TRUE())",
+          "\"1500.00\"",
+          "No comma"
+        ],
+        [
+          "FIXED(1500, 0, FALSE())",
+          "\"1,500\"",
+          "0 decimal places"
+        ]
+      ]
+    },
+    "questionGroupId": "dax_formula_fixed",
+    "variantId": "v3"
   }
 ]

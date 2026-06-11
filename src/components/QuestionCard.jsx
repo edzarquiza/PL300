@@ -11,7 +11,7 @@ const TYPE_BADGE = {
   multi_part:      null, // badge shown per-part inside MultiPartQuestion
 }
 
-export default function QuestionCard({ question, selectedAnswer, onSelectAnswer }) {
+export default function QuestionCard({ question, selectedAnswer, onSelectAnswer, isStudy = false }) {
   const badge = TYPE_BADGE[question.type]
 
   return (
@@ -38,7 +38,7 @@ export default function QuestionCard({ question, selectedAnswer, onSelectAnswer 
         )}
       </div>
 
-      <VisualQuestionContext question={question} />
+      <VisualQuestionContext question={question} revealAnswers={isStudy} />
       <VisualChoicePreviews question={question} />
 
       <p className="text-base font-medium text-gray-900 leading-relaxed mt-4 mb-7">

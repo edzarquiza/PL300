@@ -220,6 +220,7 @@ export default function ExamPage() {
           question={currentQuestion}
           selectedAnswer={answers[currentQuestion.id] ?? null}
           onSelectAnswer={handleSelectAnswer}
+          isStudy={isStudy}
         />
 
         {!isAnswerEmpty(answers[currentQuestion.id], currentQuestion) && (
