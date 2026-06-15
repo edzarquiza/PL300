@@ -55,9 +55,7 @@ export default function HomePage() {
   const track = EXAM_TRACKS.find(t => t.id === selectedTrack) ?? EXAM_TRACKS[0]
 
   // Estimate available questions for the selected track + difficulty
-  const trackDomains = Object.keys(track.domainWeights)
-  const filteredPool = allQuestions.filter(q => {
-    if (!trackDomains.includes(q.domain)) return false
+  const filteredPool = getTrackPool(allQuestions, track).filter(q => {
     if (selectedDifficulties.length && !selectedDifficulties.includes(q.difficulty)) return false
     return true
   })
@@ -343,7 +341,7 @@ export default function HomePage() {
                     : 'border-gray-200 text-gray-600 hover:border-gray-300'
                 }`}
               >
-                All ({allQuestions.length})
+                All ({availableCount})
               </button>
             </div>
           </div>

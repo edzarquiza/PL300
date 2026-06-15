@@ -76,7 +76,7 @@ export default function ResultsPage() {
 
   const hasConfidenceRatings = Object.keys(confidence).length > 0
   const hasTraps = trapData.length > 0
-  const weakSubtopics = subtopicData.slice(0, 5)
+  const weakSubtopics = subtopicData.filter(s => s.rawPct < 70).slice(0, 5)
   const historicWeakSubtopics = masteryData.filter(s => s.pct < 70).slice(0, 5)
   const hasTrapHistory = trapHistory.length > 0
 
@@ -109,7 +109,7 @@ export default function ResultsPage() {
           </p>
           {flaggedCount > 0 && (
             <p className="text-sm opacity-70 mt-1">
-              {flaggedCount} question{flaggedCount !== 1 ? 's' : ''} were flagged for review
+              {flaggedCount} question{flaggedCount !== 1 ? 's' : ''} {flaggedCount !== 1 ? 'were' : 'was'} flagged for review
             </p>
           )}
           {examSeed && (

@@ -17,11 +17,11 @@ export default function TransformationPreview({ preview, revealAnswers = false }
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:items-start">
         <div>
           <p className="text-xs text-gray-400 mb-1.5 font-medium">Before</p>
-          <SampleDataTable table={beforeTable} />
+          <SampleDataTable table={beforeTable} revealAnswers={revealAnswers} />
         </div>
         <div>
           <p className="text-xs text-gray-400 mb-1.5 font-medium">After →</p>
-          <SampleDataTable table={afterTable} />
+          <SampleDataTable table={afterTable} revealAnswers={revealAnswers} />
         </div>
       </div>
     </div>

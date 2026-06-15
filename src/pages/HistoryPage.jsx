@@ -4,6 +4,7 @@ import { getExamHistory, clearHistory } from '../services/historyService'
 import { formatTime } from '../utils/examUtils'
 import { lookupQuestion } from '../utils/questionLookup'
 import { isAnswerCorrect } from '../utils/answerUtils'
+import { shuffleQuestionChoices } from '../services/examGenerator'
 import { addToRetryQueue, removeFromRetryQueue, isInRetryQueue } from '../services/retryQueueService'
 import { useExam } from '../context/ExamContext'
 
@@ -179,7 +180,7 @@ export default function HistoryPage() {
                   </div>
 
                   {isExpanded && hasAnswers && (
-                    <AnswerReview questionIds={entry.questionIds} answers={entry.answers} questionResults={entry.questionResults ?? {}} />
+                    <AnswerReview questionIds={entry.questionIds} answers={entry.answers} questionResults={entry.questionResults ?? {}} examSeed={entry.examSeed ?? null} />
                   )}
                 </div>
               )
@@ -268,9 +269,12 @@ function RetryButton({ questionId }) {
   )
 }
 
-function AnswerReview({ questionIds, answers, questionResults }) {
+function AnswerReview({ questionIds, answers, questionResults, examSeed }) {
   const rows = questionIds.map((id, index) => {
-    const q = lookupQuestion(id)
+    const original = lookupQuestion(id)
+    // Reconstruct the same choice order the user saw during the exam, since
+    // correctAnswers/choiceExplanations are remapped per-seed at shuffle time.
+    const q = original && examSeed ? shuffleQuestionChoices(original, examSeed) : original
     const answer = answers[id] ?? answers[String(id)]
     // Use stored correctness (computed at exam time against shuffled questions).
     // Fall back to live recomputation only for old history entries that lack questionResults.

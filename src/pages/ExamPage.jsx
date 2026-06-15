@@ -79,7 +79,7 @@ export default function ExamPage() {
       if (!isAnswerEmpty(ans, q)) questionResults[String(q.id)] = isAnswerCorrect(ans, q)
     })
     endExam()
-    saveExamResult({ score, domainBreakdown, subtopicBreakdown, mode, timeSpent, questionCount: questions.length, confidence, questionTimes: finalTimes, trapStats, trackId, questionIds: questions.map(q => String(q.id)), answers, questionResults })
+    saveExamResult({ score, domainBreakdown, subtopicBreakdown, mode, timeSpent, questionCount: questions.length, confidence, questionTimes: finalTimes, trapStats, trackId, examSeed, questionIds: questions.map(q => String(q.id)), answers, questionResults })
     navigate('/results', {
       state: { questions, answers, score, timeSpent, flagged, mode, domainBreakdown, confidence, questionTimes: finalTimes, trackId, examSeed, answerChanges },
     })

@@ -1,4 +1,6 @@
-export default function SampleDataTable({ table }) {
+import { stripAnswerMarkers } from '../utils/textUtils'
+
+export default function SampleDataTable({ table, revealAnswers = false }) {
   return (
     <div className="rounded-lg border border-gray-200 overflow-hidden text-xs">
       <div className="bg-gray-100 px-3 py-1.5 border-b border-gray-200 flex items-center gap-2">
@@ -11,7 +13,7 @@ export default function SampleDataTable({ table }) {
             <tr className="border-b border-gray-200 bg-gray-50">
               {table.columns.map(col => (
                 <th key={col} className="px-3 py-1.5 text-left font-semibold text-gray-600 whitespace-nowrap">
-                  {col}
+                  {revealAnswers ? col : stripAnswerMarkers(col)}
                 </th>
               ))}
             </tr>
@@ -23,7 +25,7 @@ export default function SampleDataTable({ table }) {
                   <td key={j} className="px-3 py-1.5 text-gray-700 whitespace-nowrap">
                     {cell === null || cell === undefined
                       ? <span className="text-gray-300 italic">null</span>
-                      : String(cell)}
+                      : revealAnswers ? String(cell) : stripAnswerMarkers(String(cell))}
                   </td>
                 ))}
               </tr>

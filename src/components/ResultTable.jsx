@@ -1,15 +1,9 @@
-// Strips checkmark/cross annotations (e.g. "9,800 ✅ (latest balance)") that
-// would otherwise point straight at the correct answer in Exam Mode.
-function stripAnswerMarkers(value) {
-  if (typeof value !== 'string') return value
-  return value
-    .replace(/\s*←\s*answer\b/gi, '')
-    .replace(/\s*[✅❌]\s*(\([^)]*\))?\s*(answer\b)?/gi, '')
-    .trim()
-}
+import { stripAnswerMarkers } from '../utils/textUtils'
 
 export default function ResultTable({ output, revealAnswers = false }) {
-  const label = output.label || 'Result'
+  const label = revealAnswers
+    ? (output.label || 'Result')
+    : (output.examLabel || output.label || 'Result')
   return (
     <div className="rounded-lg border border-green-200 overflow-hidden text-xs">
       <div className="bg-green-50 px-3 py-1.5 border-b border-green-200">
@@ -21,7 +15,7 @@ export default function ResultTable({ output, revealAnswers = false }) {
             <tr className="border-b border-green-100 bg-green-50">
               {output.columns.map(col => (
                 <th key={col} className="px-3 py-1.5 text-left font-semibold text-gray-600 whitespace-nowrap">
-                  {col}
+                  {revealAnswers ? col : stripAnswerMarkers(col)}
                 </th>
               ))}
             </tr>
