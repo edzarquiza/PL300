@@ -489,7 +489,7 @@
     "correctAnswers": [
       2
     ],
-    "explanation": "SUMX iterates over each row in the Sales table, evaluates Quantity * UnitPrice per row, then sums the results. SUM(A) * SUM(B) would multiply the totals, producing incorrect results when both columns vary per row.",
+    "explanation": "SUMX iterates over each row in the Sales table, evaluates Quantity * UnitPrice per row, then sums the results. SUM(Sales[Quantity]) * SUM(Sales[UnitPrice]) would multiply the column totals together, producing incorrect results whenever Quantity and UnitPrice vary per row.",
     "estimatedTimeSeconds": 90,
     "tags": [
       "SUMX",
@@ -1328,7 +1328,7 @@
       0,
       2
     ],
-    "explanation": "Label inheritance means reports built on a labeled dataset automatically receive the same label (A). When content is exported (to Excel, PDF, etc.), the label travels with the file to protect it outside Power BI (C). Labels and RLS are independent security layers — they do not replace each other.",
+    "explanation": "Label inheritance means reports built on a labeled dataset automatically receive the same label as the dataset. When content is exported (to Excel, PDF, etc.), the sensitivity label travels with the file to protect it outside Power BI. Labels and RLS are independent security layers — they do not replace each other, and sensitivity labels are available to Pro and Premium users, not exclusively to Free licenses.",
     "estimatedTimeSeconds": 120,
     "tags": [
       "Sensitivity Labels",
@@ -3028,7 +3028,7 @@
     "correctAnswers": [
       3
     ],
-    "explanation": "SUMX iterates over every row in the Employees table, applying the per-row formula using each employee's actual MonthlySalary and BonusRate. Option A incorrectly uses AVERAGE(BonusRate), which loses the per-employee variation and produces a different (wrong) total.",
+    "explanation": "SUMX iterates over every row in the Employees table, applying the per-row formula using each employee's actual MonthlySalary and BonusRate. The 'SUM(MonthlySalary) * 12 * (1 + AVERAGE(BonusRate))' approach incorrectly uses AVERAGE(BonusRate), which loses each employee's individual bonus rate and produces a different (wrong) total than summing the true per-employee annual cost.",
     "estimatedTimeSeconds": 90,
     "tags": [
       "SUMX",
@@ -3115,7 +3115,7 @@
     "correctAnswers": [
       3
     ],
-    "explanation": "TOTALQTD is the time intelligence function for quarter-to-date totals. It is equivalent to CALCULATE with DATESQTD. Option A filters by Quarter number alone, which would match the same calendar quarter across every year, not just the current year-to-date quarter. Option B uses a 90-day rolling window, which does not align to calendar quarter boundaries since quarters have 90-92 days. Option C uses DATESYTD, which returns year-to-date totals, not quarter-to-date.",
+    "explanation": "TOTALQTD is the time intelligence function for quarter-to-date totals. It is equivalent to CALCULATE with DATESQTD. The 'FILTER(Dates, Dates[Quarter] = QUARTER(TODAY()))' approach filters by quarter number alone, which would match the same calendar quarter across every year, not just the current year-to-date quarter. The 90-day rolling window approach using DATESINPERIOD does not align to calendar quarter boundaries since quarters have 90-92 days. The DATESYTD-based expression returns year-to-date totals, not quarter-to-date.",
     "estimatedTimeSeconds": 90,
     "tags": [
       "TOTALQTD",
@@ -6061,7 +6061,7 @@
     "correctAnswers": [
       1
     ],
-    "explanation": "AVERAGEX iterates each row, computes Qty × UnitPrice per row, then averages all row results — this is the correct approach. Option A (average of averages: AVERAGE(UnitPrice) * AVERAGE(Qty)) is mathematically wrong — it does not equal the average of the per-row product. Option C uses AVERAGE() with an arithmetic expression, but AVERAGE() only accepts a single column reference, making this syntax invalid. Option D has the same problem with SUM() — SUM() also cannot take an arithmetic expression like Qty * UnitPrice.",
+    "explanation": "AVERAGEX iterates each row, computes Qty × UnitPrice per row, then averages all row results — this is the correct approach. 'AVERAGE(UnitPrice) * AVERAGE(Qty)' is an average-of-averages and is mathematically wrong — it does not equal the average of the per-row product. 'AVERAGE(Sales[Qty] * Sales[UnitPrice])' is invalid syntax because AVERAGE() only accepts a single column reference, not an arithmetic expression. The DIVIDE/SUM expression has the same problem — SUM() also cannot take an arithmetic expression like Qty * UnitPrice as its argument.",
     "estimatedTimeSeconds": 90,
     "tags": [
       "AVERAGEX",
@@ -6194,14 +6194,14 @@
     "question": "A business analyst wants to display how total monthly revenue has changed across the last 18 months to help executives identify seasonal patterns and growth trends. Which visual is most appropriate?",
     "choices": [
       "Clustered bar chart",
-      "Pie chart",
-      "Treemap",
+      "Area chart",
+      "Clustered column chart",
       "Line chart"
     ],
     "correctAnswers": [
       3
     ],
-    "explanation": "A line chart is the standard choice for showing a continuous metric over time. It makes trends, peaks, and seasonal patterns immediately visible. A clustered bar chart compares discrete categories. A pie chart shows proportions of a whole. A treemap shows hierarchical proportions.",
+    "explanation": "A line chart is the standard choice for showing a continuous metric over time. It makes trends, peaks, and seasonal patterns immediately visible. A clustered bar chart and clustered column chart compare discrete categories side by side rather than connecting them into a single trend. An area chart is closely related but its shaded fill emphasises cumulative magnitude over the shape of the trend — a plain line chart communicates seasonal patterns and growth most clearly.",
     "estimatedTimeSeconds": 60,
     "tags": [
       "Visual Selection",
@@ -6211,8 +6211,8 @@
     ],
     "choiceExplanations": {
       "0": "A clustered bar chart compares discrete categories side by side using rectangular bars. It does not show a continuous metric over time or make seasonal trends visible.",
-      "1": "A pie chart shows how a whole is divided into parts at a single point in time. It cannot represent how a metric changes across a series of time periods.",
-      "2": "A treemap displays hierarchical proportions as nested rectangles. It encodes a single value as area at one point in time — it cannot show change over a sequence of months.",
+      "1": "An area chart is closely related to a line chart and can show a trend over time, but its shaded fill emphasises cumulative volume rather than the shape of the trend itself — for clearly highlighting peaks, seasonal dips, and growth direction across 18 months, a plain line chart communicates the trend more clearly.",
+      "2": "A clustered column chart can plot one bar per month, but with 18 categories the bars become numerous and the visual reads as discrete period-by-period comparisons rather than a single continuous trend — a line chart better emphasises the connected trajectory needed to spot seasonal patterns.",
       "3": "Correct. A line chart is the standard choice for showing a continuous metric over time. Connected data points across 18 months make seasonal patterns, peaks, and growth trends immediately visible."
     }
   },
@@ -6230,14 +6230,14 @@
     "question": "A regional manager wants to compare total quarterly sales across five product categories side by side for the current quarter. All five categories should be equally prominent. Which visual is most appropriate?",
     "choices": [
       "Clustered bar chart",
-      "Funnel chart",
+      "Stacked column chart",
       "Line chart",
-      "KPI visual"
+      "Pie chart"
     ],
     "correctAnswers": [
       0
     ],
-    "explanation": "A clustered bar chart is ideal for comparing discrete, parallel values across categories. Each category gets its own bar at equal visual weight. A line chart implies a sequence or trend over time. A funnel chart implies progressive stages with attrition. A KPI shows a single metric against a target.",
+    "explanation": "A clustered bar chart is ideal for comparing discrete, parallel values across categories. Each category gets its own bar at equal visual weight. A line chart implies a sequence or trend over time. A stacked column chart combines categories into segments of a shared bar rather than placing them side by side at equal prominence. A pie chart emphasises proportion of a whole rather than direct equal-weight comparison.",
     "estimatedTimeSeconds": 60,
     "tags": [
       "Visual Selection",
@@ -6247,9 +6247,9 @@
     ],
     "choiceExplanations": {
       "0": "Correct. A clustered bar chart places equal-weight bars side by side for each category, making direct comparison of five independent values straightforward and unambiguous.",
-      "1": "A funnel chart implies a progressive process where values decrease at each sequential stage — for example, a sales pipeline. It is not appropriate for comparing five unrelated, equally important categories.",
+      "1": "A stacked column chart would combine the five categories into segments of a shared bar rather than placing them side by side — this emphasises how they sum to a total, not how each compares individually at equal prominence.",
       "2": "A line chart connects data points suggesting a continuous trend or sequence over time. Comparing five discrete product categories for a single quarter does not represent a time sequence.",
-      "3": "A KPI visual shows a single measure against a target with a trend indicator. It cannot display five separate categories simultaneously."
+      "3": "A pie chart shows each category's share of a total — but with five categories of similar size, the slices become hard to compare precisely, and pie charts emphasise proportion of a whole rather than placing each category at equal visual weight for direct comparison."
     }
   },
   {
@@ -6265,7 +6265,7 @@
     "trapType": "Visualization Selection",
     "question": "A data analyst wants to determine whether marketing spend and revenue are correlated across 60 sales territories. Each territory should appear as a data point plotted against both values. Which visual is most appropriate?",
     "choices": [
-      "Donut chart",
+      "Area chart",
       "Line chart",
       "Clustered bar chart",
       "Scatter chart"
@@ -6273,7 +6273,7 @@
     "correctAnswers": [
       3
     ],
-    "explanation": "A scatter chart plots two numeric measures against each other as individual data points — perfect for revealing correlation, clusters, or outliers. A clustered bar chart compares categories. A line chart shows a metric over time. A donut chart shows part-to-whole proportions.",
+    "explanation": "A scatter chart plots two numeric measures against each other as individual data points — perfect for revealing correlation, clusters, or outliers. A clustered bar chart compares categories. A line chart and an area chart both show a metric over time rather than the relationship between two measures.",
     "estimatedTimeSeconds": 75,
     "tags": [
       "Visual Selection",
@@ -6282,7 +6282,7 @@
       "Visualization"
     ],
     "choiceExplanations": {
-      "0": "A donut chart shows part-to-whole proportions for a small number of categories. It cannot plot each territory as an individual data point with two numeric coordinates.",
+      "0": "An area chart, like a line chart, shows how a single metric changes over a continuous time axis. It cannot plot 60 territories as independent points positioned by two separate numeric measures (marketing spend and revenue) to reveal correlation.",
       "1": "A line chart shows a single metric over a continuous time axis. It cannot plot 60 territories as independent data points against two separate numeric measures.",
       "2": "A clustered bar chart compares categories using bar length on one axis. It cannot simultaneously plot two continuous numeric measures for each territory to reveal correlation.",
       "3": "Correct. A scatter chart plots each of the 60 territories as a data point with marketing spend on one axis and revenue on the other, making correlations, clusters, and outliers immediately visible."
@@ -6409,7 +6409,7 @@
     "trapType": "Visualization Selection",
     "question": "A dashboard must display the total number of active customers this year (42,831) as a single large, prominent number. No comparison or trend is needed — just the value itself. Which visual is most appropriate?",
     "choices": [
-      "Line chart",
+      "Matrix visual",
       "Card visual",
       "Gauge visual",
       "KPI visual"
@@ -6417,7 +6417,7 @@
     "correctAnswers": [
       1
     ],
-    "explanation": "A card visual is designed specifically to display a single measure as a large, prominent number. It requires no target, no range, and no trend — just the value. A KPI requires a comparison baseline. A gauge requires a min/max range. A line chart shows trends over time.",
+    "explanation": "A card visual is designed specifically to display a single measure as a large, prominent number. It requires no target, no range, and no trend — just the value. A KPI requires a comparison baseline. A gauge requires a min/max range. A matrix visual is built for tabular breakdowns across multiple dimensions, not a single headline figure.",
     "estimatedTimeSeconds": 45,
     "tags": [
       "Visual Selection",
@@ -6426,7 +6426,7 @@
       "Visualization"
     ],
     "choiceExplanations": {
-      "0": "A line chart shows a metric changing over time across multiple data points. Displaying a single number like 42,831 does not require a time axis or connected data points.",
+      "0": "A matrix visual displays data in a tabular grid with rows, columns, and subtotals — it is built for breaking a metric down across multiple dimensions, not for presenting a single overall figure as one large, prominent number.",
       "1": "Correct. A card visual is designed specifically to display a single measure as a large, prominent number with no target, range, or trend required. It is the simplest and clearest way to present one key metric.",
       "2": "A gauge visual requires a minimum value, a maximum value, and a target to render meaningfully. For a single number with no target or range, a card visual is the correct choice.",
       "3": "A KPI visual requires a baseline comparison value and trend data to render correctly. Displaying a simple count without a target or trend uses an inappropriate visual structure."
@@ -6448,12 +6448,12 @@
       "Clustered bar chart",
       "Treemap",
       "Pie chart",
-      "Donut chart"
+      "100% stacked bar chart"
     ],
     "correctAnswers": [
       1
     ],
-    "explanation": "A treemap uses nested rectangles where area directly encodes relative proportion — highly readable even with 12 or more categories. A pie chart works well for 4–5 categories but becomes difficult to read beyond that. A bar chart compares values but does not encode area proportionally. A donut chart has the same limitation as a pie chart.",
+    "explanation": "A treemap uses nested rectangles where area directly encodes relative proportion — highly readable even with 12 or more categories. A pie chart works well for 4–5 categories but becomes difficult to read beyond that. A bar chart compares values but does not encode area proportionally. A 100% stacked bar chart shows proportions within a single bar but, like a pie chart, becomes cluttered and hard to compare once segment count grows.",
     "estimatedTimeSeconds": 75,
     "tags": [
       "Visual Selection",
@@ -6465,7 +6465,7 @@
       "0": "A clustered bar chart compares values using bar length on a linear axis. It does not encode relative proportion as area, and readability degrades with more than 8–10 bars — 12 categories becomes crowded.",
       "1": "Correct. A treemap uses nested rectangles where area directly encodes relative proportion. It remains readable with 12 or more categories because the visual area clearly signals which categories are largest.",
       "2": "A pie chart works well for 4–5 categories but becomes very difficult to read beyond that. With 12 categories, the thin slices become indistinguishable and labeling becomes cluttered.",
-      "3": "A donut chart has the same limitation as a pie chart — it shows part-to-whole proportions but becomes unreadable with many small segments. For 12 categories, a treemap is superior."
+      "3": "A 100% stacked bar chart shows each category's share of a total within a single bar, but with 12 categories the segments become too thin to label or compare individually — and unlike a treemap, it does not use area to make the largest contributors immediately visually obvious."
     }
   },
   {
@@ -6894,7 +6894,7 @@
     "correctAnswers": [
       3
     ],
-    "explanation": "FILTER(Sales, Sales[Amount] > 500) returns a table of matching rows, and COUNTROWS() counts them — this is the standard, idiomatic pattern for conditional row counting and respects the existing filter context. Option A is technically valid but less idiomatic — COUNTROWS is the clearer choice for counting filtered rows. Option B is invalid — SUM() expects a column reference, not a table returned by FILTER(), so this expression causes a DAX error. Option C uses ALL(Sales) to clear existing filters before reapplying the Amount > 500 condition, which ignores any slicers or visual filters already in effect, making it incorrect for a general-purpose measure.",
+    "explanation": "FILTER(Sales, Sales[Amount] > 500) returns a table of matching rows, and COUNTROWS() counts them — this is the standard, idiomatic pattern for conditional row counting and respects the existing filter context. 'CALCULATE(COUNT(Sales[Amount]), Sales[Amount] > 500)' is technically valid but less idiomatic — COUNTROWS is the clearer choice for counting filtered rows. 'SUM(FILTER(Sales, Sales[Amount] > 500))' is invalid — SUM() expects a column reference, not a table returned by FILTER(), so this expression causes a DAX error. 'CALCULATE(COUNTROWS(Sales), ALL(Sales), Sales[Amount] > 500)' uses ALL(Sales) to clear existing filters before reapplying the Amount > 500 condition, which ignores any slicers or visual filters already in effect, making it incorrect for a general-purpose measure.",
     "estimatedTimeSeconds": 90,
     "tags": [
       "FILTER",
@@ -8252,7 +8252,7 @@
     "correctAnswers": [
       0
     ],
-    "explanation": "FILTER(Sales, Sales[UnitPrice] > 100) returns a table containing only the qualifying rows, and SUMX iterates only those rows — clean, explicit, and the most readable and efficient approach. Option B uses SUMX(ALL(Sales), IF(...)), which clears the existing filter context and still evaluates every row, zeroing out the non-qualifying ones — less efficient and changes filter behavior unnecessarily. Option C wraps SUMX in CALCULATE to apply the filter, which also produces a correct result but combines two concerns where the direct FILTER-as-table-argument approach is cleaner. Option D evaluates IF for every row in Sales without first filtering, so it still visits all rows unnecessarily.",
+    "explanation": "FILTER(Sales, Sales[UnitPrice] > 100) returns a table containing only the qualifying rows, and SUMX iterates only those rows — clean, explicit, and the most readable and efficient approach. 'SUMX(ALL(Sales), IF(...))' clears the existing filter context and still evaluates every row, zeroing out the non-qualifying ones — less efficient and changes filter behavior unnecessarily. Wrapping SUMX in CALCULATE to apply the filter also produces a correct result but combines two concerns where the direct FILTER-as-table-argument approach is cleaner. 'SUMX(Sales, IF(...))' without filtering first evaluates IF for every row in Sales, so it still visits all rows unnecessarily.",
     "estimatedTimeSeconds": 90,
     "tags": [
       "FILTER",
@@ -8805,6 +8805,7 @@
     ],
     "choiceExplanations": {
       "0": "REMOVEFILTERS() removes an existing filter — it expands what is visible rather than intersecting with the existing context. This is the opposite of what is needed; the goal is to retain existing slicer filters, not remove them.",
+      "1": "Correct. KEEPFILTERS() used as a CALCULATE modifier intersects (merges) the new filter argument with the existing filter context instead of replacing it — so a slicer selection like 'Electronics' combines with the filter argument rather than being overridden.",
       "2": "VALUES() returns a table of currently visible column values and can be passed as a filter argument in CALCULATE, but it does not prevent filter replacement — it simply passes the current column values as a new filter constraint. KEEPFILTERS() is the explicit modifier designed to INTERSECT (merge) a new filter with the existing context rather than replacing it.",
       "3": "ALL() removes all active filters on a column or table, returning every value regardless of current context. It expands the filter context rather than merging or intersecting with existing slicer selections — the opposite of what is required."
     },
@@ -8933,13 +8934,13 @@
     "choices": [
       "Pie chart",
       "Bar chart",
-      "Scatter chart",
-      "Line chart"
+      "Clustered column chart",
+      "Treemap"
     ],
     "correctAnswers": [
       1
     ],
-    "explanation": "A bar chart (horizontal bars) is ideal for comparing discrete categories, especially when category labels are long — the labels display horizontally on the Y axis with full readability. Pie charts become cluttered beyond 5–6 segments. Line chart implies continuous time data. Scatter chart compares two measures.",
+    "explanation": "A bar chart (horizontal bars) is ideal for comparing discrete categories, especially when category labels are long — the labels display horizontally on the Y axis with full readability. Pie charts become cluttered beyond 5–6 segments. A clustered column chart would require long labels to fit beneath vertical bars, which is less readable. A treemap shows relative proportion as area but doesn't provide the same precise comparison and label space as a bar chart.",
     "estimatedTimeSeconds": 60,
     "tags": [
       "Bar Chart",
@@ -8949,8 +8950,8 @@
     "choiceExplanations": {
       "0": "A pie chart becomes very difficult to read with seven categories — the segments become thin and indistinguishable. It also places category labels inside or around a circle, making long names hard to display without overlap.",
       "1": "Correct. A bar chart (horizontal bar chart) displays categories on the Y axis with full-length horizontal labels, making long category names completely readable. Seven categories remains a manageable number for comparison.",
-      "2": "A scatter chart plots individual data points using two numeric measures as coordinates. It is used for correlation analysis across many entities — not for comparing one aggregated value per category.",
-      "3": "A line chart connects data points suggesting a continuous sequence or trend over time. Comparing seven categories for a single period is a discrete categorical comparison — not a time-series trend."
+      "2": "A clustered column chart compares categories effectively, but it places category labels horizontally along the X axis — with seven long category names, the labels would need to be rotated, truncated, or wrapped to fit, reducing readability compared to a horizontal bar chart where labels run along the Y axis.",
+      "3": "A treemap encodes each category's value as the area of a rectangle, which is useful for showing relative proportion at a glance but does not provide the precise label space or easy value comparison that a bar chart offers for seven categories with long names."
     }
   },
   {
@@ -9348,12 +9349,12 @@
       "Treemap",
       "Bar chart",
       "Pie chart",
-      "Funnel chart"
+      "100% stacked bar chart"
     ],
     "correctAnswers": [
       0
     ],
-    "explanation": "A treemap displays hierarchical data using nested rectangles sized proportionally to their values, making it easy to see which subcategories contribute most within each category. Pie charts work for simple part-to-whole without hierarchy. Bar charts compare values on a linear axis. Funnel charts show process stages.",
+    "explanation": "A treemap displays hierarchical data using nested rectangles sized proportionally to their values, making it easy to see which subcategories contribute most within each category. Pie charts work for simple part-to-whole without hierarchy. Bar charts compare values on a linear axis. A 100% stacked bar chart shows proportions within a single bar but does not represent the parent-category hierarchy the way nested treemap rectangles do.",
     "estimatedTimeSeconds": 60,
     "tags": [
       "Treemap",
@@ -9365,7 +9366,7 @@
       "0": "Correct. A treemap displays hierarchical data using nested rectangles, where each rectangle's area is proportional to its value. Product subcategories can be nested within parent categories, and the largest contributors are immediately visually obvious.",
       "1": "A bar chart compares values using bar length on a linear axis. It cannot show hierarchy nesting or encode relative size as proportional area — subcategories within categories would require separate grouped bars.",
       "2": "A pie chart shows part-to-whole proportions but does not support hierarchical nesting. Subcategories within parent categories cannot be represented in a standard pie chart.",
-      "3": "A funnel chart represents sequential process stages where values progressively decrease. It is designed for pipeline or conversion analysis — not for hierarchical proportional area comparison."
+      "3": "A 100% stacked bar chart shows each subcategory's share of the total within a single bar, but it does not nest subcategories inside their parent category visually — a treemap's nested rectangles make the parent/child hierarchy and relative sizes immediately obvious in one view."
     }
   },
   {
@@ -9552,7 +9553,8 @@
     ],
     "daxExpression": "-- FALSE: CALCULATE CAN be nested inside another CALCULATE\nNested Example =\n    CALCULATE(\n        CALCULATE(\n            SUM(Sales[Amount]),\n            Sales[Region] = \"East\"\n        ),\n        Sales[Year] = 2024\n    )\n\n-- The inner CALCULATE applies the Region filter.\n-- The outer CALCULATE applies the Year filter.\n-- Both filters are active simultaneously — nested CALCULATE is a valid and common pattern.",
     "choiceExplanations": {
-      "0": "Incorrect. CALCULATE can be nested inside another CALCULATE — this is a common and powerful DAX pattern. The inner CALCULATE establishes a new filter context before the outer one applies its own filters."
+      "0": "Incorrect. CALCULATE can be nested inside another CALCULATE — this is a common and powerful DAX pattern. The inner CALCULATE establishes a new filter context before the outer one applies its own filters.",
+      "1": "Correct. CALCULATE can be nested inside another CALCULATE. Nesting CALCULATE is a common pattern for applying multiple, layered filter overrides within a single measure."
     }
   },
   {
@@ -9582,6 +9584,7 @@
       0
     ],
     "choiceExplanations": {
+      "0": "Correct. In a star schema, every dimension table connects directly to the central fact table with no intermediate or bridge tables — this is what distinguishes it from a snowflake schema.",
       "1": "Incorrect. The statement correctly defines a star schema — all dimensions connect directly to the fact table with no intermediary tables. A model with intermediate bridge tables is called a snowflake schema, not a star schema."
     }
   },
@@ -9613,7 +9616,8 @@
       1
     ],
     "choiceExplanations": {
-      "0": "Incorrect. Import mode takes a snapshot of data at refresh time and stores it in Power BI's in-memory engine. Reports always show data from the last refresh — not live source data. Use DirectQuery or DirectLake for near-real-time needs."
+      "0": "Incorrect. Import mode takes a snapshot of data at refresh time and stores it in Power BI's in-memory engine. Reports always show data from the last refresh — not live source data. Use DirectQuery or DirectLake for near-real-time needs.",
+      "1": "Correct. Import mode stores a snapshot of the data inside Power BI. The dataset only reflects source changes after a manual or scheduled refresh — it does not update in near-real-time on its own."
     }
   },
   {
@@ -9644,6 +9648,7 @@
       0
     ],
     "choiceExplanations": {
+      "0": "Correct. RLS is defined once on the semantic model and is enforced for every report, dashboard, or app built on top of that model, regardless of how or where users access the data (workspace Admins and owners are the exception).",
       "1": "Incorrect. RLS is enforced at the semantic model level and applies to every report and dashboard built on that model, regardless of how users access it. The only exception is workspace Admins and owners, who bypass RLS by default."
     }
   },
@@ -9675,6 +9680,7 @@
       0
     ],
     "choiceExplanations": {
+      "0": "Correct. Calculated columns are computed and materialised into the model at refresh time, so they behave exactly like imported source columns — they can be used in slicers, filters, relationships, and visuals.",
       "1": "Incorrect. Calculated columns are materialised into the model at refresh time and behave identically to imported source columns — they can be placed in slicers, filters, relationships, and RLS expressions."
     }
   },
@@ -9696,7 +9702,7 @@
     "choices": [
       "Line Chart",
       "KPI Visual",
-      "Donut Chart",
+      "Gauge Visual",
       "Clustered Column Chart"
     ],
     "correctMapping": {
@@ -9704,7 +9710,7 @@
       "Display current revenue vs. a target goal": "KPI Visual",
       "Show each product category as a share of total sales": "Donut Chart"
     },
-    "explanation": "The KPI Visual is designed specifically to show a key metric value, a target/goal, and a trend axis in a single visual — ideal for tracking performance against targets.",
+    "explanation": "The KPI Visual is designed specifically to show a key metric value, a target/goal, and a trend axis in a single visual — ideal for tracking performance against targets. A gauge visual shows a value against a target on an arc but has no trend axis. A line chart shows trends but not a combined current value and target. A clustered column chart compares values across categories or periods but cannot combine a single headline value, target, and trend in one visual.",
     "estimatedTimeSeconds": 90,
     "tags": [
       "KPI Visual",
@@ -9718,7 +9724,8 @@
     "cognitiveLevel": "application",
     "choiceExplanations": {
       "0": "A line chart shows value trends over time but does not natively combine a goal/target indicator with a single callout value — you would need multiple separate visuals to show the same information as one KPI.",
-      "2": "A donut chart shows proportional parts of a whole and has no concept of a target goal or historical trend axis.",
+      "1": "Correct. The KPI visual is purpose-built to display a current value, a target/goal, and a trend indicator together — exactly matching the requirement to show revenue, a goal, and progress over time in one visual.",
+      "2": "A gauge visual shows a single value against a minimum, maximum, and target on an arc — it can display progress toward a goal, but it has no trend axis, so it cannot show how revenue has progressed over time alongside the current value and target.",
       "3": "A clustered column chart compares values across categories or periods but requires separate visuals to simultaneously show a headline value, a target, and a trend."
     }
   },
@@ -9762,6 +9769,7 @@
     "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "choiceExplanations": {
+      "0": "Correct. CALCULATE modifies the filter context for an expression. Passing an explicit region filter as an argument to CALCULATE overrides the report-level slicer, ensuring the measure always returns sales for the fixed region.",
       "1": "SUMX is an iterator that evaluates an expression row by row and totals the results — it operates within the existing filter context and cannot override or remove a slicer's filter on its own.",
       "2": "RELATED retrieves a single scalar value from a related table's column — it does not modify or override filter context imposed by slicers.",
       "3": "FILTER returns a filtered table and is commonly used as an argument inside CALCULATE — but on its own as the outermost function, it cannot override a slicer's filter context."
@@ -9807,6 +9815,7 @@
     "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "choiceExplanations": {
+      "0": "Correct. DirectQuery sends queries directly to the source Azure SQL Database at report render time without storing or caching a copy of the data in Power BI — satisfying both the real-time requirement and the policy against storing data outside the source system.",
       "1": "Import mode caches a copy of data inside Power BI's in-memory VertiPaq engine — this violates the governance policy prohibiting data storage outside the source system.",
       "2": "Composite models mix Import and DirectQuery — at least some Import tables store data locally, which may violate data residency requirements.",
       "3": "Dual mode tables are cached locally when acting as Import for performance — they still store data, making them inappropriate when data storage outside the source is prohibited."
@@ -9920,6 +9929,7 @@
     "choiceExplanations": {
       "0": "Append Queries stacks two tables vertically by adding more rows — it does not convert column headers into row values.",
       "1": "Merge Queries joins two tables horizontally using a matching key column — it does not reshape column headers into a normalised row format.",
+      "2": "Correct. Unpivot Columns converts the selected month columns (Jan, Feb, Mar …) from column headers into row values, producing an Attribute column (the month name) and a Value column — exactly the row-based shape required.",
       "3": "Pivot Column is the reverse operation — it converts unique row values into column headers. Unpivot converts column headers into row values."
     }
   },
@@ -9996,6 +10006,7 @@
     },
     "choiceExplanations": {
       "0": "Removing duplicates is a transformation step that requires data to already be loaded in Power Query Editor — you cannot apply it before the initial data connection exists.",
+      "1": "Correct. Before any cleaning or transformation can occur, the data must first be connected to and loaded into Power Query. Every other step — removing duplicates, handling nulls, renaming columns — depends on the raw data already being present.",
       "2": "Filtering null values is a transformation step that requires the raw data to be present first — it cannot happen before the initial connection is made.",
       "3": "Renaming columns requires the columns to exist in Power Query Editor — this transformation step always follows the initial data load."
     }
@@ -10039,6 +10050,7 @@
     "cognitiveLevel": "analysis",
     "choiceExplanations": {
       "0": "Assigning Azure AD users to roles happens in Power BI Service after the model has been published — you cannot assign users in Desktop, and this step cannot be completed before publishing.",
+      "1": "Correct. With the model built and RLS roles defined in Desktop, the next step is to publish the semantic model to Power BI Service. User and security-group assignment to roles only happens in the Service after publishing.",
       "2": "Creating RLS roles in the Manage Roles dialog is a prior step — the question states this is already complete. There is nothing left to create in Desktop.",
       "3": "Testing with 'View as' in Desktop is a validation step done before publishing to confirm the role filter logic is correct — it is an earlier step, not the next step to complete implementation."
     }
@@ -10083,6 +10095,7 @@
     "choiceExplanations": {
       "0": "Defining measures and calculated columns is an early model development step — it happens well before publishing and certainly before distributing to end users.",
       "1": "Creating report pages and configuring visuals is a development step that happens before publishing to the Service — it is a middle step, not the final one.",
+      "2": "Correct. The final activity before end users can access the report is configuring permissions and distributing it via an app or direct share. Model development, visual design, and publishing must all be completed first.",
       "3": "Publishing to the Service is required, but it comes before permission configuration and distribution — you publish first so there is something to share, then configure access and distribute."
     }
   },
@@ -10543,7 +10556,7 @@
     "correctAnswers": [
       2
     ],
-    "explanation": "Hybrid tables (Power BI Premium) partition the table so recent data (e.g., last 7 days) is served via DirectQuery — always current — while historical data remains in Import mode for fast analytical performance. This avoids the cost of refreshing 500M rows every 10 minutes and provides the required recency. Full DirectQuery on a 500M-row analytical table (B, C) would produce very slow report performance. Streaming datasets are for real-time dashboards, not analytical reports.",
+    "explanation": "Hybrid tables (Power BI Premium) partition the table so recent data (e.g., last 7 days) is served via DirectQuery — always current — while historical data remains in Import mode for fast analytical performance. This avoids the cost of refreshing 500M rows every 10 minutes and provides the required recency. Full DirectQuery mode on a 500M-row analytical table would produce very slow report performance for every query, not just recent data. Streaming datasets are designed for real-time dashboards, not analytical reports, and don't address the need for fast historical analysis alongside near-real-time data.",
     "tags": [
       "Hybrid Tables",
       "Incremental Refresh",
@@ -10815,7 +10828,7 @@
     "correctAnswers": [
       2
     ],
-    "explanation": "Build permission on a semantic model allows users to create new reports from that model in their own workspace without requiring any workspace role on the shared workspace. Contributor role (B) allows creating AND editing all content in the workspace — more access than required. Viewer role (C) cannot publish content at all. Member role (D) provides even broader access than Contributor.",
+    "explanation": "Build permission on a semantic model allows users to create new reports from that model in their own workspace without requiring any workspace role on the shared workspace. The Contributor role allows creating AND editing all content in the workspace — more access than required, since the contractor must not modify existing reports. The Viewer role is read-only and cannot publish new reports at all, so it cannot satisfy the requirement to create new reports. The Member role provides even broader access than Contributor, including managing workspace access for other users — far more than required here.",
     "tags": [
       "Build Permission",
       "Workspace Roles",
@@ -10850,7 +10863,7 @@
     "correctAnswers": [
       3
     ],
-    "explanation": "Many-to-many between dimension tables requires a bridge (intersection) table holding the composite keys. Both relationships from the bridge to each dimension are set to cross-filter Both, allowing slicing by either Product or Promotion to correctly propagate through the bridge. A direct M:N relationship (A) in Power BI creates ambiguous filter paths. Adding Promotion directly to Product (B) only supports one promotion per product.",
+    "explanation": "Many-to-many between dimension tables requires a bridge (intersection) table holding the composite keys. Both relationships from the bridge to each dimension are set to cross-filter Both, allowing slicing by either Product or Promotion to correctly propagate through the bridge. A direct many-to-many relationship between Product and Promotion in Power BI creates ambiguous filter paths. Adding a PromotionKey foreign key directly to the Product dimension table only supports one promotion per product, which doesn't model the many-to-many reality.",
     "tags": [
       "Many-to-Many",
       "Bridge Table",
@@ -11301,7 +11314,7 @@
     "correctAnswers": [
       1
     ],
-    "explanation": "SUM() only accepts a single column reference — it cannot evaluate expressions. SUMX is an iterator that evaluates an expression row-by-row and sums the results. Option B (SUM × SUM) produces mathematically incorrect results — it multiplies the total of all unit costs by the total of all quantities rather than summing per-row products. Option D works but stores redundant computed data in the model unnecessarily.",
+    "explanation": "SUM() only accepts a single column reference — it cannot evaluate expressions, which is why the original measure errors. SUMX is an iterator that evaluates an expression row-by-row and sums the results — this is the correct fix. 'SUM(Sales[UnitCost]) * SUM(Sales[Quantity])' produces mathematically incorrect results — it multiplies the total of all unit costs by the total of all quantities rather than summing per-row products. Creating a calculated column for LineCost and then summing it would also work, but it stores redundant computed data in the model unnecessarily when a measure can compute the same result on the fly.",
     "trapType": "SUM vs SUMX",
     "tags": [
       "SUMX",
@@ -11589,7 +11602,7 @@
     "correctAnswers": [
       0
     ],
-    "explanation": "Drillthrough pages are designed exactly for this scenario — they accept a field as their drillthrough target, automatically receive the filter context of the selected item, and are hidden from the normal page navigation (users access them only by right-clicking or using a drillthrough button). Bookmarks (B) would require one bookmark per product — not scalable. Sync slicers (D) filter all pages simultaneously rather than navigating to a specific detail view.",
+    "explanation": "Drillthrough pages are designed exactly for this scenario — they accept a field as their drillthrough target, automatically receive the filter context of the selected item, and are hidden from the normal page navigation (users access them only by right-clicking or using a drillthrough button). Creating one bookmark per product would not be scalable. Sync slicers filter all pages simultaneously rather than navigating to a specific detail view, and wouldn't keep the detail page hidden from normal navigation.",
     "tags": [
       "Drillthrough",
       "Navigation",
@@ -12265,13 +12278,13 @@
     "choices": [
       "Clustered bar chart with months on the X axis",
       "Line chart with two series: Current Year Revenue and Prior Year Revenue",
-      "Card visual showing the most recent month's revenue",
-      "Donut chart with a legend for current year and prior year"
+      "Area chart with two series: Current Year Revenue and Prior Year Revenue",
+      "100% stacked column chart with months on the X axis"
     ],
     "correctAnswers": [
       1
     ],
-    "explanation": "A line chart is ideal for showing trends over time with multiple series. Two lines (Current Year, Prior Year) on the same chart enable direct period-over-period comparison across all 24 months. Donut/pie charts are not suited for time-series data or many categories. A card visual shows a single value only.",
+    "explanation": "A line chart is ideal for showing trends over time with multiple series. Two lines (Current Year, Prior Year) on the same chart enable direct period-over-period comparison across all 24 months. A clustered bar chart becomes crowded with 24 months x 2 series. An area chart's shaded fills can overlap and obscure each other when comparing two series. A 100% stacked column chart shows proportional composition rather than direct trend comparison.",
     "estimatedTimeSeconds": 75,
     "tags": [
       "Visual Selection",
@@ -12280,10 +12293,10 @@
       "Visualization"
     ],
     "choiceExplanations": [
-      "A clustered bar chart can show monthly comparisons but becomes visually crowded with 24 months × 2 series = 48 bars. A line chart handles continuous time data more cleanly.",
+      "A clustered bar chart can show monthly comparisons but becomes visually crowded with 24 months x 2 series = 48 bars. A line chart handles continuous time data more cleanly.",
       "Correct. A line chart with two series enables continuous trend visualization and direct year-over-year comparison across all 24 months — the most effective choice for this scenario.",
-      "A Card visual displays a single aggregate value (one number). It cannot show 24 months of trend data or any comparison between periods.",
-      "Donut and pie charts show part-to-whole proportions for a small number of categories at a single point in time. They cannot represent trends across 24 time periods or overlay two series for comparison."
+      "An area chart with two series can show both Current Year and Prior Year revenue over time, but the shaded fill areas for two overlapping series tend to obscure each other where the lines cross, making direct period-over-period comparison harder to read than two clean lines.",
+      "A 100% stacked column chart shows the relative proportion each series contributes to a total for each month, which is not the goal here — the requirement is to compare the actual revenue trend of the current year against the prior year, not their share of a combined total."
     ],
     "questionGroupId": "visual_selection_trend",
     "variantId": "business_01"
@@ -19361,6 +19374,7 @@
     ],
     "choiceExplanations": {
       "0": "'Load Data' is not a menu option in Power BI Desktop. Data loading occurs automatically after selecting a source through Get Data.",
+      "1": "Correct. 'Get Data' is the entry point in Power BI Desktop for connecting to any new data source, including SQL Server tables, and is accessed from the Home tab.",
       "2": "'Open Data' is not a valid Power BI Desktop option. File > Open is for opening existing .pbix project files, not for connecting to new data sources.",
       "3": "'Find Data' does not exist in Power BI Desktop. The only term used throughout the interface for connecting to data sources is 'Get Data'."
     }
@@ -19395,6 +19409,7 @@
     ],
     "choiceExplanations": {
       "0": "Data view is a workspace view in Power BI Desktop that shows raw table data — it is not a visual-level display feature and does not magnify individual visuals.",
+      "1": "Correct. Focus mode enlarges the selected visual to fill the entire report canvas, hiding the other visuals so it can be examined in detail. Click 'Back to report' to exit.",
       "2": "'Zoom mode' is not a named feature in Power BI Desktop. The correct feature name is 'Focus mode'.",
       "3": "'Expand' refers to expanding hierarchy rows in a matrix or tree visual — it is not a visual enlargement or full-screen feature."
     }
@@ -19430,6 +19445,7 @@
     "choiceExplanations": {
       "0": "Inserting a chart from Home > Insert when no visual is selected adds a new visual to the canvas — it does not convert an existing table into a different chart type.",
       "1": "The Data/Fields pane shows available fields for drag-drop into visual sections — it does not contain chart type selection options, and with no visual selected any action creates a new visual.",
+      "2": "Correct. To change a visual's type, the visual must first be selected, then a different chart type is chosen from the Visualization pane (Build a Visual) — this converts the existing table into a stacked bar chart while keeping its fields.",
       "3": "The Data/Fields pane manages which data fields are in the visual's sections — it does not contain options for changing the visual type."
     }
   },
@@ -19462,6 +19478,7 @@
       "Power BI Desktop"
     ],
     "choiceExplanations": {
+      "0": "Correct. File > Publish > Publish to Power BI (also available via the Publish button on the Home tab) sends the report and its data model from Power BI Desktop to a workspace in the Power BI Service.",
       "1": "'Upload' in Power BI Service allows importing a .pbix file via the browser — but from Power BI Desktop, the correct option is File > Publish > Publish to Power BI, not 'Upload'.",
       "2": "'Share' is used in the Service to grant individual users access to specific reports — it is not a Desktop menu option for sending reports to the Service.",
       "3": "'Move' is used in Power BI Service to relocate content between workspaces — it is not a publish mechanism available from Power BI Desktop."
@@ -19497,6 +19514,7 @@
     ],
     "choiceExplanations": {
       "0": "Whole number is a valid Power BI data type — it stores integer values and is one of the most commonly used types.",
+      "1": "Correct. 'Image' is not a selectable Power BI data type for fields. Valid types include Whole number, Decimal number, Fixed decimal number, Date/time, Date, Time, Text, True/False, and Binary.",
       "2": "Date/time is a valid Power BI data type that stores both date and time information and enables time intelligence functions.",
       "3": "Text is a valid Power BI data type for string values and is one of the core supported types."
     }
@@ -19531,6 +19549,7 @@
     ],
     "choiceExplanations": {
       "0": "Column tools changes the default aggregation for a field across the entire model — this affects all visuals using that column, not just the specific visual you want to change.",
+      "1": "Correct. Selecting the visual and opening the Build a Visual/Visualization pane lets you change the aggregation (e.g., from Sum to Average) for just that field on that visual, without affecting the field's default aggregation elsewhere.",
       "2": "Right-clicking on the visual canvas does not expose aggregation settings — you must interact with the field inside the Visualization pane (Build a Visual) to change the aggregation per visual.",
       "3": "The Format pane controls visual appearance — colors, fonts, borders, backgrounds — and does not contain aggregation type options."
     }
@@ -19564,6 +19583,7 @@
       "Home Tab"
     ],
     "choiceExplanations": {
+      "0": "Correct. Format Painter, found on the Home tab, lets you copy all formatting from a selected visual and apply it to another visual by clicking that target visual.",
       "1": "'Format Special > Formats' is not a real Power BI menu option. The Format Painter is the only built-in tool for copying visual formatting.",
       "2": "Copying and pasting a visual in Power BI duplicates the entire visual including data — it does not selectively paste only formatting onto a different existing visual.",
       "3": "Right-clicking a visual does not offer a 'Copy Formatting' or 'Copy Format' option. Format Painter in the Home ribbon is the correct and only built-in approach."
@@ -19600,6 +19620,7 @@
     "choiceExplanations": {
       "0": "Double-clicking a visual enters edit mode for that visual (e.g., editing a text box or title field) — it does not add it to a multi-selection with the first visual.",
       "1": "Right-clicking a visual opens its context menu — it does not add it to a multi-selection alongside the first visual.",
+      "2": "Correct. Holding Ctrl and clicking the second visual adds it to the current selection, allowing both visuals to be selected together for alignment or distribution actions. Shift+click also works.",
       "3": "Alt+click is not a multi-select keyboard shortcut in Power BI. The correct modifier key for multi-selection is Ctrl (Control)."
     }
   },
@@ -19634,7 +19655,8 @@
     "choiceExplanations": {
       "0": "There is no 'Line and clustered bar chart' built-in combined visual in Power BI. Bar charts are horizontal — Power BI provides a 'Line and clustered column chart' (vertical columns, not horizontal bars) as the combined visual.",
       "1": "There is no built-in 'Line and pie chart' combined visual in Power BI — pie charts cannot be natively combined with a line chart into a single visual.",
-      "2": "There is no built-in 'Line chart and table' combined visual — these two are always separate visual types in Power BI."
+      "2": "There is no built-in 'Line chart and table' combined visual — these two are always separate visual types in Power BI.",
+      "3": "Correct. The 'Line and stacked column chart' (along with 'Line and clustered column chart') is a built-in combo visual that displays columns and a line series together on a single chart with shared and secondary axes."
     }
   },
   {
@@ -19667,6 +19689,7 @@
     ],
     "choiceExplanations": {
       "0": "A clustered column chart shows separate vertical bars placed side by side for each category — the bars are NOT stacked on top of each other into one bar per X-axis value.",
+      "1": "Correct. A stacked column chart displays vertical bars for each X-axis category (year), with each bar divided into colored segments stacked on top of each other representing the different regions.",
       "2": "A clustered bar chart shows horizontal bars side by side — the description shows vertical bars running upward from the X-axis, which are columns, not horizontal bars.",
       "3": "A stacked bar chart stacks horizontal bars end-to-end — the description shows vertical bars (columns stacked upward), not horizontal bars."
     }
@@ -19702,6 +19725,7 @@
     ],
     "choiceExplanations": {
       "0": "In the standard Power BI date hierarchy, the level below Year is Quarter — not Month. Month comes below Quarter. 'Expand all down one level' moves from Year to Quarter.",
+      "1": "Correct. 'Expand all down one level' expands every row in the hierarchy by one level simultaneously, regardless of which row is selected. Since Quarter sits directly below Year in the standard date hierarchy, all years (2023-2025) expand to show Quarters.",
       "2": "'Expand all down one level in the hierarchy' always expands ALL rows simultaneously — pre-selecting year 2024 does not restrict the expansion to that row only. To drill into a single row, use the drill-down arrows directly on that specific row.",
       "3": "When expanding down, both hierarchy levels (Year and Quarter) remain visible — the Year level does not disappear. Having only Quarters replace Years describes drill-down, which removes the parent level."
     }
@@ -19737,6 +19761,7 @@
     "choiceExplanations": {
       "0": "Both tables and matrices can summarise data using aggregation functions (SUM, COUNT, Average, etc.). The ability to summarise data is not what distinguishes them.",
       "1": "This reverses the actual capabilities. Tables CAN summarise data; matrices also summarise but additionally support row/column pivoting.",
+      "2": "Correct. A table visual has a fixed set of columns — one per field placed in the Columns/Values area. A matrix visual's column count is variable because it generates a column for each unique value in the fields placed in its Columns field well, in addition to the row hierarchy.",
       "3": "This reverses the correct relationship. A table has a FIXED column count (one column per field added). A matrix has a VARIABLE column count driven by the unique values in its Columns field well."
     }
   },
@@ -19768,6 +19793,7 @@
       "Cross-page Filtering"
     ],
     "choiceExplanations": {
+      "0": "Correct. Sync Slicers (View > Sync Slicers) allows a single slicer placed on one page to filter visuals on other pages too, eliminating the need to duplicate the slicer on each page.",
       "1": "Controlling which visuals on the same page are affected by a slicer is done through Edit Interactions (Format > Edit interactions) — not through Sync Slicers.",
       "2": "Slicer style formatting (dropdown vs list vs tile, font, colors) is configured in the Format pane — Sync Slicers is exclusively for enabling cross-page slicer behaviour."
     }
@@ -19803,6 +19829,7 @@
     "choiceExplanations": {
       "0": "By default, a slicer affects ALL visuals on the current page — not just the nearest one. Selective control requires manually editing interactions for each visual.",
       "1": "The Format pane for a slicer controls its visual appearance (style, font, colors). Selecting which visuals a slicer affects is done through Format > Edit Interactions, not the Format pane.",
+      "2": "Correct. By default, a slicer filters all visuals on the same report page it's placed on. To extend its effect to other pages, View > Sync Slicers must be explicitly enabled.",
       "3": "Slicers do not affect other pages by default — only the current page. Cross-page syncing requires explicitly configuring View > Sync Slicers."
     }
   },
@@ -19837,6 +19864,7 @@
     "choiceExplanations": {
       "0": "'*' is also valid in Power BI Advanced Filters but represents zero or more characters — not exactly one. Use '?' when you need to match exactly one unknown character.",
       "1": "'_' is a single-character wildcard in SQL and Excel LIKE expressions but is not recognised in Power BI's Advanced Filter panel, which uses '?' instead.",
+      "2": "Correct. In Power BI's Advanced Filter, '?' is the wildcard that represents exactly one unknown character, so 'AB?XX' matches 'AB1XX' and 'AB2XX' but not the two-character variant 'AB12XX'.",
       "3": "'%' is the multi-character wildcard used in SQL — it is not used in Power BI's Advanced Filter, which uses '*' for multiple characters."
     }
   },
@@ -19870,6 +19898,7 @@
     ],
     "choiceExplanations": {
       "0": "Basic filtering shows a checkbox list of known field values — it does not support text conditions like 'contains' or 'begins with', or combining multiple text conditions.",
+      "1": "Correct. Advanced filtering supports text conditions such as 'contains', allowing a filter like 'Region Name contains East OR contains Midlands' that automatically re-evaluates as the underlying data changes.",
       "2": "Top N filtering shows only the top or bottom N items by a measure — it cannot apply text-matching conditions like 'contains East'.",
       "3": "Relative date filtering applies rolling date windows (e.g., 'last 30 days') — it only works on date fields and cannot apply text matching conditions."
     }
@@ -19905,7 +19934,8 @@
     "choiceExplanations": {
       "0": "The Format pane controls visual appearance — colors, fonts, borders — but does not have a visibility toggle. Hiding a visual requires the Selection pane.",
       "1": "The Bookmarks pane records and manages saved report states. While bookmarks can capture a visual's hidden state, you use the Selection pane to actually toggle visibility.",
-      "2": "The Sync Slicers pane manages cross-page slicer synchronisation — it has no visual visibility controls."
+      "2": "The Sync Slicers pane manages cross-page slicer synchronisation — it has no visual visibility controls.",
+      "3": "Correct. The Selection pane (View > Selection) lets you toggle a visual's visibility off without deleting it, so it can be revealed later via a bookmark or button action."
     }
   },
   {
@@ -19937,6 +19967,7 @@
       "Filters"
     ],
     "choiceExplanations": {
+      "0": "Correct. Bookmarks capture the visual state of a report page — filters, sort order, drill state, visual visibility, and the current page — but they do not store or switch the underlying data source connection.",
       "1": "Saving filter, drill, and sort state IS something bookmarks do — capturing the current filter context is one of their primary purposes.",
       "2": "Saving visual display state (visible/hidden, cross-highlight selections) IS something bookmarks do — this enables show/hide navigation patterns in reports.",
       "3": "Capturing which report page is currently displayed IS something bookmarks do — this is what enables page navigation buttons when bookmarks are combined with button actions."
@@ -19973,6 +20004,7 @@
     "choiceExplanations": {
       "0": "Placing Department in the Y-axis makes departments the Y-axis categories within a single chart — all departments appear as separate bars in one chart, not as separate small charts.",
       "1": "The Legend field color-codes data points by category within a single chart — placing Department in Legend creates colored series within one chart, not separate charts per department.",
+      "2": "Correct. Placing Department in the Small multiples well splits the single stacked bar chart into a grid of separate mini-charts, one per department, each showing the same measures and axes.",
       "3": "The Tooltips field adds data shown on hover over a data point — it does not create separate chart instances for each category value."
     }
   },
@@ -20006,6 +20038,7 @@
     ],
     "choiceExplanations": {
       "0": "There is no standard '↓ down arrow' sort control directly visible on a visual in Power BI. Sort direction and field are accessed via the '...' more options menu.",
+      "1": "Correct. Clicking the '...' (more options) icon on a visual opens a menu that includes 'Sort by', where you can choose the sort field and toggle ascending/descending order.",
       "2": "'View > Sort' is not a valid menu path in Power BI Desktop. Sorting is controlled per-visual through the visual's own '...' more options menu.",
       "3": "The Format pane controls visual appearance and has no sort direction or sort field controls."
     }
@@ -20040,6 +20073,7 @@
     ],
     "choiceExplanations": {
       "0": "The Home tab's visual gallery contains standard chart and data visuals — bookmark navigators are navigation elements found under Insert > Buttons, not in the visual gallery.",
+      "1": "Correct. The bookmark navigator is a button group inserted via Insert > Buttons, which automatically generates Previous/Next-style controls that step through the report's saved bookmarks in order.",
       "2": "Insert > Shapes adds decorative shapes (rectangles, circles, lines) — interactive navigation elements like bookmark navigators are under Insert > Buttons.",
       "3": "The Modeling menu contains DAX calculation tools and relationship management — it does not contain UI navigation elements like buttons or bookmark navigators."
     }
@@ -20075,6 +20109,7 @@
     ],
     "choiceExplanations": {
       "0": "You CAN insert a Q&A visual from Home > Insert dropdown under AI visuals — this is a valid method for adding Q&A to a report page.",
+      "1": "Correct. Text Boxes do not expose an 'Action' property in the Format pane, so a Text Box cannot be configured to launch Q&A — unlike Buttons, Shapes, and Images, which all support Actions including Q&A.",
       "2": "You CAN insert Q&A from the Insert menu directly — this is a standard, valid approach.",
       "3": "You CAN configure a Button with Q&A as its action type via Insert > Buttons — this creates a clickable Q&A launcher button."
     }
@@ -20110,7 +20145,8 @@
     "choiceExplanations": {
       "0": "'Back' IS a valid button action — it navigates to the previously viewed report page.",
       "1": "'Bookmark' IS a valid button action — it applies a specific saved bookmark state when clicked.",
-      "2": "'Q&A' IS a valid button action — it opens the Q&A natural language interface."
+      "2": "'Q&A' IS a valid button action — it opens the Q&A natural language interface.",
+      "3": "Correct. 'Sync slicers' is not an available Action type for buttons — it is a page-level View menu feature for synchronising slicer selections across pages, not something a button can trigger."
     }
   },
   {
@@ -20143,6 +20179,7 @@
     ],
     "choiceExplanations": {
       "0": "Changing the X-axis from Years to Quarters within the same visual is 'drill-down' — it navigates within a hierarchy inside one visual, not across report pages.",
+      "1": "Correct. Drill-through lets a user right-click a data point on a summary page and jump to a separate, filtered detail page — navigating between pages, rather than changing hierarchy levels within a single visual.",
       "2": "Expanding to show both Years and sub-levels simultaneously within the same visual is 'Expand all down one level' — a hierarchy expansion that operates within a single visual.",
       "3": "Focusing on one selected year and then showing its quarters within the same visual is also drill-down behavior — it operates within a single visual's hierarchy, not navigating to another page."
     }
@@ -20177,6 +20214,7 @@
       "Visual Configuration"
     ],
     "choiceExplanations": {
+      "0": "Correct. In a scatter/bubble chart, dragging SalesVolume into the Size field well controls the diameter of each bubble — higher values render as larger bubbles, lower values as smaller ones.",
       "1": "'Area' is not a named field well in Power BI's scatter/bubble chart. Bubble size is controlled exclusively by the 'Size' field.",
       "2": "The Y Axis field sets the vertical position of each bubble based on that measure's value — it does not control the size of the bubble.",
       "3": "The Legend field assigns different colors to bubbles based on a category — it has no effect on bubble size."
@@ -20212,6 +20250,7 @@
     ],
     "choiceExplanations": {
       "0": "'Time Axis' is not the name of any field well in Power BI's scatter chart. The animation field is specifically called 'Play Axis'.",
+      "1": "Correct. Placing Year in the Play Axis field well enables the chart's animation control, letting users click Play to step through (or animate) the scatter chart one year at a time.",
       "2": "'Breakdown Axis' is used in waterfall charts to show individual category contributions — it is not a field section in scatter charts.",
       "3": "The Legend field color-codes scatter points by category — it does not animate the chart across time periods."
     }
@@ -20247,6 +20286,7 @@
     "choiceExplanations": {
       "0": "The Category area defines the X-axis groups in the waterfall chart — adding another field there creates a second grouping dimension, not a switch from cumulative to individual display.",
       "1": "The Y-axis area holds the measure being visualised — changing the measure does not control whether values appear cumulatively or individually.",
+      "2": "Correct. Adding a field to the Breakdown well in a waterfall chart splits the total into individual category contributions, replacing the single cumulative bar with separate increase/decrease bars per category.",
       "3": "There is no 'Cumulative Total' toggle in the waterfall chart's Format pane Totals section. The Breakdown field well is the correct mechanism for showing individual category contributions."
     }
   },
@@ -20280,6 +20320,7 @@
     ],
     "choiceExplanations": {
       "0": "'PowerBICenter' is not a real Microsoft service — it does not exist. Microsoft AppSource is the only official marketplace for Power BI custom visuals.",
+      "1": "Correct. Microsoft AppSource is the official marketplace for Power BI custom visuals, and it can be browsed directly from the 'Get more visuals' option in the Visualization pane.",
       "2": "Visual Studio is Microsoft's IDE for writing software code — it is not a marketplace for Power BI custom visuals.",
       "3": "'AnalysisStore' is not a real Microsoft service. The correct marketplace is Microsoft AppSource."
     }
@@ -20313,6 +20354,7 @@
       "Analytics"
     ],
     "choiceExplanations": {
+      "0": "Correct. In a Power BI funnel chart, the percentage of users who make it from the first stage all the way through to the last stage is labelled the conversion rate.",
       "1": "'Success rate' is a general-purpose term for positive outcomes — it is not the specific terminology Power BI uses for the funnel's start-to-finish completion percentage.",
       "2": "'Completion rate' could describe the same concept informally but is not the standard label Power BI's funnel visual uses — it specifically calls this the 'conversion rate'.",
       "3": "'Checkout rate' is e-commerce jargon for purchase flow completion — it is not the generic Power BI funnel visual terminology."
@@ -20351,7 +20393,8 @@
     "choiceExplanations": {
       "0": "Color grouping behavior differs based on which field well you use — Category and Details behave differently for color assignment. Both sections do not result in all-different colors per region.",
       "1": "Colors are not the same in either case — Category reassigns the color grouping; Details inherits the parent's color. They have opposite behaviors.",
-      "2": "This reverses the correct behavior. Adding Year to Category makes Year the color-defining dimension (different years = different colors within the same region). Adding Year to Details keeps RegionName as the color group (all a region's rectangles share the same color)."
+      "2": "This reverses the correct behavior. Adding Year to Category makes Year the color-defining dimension (different years = different colors within the same region). Adding Year to Details keeps RegionName as the color group (all a region's rectangles share the same color).",
+      "3": "Correct. Adding Year to the Category section makes Year the color-defining field, so rectangles for the same RegionName appear in different colors per year. Adding Year to the Details section keeps RegionName as the color group, so all of a region's rectangles share the same color regardless of year."
     }
   },
   {
@@ -20386,7 +20429,8 @@
     "choiceExplanations": {
       "0": "The Fields pane in Report view lets you drag fields into visuals and expand tables — it does not provide drag-to-reorder functionality for hierarchy levels.",
       "1": "The Modeling menu in Report view contains DAX calculation tools and relationship settings — it does not have a user interface for reordering hierarchy levels.",
-      "2": "The Data view shows table row data and allows column-level property changes via Column tools — hierarchies cannot be reordered from the Data pane in this view."
+      "2": "The Data view shows table row data and allows column-level property changes via Column tools — hierarchies cannot be reordered from the Data pane in this view.",
+      "3": "Correct. Hierarchy levels are reordered in Model view by selecting the table that contains the hierarchy, opening the Properties pane, and dragging the levels into the desired order, then applying the level changes."
     }
   },
   {
@@ -20421,6 +20465,7 @@
     "choiceExplanations": {
       "0": "Summarization controls how a field is aggregated by default across visuals (Sum, Average, Count, etc.) — it does not classify a field as representing a geographic concept.",
       "1": "Data type specifies what kind of data the column stores (Text, Whole Number, Date/Time, etc.) — it does not tag the column as representing a geographic concept like City or Country.",
+      "2": "Correct. The Data category dropdown in Column tools lets you tag a text column as a geographic concept (such as City, State, or Country), which Power BI's map visuals use to correctly geocode and plot the values.",
       "3": "'Geographical location' is not a dropdown option in Power BI's Column tools. The correct setting is 'Data category', which contains geographic subcategories like City, Country, and Postal Code."
     }
   },
@@ -20454,6 +20499,7 @@
     ],
     "choiceExplanations": {
       "0": "A bubble map shows discrete sized circles at geographic coordinates based on a measure — the circles maintain distinct borders and do not merge or blend into gradient-colored zones.",
+      "1": "Correct. A heat map visualises density using color gradients, where overlapping points blend into larger, darker zones — matching the described light-to-dark red overlapping circle behavior.",
       "2": "A filled map applies solid color fills to geographic boundaries (countries, states, regions) — it uses region-boundary fills rather than overlapping gradient zones.",
       "3": "ArcGIS is a premium mapping visual with advanced geospatial capabilities — the description of overlapping circles blending into gradient areas specifically matches Power BI's built-in map heat layer behavior."
     }
@@ -20489,7 +20535,8 @@
     "choiceExplanations": {
       "0": "Auto zoom IS an available map control — it automatically adjusts the zoom level to fit all displayed data points within the visual.",
       "1": "Navigation controls (zoom in/out buttons) ARE available map controls.",
-      "2": "Selection (lasso selection tool for selecting multiple data points on the map) IS an available map control."
+      "2": "Selection (lasso selection tool for selecting multiple data points on the map) IS an available map control.",
+      "3": "Correct. 'Find' is not one of the controls available under Map settings - Controls in Power BI. The available toggles there are Auto zoom, Navigation, and Selection."
     }
   },
   {
@@ -20523,6 +20570,7 @@
     "choiceExplanations": {
       "0": "Icons (trend direction indicators such as colored arrows or dots based on goal achievement) ARE available in the KPI visual to indicate performance direction.",
       "1": "Trend axis IS part of the KPI visual — it shows the performance trend over the selected time range as a sparkline.",
+      "2": "Correct. 'Breakdown' is a field well used in waterfall and decomposition tree visuals, not the KPI visual. The KPI visual configures a Callout value, Trend axis, Goal/Target, and Icons.",
       "3": "Callout value IS part of the KPI visual — it is the prominently displayed large number showing the primary metric."
     }
   },
@@ -20556,6 +20604,7 @@
     ],
     "choiceExplanations": {
       "0": "Gradient formatting applies a color scale between minimum and maximum numeric values — it cannot assign discrete categorical colors like 'if value equals Spring, use Green'.",
+      "1": "Correct. Rules-based conditional formatting lets you define discrete conditions (e.g., 'if Quarter = Spring, color = Green') and apply a specific background color for each matching category — exactly what's needed here since no separate color column exists.",
       "2": "Field value formatting reads color values from a dedicated color column in the data model — since no color column exists, this option requires additional data preparation not described.",
       "3": "Data bar formatting overlays a proportional bar inside each cell to visualise relative magnitude — it does not support discrete category-based color assignment."
     }
@@ -20591,6 +20640,7 @@
     "choiceExplanations": {
       "0": "A Card visual does not contain any chart — it displays a single aggregate value as a number. An area chart is an entirely separate visual type.",
       "1": "Icons indicating performance direction (arrows, colored dots) appear in KPI visuals — not in a standard Card visual.",
+      "2": "Correct. A Card visual's primary purpose is to display a single aggregated number — the measure's value — alongside the measure's name as a label.",
       "3": "A bar chart is a separate visual type — a Card displays only a single aggregate number alongside the measure name."
     }
   },
@@ -20625,6 +20675,7 @@
     "choiceExplanations": {
       "0": "Data labels in a gauge refer to the numerical values at the minimum, maximum, and target markers on the arc scale — not the large central metric number.",
       "1": "Target label shows the text label at the goal marker on the gauge arc — not the large central metric number.",
+      "2": "Correct. The Callout value setting controls the large number displayed in the center of the gauge arc. Turning it off removes the '88.14K' figure while leaving the gauge arc, target marker, and labels intact.",
       "3": "Title is the heading text shown above the visual — turning it off removes the title, not the large aggregate value displayed inside the gauge arc."
     }
   },
@@ -20660,6 +20711,7 @@
     "choiceExplanations": {
       "0": "'By field' IS a valid error bar type — it sets the upper/lower bar extent based on values from a measure or column in the data model.",
       "1": "'By percentage' IS a valid error bar type — it sets the error bar size as a percentage of each data point's value.",
+      "2": "Correct. 'By formula' is not one of the error bar Type options in Power BI. The available types are By field, By percentage, By percentile, and By standard deviation.",
       "3": "'By percentile' IS a valid error bar type — it sets the error bar range based on a statistical percentile of the underlying data."
     }
   },
@@ -20693,6 +20745,7 @@
     ],
     "choiceExplanations": {
       "0": "Exporting always includes both the axis field and the value field that define the visual — Month appears on the X-axis, so it is exported alongside Sick Leave Hours.",
+      "1": "Correct. Export Data only includes the fields actually used by the visual. Since the chart shows Sick Leave Hours by Month, the exported data contains exactly those two columns — Year and Vacation Hours are excluded because they aren't part of this visual.",
       "2": "Year is not on this visual's axis — only Month is. Year exists in the dataset but was not included in this visual's configuration, so it is not exported.",
       "3": "Only the fields making up this specific visual are exported. Both Vacation Hours and Year exist in the dataset but are not in this visual's configuration, so neither is included."
     }
@@ -20728,7 +20781,8 @@
     "choiceExplanations": {
       "0": "Exporting visual data from a visual in Power BI Desktop produces a CSV file — not an Excel workbook. In Power BI Service, the export can produce .xlsx, but Desktop exports as CSV.",
       "1": "PDF export (File > Export > Export to PDF) exports entire report pages as a document — not raw row data from individual visuals.",
-      "2": "PowerPoint export (File > Export > Export to PowerPoint) creates a presentation of report page screenshots — not raw data rows from visuals."
+      "2": "PowerPoint export (File > Export > Export to PowerPoint) creates a presentation of report page screenshots — not raw data rows from visuals.",
+      "3": "Correct. Selecting 'Export data' from a visual's '...' menu downloads the underlying rows as a CSV file, which can then be opened or imported into Excel or another analysis tool."
     }
   },
   {
@@ -20764,7 +20818,8 @@
     "choiceExplanations": {
       "0": "The Base value field must receive the measure to aggregate (SalesVolume). Placing OrderDate as Base and SalesVolume as Date is invalid — SalesVolume is numeric, not a date field.",
       "1": "'OrderDate - Date Hierarchy - Day' is a hierarchy level, not the date column itself. Quick Measures require the actual date column (OrderDate) in the Date field — not a hierarchy level.",
-      "2": "'OrderDate - Date Hierarchy - Year' is also a hierarchy level. The Date field in Quick Measures must be the date column (OrderDate), not its Year level."
+      "2": "'OrderDate - Date Hierarchy - Year' is also a hierarchy level. The Date field in Quick Measures must be the date column (OrderDate), not its Year level.",
+      "3": "Correct. For the Year-to-date total Quick Measure, 'Base value' takes the measure to be summed (SalesVolume), and 'Date' takes the actual date column (OrderDate) — not a level of its hierarchy — so Power BI can calculate the running total correctly."
     }
   },
   {
@@ -20798,7 +20853,8 @@
     "choiceExplanations": {
       "0": "The '...' more options menu on a visual does not include a 'Smart Narrative' option — Smart Narrative is accessible by right-clicking the visual canvas.",
       "1": "The '...' more options menu does not contain a 'Summarize' option. The correct path is to right-click the visual, not via the '...' menu.",
-      "2": "Right-clicking the visual does open a context menu, but the option is labelled 'Summarize' — not 'Smart Narrative'. The feature creates a Smart Narrative visual but the right-click label says 'Summarize'."
+      "2": "Right-clicking the visual does open a context menu, but the option is labelled 'Summarize' — not 'Smart Narrative'. The feature creates a Smart Narrative visual but the right-click label says 'Summarize'.",
+      "3": "Correct. Right-clicking the visual and choosing 'Summarize' generates a Smart Narrative visual that automatically describes the selected visual's data — this is the alternative path to adding one via Home or Insert."
     }
   },
   {
@@ -20831,6 +20887,7 @@
       "Analytics"
     ],
     "choiceExplanations": {
+      "0": "Correct. The 'Bin' group type divides a numeric field's range of values into equally-sized intervals (configurable via Bin size or Number of bins), grouping continuous numeric data into discrete ranges.",
       "1": "'Include Other group' is only available when Group type is 'List' — it creates a group for items not explicitly assigned to any user-defined group. Bin type does not support this option.",
       "2": "'List' group type is for CATEGORICAL (text or discrete) fields — it lets you manually assign values into named groups. List is not primarily designed for numerical fields.",
       "3": "For text value fields, only 'List' is available. 'Bin' requires numeric fields since it divides a continuous range into equal-sized intervals — it cannot be applied to text data."
@@ -20868,6 +20925,7 @@
     "choiceExplanations": {
       "0": "Increasing sensitivity narrows the expected range band, which causes MORE data points to fall outside it — the anomaly count goes UP, not down.",
       "1": "Sensitivity directly controls the width of the expected range. Changing it changes which data points are flagged — the count will definitely change.",
+      "2": "Correct. Increasing the sensitivity setting narrows the 'expected range' band around the trend line, so more data points fall outside that band and get flagged as anomalies — increasing the anomaly count from 10.",
       "3": "Sensitivity IS configurable directly via its slider in the analytics panel. Expected Range is the resulting visual band on the chart — it updates as a consequence of changing sensitivity, not the other way around."
     }
   },
@@ -20903,6 +20961,7 @@
     "choiceExplanations": {
       "0": "Right-clicking a field in the Build a Visual pane exposes field-level options (aggregation, sort) — not whole-visual analytics features like automatic cluster detection.",
       "1": "Right-clicking a field in the Data pane exposes field-level options (rename, hide, format) — not visual-level analytics features.",
+      "2": "Correct. Automatic cluster detection is a visual-level analytics feature accessed via the '...' more options menu in the top-right corner of the scatter chart, where 'Automatically find clusters' lets you specify the number of clusters (e.g., 5).",
       "3": "Right-clicking on the chart canvas exposes data point options (Include/Exclude, copy) — the 'Automatically find clusters' option is in the '...' more options menu at the visual level."
     }
   },
@@ -20938,6 +20997,7 @@
     "choiceExplanations": {
       "0": "A stacked column chart aggregates all employees' expenses into a single bar per time period — individual employees who are outliers are invisible because their data is summed together.",
       "1": "A line chart with aggregated expense shows the total trend over time — individual employees who are outliers are hidden within the aggregated single line.",
+      "2": "Correct. A scatter chart plots each individual data point (one per employee, via Person ID in the Legend) against expense and date, so unusually high or low individual values stand out visually as outliers — something aggregated visuals like columns, lines, or pies cannot show.",
       "3": "A pie chart shows proportional parts of a whole at a single point in time — it cannot show individual data points across time and makes identifying specific outliers impossible."
     }
   },
@@ -20971,6 +21031,7 @@
     ],
     "choiceExplanations": {
       "0": "Microsoft Azure SQL Database IS a supported data source for Power BI Report Builder paginated reports.",
+      "1": "Correct. Power BI Report Builder does not support Microsoft Excel as a data source for paginated reports — it connects to server-based sources such as Azure SQL Database, SQL Server Analysis Services, and Oracle Database.",
       "2": "Microsoft SQL Server Analysis Services IS a supported data source for paginated reports — it is one of the most common sources for enterprise paginated reporting.",
       "3": "Oracle Database IS a supported data source for Power BI Report Builder paginated reports."
     }
@@ -21007,6 +21068,7 @@
     "choiceExplanations": {
       "0": "You right-click on the LOWER value bar (2008) to explain the decrease — not the higher value (2007). Power BI explains why the value decreased from the prior reference point.",
       "1": "Right-clicking the visual and selecting 'Summarize' creates a Smart Narrative visual summarising the whole visual — it does not provide AI analysis of why one specific period's value decreased.",
+      "2": "Correct. To understand why sales decreased between 2007 and 2008, right-click the lower-value bar (2008) and select Analyze > Explain the decrease — Power BI then analyzes the data to surface likely contributing factors for that drop.",
       "3": "Right-clicking the visual and selecting 'Explain the distribution' analyses the overall spread of values across the visual — it does not compare two specific data points to explain a period-over-period decrease."
     }
   },
@@ -21039,7 +21101,8 @@
     ],
     "choiceExplanations": {
       "0": "'Analyze' IS used in the Decomposition Tree visual — it holds the metric you want to analyse (e.g., Sales Volume).",
-      "1": "'Explain by' IS used in the Decomposition Tree visual — it holds the dimensions used to break down the metric across tree levels."
+      "1": "'Explain by' IS used in the Decomposition Tree visual — it holds the dimensions used to break down the metric across tree levels.",
+      "2": "Correct. 'Expand by' is not a field well used by the Decomposition Tree. It is used by the Key Influencers visual to show what segments a metric expands into. The Decomposition Tree uses 'Analyze' for the metric and 'Explain by' for the breakdown dimensions."
     }
   },
   {
@@ -21073,6 +21136,7 @@
     ],
     "choiceExplanations": {
       "0": "The Analyze section holds the metric being analysed (e.g., Sales Volume) — not the explanatory dimensions. Adding Region to Analyze would change what is being measured, not what explains it.",
+      "1": "Correct. The 'Explain by' field well holds all the dimensions that may influence the metric in the Key Influencers visual. Region Name can simply be added alongside the existing Year and Month fields already there.",
       "2": "The 'Expand by' section shows what a metric segment expands to in Key Influencers — it is not the field well for adding explanatory dimensions. The correct section is 'Explain by'.",
       "3": "You do not need to remove existing 'Explain by' fields before adding new ones — Key Influencers supports multiple dimensions in 'Explain by' simultaneously. Simply drag Region Name into the existing section."
     }
@@ -21108,6 +21172,7 @@
     "choiceExplanations": {
       "0": "Remove Top Rows IS a valid option under Home > Remove Rows — it removes a specified number of rows from the top of the dataset.",
       "1": "Remove Bottom Rows IS a valid option — it removes a specified number of rows from the bottom of the dataset.",
+      "2": "Correct. 'Remove Range of Rows' does not exist under Home > Remove Rows. The available removal options are Remove Top Rows, Remove Bottom Rows, Remove Alternate Rows, Remove Duplicates, Remove Blank Rows, and Remove Errors — a specific range can only be kept (Keep Range of Rows), not removed.",
       "3": "Remove Blank Rows IS a valid option — it removes any row where all values are null or blank."
     }
   },
@@ -21142,6 +21207,7 @@
     ],
     "choiceExplanations": {
       "0": "Choose Columns (Home > Choose Columns > Choose Columns) CAN remove the Comments column — by deselecting it in the dialog, it will not be included in the output.",
+      "1": "Correct. 'Go to Column' only scrolls the view to bring a column into focus — it does not remove, hide, or alter the column in any way, so by itself it cannot remove the Comments column.",
       "2": "Remove Column (Home > Remove Columns > Remove Column) CAN directly remove the selected column.",
       "3": "Remove Other Columns CAN remove Comments — you select the columns to KEEP, and all others (including Comments) are removed."
     }
@@ -21201,6 +21267,7 @@
     },
     "choiceExplanations": {
       "0": "Duplicating does copy the query. However, Referencing does not merely copy the data source location — it creates a live dependency so changes to the original propagate to the reference.",
+      "1": "Correct. Duplicating a query creates a fully independent copy of its steps — later changes to the original do not affect it. Referencing a query creates a dependent link to the original's output, so any change to the original automatically flows through to the reference.",
       "2": "This reverses the definitions. Duplicating creates an independent copy; Referencing creates a dependency. It is not the other way around.",
       "3": "This is entirely reversed. Duplicate creates an independent copy that does NOT auto-update; Reference creates a link that DOES reflect original changes."
     }
@@ -21237,7 +21304,8 @@
     "choiceExplanations": {
       "0": "'Text-Proper' uses a hyphen — M uses a dot (.) as the separator between the module name and function name, not hyphens.",
       "1": "'Text_Proper' uses an underscore — M functions use a dot separator, not underscores.",
-      "2": "'TextProper' with no separator is not valid M syntax — all M functions have two capitalised words separated by a dot."
+      "2": "'TextProper' with no separator is not valid M syntax — all M functions have two capitalised words separated by a dot.",
+      "3": "Correct. M functions follow Module.FunctionName dot notation with each part capitalised, such as Text.Proper, Text.Upper, or Date.Year — there are no hyphens, underscores, or missing separators."
     }
   },
   {
@@ -21272,7 +21340,8 @@
     "choiceExplanations": {
       "0": "'ABC' alone represents the Text data type icon in Power Query — it indicates the column stores text values.",
       "1": "'123' alone represents numeric data types (Whole Number or Decimal) in Power Query — not the 'any' type.",
-      "2": "A globe icon represents the Geography data type (for geospatial data) in Power Query — not the 'any' or unknown type."
+      "2": "A globe icon represents the Geography data type (for geospatial data) in Power Query — not the 'any' or unknown type.",
+      "3": "Correct. When Power Query cannot determine a definitive type for a column, it assigns the 'Any' data type, shown with a combined 'ABC/123' icon indicating the column could hold text or numeric values."
     }
   },
   {
@@ -21307,6 +21376,7 @@
     "choiceExplanations": {
       "0": "'By Number of Characters' IS a valid Split Column option — it splits text after a specified number of characters.",
       "1": "'By Positions' IS a valid Split Column option — it splits at specified character position numbers.",
+      "2": "Correct. 'By Word' is not one of Power BI's Split Column options. To split 'Jane Doe' into first and last name, you would use 'By Delimiter' with a space character — the listed valid options are By Delimiter, By Number of Characters, By Positions, By Lowercase to Uppercase, By Uppercase to Lowercase, and By Digit to Non-Digit.",
       "3": "'By Lowercase to Uppercase' IS a valid Split Column option — it splits when transitioning from a lowercase to uppercase character."
     }
   },
@@ -21391,6 +21461,7 @@
     },
     "choiceExplanations": {
       "0": "Clicking the filter dropdown on Town would modify the CURRENT (last) Applied Step — which is the Sort step, not the Filter step. You would create a new filter step rather than editing the existing Boston filter.",
+      "1": "Correct. The Sort step is the most recently applied step. Deleting it returns the Filter on Town step to being the current step, where the existing Boston selection can be changed to New York directly.",
       "2": "Deleting the entire query and reloading destroys all previous Applied Steps unnecessarily — this is a destructive approach when the Applied Steps panel already lets you edit individual steps.",
       "3": "Closing and applying returns to the Data view where you interact with the loaded data model — Power Query Applied Steps cannot be edited from Data view column filters."
     }
@@ -21427,6 +21498,7 @@
     "choiceExplanations": {
       "0": "'Merge Files' is not the correct option name. The correct Power Query button that appears when you connect to a folder is 'Combine Files'.",
       "1": "'Append Files' is not a valid option name. Home > Append Queries combines already-loaded queries within Power Query — it is not used to initially import files from a folder.",
+      "2": "Correct. After connecting to a folder containing multiple files of the same format, Home > Combine Files (or the 'Combine' button that appears in the folder query preview) merges the contents of all the files into a single query.",
       "3": "'Load Files' is not a valid option in Power Query or Power BI Desktop."
     }
   },
@@ -21541,6 +21613,7 @@
     },
     "choiceExplanations": {
       "0": "Appending creates a union of all unique columns from both queries. Query1 adds Subject; Query2 adds Cost; both share Date and Comments — giving 4 unique columns, not 3.",
+      "1": "Correct. Append Queries produces a union of all columns from both queries. Date and Comments are shared by both queries and appear once each; Subject (from Query1) and Cost (from Query2) are added as additional columns, with nulls filling the rows where a column doesn't apply — giving 4 columns total.",
       "2": "Append does not duplicate shared columns — Date and Comments appear once in the result despite existing in both queries. The result has 4 columns (Date, Subject, Comments, Cost), not 6.",
       "3": "Power Query handles type mismatches in same-named columns during Append by promoting types rather than erroring — it does not fail on column type differences between appended queries."
     }
@@ -21623,6 +21696,7 @@
     "choiceExplanations": {
       "0": "The table icon in the top-left of Power Query navigates to the whole-query settings — it does not expand a nested table column created by a merge operation.",
       "1": "Right-clicking the column header offers Rename, Remove Column, and Change Type options — it does not show an 'Expand' option for expanding nested merged table columns.",
+      "2": "Correct. The expand/aggregate icon (two arrows pointing in opposite directions) in the merged column's header opens a column-selection menu, where you can choose CD Type (and other columns) from the nested table to add as new columns in the main query.",
       "3": "Clicking on the word 'Table' in a single cell opens a preview of that one row's nested table data — it does not expand all rows' nested data into new columns across the full query."
     }
   },
@@ -21655,6 +21729,7 @@
       "Append"
     ],
     "choiceExplanations": {
+      "0": "Correct. Merge Queries combines exactly two queries (or a query with itself) at a time — to merge a third query, you must perform a second merge on the result of the first. Append Queries and Combine Files, by contrast, both support combining three or more sources in a single operation.",
       "1": "Append Queries CAN combine more than two queries at once — Append Queries > Append Queries as New lets you add three or more queries to stack in one operation.",
       "2": "Combine Files CAN process multiple files simultaneously from a folder source — it is designed to combine many files of the same format in a single operation."
     }
@@ -21759,7 +21834,8 @@
     "choiceExplanations": {
       "0": "Returning all rows from BOTH queries (including non-matching rows on both sides) describes a Full Outer join — not a Left Outer join.",
       "1": "Returning only the rows that match in BOTH queries describes an Inner join — not a Left Outer join.",
-      "2": "Returning all rows from the RIGHT (second) query with matching rows from the left describes a Right Outer join — not a Left Outer join."
+      "2": "Returning all rows from the RIGHT (second) query with matching rows from the left describes a Right Outer join — not a Left Outer join.",
+      "3": "Correct. A Left Outer join keeps every row from the left table (Query1) and brings in matching columns from the right table (Query2) only where a match exists — non-matching Query1 rows still appear, with nulls for the Query2 columns, while non-matching Query2 rows are dropped."
     }
   },
   {
@@ -21860,6 +21936,7 @@
     },
     "choiceExplanations": {
       "0": "'Heading and Total' are not the column names Power Query creates during Unpivot — the standard output columns are named 'Attribute' and 'Value'.",
+      "1": "Correct. Transform > Unpivot Columns always produces two new columns named 'Attribute' (holding the original column headers, e.g., Jan/Feb/Mar) and 'Value' (holding the corresponding cell values) — giving one row per original column per record.",
       "2": "'Column A and Column B' are not the standard names — Power Query uses 'Attribute' for the former column headers and 'Value' for the cell data.",
       "3": "'Key and Data' are not the column names used by Power Query's Unpivot — the standard output is 'Attribute' and 'Value'."
     }
@@ -21949,6 +22026,7 @@
       }
     },
     "choiceExplanations": {
+      "0": "Correct. Pivot Column treats every column not involved in the pivot as a grouping key. Before pivoting, Area and AreaCode must be removed so that only Date, Region, and SalesVolume remain — otherwise Power Query will group by Area/AreaCode too and produce far more rows than expected.",
       "1": "Column position does not affect pivoting behavior. The problem is that Area and AreaCode columns are still present — Power Query tries to use them as grouping dimensions in the pivot, producing unexpected results.",
       "2": "Power Query does not automatically ignore extra columns during a pivot — any column not being pivoted or used as the value is included as a grouping dimension. Extra columns must be removed first.",
       "3": "Highlighting specific columns before clicking Pivot Column selects the Region column as the pivot key, which is correct — but it does not remove Area and AreaCode from the result. They must be explicitly deleted first."
@@ -22055,7 +22133,8 @@
     "choiceExplanations": {
       "0": "Using 'Date' as the Values Column is incorrect — the Values Column specifies the measure to aggregate (SalesVolume). Date should remain as an unpivoted row identifier, not serve as the aggregated value.",
       "1": "Unpivot Column does the reverse of what is needed — it converts column headers into rows. Pivot Column is required to turn the Region row values into column headers.",
-      "2": "Unpivot with SalesVolume as Values Column is still the wrong operation direction — Unpivot adds rows, not creates columns. Pivot Column (not Unpivot) is the correct transformation."
+      "2": "Unpivot with SalesVolume as Values Column is still the wrong operation direction — Unpivot adds rows, not creates columns. Pivot Column (not Unpivot) is the correct transformation.",
+      "3": "Correct. Selecting the Region column and using Transform > Pivot Column converts each unique Region value into its own column header, while choosing SalesVolume as the Values Column tells Power Query to aggregate (sum) sales into those new columns — leaving Date as the row identifier."
     }
   },
   {
@@ -22143,6 +22222,7 @@
     },
     "choiceExplanations": {
       "0": "Fill Down does not overwrite the entire column with the top-most value — it only replaces null/blank cells by propagating the nearest non-null value above each null downward.",
+      "1": "Correct. Fill Down propagates each non-null value downward into every following null cell until the next non-null value is reached, replacing all the nulls below it — so 'First Description' fills both nulls beneath it, and 'Second Description' fills both nulls beneath it.",
       "2": "Fill Down fills ALL consecutive null cells beneath a non-null value, not just one. It continues filling until it reaches the next non-null value in the column."
     }
   },
@@ -22312,7 +22392,7 @@
     "correctAnswers": [
       2
     ],
-    "explanation": "After expanding the JSON record, the flags column contains a Power Query List value (type = list). List.First([flags]) returns the first element of the list as a scalar value — this is the correct and efficient approach. It avoids creating extra rows (Option B) and avoids losing information in concatenation (Option A). Option D fails because [flags] is a list type, not a text string — Text.BeforeDelimiter cannot operate on a list.",
+    "explanation": "After expanding the JSON record, the flags column contains a Power Query List value (type = list). List.First([flags]) returns the first element of the list as a scalar value — this is the correct and efficient approach. It avoids creating extra rows (the 'expand into new rows' approach) and avoids losing information through concatenation (the 'Extract Values' approach). The Text.BeforeDelimiter approach fails because [flags] is a list type, not a text string — Text.BeforeDelimiter cannot operate on a list.",
     "estimatedTimeSeconds": 120,
     "tags": [
       "Power Query",
@@ -22386,7 +22466,7 @@
     "correctAnswers": [
       3
     ],
-    "explanation": "For a primary key column, the ideal resolution is upstream: identify and fix duplicate, null, and erroneous customer records in the source system before loading into Power BI. If upstream fixes are not immediately possible, filtering nulls and errors for the Power BI load is acceptable, but duplicates require investigation — keeping only the 'first occurrence' (Option C) may silently drop legitimate transactions. The best Power BI practice is to raise the data quality issue, document it, and load only verified unique keys. Options A and B introduce data loss or fabricated data without upstream investigation.",
+    "explanation": "For a primary key column, the ideal resolution is upstream: identify and fix duplicate, null, and erroneous customer records in the source system before loading into Power BI. If upstream fixes are not immediately possible, filtering nulls and errors for the Power BI load is acceptable, but duplicates require investigation — keeping only the 'first occurrence' of each duplicate may silently drop legitimate transactions. The best Power BI practice is to raise the data quality issue, document it, and load only verified unique keys. Removing all rows in duplicate groups, or replacing nulls/errors with fabricated placeholder values like '0' or 'UNKNOWN', both introduce data loss or fabricated data without upstream investigation.",
     "estimatedTimeSeconds": 120,
     "tags": [
       "Data Quality",
@@ -22459,7 +22539,7 @@
     "correctAnswers": [
       1
     ],
-    "explanation": "REMOVEFILTERS() with no arguments removes ALL filters from ALL tables in the current filter context — it is the most explicit and safe way to compute a completely unfiltered grand total. CALCULATE([Total Sales], REMOVEFILTERS()) evaluates [Total Sales] with no active filters from any table. Option A (ALL on individual tables) works but requires explicitly listing every dimension table that could filter the result — omitting any one dimension would leave its filters active. Option B (REMOVEFILTERS with no args) is more robust and maintainable.",
+    "explanation": "REMOVEFILTERS() with no arguments removes ALL filters from ALL tables in the current filter context — it is the most explicit and safe way to compute a completely unfiltered grand total. CALCULATE([Total Sales], REMOVEFILTERS()) evaluates [Total Sales] with no active filters from any table, and is more robust and maintainable than manually clearing each dimension. The ALL(DimDate), ALL(DimRegion) approach works but requires explicitly listing every dimension table that could filter the result — omitting any one dimension would leave its filters active.",
     "estimatedTimeSeconds": 120,
     "tags": [
       "CALCULATE",
@@ -22490,13 +22570,13 @@
     "choices": [
       "Last Balance = LASTDATE(FactBalance[BalanceDate])",
       "Last Balance = CALCULATE(SUM(FactBalance[Balance]), LASTDATE(DimDate[Date]))",
-      "Last Balance = LASTNONBLANKX(DimDate[Date], SUM(FactBalance[Balance]))",
+      "Last Balance = LASTNONBLANKVALUE(DimDate[Date], SUM(FactBalance[Balance]))",
       "Last Balance = CALCULATE(MAX(FactBalance[Balance]), LASTDATE(DimDate[Date]))"
     ],
     "correctAnswers": [
       1
     ],
-    "explanation": "CALCULATE(SUM(FactBalance[Balance]), LASTDATE(DimDate[Date])) is the standard semi-additive closing balance pattern. LASTDATE() returns a one-row table containing the last date in the current filter context. CALCULATE then uses this as a filter, restricting the evaluation of SUM to only rows on that last date. This correctly returns the closing balance for whatever time period is in context (day, month, quarter, year). LASTNONBLANKX works but is more complex and typically used when multiple rows exist for the same last date. MAX(Balance) would return the highest balance row on that date, not necessarily the balance amount.",
+    "explanation": "CALCULATE(SUM(FactBalance[Balance]), LASTDATE(DimDate[Date])) is the standard semi-additive closing balance pattern. LASTDATE() returns a one-row table containing the last date in the current filter context. CALCULATE then uses this as a filter, restricting the evaluation of SUM to only rows on that last date. This correctly returns the closing balance for whatever time period is in context (day, month, quarter, year). LASTNONBLANKVALUE works but is more complex and typically used when multiple rows exist for the same last date. MAX(Balance) would return the highest balance row on that date, not necessarily the balance amount.",
     "estimatedTimeSeconds": 120,
     "tags": [
       "Semi-additive Measures",
@@ -22508,7 +22588,7 @@
     "choiceExplanations": {
       "0": "LASTDATE(FactBalance[BalanceDate]) returns a one-row date table, not a numeric balance value. Using it alone as a measure would evaluate to a date, not a balance amount. LASTDATE must be used as a filter argument inside CALCULATE to produce a meaningful balance result.",
       "1": "Correct. LASTDATE(DimDate[Date]) returns a table containing only the last date in context. CALCULATE then restricts SUM(FactBalance[Balance]) to that single date, producing the closing balance. This is the canonical semi-additive closing balance pattern in DAX.",
-      "2": "LASTNONBLANKX(DimDate[Date], SUM(FactBalance[Balance])) iterates dates in descending order and returns the last date where SUM is non-blank. This is more expensive than LASTDATE and is typically used only when the last date with data may not be the last date in the calendar context. For a standard closing balance, LASTDATE is preferred.",
+      "2": "LASTNONBLANKVALUE(DimDate[Date], SUM(FactBalance[Balance])) iterates dates in descending order and returns the last date where SUM is non-blank. This is more expensive than LASTDATE and is typically used only when the last date with data may not be the last date in the calendar context. For a standard closing balance, LASTDATE is preferred.",
       "3": "MAX(FactBalance[Balance]) returns the highest balance value on the last date — not the balance amount. If multiple rows exist for the last date with different balance values (e.g., opening and closing entries), MAX would return the wrong value."
     }
   },
@@ -22570,7 +22650,7 @@
     "correctAnswers": [
       2
     ],
-    "explanation": "Calculation groups are the purpose-built DAX feature for this exact scenario. A calculation group creates 'calculation items' that modify how a base measure ([Revenue]) is evaluated — for example, multiplying by EUR or GBP exchange rates. Any measure in the model can then be displayed in any currency by placing the calculation group field on the matrix column axis. When new currencies are added, you add one new calculation item to the calculation group — no changes to any existing measures are needed. This is far more scalable than measure proliferation (Option A/D) and avoids the UI complexity of bookmark-based navigation (Option B).",
+    "explanation": "Calculation groups are the purpose-built DAX feature for this exact scenario. A calculation group creates 'calculation items' that modify how a base measure ([Revenue]) is evaluated — for example, multiplying by EUR or GBP exchange rates. Any measure in the model can then be displayed in any currency by placing the calculation group field on the matrix column axis. When new currencies are added, you add one new calculation item to the calculation group — no changes to any existing measures are needed. This is far more scalable than approaches that require modifying internal SWITCH/SELECTEDVALUE logic for every new currency, and avoids the UI complexity of bookmark-based page navigation.",
     "estimatedTimeSeconds": 120,
     "tags": [
       "Calculation Groups",
@@ -23047,7 +23127,7 @@
       "Set the KPI card visual's interactions to 'No Impact' for the bar chart, donut chart, and table",
       "Wrap the KPI card's measure in ALL(): Grand Total Revenue = CALCULATE([Total Revenue], ALL(DimRegion))",
       "Set the KPI card visual's interactions to 'No Impact' for the bar chart only, since the donut and table do not affect the KPI card",
-      "Both A and B are required — the visual interaction setting prevents cross-filtering, and the ALL() measure removes filter context from the measure itself"
+      "Both setting the KPI card's visual interactions to 'No Impact' for all visuals AND wrapping its measure in ALL(DimRegion) are required together — the visual interaction setting prevents cross-filtering, and the ALL() measure removes filter context from the measure itself"
     ],
     "correctAnswers": [
       1
@@ -24084,7 +24164,7 @@
       0,
       2
     ],
-    "explanation": "A defining feature of a many-to-many relationship is that the related columns on both sides can contain duplicates (A). Power BI also allows many-to-many relationships to use bi-directional cross-filtering (C). Power BI does not create any hidden bridge table — many-to-many relationships are evaluated directly between the two tables (B is false). When two fact tables share a dimension, the recommended star-schema design is a shared dimension table with one-to-many relationships, not a direct many-to-many relationship between the fact tables (D is false).",
+    "explanation": "A defining feature of a many-to-many relationship is that the related columns on both sides can contain duplicate values — this statement is correct. Power BI also allows many-to-many relationships to use bi-directional cross-filtering — this statement is also correct. Power BI does not create any hidden bridge table — many-to-many relationships are evaluated directly between the two tables, so the 'automatically generates a hidden bridge table' statement is false. When two fact tables share a dimension, the recommended star-schema design is a shared dimension table with one-to-many relationships, not a direct many-to-many relationship between the fact tables, so the 'recommended design whenever two fact tables share a common dimension' statement is also false.",
     "estimatedTimeSeconds": 120,
     "tags": [
       "Relationships",
@@ -24123,7 +24203,7 @@
       0,
       1
     ],
-    "explanation": "Conditional formatting in Power BI tables and matrices supports background or font color rules based on field values or custom conditions (A), and data bars that visualize the relative size of each value within the column (B). Page refresh intervals and bookmarks are unrelated report-level features and are not conditional formatting options.",
+    "explanation": "Conditional formatting in Power BI tables and matrices supports background or font color rules based on field values or custom conditions, and data bars that visualize the relative size of each value within the column — both are valid conditional formatting options. Page refresh intervals and bookmarks are unrelated report-level features and are not conditional formatting options.",
     "estimatedTimeSeconds": 60,
     "tags": [
       "Conditional Formatting",
