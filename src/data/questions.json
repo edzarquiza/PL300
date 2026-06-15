@@ -8963,19 +8963,19 @@
     "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "examObjective": "Visualize and analyze the data > Visual selection",
-    "commonTrap": "Choosing a single line chart with too many series, making quarter-to-quarter and regional comparisons harder to read than a grouped clustered bar chart",
+    "commonTrap": "Choosing a single line chart with too many series, making quarter-to-quarter and product-line comparisons harder to read than a grouped clustered bar chart",
     "trapType": "Visualization Selection",
-    "question": "A report shows quarterly performance for three product lines across four regions. Stakeholders need to compare both quarterly trends and regional differences simultaneously. Which visual type handles this comparison most effectively?",
+    "question": "A report shows quarterly revenue for three product lines over the past two years. Stakeholders need to read the quarter-to-quarter trend while also directly comparing the three product lines against each other within each quarter. Which visual type handles this comparison most effectively?",
     "choices": [
-      "Matrix visual with quarters as columns and regions as rows",
-      "Treemap with hierarchy by region and product",
+      "Matrix visual with quarters as columns and product lines as rows",
+      "Treemap showing product line revenue proportions",
       "Line chart with legend showing product lines",
       "Clustered bar chart grouped by quarter"
     ],
     "correctAnswers": [
       3
     ],
-    "explanation": "A clustered bar chart grouped by quarter shows all three product lines as side-by-side bars within each quarter, letting stakeholders read quarter-to-quarter trends across the axis while directly comparing product lines within each period. A line chart with one series per product line shows trends over time clearly, but regional differences would still require separate charts. A matrix shows the numbers but not the visual trend, and a treemap only shows proportions at a single point in time.",
+    "explanation": "A clustered bar chart grouped by quarter shows all three product lines as side-by-side bars within each quarter, letting stakeholders read quarter-to-quarter trends across the axis while directly comparing product lines within each period. A line chart with one series per product line shows the trend for each product line clearly, but comparing product lines within a single quarter means scanning between separate line positions rather than reading adjacent bars. A matrix shows the numbers but not the visual trend, and a treemap only shows proportions at a single point in time, not change over quarters.",
     "estimatedTimeSeconds": 80,
     "tags": [
       "Bar Chart",
@@ -8984,9 +8984,9 @@
       "Visual Selection"
     ],
     "choiceExplanations": {
-      "0": "A matrix visual displays numbers in a tabular grid with row and column groupings. While it can show quarterly figures by region, it does not visually encode trends — stakeholders cannot easily see growth trajectory or relative performance over time.",
-      "1": "A treemap uses nested rectangles sized by a single value to show hierarchical proportions. It cannot display time trends or compare quarterly performance across multiple product lines simultaneously.",
-      "2": "A line chart with multiple series (one per product line) over quarterly time periods lets stakeholders see both trends over time and relative performance between product lines. However, regional differences would require separate charts.",
+      "0": "A matrix visual displays numbers in a tabular grid with row and column groupings. While it can show quarterly figures by product line, it does not visually encode trends — stakeholders cannot easily see growth trajectory or relative performance over time.",
+      "1": "A treemap uses nested rectangles sized by a single value to show hierarchical proportions at a single point in time. It cannot display quarter-to-quarter trends.",
+      "2": "A line chart with multiple series (one per product line) over quarterly time periods lets stakeholders see trends over time clearly, but comparing product lines within a single quarter means scanning between separate line positions rather than reading adjacent bars.",
       "3": "Correct. A clustered bar chart grouped by quarter shows all product lines side by side within each quarter, enabling both quarter-to-quarter trend analysis and direct product line comparisons per period simultaneously."
     }
   },
@@ -10580,50 +10580,63 @@
     "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "examObjective": "Manage and secure Power BI > Implement row-level security roles — RLS and cross-filter direction",
-    "commonTrap": "Placing an RLS filter on a dimension table whose Single cross-filter direction flows from fact to dimension, so the filter never propagates down to restrict the fact table rows",
-    "question": "You implement RLS with the DAX filter `[Email] = USERPRINCIPALNAME()` on a Region dimension table. Regional managers report seeing data from all regions despite the filter. The Region table has a one-to-many relationship to the Sales fact table. Cross-filter direction is Single. What is the MOST likely cause?",
+    "commonTrap": "Assuming an RLS filter on a table that sits on the 'many' side of a relationship will propagate 'upstream' to the 'one' side under the default Single cross-filter direction",
+    "question": "A Power BI model contains a RegionManager table (one row per manager, with columns ManagerEmail and RegionID) that has a many-to-one relationship to the Region dimension table (RegionManager[RegionID] → Region[RegionID]) using the default Single cross-filter direction. Region also has a one-to-many relationship to the Sales fact table (Region → Sales), also Single direction. You implement RLS on the RegionManager table with the DAX filter `[ManagerEmail] = USERPRINCIPALNAME()`. After publishing, regional managers report seeing Sales data from every region instead of only their own. What is the MOST likely cause?",
     "choices": [
-      "The Single cross-filter is set so Sales filters Region (Sales → Region), meaning the RLS filter on Region does not propagate to restrict Sales rows",
-      "USERPRINCIPALNAME() returns a domain-qualified name that does not match the Email column format",
-      "RLS filters must be placed on the fact table, not the dimension table",
-      "The one-to-many relationship cardinality is incorrectly configured"
+      "RegionManager is on the 'many' side of its relationship to Region, so the default Single direction filters Region → RegionManager only — the RLS filter on RegionManager cannot propagate upstream to Region, and therefore never reaches Sales",
+      "USERPRINCIPALNAME() returns a domain-qualified name that does not match the ManagerEmail column format",
+      "RLS filters must be placed directly on the Sales fact table, not on a mapping or dimension table",
+      "The Region-to-Sales relationship should be configured as many-to-many so the RLS filter can propagate correctly"
     ],
     "correctAnswers": [
       0
     ],
-    "explanation": "For RLS on a dimension table to restrict fact table rows, the cross-filter direction must flow from dimension to fact (Region → Sales). If the Single direction is set to Sales → Region, filters applied to Region do not propagate downstream to Sales — managers see all Sales rows. The fix: reverse the filter direction so Region can filter Sales, or set direction to Both.",
+    "explanation": "A Single (non-bidirectional) relationship filters only from the '1' side toward the '*' side. RegionManager sits on the '*' side of its relationship to Region, so the default Single direction filters Region → RegionManager — not the reverse. The RLS filter `[ManagerEmail] = USERPRINCIPALNAME()` restricts RegionManager down to the current manager's single row, but that restriction cannot travel upstream across the relationship to filter Region, and therefore cannot reach Sales via the (correctly configured) Region → Sales relationship either. Result: Region and Sales remain completely unfiltered, so every manager sees every region's Sales data. Fix: set the RegionManager ↔ Region cross-filter direction to Both so RegionManager can filter Region, or define the RLS filter directly on Region (for example using LOOKUPVALUE to look up the current user's RegionManager row) so no upstream propagation is required.",
     "trapType": "RLS Cross-Filter Direction",
     "tags": [
       "RLS",
       "Cross-Filter",
       "Relationships",
       "Security",
-      "Dimension to Fact"
+      "Filter Propagation"
     ],
     "choiceExplanations": {
-      "0": "Correct. With Single cross-filter direction and the filter set on the Region dimension, filters must flow FROM Region TO Sales for RLS to work. If the Single direction is set so Sales filters Region (fact to dimension), the RLS filter on Region cannot propagate downstream to restrict Sales rows. The fix is to reverse the filter direction so Region can filter Sales, or set direction to Both.",
-      "1": "USERPRINCIPALNAME() format mismatch is a valid RLS issue in some scenarios, but it would affect ALL regional managers consistently, not cause them to see data from all regions. The question states all regions are visible — indicating the filter propagation is the problem, not the identity lookup.",
-      "2": "RLS filters can be placed on any table — fact or dimension. Placing the filter on a dimension table is correct and standard when the intent is to propagate restrictions to the fact table via the relationship. The issue is the cross-filter direction, not which table holds the filter.",
-      "3": "The one-to-many cardinality is correctly configured (one region to many sales). Incorrect cardinality would manifest as data quality issues such as wrong aggregations, not a complete bypass of RLS filtering where all regions are visible."
+      "0": "Correct. Single-direction relationships filter only from the '1' side to the '*' side. Because RegionManager is on the '*' side of its relationship to Region, the default Single direction filters Region → RegionManager, not RegionManager → Region. An RLS filter applied to RegionManager therefore has no way to restrict Region — or Sales further downstream — without setting the relationship to Both, or moving the RLS filter onto Region itself.",
+      "1": "A UPN format mismatch would cause the RLS filter to match zero rows in RegionManager, leaving a manager with no visible row in that table — but it still wouldn't explain managers seeing Sales from EVERY region, since RegionManager's filtered state has no effect on Region or Sales either way. The 'sees all regions' symptom points to a propagation failure, not an identity-matching failure.",
+      "2": "Placing RLS on a dimension or mapping table so it propagates to related fact tables is the standard, recommended pattern, not a violation. The problem here is the direction of propagation across the RegionManager-to-Region relationship, not which table holds the RLS filter.",
+      "3": "The Region → Sales relationship already filters correctly (one-to-many, Single direction, Region filters Sales). Changing it to many-to-many would not fix anything — the broken link is between RegionManager and Region, not between Region and Sales — and many-to-many relationships add unnecessary complexity and ambiguity to filter propagation."
     },
     "visualContext": {
       "relationshipDiagram": {
         "tables": [
           {
+            "name": "RegionManager",
+            "type": "dimension",
+            "position": "left",
+            "keyColumns": [
+              "RegionID"
+            ],
+            "columns": [
+              "ManagerEmail",
+              "RegionID"
+            ]
+          },
+          {
             "name": "Region",
             "type": "dimension",
+            "position": "center",
             "keyColumns": [
               "RegionID"
             ],
             "columns": [
               "RegionID",
-              "RegionName",
-              "Email"
+              "RegionName"
             ]
           },
           {
             "name": "Sales",
             "type": "fact",
+            "position": "right",
             "keyColumns": [
               "SaleID"
             ],
@@ -10637,6 +10650,14 @@
         ],
         "relationships": [
           {
+            "from": "RegionManager",
+            "fromKey": "RegionID",
+            "to": "Region",
+            "toKey": "RegionID",
+            "cardinality": "many-to-one",
+            "direction": "Single"
+          },
+          {
             "from": "Region",
             "fromKey": "RegionID",
             "to": "Sales",
@@ -10645,7 +10666,7 @@
             "direction": "Single"
           }
         ],
-        "issue": "Cross-filter direction is Single (Sales → Region). RLS filter on Region does NOT propagate down to restrict Sales rows. Changing direction to \"Single (Region → Sales)\" fixes this."
+        "issue": "RegionManager → Region is Single direction, which filters Region → RegionManager (the '1' side filters the '*' side) — not the reverse. The RLS filter on RegionManager cannot propagate to Region, so it never reaches Sales either."
       }
     }
   },
@@ -11181,19 +11202,19 @@
     "questionStyle": "scenario",
     "cognitiveLevel": "analysis",
     "examObjective": "Model the data > ISINSCOPE and matrix subtotals",
-    "commonTrap": "Not accounting for the fact that [% of Total] naturally returns 100% at subtotal rows because the numerator and CALCULATE/ALL denominator match at that level",
+    "commonTrap": "Assuming a grand total of 100% is an error to be 'fixed' in the calculation, when it is mathematically correct — the real fix is a display preference using ISINSCOPE",
     "trapType": "Matrix Subtotal Filter Context",
-    "question": "A measure `[% of Total] = DIVIDE([Sales], CALCULATE([Sales], ALL(Product)))` is placed in a matrix visual. Product[Category] is on rows and Product[Subcategory] is on columns. The % of Total values for each cell appear correct when slicing by region, but the row subtotals show values over 100%. What is the cause?",
+    "question": "A measure `[% of Total] = DIVIDE([Sales], CALCULATE([Sales], ALL(Product)))` is placed in a matrix visual with Product[Category] on rows and Product[Subcategory] on columns, with row subtotals and a grand total enabled. The category and subcategory level percentages look correct (for example, 30%, 20%, and 50% for the Bikes group), but stakeholders also see the Grand Total row display 100% and find this redundant. What should be done?",
     "choices": [
-      "The DIVIDE function propagates subtotal aggregation incorrectly — use a simple division operator instead",
-      "ALL(Product) is not compatible with visual subtotals and should be replaced with ALLSELECTED(Product)",
-      "At subtotal rows, the row context includes multiple categories — CALCULATE([Sales], ALL(Product)) still returns the grand total, so the numerator at a subtotal level equals the denominator, producing 100% per row group — when multiple row groups are summed, the displayed total exceeds 100%",
-      "The matrix visual requires a separate measure for subtotal rows defined using ISINSCOPE"
+      "Replace DIVIDE with the / operator so the measure stops returning a value at the grand total row",
+      "Replace ALL(Product) with ALLSELECTED(Product) so the grand total row returns BLANK() instead of 100%",
+      "Turn off the Grand Total row entirely in the matrix's formatting options",
+      "Wrap the measure in IF(ISINSCOPE(Product[Category]), <original expression>, BLANK()) so it returns BLANK() at the grand total level while keeping the correct percentages at the category and subcategory levels"
     ],
     "correctAnswers": [
       3
     ],
-    "explanation": "The [% of Total] measure returns 100% at category subtotal rows because at that level, [Sales] = CALCULATE([Sales], ALL(Product)) for the category. When Power BI displays a row subtotal, it sums the per-row percentages rather than recalculating — producing values exceeding 100%. The correct fix uses ISINSCOPE to return 100% at subtotal rows or recalculate differently at each level: IF(ISINSCOPE(Product[Subcategory]), DIVIDE([Sales], CALCULATE([Sales], ALL(Product))), BLANK()).",
+    "explanation": "At the grand total row, [Sales] and CALCULATE([Sales], ALL(Product)) both evaluate over the entire Product table with no row or column filters, so [% of Total] correctly evaluates to 100% — this is mathematically accurate but adds no information. ISINSCOPE(Product[Category]) returns TRUE whenever the visual is showing a category or subcategory row (since a subcategory row implies its category is also in scope), and FALSE only at the grand total, where neither is in scope. Wrapping the measure in IF(ISINSCOPE(Product[Category]), <original expression>, BLANK()) preserves the correct 30%/20%/50%/50% percentages at the category and subcategory levels while leaving the grand total cell blank.",
     "tags": [
       "CALCULATE",
       "ALL",
@@ -11203,12 +11224,12 @@
       "DAX"
     ],
     "choiceExplanations": {
-      "0": "DIVIDE is a safe division function that handles divide-by-zero gracefully. Replacing it with the / operator would make the measure less robust, not more correct. The subtotal issue is caused by the denominator logic, not the division function.",
-      "1": "ALLSELECTED(Product) changes the denominator to the total of currently selected/visible products — producing a percentage of the visible subtotal rather than the grand total. This changes the measure's intended behavior.",
-      "2": "This describes a plausible-sounding mechanism but is not accurate. The issue is that Power BI sums the displayed percentage values visually at the grand total row rather than recalculating the ratio at that level.",
-      "3": "Correct. When the matrix visual displays a grand total row, it sums the per-row displayed percentages rather than recalculating the measure at the total level. The fix uses ISINSCOPE to define different behavior at the subtotal vs. detail row level — for example, returning BLANK() at the grand total row so Power BI does not sum percentages incorrectly."
+      "0": "DIVIDE is a safe-division function that returns a configurable result on a divide-by-zero; it has no special behavior tied to subtotal or grand total rows. Replacing it with / would not change whether the grand total shows 100%, and would remove DIVIDE's divide-by-zero protection.",
+      "1": "ALLSELECTED(Product) behaves the same as ALL(Product) here because no slicer or visual-level filter is applied to Product — both remove the row/column grouping context and return the full table total. The grand total would still evaluate to 100%, and ALLSELECTED has no mechanism to return BLANK().",
+      "2": "Turning off the grand total row does remove the 100% display, but it also removes the grand total for every other measure in the matrix. This is a blunt formatting change that sacrifices useful totals for other measures to fix one measure's display.",
+      "3": "Correct. ISINSCOPE(Product[Category]) is TRUE for both category subtotal rows and subcategory detail rows, but FALSE at the grand total, where the matrix is not grouped by Category at all. Wrapping the measure in this IF condition keeps the meaningful percentages visible while suppressing the always-100% grand total value, without affecting the grand totals of other measures in the matrix."
     },
-    "daxExpression": "[% of Total] = DIVIDE([Sales], CALCULATE([Sales], ALL(Product)))\n\n-- At a Category subtotal row, [Sales] = sum of all subcategories in that group.\n-- CALCULATE([Sales], ALL(Product)) = grand total of ALL products.\n-- But Power BI display \"subtotal\" = SUM of per-row % values, not a re-eval.\n-- Each row returns 100% at the category level → summed subtotal > 100%.",
+    "daxExpression": "[% of Total] = DIVIDE([Sales], CALCULATE([Sales], ALL(Product)))\n\n-- At the grand total row, [Sales] and CALCULATE([Sales], ALL(Product))\n-- both evaluate over the whole Product table with no filters, so they are\n-- equal and the ratio is always 100% -- correct, but uninformative.\n\n[% of Total (no grand total)] =\nIF(\n    ISINSCOPE(Product[Category]),\n    DIVIDE([Sales], CALCULATE([Sales], ALL(Product))),\n    BLANK()\n)",
     "sampleData": {
       "tables": [
         {
@@ -11224,16 +11245,16 @@
             [
               "Bikes",
               "Road Bikes",
-              200,
+              300,
               1000,
-              "20%"
+              "30%"
             ],
             [
               "Bikes",
               "Mountain Bikes",
-              300,
+              200,
               1000,
-              "30%"
+              "20%"
             ],
             [
               "Bikes",
@@ -11245,51 +11266,61 @@
             [
               "Clothing",
               "Jerseys",
-              150,
+              500,
               1000,
-              "15%"
+              "50%"
             ],
             [
               "Clothing",
               "(Subtotal)",
-              150,
+              500,
               1000,
-              "15%"
+              "50%"
             ],
             [
               "(Grand Total)",
               "",
-              650,
               1000,
-              "65%"
+              1000,
+              "100%"
             ]
           ]
         }
       ]
     },
     "expectedOutput": {
-      "label": "Why row subtotals show > 100% (Power BI display bug with this pattern)",
+      "label": "% of Total before and after the ISINSCOPE fix",
       "revealsAnswer": true,
       "columns": [
-        "What Power BI shows",
-        "Expected",
-        "Why it differs"
+        "Matrix Row",
+        "[% of Total]",
+        "With ISINSCOPE fix"
       ],
       "rows": [
         [
-          "Bikes subtotal = 50%",
+          "Road Bikes",
+          "30%",
+          "30% (unchanged)"
+        ],
+        [
+          "Mountain Bikes",
+          "20%",
+          "20% (unchanged)"
+        ],
+        [
+          "Bikes (Subtotal)",
           "50%",
-          "Re-evaluated — correct"
+          "50% (unchanged)"
         ],
         [
-          "Clothing subtotal = 15%",
-          "15%",
-          "Re-evaluated — correct"
+          "Clothing (Subtotal)",
+          "50%",
+          "50% (unchanged)"
         ],
         [
-          "If ISINSCOPE not used",
-          "50% + 15% = 65%",
-          "May display as > 100% in some matrix layouts when subcategory subtotals are summed"
+          "Grand Total",
+          "100%",
+          "(blank)"
         ]
       ]
     }
@@ -13513,29 +13544,19 @@
           ],
           "rows": [
             [
-              "1. Filter Status = Active",
+              "1. Filter Status = \"Active\"",
               "YES",
               "Translates to SQL WHERE"
             ],
             [
-              "2. Select specific columns",
-              "YES",
-              "Translates to SQL SELECT"
+              "2. Sort by OrderDate descending",
+              "YES (usually)",
+              "Translates to SQL ORDER BY"
             ],
             [
-              "3. Remove Duplicates",
+              "3. Remove duplicate CustomerID rows",
               "NO ❌ — breaks fold",
-              "SQL cannot express DISTINCT on arbitrary M result sets"
-            ],
-            [
-              "4. Sort by Date",
-              "NO",
-              "Runs in Mashup Engine after step 3 broke folding"
-            ],
-            [
-              "5. Add Custom Column",
-              "NO",
-              "Also in-memory"
+              "SQL cannot express Power Query's Remove Duplicates on arbitrary M result sets; \"View Native Query\" becomes unavailable from this step onward"
             ]
           ]
         }
@@ -13805,12 +13826,12 @@
       "The Power Query engine requires dates in ISO 8601 format (YYYY-MM-DD) before a type conversion can succeed",
       "Text columns can never be directly converted to Date type — they must first be converted to DateTime",
       "The OrderDate column contains null values which always cause errors when converting to Date type",
-      "The Power BI Desktop locale setting does not match the source date format, causing ambiguous dates (e.g., 04/05/2024 parsed as April 5 vs May 4) to fail conversion"
+      "The Power BI Desktop locale setting does not match the source date format, causing dates where the day exceeds 12 (e.g., 12/25/2024) to be misread as an invalid month and fail conversion"
     ],
     "correctAnswers": [
       3
     ],
-    "explanation": "Power Query uses the locale of the Power BI Desktop installation to interpret date strings during type conversion. If the source data uses MM/DD/YYYY (US format) but Power BI is set to a locale expecting DD/MM/YYYY (e.g., UK), dates like \"04/05/2024\" would try to interpret as the 4th day of month 5 (valid) or month 13 (invalid, causing an error). The fix is to use \"Change Type > Using Locale\" and specify the source locale explicitly.",
+    "explanation": "Power Query uses the locale of the Power BI Desktop installation to interpret date strings during type conversion. If the source data uses MM/DD/YYYY (US format) but Power BI is set to a locale expecting DD/MM/YYYY (e.g., UK), a date like \"12/25/2024\" (December 25) would be read as day=12, month=25 — month 25 doesn't exist, so the conversion fails with an error. Dates where both parts are 12 or less, like \"04/05/2024\", are silently misread as the wrong date (day and month swapped) without raising an error — which is why only some rows show errors while the rest appear to convert successfully but may hold the wrong date. The fix is to use \"Change Type > Using Locale\" and specify the source locale explicitly.",
     "estimatedTimeSeconds": 105,
     "tags": [
       "Data Types",
@@ -14379,18 +14400,21 @@
           "columns": [
             "EmployeeID",
             "Name",
-            "Region"
+            "Department",
+            "Salary"
           ],
           "rows": [
             [
               1,
               "Alice",
-              "North"
+              "Sales",
+              65000
             ],
             [
               2,
               "Bob",
-              "North"
+              "Marketing",
+              58000
             ]
           ]
         },
@@ -14399,18 +14423,21 @@
           "columns": [
             "EmployeeID",
             "Name",
-            "Region"
+            "Department",
+            "Salary"
           ],
           "rows": [
             [
               3,
               "Carol",
-              "South"
+              "Sales",
+              62000
             ],
             [
               4,
               "Dave",
-              "South"
+              "Finance",
+              70000
             ]
           ]
         }
@@ -14422,28 +14449,33 @@
       "columns": [
         "EmployeeID",
         "Name",
-        "Region"
+        "Department",
+        "Salary"
       ],
       "rows": [
         [
           1,
           "Alice",
-          "North"
+          "Sales",
+          65000
         ],
         [
           2,
           "Bob",
-          "North"
+          "Marketing",
+          58000
         ],
         [
           3,
           "Carol",
-          "South"
+          "Sales",
+          62000
         ],
         [
           4,
           "Dave",
-          "South"
+          "Finance",
+          70000
         ]
       ]
     }
@@ -15178,17 +15210,17 @@
     "examObjective": "Visualize and analyze data > Create reports",
     "trapType": "Filter Hierarchy Precedence",
     "commonTrap": "Not knowing the filter hierarchy order in Power BI",
-    "question": "A Power BI report has the following filters applied to a bar chart showing Revenue by Region: (1) A visual-level filter: Revenue > 10000, (2) A page-level filter: Year = 2024, (3) A report-level filter: Country = \"USA\", (4) A slicer on the page: Region = \"East\". A report consumer asks why the South region with $8,000 Revenue is not visible. Which filter is responsible?",
+    "question": "A Power BI report has the following filters applied to a bar chart showing Revenue by Region: (1) A visual-level filter: Revenue > 10000, (2) A page-level filter: Year = 2024, (3) A report-level filter: Country = \"USA\", (4) A slicer on the page: Sales Channel = \"Online\". A report consumer asks why the South region, which has $8,000 Revenue (Online, 2024, USA), is not visible in this bar chart but appears normally in other visuals on the page. Which filter is responsible?",
     "choices": [
-      "The visual-level filter (Revenue > 10000) hides the South region because $8,000 does not meet the threshold — visual-level filters are the most granular and override slicers for display purposes",
+      "The visual-level filter (Revenue > 10000) hides the South region because $8,000 does not meet the threshold — visual-level filters apply only to this visual, on top of the other active filters",
       "The page-level filter (Year = 2024) is limiting data to only 2024 which excludes South region sales — South's $8,000 Revenue is stated as existing in the current context, so a year filter alone wouldn't make it disappear",
-      "The slicer (Region = \"East\") is filtering out South because slicers take precedence over all other filter types — slicers act as page-level filters and do not override or take precedence over visual-level filters",
+      "The slicer (Sales Channel = \"Online\") is filtering out South because slicers take precedence over all other filter types and can exclude an entire region from a visual",
       "The report-level filter (Country = \"USA\") excludes South because it does not match the country filter — a report-level filter would hide South from every visual on the report, not just this one bar chart"
     ],
     "correctAnswers": [
       0
     ],
-    "explanation": "Power BI filter hierarchy: report-level → page-level → visual-level, with slicers acting as interactive page-level filters. All filters work cumulatively — a row must pass ALL active filters to appear. The visual-level Revenue > 10,000 filter hides South's $8,000 revenue because it fails this threshold specifically at the visual level. The other filters (Year, Country, East slicer) would also apply cumulatively but none is the reason for hiding $8,000 — the visual filter is.",
+    "explanation": "Power BI filter hierarchy: report-level, page-level, and visual-level filters — plus slicers, which act as interactive page-level filters — all apply cumulatively (AND logic). A row must pass every active filter to appear in a given visual. Of the four filters listed, only the visual-level Revenue > 10,000 filter is scoped to this one bar chart AND operates on the Revenue value itself, so it is the only filter that can selectively hide South's $8,000 bar while leaving South visible elsewhere on the page. The Year, Country, and Sales Channel filters all apply page-wide or report-wide and operate on columns unrelated to Region — if any of them excluded South's data, South would be missing from every visual on the page (or report), not just this one bar chart. Since the question states South still appears in other visuals on the page, the cause must be the visual-level filter.",
     "estimatedTimeSeconds": 120,
     "tags": [
       "Filter Hierarchy",
@@ -15198,10 +15230,10 @@
       "Report Filters"
     ],
     "choiceExplanations": {
-      "0": "Correct. The visual-level Revenue > 10,000 filter directly hides any region bar where Revenue is ≤ 10,000. South at $8,000 fails this filter. Visual-level filters apply after all other filters and control what the specific visual renders.",
-      "1": "The Year = 2024 page-level filter restricts to 2024 data, but if South had $8,000 in 2024 it would still be present unless another filter removed it. The question states South has $8,000 Revenue, implying it exists in the current year context.",
-      "2": "Slicers act as page-level filters — they do not override visual-level filters. The slicer for Region = East would already filter out South entirely, making it the cause only if South is not in \"East\" — but the question implies South is visible until the Revenue filter removes it.",
-      "3": "If Country = \"USA\" was the issue, South would not appear in any visual on the report, not just this specific bar chart. Report-level filters apply globally — the question isolates the issue to this visual specifically."
+      "0": "Correct. The visual-level Revenue > 10,000 filter applies only to this bar chart, on top of the page- and report-level filters. South's $8,000 fails this threshold, so its bar is hidden here — while South's data still passes the Year, Country, and Channel filters and appears normally in other visuals on the page.",
+      "1": "The Year = 2024 page-level filter applies to every visual on the page, not just this bar chart. If it excluded South's data, South would be missing from all visuals on the page — but the question states South appears normally elsewhere on the page.",
+      "2": "Slicers act as page-level filters and apply to every visual on the page that uses the sliced field. The Sales Channel = Online slicer filters on Channel, not Region — it has no mechanism to single out South, and if South's data failed this filter, South would be missing from every visual on the page, not just this one bar chart.",
+      "3": "The Country = \"USA\" report-level filter applies to every visual in the entire report. If South didn't match Country = \"USA\", South would be missing from every visual in the report — but the question states South appears normally in other visuals on the page."
     },
     "questionGroupId": "filter_hierarchy",
     "variantId": "revenue_region_01"
@@ -20518,14 +20550,14 @@
     "question": "A report designer is customizing a Map visual and goes to the Format pane, then Map settings - Controls, to decide which interactive controls end users will see. Which of the following is NOT a control that can be added or removed here?",
     "choices": [
       "Auto zoom",
-      "Navigation",
-      "Selection",
+      "Zoom buttons",
+      "Lasso button",
       "Find"
     ],
     "correctAnswers": [
       3
     ],
-    "explanation": "Available map controls include Auto zoom, Navigation, and Selection (lasso). 'Find' is not available — you cannot add a button to search for locations in the map visual.",
+    "explanation": "Available map controls under Map settings - Controls include Auto zoom, Zoom buttons, and Lasso button. 'Find' is not available — there is no built-in control to search for locations within the map visual.",
     "estimatedTimeSeconds": 60,
     "tags": [
       "Map Visual",
@@ -20534,9 +20566,9 @@
     ],
     "choiceExplanations": {
       "0": "Auto zoom IS an available map control — it automatically adjusts the zoom level to fit all displayed data points within the visual.",
-      "1": "Navigation controls (zoom in/out buttons) ARE available map controls.",
-      "2": "Selection (lasso selection tool for selecting multiple data points on the map) IS an available map control.",
-      "3": "Correct. 'Find' is not one of the controls available under Map settings - Controls in Power BI. The available toggles there are Auto zoom, Navigation, and Selection."
+      "1": "Zoom buttons (on-screen + / - controls for zooming in and out) ARE an available map control.",
+      "2": "Lasso button (a tool for drawing a selection area to select multiple data points on the map) IS an available map control.",
+      "3": "Correct. 'Find' is not one of the controls available under Map settings - Controls in Power BI. The available toggles there are Auto zoom, Zoom buttons, and Lasso button."
     }
   },
   {
@@ -22283,7 +22315,7 @@
     "correctAnswers": [
       1
     ],
-    "explanation": "Incremental refresh solves the problem directly: it partitions the fact table by date, imports historical data once, and only refreshes the recent partition (last 2 days) on each cycle. A 2-day refresh period means any data within the rolling 2-day window is always refreshed, satisfying the 2-hour currency requirement. Full refreshes of 200 GB become obsolete — only the recent partition (500K rows × 2 days = ~1M rows) is processed each time, typically completing in minutes rather than hours.",
+    "explanation": "Incremental refresh solves the problem directly: it partitions the fact table by date, imports historical data once, and only reprocesses the recent partition (last 2 days, roughly 500K rows × 2 days = ~1M rows) on each scheduled run — completing in minutes rather than 4.5 hours. The refresh period (2 days) controls how much data is reprocessed each run, while the refresh schedule's frequency controls how current the data is. Because each refresh is now fast, the dataset can be scheduled to run frequently (e.g., hourly), which was impossible when every refresh took 4.5 hours — meeting the 2-hour currency requirement. Full refreshes of the 200 GB historical partition become unnecessary.",
     "estimatedTimeSeconds": 120,
     "tags": [
       "Incremental Refresh",
@@ -22293,7 +22325,7 @@
     ],
     "choiceExplanations": {
       "0": "DirectQuery would eliminate Import refresh entirely, but it shifts the performance problem to query time. Every report interaction issues live SQL queries against a 200 GB table. With no schema changes allowed and no source indexes for optimized DAX-generated queries, this will cause unacceptably slow report performance.",
-      "1": "Correct. Incremental refresh partitions the fact table by date range. The historical partition is loaded once and not refreshed again. Only the 'incremental' partition (configured as the most recent 2 days) is refreshed on each cycle. This satisfies the 2-hour currency requirement and reduces refresh time from 4.5 hours to minutes.",
+      "1": "Correct. Incremental refresh partitions the fact table by date range. The historical partition is loaded once and not refreshed again. Only the 'incremental' partition (configured as the most recent 2 days) is reprocessed on each cycle, reducing refresh time from 4.5 hours to minutes. That speed-up is what makes it feasible to schedule refreshes often enough (e.g., hourly) to satisfy the 2-hour currency requirement.",
       "2": "An aggregation table reduces query time for summary visuals, but the underlying detail fact table still requires a full refresh. This approach does not address the 4.5-hour full refresh duration for the Import dataset.",
       "3": "Composite models with split datasets add architectural complexity and require careful relationship management. This approach may help but is more complex than needed; incremental refresh directly solves the stated problem without requiring dataset splitting."
     }
@@ -22824,19 +22856,19 @@
     "questionStyle": "scenario",
     "cognitiveLevel": "analysis",
     "examObjective": "Model the data > Design and implement a data model — role-playing dimensions and inactive relationships",
-    "commonTrap": "Assuming USERELATIONSHIP changes which relationship a filter on the dimension table propagates through, when filters on the dimension still flow via the currently active relationship by default",
-    "trapType": "Inactive Relationship Activation",
-    "question": "A Power BI model has three relationships from FactOrders to DimDate: OrderDate (active), ShipDate (inactive), and DueDate (inactive). An analyst writes the following measure: Overdue Orders = CALCULATE(COUNTROWS(FactOrders), USERELATIONSHIP(FactOrders[DueDateID], DimDate[DateID]), FactOrders[Status] = \"Open\", DimDate[Date] < TODAY()). This measure is placed in a card visual. The analyst expects it to count open orders where the due date has already passed, but the result appears too high. What is the MOST likely issue?",
+    "commonTrap": "Forgetting that BLANK() < TODAY() evaluates to TRUE in DAX, so fact rows with no matching relationship key (blank foreign key) are silently included by a date-range filter that was meant to exclude them",
+    "trapType": "Blank Date Comparison",
+    "question": "A Power BI model has three relationships from FactOrders to DimDate: OrderDate (active), ShipDate (inactive), and DueDate (inactive). Some FactOrders rows have a blank DueDateID because no due date has been assigned yet. An analyst writes the following measure: Overdue Orders = CALCULATE(COUNTROWS(FactOrders), USERELATIONSHIP(FactOrders[DueDateID], DimDate[DateID]), FactOrders[Status] = \"Open\", DimDate[Date] < TODAY()). This measure is placed in a card visual. The analyst expects it to count only open orders whose due date has already passed, but the result appears too high. What is the MOST likely issue?",
     "choices": [
       "USERELATIONSHIP cannot be combined with additional CALCULATE filter arguments — the Status and Date filters are being ignored",
-      "The DimDate[Date] < TODAY() filter is evaluated against the date table's full range including the OrderDate relationship — USERELATIONSHIP only activates the DueDateID relationship but the date filter applies to the active relationship by default",
+      "Rows where FactOrders[DueDateID] is blank match Power BI's automatically generated 'unknown member' row in DimDate, whose Date column is BLANK(). Since BLANK() < TODAY() evaluates to TRUE in DAX, these no-due-date orders are incorrectly counted as overdue",
       "TODAY() is not a valid DAX function inside a CALCULATE filter argument — use DATE(YEAR(NOW()), MONTH(NOW()), DAY(NOW())) instead",
       "The relationship between FactOrders and DimDate on OrderDateID remains active alongside the USERELATIONSHIP — both relationships are active simultaneously, causing double-counting"
     ],
     "correctAnswers": [
       1
     ],
-    "explanation": "USERELATIONSHIP activates the DueDateID relationship for the purpose of evaluating FactOrders rows through DimDate, but the filter DimDate[Date] < TODAY() is a filter on the DimDate table. This DimDate filter propagates to FactOrders via the ACTIVE relationship (OrderDateID) by default, not through the DueDateID relationship being activated by USERELATIONSHIP. As a result, the date filter restricts FactOrders rows based on OrderDate being before today, not DueDate. To correctly filter by DueDate, the analyst should filter the FactOrders[DueDateID] column directly or use a different approach rather than filtering DimDate[Date].",
+    "explanation": "USERELATIONSHIP correctly activates the DueDateID relationship for this CALCULATE, so DimDate[Date] < TODAY() does propagate to FactOrders via DueDate as intended — that part works. The real problem is the FactOrders rows where DueDateID is blank (no due date assigned yet). Power BI automatically creates a hidden 'unknown member' row in DimDate for fact rows whose foreign key doesn't match any dimension row, and that unknown member's Date column is BLANK(). In DAX, BLANK() behaves as 0 in numeric and date comparisons, and 0 < TODAY() is always TRUE — so these no-due-date orders satisfy DimDate[Date] < TODAY() and get counted as 'overdue' even though they have no due date at all. The fix is to add an explicit filter excluding blank DueDateID rows, e.g., CALCULATE(COUNTROWS(FactOrders), USERELATIONSHIP(FactOrders[DueDateID], DimDate[DateID]), FactOrders[Status] = \"Open\", NOT(ISBLANK(FactOrders[DueDateID])), DimDate[Date] < TODAY()).",
     "estimatedTimeSeconds": 120,
     "tags": [
       "USERELATIONSHIP",
@@ -22846,10 +22878,10 @@
       "Relationships"
     ],
     "choiceExplanations": {
-      "0": "USERELATIONSHIP can be combined with additional CALCULATE filter arguments. Multiple filter arguments in CALCULATE are applied simultaneously. The Status and Date filters are not being ignored — they are active, but the Date filter is propagating through the wrong relationship.",
-      "1": "Correct. USERELATIONSHIP activates the DueDateID path for row traversal, but DimDate[Date] < TODAY() still filters FactOrders via the active OrderDate relationship. The date filter reaches FactOrders through two paths: the activated DueDate path (from USERELATIONSHIP) and the default active OrderDate path (from the DimDate date filter). This causes both date conditions to combine, counting orders where OrderDate < TODAY AND DueDate is in context — producing too many rows.",
-      "2": "TODAY() is a valid DAX function in CALCULATE filter arguments and behaves correctly as a dynamic date reference. Using DATE(YEAR(NOW()), ...) is equivalent to TODAY() — both return the current date. This is not the cause of the incorrect count.",
-      "3": "USERELATIONSHIP deactivates the normal active relationship for the duration of the CALCULATE evaluation and activates the specified inactive relationship instead. Both relationships cannot be simultaneously active — Power BI enforces this constraint. Double-counting from simultaneous active relationships is not the mechanism of this bug."
+      "0": "USERELATIONSHIP can be combined with additional CALCULATE filter arguments — multiple filter arguments in CALCULATE are applied simultaneously and are not ignored. The Status and Date filters are active; the issue is which rows the Date filter ends up matching, not whether it is applied.",
+      "1": "Correct. USERELATIONSHIP correctly redirects DimDate[Date] < TODAY() to filter FactOrders via DueDateID. But FactOrders rows with a blank DueDateID match DimDate's automatically generated blank/unknown row, whose Date is BLANK(). Since BLANK() < TODAY() is TRUE in DAX, those no-due-date rows pass the filter and inflate the count.",
+      "2": "TODAY() is a valid DAX function in CALCULATE filter arguments and behaves correctly as a dynamic date reference. DATE(YEAR(NOW()), MONTH(NOW()), DAY(NOW())) would be equivalent, not a fix, and is not the cause of the incorrect count.",
+      "3": "USERELATIONSHIP deactivates the normal active relationship for the duration of the CALCULATE evaluation and activates the specified inactive relationship instead. Both relationships cannot be simultaneously active — Power BI enforces this constraint. Double-counting from simultaneously active relationships is not the mechanism behind the inflated count."
     }
   },
   {
