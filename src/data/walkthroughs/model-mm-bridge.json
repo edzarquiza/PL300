@@ -3,7 +3,7 @@
   "concept": "Many-to-Many Relationships",
   "category": "Data Modeling",
   "tagline": "When M:M is wrong, what causes it, and how to fix it with shared dimensions",
-  "relatedTags": ["Many-to-Many", "Bridge Table", "Star Schema", "Fact Tables", "Filter Propagation"],
+  "relatedTags": ["Many-to-Many", "Bridge Table", "Star Schema", "Fact Tables", "Filter Propagation", "Data Modeling", "Relationships"],
   "slides": [
     {
       "type": "intro",

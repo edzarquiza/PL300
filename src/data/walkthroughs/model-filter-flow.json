@@ -3,7 +3,7 @@
   "concept": "Filter Flow in Star Schema",
   "category": "Data Modeling",
   "tagline": "See exactly how a slicer selection travels through your data model",
-  "relatedTags": ["Filter Propagation", "Star Schema", "Cross-filter Direction", "Relationships", "Bidirectional"],
+  "relatedTags": ["Filter Propagation", "Star Schema", "Cross-filter Direction", "Relationships", "Bidirectional", "Data Modeling"],
   "slides": [
     {
       "type": "intro",

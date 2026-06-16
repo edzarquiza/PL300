@@ -3,7 +3,7 @@
   "concept": "Role-Playing Dimensions",
   "category": "Data Modeling",
   "tagline": "One date table, three relationships, three time perspectives",
-  "relatedTags": ["Role-playing Dimensions", "USERELATIONSHIP", "Inactive Relationships", "DimDate", "Cardinality"],
+  "relatedTags": ["Role-playing Dimensions", "USERELATIONSHIP", "Inactive Relationships", "DimDate", "Cardinality", "DAX"],
   "slides": [
     {
       "type": "intro",

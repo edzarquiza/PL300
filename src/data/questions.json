@@ -86,6 +86,16 @@
           "1100 (all categories — ALL() removed filter)"
         ]
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "CALCULATE is the only DAX function that can modify filter context. Wrapping SUM(Sales[Amount]) inside CALCULATE(SUM(...), ALL(Sales)) removes every filter currently applied to the Sales table — including any visual or slicer filter — and returns the grand total. This is the canonical 'ignore context' pattern.",
+      "whyOthersLose": {
+        "0": "TOTALYTD is a time intelligence function designed for cumulative year-to-date calculations along a date axis. It has no capability to ignore product or category filters.",
+        "1": "SUMX iterates row by row and calculates an expression per row — but it still operates within the existing filter context. Using SUMX does not remove visual or slicer filters. Category filters would still restrict which rows SUMX sees.",
+        "3": "RELATED retrieves a single value from the one-side of a relationship into a calculated column. It does not affect filter context and cannot be used inside a measure to aggregate or ignore filters."
+      },
+      "stakeholderPerspective": "Business users expect a 'Total Company' KPI card to always show the true grand total — not a filtered subset. This pattern creates that absolute benchmark measure.",
+      "examTip": "On the PL-300 exam, ANY question asking to 'ignore filters', 'show grand total regardless of slicer', or 'remove context' maps to CALCULATE + ALL(). Remember: SUMX respects context, CALCULATE changes it."
     }
   },
   {
@@ -154,6 +164,16 @@
           16300
         ]
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Both CALCULATE(SUM(Sales[Amount]), DATESYTD(...)) and TOTALYTD(SUM(Sales[Amount]), ...) are semantically equivalent — TOTALYTD is simply syntactic sugar that wraps the CALCULATE + DATESYTD pattern. When a CFO dashboard requires cumulative year-to-date totals, either form is correct and produces identical results.",
+      "whyOthersLose": {
+        "1": "SUMX(Sales, Sales[Amount]) + YEAR(TODAY()) adds the current four-digit year number (e.g., 2025) to a revenue total — producing a wildly incorrect numeric result. This is not a YTD calculation.",
+        "2": "This is actually one of the two correct answers, not wrong — the question is testing whether candidates know BOTH forms are valid, not just one.",
+        "3": "This is also one of the two correct answers. The trick here is that option 0 states BOTH are correct."
+      },
+      "stakeholderPerspective": "A CFO's dashboard requires cumulative year-to-date revenue that automatically extends as each new month closes. TOTALYTD and DATESYTD deliver this without manual date range management.",
+      "examTip": "PL-300 may present questions where multiple answers are technically valid. Read carefully — option A often says 'both B and C are correct' as the correct answer. Also: TOTALYTD = CALCULATE + DATESYTD, a common exam equivalence question."
     }
   },
   {
@@ -294,6 +314,17 @@
         ],
         "issue": "Star schema: FactSales (center) connects directly to each dimension table with single-direction, one-to-many relationships. Dimensions do NOT connect to each other — this maximises VertiPaq compression and query performance."
       }
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Star schema separates fact tables (transactions, events) from denormalized dimension tables (products, customers, dates). Power BI's Vertipaq engine compresses dimension columns extremely efficiently. Queries fan out from the fact through single joins — minimal hops, fast execution. This is Microsoft's recommended modeling architecture for Power BI.",
+      "whyOthersLose": {
+        "0": "Snowflake schema normalizes dimensions into multiple related sub-tables (e.g., Product → Category → Department). While storage-efficient, the additional joins degrade query performance and make DAX filter propagation more complex.",
+        "1": "Third Normal Form (3NF) eliminates all data redundancy — excellent for transactional databases, but the many joins required to reassemble data devastate Power BI query performance.",
+        "3": "A single flat table merges all data into one table — no joins needed, but the Vertipaq engine cannot compress repeated text values efficiently across millions of rows. Model size balloons and query performance degrades."
+      },
+      "stakeholderPerspective": "Report consumers need fast, responsive dashboards. Star schema delivers sub-second query times on large datasets where 3NF or snowflake schemas would produce slow visual loads.",
+      "performancePerspective": "Vertipaq's columnar compression excels on dimension tables with low-cardinality repeated values. Star schema maximizes this advantage by keeping dimensions small and separate from high-row-count facts.",
+      "examTip": "Star schema is the single most recommended data model for Power BI. When an exam question mentions 'best performance', 'reduce model size', or 'recommended modeling approach', star schema is almost always the correct answer."
     }
   },
   {
@@ -628,6 +659,16 @@
           "350"
         ]
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "SUMX is an iterator: it loops through every row in the Sales table, evaluates Quantity × UnitPrice for that row using row context, then sums all those per-row results. This is the only way to correctly multiply two columns row by row before aggregating. It correctly handles cases where the ratio of Qty to UnitPrice varies per transaction.",
+      "whyOthersLose": {
+        "0": "CALCULATE(SUM(Sales[Quantity] * Sales[UnitPrice])) is invalid DAX syntax. You cannot reference two columns in an arithmetic expression inside SUM() — SUM() accepts only a single column reference.",
+        "1": "FILTER returns a filtered table — not a scalar. Using FILTER alone as a measure expression produces an error because measures must return a scalar value.",
+        "3": "SUM(Sales[Quantity]) * SUM(Sales[UnitPrice]) multiplies the TOTAL quantity across all rows by the TOTAL unit price across all rows — a mathematically incorrect calculation. If Row1 has Qty=5, Price=10 and Row2 has Qty=2, Price=100, this formula returns (7)×(110)=770 instead of the correct (5×10)+(2×100)=250."
+      },
+      "stakeholderPerspective": "Finance teams need revenue calculated correctly per transaction. The SUM-of-products vs product-of-sums error is a classic mistake that inflates revenue figures — SUMX prevents this.",
+      "examTip": "The SUMX vs SUM multiplication trap appears frequently on PL-300. SUM(col1) * SUM(col2) = WRONG. SUMX(table, col1 * col2) = CORRECT. This comes up in revenue, cost, and weighted average questions."
     }
   },
   {
@@ -780,6 +821,16 @@
         ],
         "issue": "Only one relationship can be active at a time. Use USERELATIONSHIP inside CALCULATE to temporarily activate the ShipDate relationship for a specific measure."
       }
+    },
+    "microsoftReasoning": {
+      "whyItWins": "A Power BI model can only have one active relationship between two tables. When both OrderDate and ShipDate need to link to DimDate, one must be inactive. USERELATIONSHIP() inside CALCULATE temporarily activates the specified inactive relationship for the duration of that measure's evaluation — without permanently changing the model.",
+      "whyOthersLose": {
+        "1": "Creating a second copy of the Date table works but is inefficient — it doubles storage, requires separate date slicers, and breaks the 'single source of truth' principle. Role-playing dimensions solved with USERELATIONSHIP is the standard approach.",
+        "2": "RELATED retrieves a value from the one-side of a relationship into a calculated column — it does not activate relationships or change filter context in measures.",
+        "3": "Deleting the OrderDate relationship destroys the existing functionality. You cannot simply 'swap' which relationship is active without careful model redesign — and you would lose ShipDate intelligence when reverting."
+      },
+      "maintainabilityPerspective": "USERELATIONSHIP keeps the model clean with a single DimDate table and two clearly named relationships. Stakeholders can use one date slicer for OrderDate and a separate slicer-driven measure for ShipDate analysis.",
+      "examTip": "Role-playing dimensions (multiple relationships to one table) always require USERELATIONSHIP inside CALCULATE for the inactive relationship. This is a guaranteed PL-300 topic. Remember: USERELATIONSHIP activates the relationship ONLY within its CALCULATE context — it does not permanently change the model."
     }
   },
   {
@@ -958,6 +1009,16 @@
           ]
         }
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Query folding pushes transformation logic back to the source database as SQL (or equivalent). When Power Query folds, the database server performs the heavy work — filtering, grouping, type casting — and returns only the needed result to Power BI. Without folding, Power BI downloads the full dataset then transforms it locally, wasting bandwidth and time.",
+      "whyOthersLose": {
+        "1": "Query diagnostics is a troubleshooting tool that records step-level performance information. It helps you investigate folding, but it does not perform or enable folding.",
+        "2": "Incremental refresh partitions Import data to refresh only recent rows. While it depends on query folding to function correctly, incremental refresh itself is not the mechanism that delegates transformation to the server.",
+        "3": "Data profiling examines column quality, distribution, and statistics in Power Query Editor. It is a data quality assessment tool, not a performance optimization mechanism."
+      },
+      "performancePerspective": "When query folding is active on large tables, transformations execute on the database server with index access. This can reduce data transfer from gigabytes to kilobytes and cut refresh times dramatically.",
+      "examTip": "Query folding breaks when you use certain M steps that cannot be translated to SQL: List.Sort, Table.Buffer, or accessing non-SQL data after a SQL step. The exam tests whether you know folding requires a source that supports it AND that some M operations break it."
     }
   },
   {
@@ -1039,6 +1100,17 @@
         ],
         "issue": "Bidirectional cross-filter (Both) allows FactSales to push filters back to DimProduct. In multi-table models, this risks ambiguous filter paths and circular propagation — Power BI may apply unexpected filters or refuse the model."
       }
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Bidirectional cross-filtering allows filters to propagate in both directions across a relationship. In a model with multiple paths between tables, this creates filter ambiguity — DAX cannot determine which path to follow, leading to incorrect or inconsistent results. It also has a performance cost because the engine must resolve more complex filter propagation graphs.",
+      "whyOthersLose": {
+        "1": "Bidirectional filtering does not deactivate the relationship. The relationship remains active and fully functional — it simply now propagates filters in both directions.",
+        "2": "Power BI Service fully supports bidirectional relationships. Publishing a model with bidirectional filtering is completely valid — the concern is logical correctness, not compatibility.",
+        "3": "Measures on the Sales table continue calculating. The risk is that they may calculate INCORRECTLY due to ambiguous filter paths — not that they stop working entirely."
+      },
+      "stakeholderPerspective": "A data modeler must protect report accuracy above all. Bidirectional filtering that produces subtly wrong totals — such as inflated counts or double-counted revenue — can mislead business decisions without any obvious error message.",
+      "maintainabilityPerspective": "Microsoft recommends single-direction filtering by default and using DAX functions like CROSSFILTER() when bidirectional behavior is genuinely needed for a specific measure. This keeps the model's filter logic explicit and auditable.",
+      "examTip": "PL-300 exam rule of thumb: bidirectional cross-filtering is acceptable for many-to-many bridge tables but should be avoided between facts and regular dimensions. The exam often asks for the PRIMARY RISK — always: ambiguous filter propagation."
     }
   },
   {
@@ -1519,6 +1591,15 @@
           "shown as 3 — misleading"
         ]
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "RANKX(ALL(Products[ProductName]), [Total Sales], , DESC) uses ALL() to rank each product against the complete product list — not just the products visible in the current filter context. Without ALL(), the rank would only compare products visible in the current visual, making every product in a filtered view rank as #1, #2, #3 from 1 to n regardless of true performance.",
+      "whyOthersLose": {
+        "1": "COUNTROWS(FILTER(Products, [Total Sales] > EARLIER([Total Sales]))) uses EARLIER, which only works in calculated columns with row context — not in measures. This is invalid in a measure definition.",
+        "2": "RANK.EQ is an Excel function, not a DAX function. It does not exist in Power BI DAX.",
+        "3": "TOPN returns a table of the top N rows — it does not return a rank number. Using TOPN(1, ...) would return the single top-performing row, not the rank of each product."
+      },
+      "examTip": "RANKX always requires ALL() as the first argument if you want to rank across the full dimension — otherwise rankings collapse to 1-through-n within each filtered context. The exam frequently tests the ALL() requirement for RANKX. Also: RANKX's tie-handling (SKIP vs DENSE) is a secondary PL-300 topic."
     }
   },
   {
@@ -2447,7 +2528,17 @@
       "Correct. VAR assigns an intermediate result to a name for reuse within the same expression — evaluated once, referenced many times."
     ],
     "questionGroupId": "dax_var",
-    "variantId": "full_pl300_01"
+    "variantId": "full_pl300_01",
+    "microsoftReasoning": {
+      "whyItWins": "VAR...RETURN allows a complex subexpression to be computed once, stored as a named variable, and referenced multiple times within the same measure. Without VAR, repeating a complex expression three times is not just verbose — it forces the DAX engine to evaluate it three separate times, which can significantly impact performance on large models.",
+      "whyOthersLose": {
+        "0": "A helper measure can extract reusable logic, but calling a measure within CALCULATE still evaluates it at the outer context and doesn't solve the in-measure repeated-evaluation problem. VAR is evaluated once in the current context at the point of declaration.",
+        "1": "Named sets are an MDX concept from SSAS Multidimensional. They do not exist in Power BI DAX.",
+        "2": "A calculated column stores a pre-computed value per row at refresh time — it cannot be used as a dynamic named result within a measure expression."
+      },
+      "maintainabilityPerspective": "VAR names make complex measures self-documenting — AvgSales, Threshold, Result are instantly readable. Code maintenance becomes much easier when business logic is named rather than repeated inline.",
+      "examTip": "VAR is evaluated once at the point of declaration and captures the filter context at that moment. This is critical to understand: a VAR inside SUMX captures the row context at that row's iteration point — it does NOT re-evaluate for every row if declared outside the iterator."
+    }
   },
   {
     "id": 44,
@@ -2518,6 +2609,15 @@
           ]
         }
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Time intelligence functions (TOTALYTD, SAMEPERIODLASTYEAR, DATEADD, etc.) require a marked Date table with a contiguous date range and no gaps. Without marking, Power BI cannot identify which column is the canonical date column, and the functions may fail or return incorrect results across year/month boundaries.",
+      "whyOthersLose": {
+        "0": "Time intelligence functions work equally well in Import and DirectQuery modes. The Date table's storage mode is irrelevant to time intelligence requirements.",
+        "1": "The date column should be a regular data column from the source, not a calculated column. Calculated date columns can introduce complexity and are not required or recommended.",
+        "3": "CALENDARAUTO() is one convenient way to create a Date table, but the Date table can be imported from any source. The requirement is that it is marked as a Date Table and has contiguous dates — not that it was created by CALENDARAUTO()."
+      },
+      "examTip": "The PL-300 exam consistently tests Date table requirements. Memorize: (1) Must be marked as a Date Table in Power BI. (2) Must have a contiguous date range — no gaps. (3) One unique date per row. (4) Must cover the full range of dates in your fact data."
     }
   },
   {
@@ -2618,6 +2718,16 @@
         ],
         "issue": "Bridge table (StudentCourses) resolves the many-to-many between Students and Courses. Each row represents one enrollment. Filters from Students and Courses both flow through the bridge table independently."
       }
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Many-to-many relationships cannot be modeled with a direct relationship between two tables in Power BI without a bridge. The bridge table (Enrollment) has one row per student-course pair, creating two clean one-to-many relationships: Students → Enrollment and Courses → Enrollment. Filters flow naturally through the bridge in both directions.",
+      "whyOthersLose": {
+        "0": "Duplicating the Courses table per student creates massive data redundancy, destroys maintainability, and produces incorrect cross-filtered totals because the duplicated rows create artificial cardinality inflation.",
+        "1": "CROSSJOIN generates every possible combination of rows — the Cartesian product. For a Students × Courses scenario this creates an astronomically large calculated table with no relationship information, not actual enrollment records.",
+        "3": "Power BI does support direct many-to-many relationships in the model (since the Composite Models update), but they carry risks: ambiguous filter propagation, performance costs, and unexpected aggregation behavior. The bridge table approach is the recommended pattern for a many-to-many with natural enrollment data."
+      },
+      "stakeholderPerspective": "Academic or operational teams need accurate enrollment counts. A bridge table ensures each student-course pairing is stored exactly once, making COUNT(Enrollment[EnrollmentID]) an accurate enrollment metric.",
+      "examTip": "The PL-300 exam distinguishes between a direct Power BI M:M relationship (supported but has risks) and a bridge table pattern (recommended best practice). When a question says 'which modeling approach CORRECTLY handles M:M', bridge table is the expected answer."
     }
   },
   {
@@ -2655,7 +2765,17 @@
       "3": "Bookmarks switch between pre-built visual page states. You'd still need 60 measures behind the scenes. Bookmarks are a UI navigation feature, not a calculation reuse mechanism."
     },
     "questionGroupId": "calculation_groups",
-    "variantId": "full_pl300_01"
+    "variantId": "full_pl300_01",
+    "microsoftReasoning": {
+      "whyItWins": "Calculation groups solve the 'measure explosion' problem. Instead of creating 60 individual measures (20 measures × 3 calculation types), you define 3 calculation items once in the calculation group. Each item uses SELECTEDMEASURE() to apply its logic to whichever measure is dropped onto the visual — automatically, for all 20 measures simultaneously.",
+      "whyOthersLose": {
+        "1": "IF()-based slicer switching requires adding IF() logic to every single measure. For 20 measures × 3 states, you add 20 measures' worth of IF() branches — then maintain them every time a new measure is created. This approach scales poorly.",
+        "2": "Creating 60 measures (20 × 3) is the maintenance nightmare that calculation groups were specifically designed to prevent. Adding a new base measure requires creating 3 more variants manually.",
+        "3": "Bookmarks switching between pre-built pages creates a fixed report structure that cannot dynamically respond to which measure a user selects. It also multiplies page count and becomes unmanageable."
+      },
+      "maintainabilityPerspective": "When a new base measure is added, calculation groups apply all 3 time intelligence transformations to it automatically — zero additional development required. This is the 'write once, apply everywhere' principle.",
+      "examTip": "Calculation groups are a Power BI Premium/Fabric feature. PL-300 may present them in the context of 'most maintainable solution for multiple time intelligence variants'. The keyword triggers are: multiple measures, same transformation applied to all, toggle via slicer."
+    }
   },
   {
     "id": 48,
@@ -3100,7 +3220,17 @@
       "Correct. A waterfall chart shows cumulative positive and negative contributions from a starting value to a net result — ideal for financial bridge analysis."
     ],
     "questionGroupId": "waterfall_chart",
-    "variantId": "full_pl300_01"
+    "variantId": "full_pl300_01",
+    "microsoftReasoning": {
+      "whyItWins": "A Waterfall chart is specifically designed to show how positive and negative values contribute to an overall total, starting from a baseline. For P&L reporting — where revenue streams (positive) and cost categories (negative) build up to net profit — no other standard Power BI visual tells this story as clearly.",
+      "whyOthersLose": {
+        "0": "A 100% stacked column chart shows proportional composition — each segment as a percentage of the total. It cannot display absolute positive and negative contributions that build to a net figure.",
+        "1": "A Funnel chart shows sequential reduction through stages (e.g., sales pipeline). It always decreases and cannot represent increases or recoveries within the flow.",
+        "2": "A Stacked bar chart stacks positive values but cannot intuitively show the 'building up and tearing down' narrative of a P&L from revenue to net profit."
+      },
+      "stakeholderPerspective": "A CFO reviewing the P&L needs to immediately see which revenue streams contribute positively and which cost categories erode profitability. Waterfall makes this story visually explicit and instantly comprehensible.",
+      "examTip": "Visual selection on PL-300 tests whether you match the chart to the STORY, not just the data type. Waterfall = cumulative building/deducting to a total. Funnel = sequential pipeline conversion. Scatter = correlation between two measures. Line = trends over time."
+    }
   },
   {
     "id": 60,
@@ -3176,6 +3306,15 @@
           ]
         }
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "CALCULATE(SUM(Fact[Amount]), ALL(Dim[DimName])) removes the filter on the dimension column while preserving all other filter context (like date filters or region filters). The KPI card will always show the full total regardless of what value is selected in the dimension slicer — exactly the business requirement.",
+      "whyOthersLose": {
+        "1": "SUM(Fact[Amount]) with no modification respects all active filters — including the dimension slicer. When a user selects a specific dimension value, this measure changes too, showing only that filtered subset.",
+        "2": "TOTALYTD applies date-based year-to-date logic. It does not remove the dimension slicer filter and is irrelevant unless the requirement involves year-to-date cumulation.",
+        "3": "SUMX(Fact, Fact[Amount]) is equivalent to SUM(Fact[Amount]) for a single column — it still respects the active filter context. The slicer filter would still affect the result."
+      },
+      "examTip": "ALL(column) removes the filter on that specific column. ALL(table) removes all filters from all columns. Use ALL(Dim[Column]) when you want to ignore ONE dimension's slicer while keeping other filters (dates, regions) active. This distinction appears on PL-300."
     }
   },
   {
@@ -3263,6 +3402,15 @@
           "124,800"
         ]
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "SUMX iterates every row in the Employees table. For each row, it evaluates MonthlySalary * 12 * (1 + BonusRate) using that row's specific column values. The results are then summed. This correctly computes the per-employee annual cost before aggregating — which is the only mathematically valid approach when BonusRate varies per employee.",
+      "whyOthersLose": {
+        "0": "SUM(MonthlySalary) * 12 * (1 + AVERAGE(BonusRate)) applies the average bonus rate to the total salary — which is only correct when all employees have the same bonus rate. With varying rates, this overstates cost for low-bonus employees and understates it for high-bonus ones.",
+        "1": "CALCULATE with ALL(BonusRate) removes the bonus rate filter, which does nothing useful here — it doesn't help with the per-row multiplication requirement.",
+        "2": "SUM(MonthlySalary) + SUM(BonusRate) simply adds total salary to total bonus rates — not even dimensional consistent (salary in currency, BonusRate as a decimal percentage)."
+      },
+      "examTip": "Whenever a formula requires multiplying or combining two columns PER ROW before summing, SUMX is always the answer. The classic pattern: 'calculate X per row, then sum all rows' = SUMX(table, expression)."
     }
   },
   {
@@ -3419,6 +3567,16 @@
         ],
         "issue": "RLS filter on Plants: [ManagerEmail] = USERPRINCIPALNAME() restricts which plant rows each manager can see. The single-direction filter then propagates from Plants into FactProduction automatically — managers only see production data for their plant."
       }
+    },
+    "microsoftReasoning": {
+      "whyItWins": "USERPRINCIPALNAME() returns the Azure Active Directory UPN (email) of the currently authenticated Power BI Service user. When this is compared to the ManagerEmail column, each manager sees only rows where their email matches — fully dynamic, no maintenance required. Adding a new manager means adding a row to the dimension table, not touching the RLS definition.",
+      "whyOthersLose": {
+        "0": "This expression uses LOOKUPVALUE to find an email based on a selected PlantID — but SELECTEDVALUE only works in visual contexts, not in RLS DAX filter expressions. RLS filters are evaluated at query time across all rows, not in response to a slicer.",
+        "2": "USERNAME() returns the legacy Windows domain\\username format (DOMAIN\\user). In Power BI Service (cloud), users authenticate via Azure AD, so the UPN is the correct credential. USERNAME() may not match Azure AD email formats and is unreliable in cloud environments.",
+        "3": "CUSTOMDATA() reads a custom value embedded in the connection string — used for advanced scenarios like embedding with custom authentication. It requires special setup and is not the standard approach for user-based dynamic RLS in Power BI Service."
+      },
+      "maintainabilityPerspective": "Dynamic RLS scales to thousands of users. Adding a new plant manager requires only adding a row to the Plants dimension table — the RLS role definition never changes.",
+      "examTip": "PL-300 exam: USERPRINCIPALNAME() is the standard function for dynamic RLS in Power BI Service (cloud). USERNAME() is deprecated for cloud use. CUSTOMDATA() is for embedded scenarios. Know this distinction."
     }
   },
   {
@@ -3616,7 +3774,18 @@
       "Correct. DirectQuery does not import or cache data — every visual render queries the source database directly, ensuring the dashboard always reflects the latest sensor readings.",
       "Live connection requires an existing Analysis Services or Power BI dataset. It does not apply to a source database directly, and freshness depends on SSAS refresh schedules.",
       "Power BI Pro allows a maximum of 8 refreshes per day (every 30 minutes). Premium allows up to 48 refreshes per day (every 30 minutes). Neither satisfies a 30-second data freshness requirement."
-    ]
+    ],
+    "microsoftReasoning": {
+      "whyItWins": "IoT sensor data updating every 30 seconds cannot use Import mode — even with the fastest possible scheduled refresh (every 30 minutes in Premium), it cannot meet a 30-second freshness requirement. DirectQuery sends every query directly to the source database, returning data as-of the moment the query runs — providing true real-time visibility into current equipment status.",
+      "whyOthersLose": {
+        "0": "Dual mode caches some data and queries the rest live, but the cached portions do not update in real time. Dual mode is a performance optimization for mixed Import/DirectQuery models, not a real-time solution.",
+        "2": "Live connection to Analysis Services uses a processed SSAS model as the source. The SSAS model itself still has its own refresh cycle — it is not inherently real-time for operational IoT data.",
+        "3": "Import mode with a 30-minute scheduled refresh means data can be up to 30 minutes stale. For a dashboard monitoring equipment status that changes every 30 seconds, this is completely unacceptable."
+      },
+      "stakeholderPerspective": "Operations teams monitoring equipment failure risk cannot work with 30-minute-old data. A sensor showing an anomalous reading 29 minutes ago could have already caused an outage. DirectQuery ensures the status shown is the actual current state.",
+      "performancePerspective": "The trade-off: DirectQuery provides freshness but every visual interaction generates a database query. Query performance must be supported by database indexes and efficient views. For monitoring dashboards with few concurrent users, this trade-off is acceptable.",
+      "examTip": "Whenever an exam scenario mentions 'real-time', 'near-real-time', or 'current status', consider DirectQuery or streaming datasets. Import mode's refresh ceiling makes it unsuitable for sub-30-minute freshness requirements."
+    }
   },
   {
     "id": 66,
@@ -4199,6 +4368,15 @@
           ]
         }
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "When Revenue is derived by multiplying two row-level columns (Qty × UnitPrice), SUMX is required. It iterates the Sales table row by row, computes Qty × UnitPrice at the row level using the actual values for that transaction, then sums all those row results. This is mathematically correct regardless of how Qty and UnitPrice vary across transactions.",
+      "whyOthersLose": {
+        "0": "AVERAGE(UnitPrice) * COUNT(Qty) multiplies average price by a count of rows — not meaningful revenue. Mixing an average with a count produces a nonsense figure.",
+        "1": "SUM(Qty) * SUM(UnitPrice) is the most common mistake. It multiplies TOTAL quantity by TOTAL unit price — for example, (10+5) × ($100+$50) = $2,250 instead of (10×$100)+(5×$50) = $1,250.",
+        "3": "CALCULATE(SUM(Qty), ALL(UnitPrice)) removes UnitPrice filters and returns only total quantity — not revenue."
+      },
+      "examTip": "The SUM(col1) × SUM(col2) trap is one of the most commonly tested PL-300 mistakes. The answer is ALWAYS SUMX when the scenario involves multiplying two fact-table columns row by row."
     }
   },
   {
@@ -4356,6 +4534,15 @@
           50
         ]
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "FILTER returns a filtered TABLE, not a scalar value. When applied to the Products table with the condition Category = 'Sports', it returns a table object containing all columns for the two Sports rows. The original rows and all columns are preserved — only the row set is reduced based on the condition.",
+      "whyOthersLose": {
+        "0": "FILTER returns a table, not a numeric aggregate. To get 550 (the sum of prices), you would need SUM(FILTER(Products, ...)[Price]) or SUMX(FILTER(...), [Price]).",
+        "1": "FILTER is not a standalone expression that produces BLANK — it returns a valid filtered table. BLANK would only result if an aggregation found no matching rows.",
+        "3": "FILTER returns the rows, not a count of them. COUNTROWS(FILTER(...)) would give you 2 — but FILTER alone returns the table, not 2."
+      },
+      "examTip": "FILTER is a TABLE function, not an aggregation. On PL-300, knowing which DAX functions return scalars vs tables is fundamental. Table functions: FILTER, ALL, VALUES, CALCULATETABLE, ADDCOLUMNS. Scalar functions: SUM, CALCULATE, SUMX, RANKX. Common trap: using a table function where a scalar is required."
     }
   },
   {
@@ -5449,6 +5636,15 @@
         ],
         "issue": "Role-playing dimension: DimDate has two relationships to FactSales — one active (OrderDateKey, solid line) and one inactive (ShipDateKey, dashed line). Measures use USERELATIONSHIP(FactSales[ShipDateKey], DimDate[DateKey]) to activate the inactive relationship for ship-date analysis."
       }
+    },
+    "microsoftReasoning": {
+      "whyItWins": "USERELATIONSHIP(Sales[ShipDate], DimDate[Date]) inside CALCULATE temporarily activates the inactive ShipDate→Date relationship for the calculation. The measure evaluates SUM(Sales[Amount]) using the filter context flowing through the ShipDate relationship instead of the default OrderDate relationship. This produces ShipDate-filtered revenue without permanently altering the model.",
+      "whyOthersLose": {
+        "0": "USERELATIONSHIP is specifically designed to be used inside CALCULATE — it is a valid relationship modifier function for filter context manipulation.",
+        "1": "The active OrderDate relationship filters sales by order date. Since the measure explicitly activates ShipDate via USERELATIONSHIP, the OrderDate filter is overridden for this measure.",
+        "2": "USERELATIONSHIP activates a specific relationship — it does not remove all date filters. Only the ShipDate path is activated; existing visual date filters propagate through ShipDate, not across all dates."
+      },
+      "examTip": "Two relationships to the same table = role-playing dimension. The active relationship is the default. USERELATIONSHIP inside CALCULATE activates the inactive one. This is a high-frequency PL-300 pattern tested in both diagram and code question formats."
     }
   },
   {
@@ -5686,6 +5882,16 @@
         ],
         "issue": "Bridge table (ProductPromotion) resolves the many-to-many between Products and Promotions. Each row represents one product-promotion assignment. Filters from both dimension tables flow through the bridge independently."
       }
+    },
+    "microsoftReasoning": {
+      "whyItWins": "A bridge table (ProductPromotion) has one row per product-promotion association. It connects to Products with a one-to-many relationship (one product, many associations) and to Promotions with another one-to-many relationship (one promotion, many associations). Filters propagate through the bridge in both directions when cross-filtering is enabled, correctly linking products to their promotions.",
+      "whyOthersLose": {
+        "0": "CROSSFILTER() inside every measure is not a modeling solution — it is a per-measure workaround. Without proper model structure, complex cross-filtered measures become unmaintainable and inconsistent.",
+        "1": "Setting a direct Products→Promotions relationship to bidirectional creates ambiguous filter paths without an intermediary table, which can produce inflated or incorrect totals.",
+        "2": "Merging promotions into Products as a text column (e.g., comma-separated promotion names) destroys queryability — you cannot filter, count, or relate promotions individually."
+      },
+      "maintainabilityPerspective": "The bridge table pattern cleanly accommodates future requirements: adding a DiscountPct, StartDate, or Priority to a specific product-promotion assignment requires only adding a column to the bridge table — no model restructuring needed.",
+      "examTip": "Many-to-many in Power BI: if the relationship carries attributes (like DiscountPct), a bridge table is the ONLY correct solution. Direct M:M relationships cannot store intersection attributes."
     }
   },
   {
@@ -5863,7 +6069,16 @@
       "SUM(Sales[Revenue]) would fail immediately because no Revenue column exists in the table — you cannot SUM a column that has not been stored.",
       "Correct. SUMX iterates each row, computing Qty × UnitPrice per row, then sums all per-row results.",
       "SUM() requires a single column reference — it cannot accept an expression like Sales[Qty] * Sales[UnitPrice]. This is a syntax error in DAX."
-    ]
+    ],
+    "microsoftReasoning": {
+      "whyItWins": "SUMX iterates every row in the Sales table, computes Qty × UnitPrice at the row level, then sums the results. This correctly handles varying quantities and prices across transactions — the only mathematically valid approach for derived row-level revenue calculation.",
+      "whyOthersLose": {
+        "0": "SUM(Sales[Qty]) * SUM(Sales[UnitPrice]) produces the wrong result by multiplying total quantity by total unit price. For transactions with varying unit prices, this does not equal actual total revenue.",
+        "1": "SUM(Sales[Revenue]) would work if a Revenue column existed — but the question states no Revenue column exists. This causes a DAX error.",
+        "2": "CALCULATE(SUM(Sales[Qty] * Sales[UnitPrice])) is invalid DAX syntax — SUM() requires a single column reference, not an arithmetic expression across two columns."
+      },
+      "examTip": "The key phrase is 'no Revenue column' — which signals you must derive it. Whenever you derive a per-row value by combining two columns before aggregating, the answer is SUMX(table, col1 * col2)."
+    }
   },
   {
     "id": 91,
@@ -6080,7 +6295,16 @@
       "CALCULATE fully supports string comparison filter arguments like Sales[Region] = \"East\". The problem is not the string comparison — it is the column reference in the first argument position.",
       "Column names do not need quotes in DAX. Values in string comparisons use double quotes, but table[column] references are written without any quotes. The filter argument syntax is not the issue here."
     ],
-    "daxExpression": "-- WRONG: Sales[Amount] is a column reference, not a scalar\nSales Amount = CALCULATE(Sales[Amount], Sales[Region] = \"East\")  -- ❌\n\n-- CALCULATE first argument MUST be a scalar expression (a measure or aggregation)\nSales Amount = CALCULATE(SUM(Sales[Amount]), Sales[Region] = \"East\")  -- ✅\nSales Amount = CALCULATE([Total Revenue], Sales[Region] = \"East\")     -- ✅"
+    "daxExpression": "-- WRONG: Sales[Amount] is a column reference, not a scalar\nSales Amount = CALCULATE(Sales[Amount], Sales[Region] = \"East\")  -- ❌\n\n-- CALCULATE first argument MUST be a scalar expression (a measure or aggregation)\nSales Amount = CALCULATE(SUM(Sales[Amount]), Sales[Region] = \"East\")  -- ✅\nSales Amount = CALCULATE([Total Revenue], Sales[Region] = \"East\")     -- ✅",
+    "microsoftReasoning": {
+      "whyItWins": "CALCULATE's first argument must be a scalar expression — something that returns a single number, text, or value. Sales[Amount] is a column reference (a list of values), not a scalar. To use a column in CALCULATE's first argument, you must wrap it in an aggregation: CALCULATE(SUM(Sales[Amount]), ...).",
+      "whyOthersLose": {
+        "0": "This IS the problem — the expression is not valid DAX syntax. Stating 'Nothing is wrong' is incorrect.",
+        "2": "CALCULATE fully supports string comparisons in filter arguments. Sales[Region] = 'East' is a valid filter expression. The issue is the first argument, not the filter condition.",
+        "3": "Column names in DAX do not require double quotes — they use square bracket notation like Sales[Amount]. The expression's syntax for the column reference is actually correct; the problem is using it unaggregated as the first argument."
+      },
+      "examTip": "CALCULATE(expression, filter1, filter2, ...) — the first argument MUST be a scalar. Column references without aggregation are invalid here. This is a fundamental DAX syntax rule tested on PL-300."
+    }
   },
   {
     "id": 95,
@@ -6118,7 +6342,16 @@
       "FILTER is valid inside measure definitions. The issue is not where it appears but what it returns — a table. A measure must return a scalar value, not a table.",
       "DAX can compare column values to numeric literals using standard comparison operators. Sales[Amount] > 500 is valid DAX syntax — that is not the source of the problem."
     ],
-    "daxExpression": "-- WRONG: FILTER returns a table — measures must return a scalar\nHigh Value = FILTER(Sales, Sales[Amount] > 500)  -- ❌ ERROR in a measure\n\n-- CORRECT: wrap FILTER in an aggregation to get a scalar\nHigh Value Count = COUNTROWS(FILTER(Sales, Sales[Amount] > 500))  -- ✅\nHigh Value Total = SUMX(FILTER(Sales, Sales[Amount] > 500), Sales[Amount])  -- ✅"
+    "daxExpression": "-- WRONG: FILTER returns a table — measures must return a scalar\nHigh Value = FILTER(Sales, Sales[Amount] > 500)  -- ❌ ERROR in a measure\n\n-- CORRECT: wrap FILTER in an aggregation to get a scalar\nHigh Value Count = COUNTROWS(FILTER(Sales, Sales[Amount] > 500))  -- ✅\nHigh Value Total = SUMX(FILTER(Sales, Sales[Amount] > 500), Sales[Amount])  -- ✅",
+    "microsoftReasoning": {
+      "whyItWins": "DAX measures must return a scalar value (a single number, text, or date). FILTER() is a table function — it returns a table of rows matching the condition. Using FILTER() alone as a measure definition causes a runtime error because the measure engine expects a scalar result, not a table.",
+      "whyOthersLose": {
+        "0": "FILTER's first argument can be any table — it is not restricted to tables with date columns. The issue is not the first argument type but the return type.",
+        "2": "FILTER is commonly used INSIDE measures — typically as the second argument to CALCULATE or as the table argument to SUMX. The problem is using it ALONE as a complete measure expression.",
+        "3": "Comparing a numeric column like Sales[Amount] to a numeric literal (500) is perfectly valid DAX syntax. This is not the source of the error."
+      },
+      "examTip": "Know which DAX functions return tables vs scalars. Standalone table-returning measures are invalid. FILTER() must always be wrapped in an aggregation (SUMX, COUNTROWS) or used as a CALCULATE filter argument — never as a bare measure."
+    }
   },
   {
     "id": 96,
@@ -6191,6 +6424,15 @@
           "varies"
         ]
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "RANKX without ALL() evaluates rankings within the current filter context. When a category slicer reduces the visible products to 8, RANKX ranks those 8 products against each other — ranking them 1 through 8 based on their sales within the current filter. The rank is relative to visible products, not global rank across all products.",
+      "whyOthersLose": {
+        "0": "ALL() is not required — it is optional, used when you want global ranking across all products regardless of slicer filters. Without it, RANKX ranks within the current context.",
+        "1": "RANKX does not assign all products the same rank. It compares each product's value to others in the context. Without ALL(), each of the 8 products gets a unique rank 1-8 (unless there are ties).",
+        "2": "This is only true when ALL() is used. Without ALL(), ranking is limited to the products currently in the filter context — not all model products."
+      },
+      "examTip": "RANKX with ALL() = global rank. RANKX without ALL() = rank within current context. The exam tests whether you understand this scoping difference. The requirement 'rank must recalculate when filtered' tells you ALL() is needed for a global rank that persists across slicer changes."
     }
   },
   {
@@ -6228,7 +6470,16 @@
       "Correct. USERELATIONSHIP inside CALCULATE temporarily activates the inactive ShipDate relationship for this specific measure's evaluation without changing the model's default active relationship.",
       "Creating a second DimDate table wastes model size, requires duplicate maintenance, and adds complexity every time you update the calendar. USERELATIONSHIP is the purpose-built solution that avoids duplicating the date table.",
       "RELATED retrieves a value by traversing the active relationship — it does not activate an inactive relationship or affect how DAX propagates date filters through the model during calculation."
-    ]
+    ],
+    "microsoftReasoning": {
+      "whyItWins": "USERELATIONSHIP(Sales[ShipDate], DimDate[Date]) inside CALCULATE explicitly activates the inactive ShipDate→DimDate relationship only for that measure's calculation. The date slicer filters flow through ShipDate instead of the default OrderDate path, giving ship-date-based filtering without any model restructuring.",
+      "whyOthersLose": {
+        "0": "Changing the active relationship in the model switches ALL measures that use the Date table to ShipDate — breaking all existing OrderDate-based measures and visuals. This is a destructive model change, not a targeted solution.",
+        "2": "A second DimDate table doubles storage and requires maintaining two separate date hierarchies. This is the anti-pattern that role-playing dimensions (via USERELATIONSHIP) were designed to replace.",
+        "3": "RELATED retrieves a scalar value from the one-side of a relationship into a calculated column. It cannot activate relationships or influence filter propagation inside a measure."
+      },
+      "examTip": "Role-playing date dimensions (OrderDate, ShipDate, DeliveryDate all joining to one DimDate) are a standard PL-300 scenario. USERELATIONSHIP inside CALCULATE is the standard solution — one DimDate, multiple inactive relationships, activated per measure as needed."
+    }
   },
   {
     "id": 98,
@@ -6290,6 +6541,15 @@
           "March 2024 sales minus March 2023 sales"
         ]
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "A VAR is evaluated at the point in the code where it is declared, capturing the filter context that exists at that moment. CurrentSales is declared at the top-level of the measure — so it captures the filter context of the visual at the time the measure runs (i.e., the period selected by the user's date slicer). LastYear then modifies the context inside CALCULATE, but this has no retroactive effect on CurrentSales.",
+      "whyOthersLose": {
+        "0": "VAR fully supports aggregation functions like SUM, CALCULATE, SUMX, etc. This is invalid — VAR can contain any DAX scalar expression.",
+        "2": "VAR does NOT ignore filter context. It captures and preserves the current filter context at the point of declaration. This is a common misconception.",
+        "3": "VAR declarations are independent of each other — declaring LastYear after CurrentSales does not affect what filter context CurrentSales captured. Each VAR captures context at its own declaration point."
+      },
+      "examTip": "Critical PL-300 insight: VARs capture filter context at the point of declaration. Inside SUMX, a VAR declared INSIDE the iterator captures row context. A VAR declared BEFORE SUMX captures the outer filter context. This distinction separates strong candidates from weak ones."
     }
   },
   {
@@ -6357,6 +6617,15 @@
           ]
         }
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Context transition is a DAX mechanism where CALCULATE (or any function that evaluates in a filter context) converts the current ROW context into an equivalent FILTER context. Inside SUMX, each row iteration creates a row context. The CALCULATE inside the iterator performs context transition — converting that row context into a filter context that selects exactly that row's values, which then feeds into SUM(Sales[Amount]).",
+      "whyOthersLose": {
+        "0": "CALCULATE is not redundant inside iterators — it is performing context transition, a fundamental and intentional behavior. Ignoring it would be incorrect.",
+        "1": "Context transition does NOT reset to the entire table. It converts the row context into a filter that selects the current row's values. It's a targeted conversion, not a reset.",
+        "2": "There is no concept of a 'relationship between the iterated row and the outer context' in this sense. Context transition is about converting row context to filter context, not about relationship navigation."
+      },
+      "examTip": "Context transition is one of the hardest PL-300 DAX concepts. Remember: CALCULATE inside any iterator (SUMX, FILTER, etc.) performs context transition — converting each row's context into a filter that isolates that row. This is WHY aggregation functions work correctly inside iterators."
     }
   },
   {
@@ -6394,6 +6663,15 @@
       "1": "Subtracting 365 from LASTDATE returns a single calculated date value, not a time-intelligence date table. It also ignores leap years and does not shift the full date range for the current selection.",
       "2": "PREVIOUSYEAR returns all dates of the entire previous calendar year (January 1 through December 31), not the same relative period shifted back one year.",
       "3": "Correct. DATEADD(DimDate[Date], -1, YEAR) shifts the current filter context's date range back by exactly one year, preserving the same period length and offset — the standard same-period-last-year pattern."
+    },
+    "microsoftReasoning": {
+      "whyItWins": "DATEADD(DimDate[Date], -1, YEAR) shifts the entire set of dates in the current filter context backward by exactly one year. If the visual shows January 2024, the measure returns sales for January 2023. This preserves the same period length and granularity — a month-by-month comparison stays month-by-month. The negative value moves backward.",
+      "whyOthersLose": {
+        "0": "DATEADD(DimDate[Date], 1, YEAR) shifts FORWARD by one year — returning future dates. The negative sign (-1) is required to look backward.",
+        "1": "LASTDATE(DimDate[Date]) - 365 returns a single scalar date minus 365 days. Subtracting a fixed 365 days doesn't account for leap years, and LASTDATE returns one date, not a date range.",
+        "2": "PREVIOUSYEAR returns ALL dates of the previous full calendar year (Jan 1 through Dec 31 last year), regardless of the current selection. If you're looking at August 2024, PREVIOUSYEAR gives you all of 2023 — not just August 2023."
+      },
+      "examTip": "DATEADD vs SAMEPERIODLASTYEAR vs PREVIOUSYEAR: DATEADD(-1, YEAR) = same period last year (most flexible). SAMEPERIODLASTYEAR = shorthand for DATEADD(-1, YEAR) at year granularity. PREVIOUSYEAR = full prior calendar year regardless of selection. Know the difference for the exam."
     }
   },
   {
@@ -6668,6 +6946,15 @@
           "Shows East data only"
         ]
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "CALCULATE's filter arguments override the existing filter context for the same column. When CALCULATE specifies Sales[Region] = 'East', this replaces any existing Region filter from the slicer — regardless of what the slicer says. The report user might have selected 'West' in the slicer, but this measure ignores that and always returns East-only sales.",
+      "whyOthersLose": {
+        "0": "CALCULATE explicitly overrides the slicer filter for the Region column. The slicer filter does NOT take precedence over CALCULATE's filter arguments for the same column.",
+        "1": "Conflicting filters on the same column do not result in BLANK — they result in CALCULATE's filter winning. BLANK occurs when no data matches the resulting filter context, not when there is a filter conflict.",
+        "2": "The filters do not combine. CALCULATE's filter REPLACES the slicer filter for the Region column. Only East sales are returned — not East + West combined."
+      },
+      "examTip": "CALCULATE filter arguments OVERRIDE (replace) existing filter context on the same column. This is fundamentally different from KEEPFILTERS(), which ADDS to (intersects with) existing filters. CALCULATE overrides by default — memorize this. It appears in multiple PL-300 question formats."
     }
   },
   {
@@ -6776,6 +7063,16 @@
       "1": "A line chart shows a single metric over a continuous time axis. It cannot plot 60 territories as independent data points against two separate numeric measures.",
       "2": "A clustered bar chart compares categories using bar length on one axis. It cannot simultaneously plot two continuous numeric measures for each territory to reveal correlation.",
       "3": "Correct. A scatter chart plots each of the 60 territories as a data point with marketing spend on one axis and revenue on the other, making correlations, clusters, and outliers immediately visible."
+    },
+    "microsoftReasoning": {
+      "whyItWins": "A scatter chart is specifically designed to display the relationship (correlation) between two numerical measures across multiple entities. With marketing spend on one axis, revenue on the other, and each territory as a data point, users can immediately identify positive, negative, or no correlation — and spot outlier territories that outperform or underperform their spend level.",
+      "whyOthersLose": {
+        "0": "An area chart shows trends over time for one measure. It has one axis for values and one for time — it cannot show the relationship between two independent measures simultaneously.",
+        "1": "A line chart plots one or more measures over a time dimension. Like the area chart, it cannot display two independent measures against each other for correlation analysis.",
+        "2": "A clustered bar chart compares categories on one measure. To show correlation between two measures, you would need two separate charts or a scatter chart."
+      },
+      "stakeholderPerspective": "Marketing leadership needs to see which territories generate the highest revenue relative to their spend — and which territories are underperforming despite high investment. A scatter chart makes ROI outliers immediately visible.",
+      "examTip": "Scatter chart is the answer when the question mentions 'correlation', 'relationship between two measures', or 'each entity as a data point with X and Y axis values'. Remember: scatter charts have a Play Axis option for animated time-based analysis."
     }
   },
   {
@@ -7078,6 +7375,15 @@
       "1": "A Reference Query creates a downstream query that depends on an existing query's output. It does not combine two separate tables — it builds further transformations on one existing query.",
       "2": "Append Queries stacks rows from two tables with the same column structure vertically — it is used to combine rows, not to join tables on a key. It cannot bring order data alongside customer records.",
       "3": "An Inner join returns only rows where a matching record exists in both tables. Any customer with no orders would be excluded from the result, which violates the requirement that all customers must appear."
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Left Outer join keeps ALL rows from the left table (Customers) while including matching data from the right table (Orders) where a match exists. Customers with no orders appear with null values in the order columns — meeting the requirement that 'customers with no orders must still appear'.",
+      "whyOthersLose": {
+        "1": "Reference Query creates a new query that reads from an existing query's output — it is not a join type. It is used for building dependent transformation chains, not for combining two tables on a key.",
+        "2": "Append Queries stacks two tables vertically (adds rows). It requires matching columns and combines rows from both tables. It does not join on a key column.",
+        "3": "Inner join returns only rows where a match exists in BOTH tables. Customers with no orders are excluded — violating the requirement."
+      },
+      "examTip": "Power Query merge join types tested on PL-300: Left Outer = all left, matching right. Inner = only matches. Full Outer = all from both. Right Outer = all right, matching left. Left Anti = left with NO match in right (orphan records). Know when each is appropriate."
     }
   },
   {
@@ -7184,6 +7490,15 @@
           "Phone"
         ]
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Inner join returns only rows where a match exists in both tables. If a transaction has no matching ProductID in the Products table, it is excluded from the result. This exactly meets the requirement: only include transactions where a product record exists.",
+      "whyOthersLose": {
+        "0": "Right Outer keeps all rows from the right table (Products) regardless of whether a matching transaction exists. Unused product catalog entries would appear in the result with null transaction data.",
+        "1": "Full Outer returns all rows from both tables — including transactions with no product match and products with no transactions. This does not filter to only matched records.",
+        "2": "Left Outer keeps all Sales rows — including transactions with no matching product. This explicitly includes the 'no match' records that the requirement says to exclude."
+      },
+      "examTip": "Inner join is the 'strict match only' join. It is the correct choice when your requirement is 'only include records that exist in both tables' or 'exclude orphan records'. In data quality scenarios, Left Anti is used to FIND the orphans."
     }
   },
   {
@@ -7680,6 +7995,15 @@
           ]
         }
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "LOOKUPVALUE(result_column, search_column, search_value) retrieves a value from a lookup table without requiring an existing model relationship. It explicitly specifies the column to search and the value to match per row — similar to Excel's VLOOKUP but native to DAX calculated columns.",
+      "whyOthersLose": {
+        "0": "RELATED requires an active relationship between the tables in the model. The question explicitly states no relationship exists. RELATED would produce an error in this scenario.",
+        "2": "RELATEDTABLE also requires a relationship and returns an entire table of related rows — not a single scalar value. It cannot be used in a calculated column to retrieve one manager name.",
+        "3": "VALUES(Managers[Name]) returns the distinct list of all manager names as a table — not the specific manager name for the current Sales row. It does not perform a lookup."
+      },
+      "examTip": "LOOKUPVALUE = VLOOKUP for DAX. Use it when: (1) no model relationship exists, (2) you need to look up from a different table by matching a key. It works in calculated columns. In measures, prefer RELATED or CALCULATE + FILTER patterns."
     }
   },
   {
@@ -7747,6 +8071,15 @@
           "Full year 2024 total"
         ]
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "TOTALYTD(SUM(Sales[Amount]), DimDate[Date]) calculates the running total of sales from January 1 of the current year through the last date visible in the current filter context. When a month slicer changes to March, the YTD total automatically extends through March — no manual date range management required.",
+      "whyOthersLose": {
+        "0": "PREVIOUSYEAR returns the entire prior calendar year (Jan 1 to Dec 31 of the year before the current selection). It does not accumulate through the current year.",
+        "1": "DATEADD(DimDate[Date], -1, YEAR) shifts the current date selection back one year — useful for prior-year comparison, not for year-to-date accumulation.",
+        "2": "SAMEPERIODLASTYEAR returns the equivalent prior-year period for comparison, not a cumulative YTD total."
+      },
+      "examTip": "TOTALYTD = year-to-date accumulation = 'sum from Jan 1 to current date'. It is equivalent to CALCULATE(SUM(...), DATESYTD(Date[Date])). TOTALQTD and TOTALMTD follow the same pattern for quarter-to-date and month-to-date."
     }
   },
   {
@@ -7917,6 +8250,16 @@
         ],
         "issue": "DiscountPct is stored in the bridge table ProductPromotion — not in Products or Promotions alone — because the discount is specific to the Product+Promotion combination. This is the key insight: attributes of a relationship belong in the bridge, not in either parent dimension."
       }
+    },
+    "microsoftReasoning": {
+      "whyItWins": "When many-to-many relationships carry attributes (like DiscountPct per product-promotion pair), a bridge table is the only correct solution. The bridge stores each product-promotion combination as one row, with the DiscountPct as an additional column. Two one-to-many relationships (Products→Bridge and Promotions→Bridge) correctly model the intersection.",
+      "whyOthersLose": {
+        "0": "Comma-separated PromotionIDs in a single Products column is an anti-pattern. The data is non-atomic, cannot be filtered, joined, or aggregated without string manipulation — violating basic data modeling principles.",
+        "1": "A direct many-to-many relationship between Products and Promotions cannot store the DiscountPct attribute at the intersection level — there is no 'intersection row' in a direct M:M relationship to attach attributes to.",
+        "2": "Adding DiscountPct to the Products table assumes each product has a single discount — but the scenario states each product can have DIFFERENT discounts for DIFFERENT promotions. One column in Products cannot capture this variability."
+      },
+      "maintainabilityPerspective": "The bridge table is the future-proof design. Adding new intersection attributes (like PromotionStartDate or MinOrderQuantity) requires only adding columns to the bridge — no model restructuring.",
+      "examTip": "If a M:M scenario mentions attributes AT THE INTERSECTION (like DiscountPct per product-promotion pair), a bridge table is ALWAYS the correct answer. Direct M:M relationships in Power BI cannot store intersection attributes."
     }
   },
   {
@@ -8099,7 +8442,16 @@
       "2": "Correct. DATESYTD(DimDate[Date]) returns a table of dates starting from January 1 of the current year through the last date in the current filter context. This is exactly what is needed to provide a year-to-date accumulation for CALCULATE.",
       "3": "SAMEPERIODLASTYEAR(DimDate[Date]) returns the equivalent date range from the prior year. It shifts the current selection back by one year and does not accumulate dates from the start of the current year."
     },
-    "daxExpression": "-- DATESYTD returns a table of dates from Jan 1 to the last visible date\nYTD Sales =\n    CALCULATE(\n        SUM(Sales[Amount]),\n        DATESYTD(DimDate[Date])\n    )\n\n-- Equivalent to:\nYTD Sales = TOTALYTD(SUM(Sales[Amount]), DimDate[Date])"
+    "daxExpression": "-- DATESYTD returns a table of dates from Jan 1 to the last visible date\nYTD Sales =\n    CALCULATE(\n        SUM(Sales[Amount]),\n        DATESYTD(DimDate[Date])\n    )\n\n-- Equivalent to:\nYTD Sales = TOTALYTD(SUM(Sales[Amount]), DimDate[Date])",
+    "microsoftReasoning": {
+      "whyItWins": "DATESYTD(DimDate[Date]) returns the set of dates from January 1 of the current year through the last selected date in the filter context. Used as the filter argument inside CALCULATE, it provides the date range needed for a year-to-date calculation — and updates automatically when the date slicer changes.",
+      "whyOthersLose": {
+        "0": "PREVIOUSYEAR returns all dates of the prior full calendar year — not the current year-to-date range. It would give last year's total, not a current year accumulation.",
+        "1": "DATEADD(DimDate[Date], -1, YEAR) shifts dates backward by one year — returning the same period from the prior year for comparison purposes, not a YTD range.",
+        "3": "SAMEPERIODLASTYEAR is equivalent to DATEADD(-1, YEAR) — it returns the matching prior-year period, not the current year-to-date accumulation."
+      },
+      "examTip": "DATESYTD is the date function used INSIDE CALCULATE to achieve YTD. TOTALYTD wraps both CALCULATE and DATESYTD in one function. Both produce identical results — but CALCULATE + DATESYTD is more flexible (you can add additional filter arguments alongside it)."
+    }
   },
   {
     "id": 130,
@@ -8418,6 +8770,15 @@
           "Jan 1 2024 – Dec 31 2024 (ALL of 2024)"
         ]
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "PREVIOUSYEAR(DimDate[Date]) returns all dates from January 1 through December 31 of the year prior to the last date visible in the current filter context — a complete prior calendar year, regardless of what month or day the user is currently looking at. This is exactly what a CFO wants for full prior-year comparison.",
+      "whyOthersLose": {
+        "0": "SAMEPERIODLASTYEAR returns the same RELATIVE period from last year. If the current selection is January 2024, SAMEPERIODLASTYEAR returns January 2023 — not the full year 2023. The CFO would see only January 2023 data.",
+        "1": "DATEADD(DimDate[Date], -1, YEAR) shifts the current selection back by one year — if Q1 2024 is selected, it returns Q1 2023. Like SAMEPERIODLASTYEAR, it mirrors the current period, not the full prior year.",
+        "2": "DATESYTD returns dates from January 1 of the CURRENT year through the current date — useful for current-year accumulation, but it does not return prior-year data at all."
+      },
+      "examTip": "Time intelligence function output scope: PREVIOUSYEAR = full prior calendar year. SAMEPERIODLASTYEAR = same period as current selection from prior year. DATEADD(-1, YEAR) = same period shifted back one year. For 'complete last year', always use PREVIOUSYEAR."
     }
   },
   {
@@ -8612,6 +8973,16 @@
           ]
         }
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Reference Query creates a new query that reads from the OUTPUT of an existing query. All transformation steps in 'Sales Cleaned' are shared — not duplicated. When 'Sales Cleaned' is updated, both downstream queries automatically inherit the changes. This is the 'shared transformation layer' pattern in Power Query.",
+      "whyOthersLose": {
+        "0": "Merge Queries joins two tables on a key column to combine them horizontally. It is not a mechanism for creating dependent queries or sharing transformation steps.",
+        "1": "Append Queries combines tables vertically (adds rows from one to another). It does not create a dependency relationship for sharing upstream transformations.",
+        "2": "Duplicate Query copies the full query including all steps, creating a completely independent copy. Changes to 'Sales Cleaned' do NOT propagate to a duplicate — each must be maintained separately."
+      },
+      "maintainabilityPerspective": "Reference queries create a clean dependency tree. One source, one cleaning query, multiple specialized downstream queries. This mirrors software engineering's DRY (Don't Repeat Yourself) principle applied to data transformation.",
+      "examTip": "Reference vs Duplicate: Reference = dependent on parent (changes propagate). Duplicate = independent copy (changes do NOT propagate). The exam tests this distinction. Use Reference when downstream queries share logic. Use Duplicate when you need to experiment without affecting the original."
     }
   },
   {
@@ -8673,6 +9044,15 @@
           ]
         }
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Duplicate Query creates a completely independent copy of the Sales query with all its steps replicated. Changes to the original Sales query do not affect the duplicate. This is the correct choice for experimental restructuring — any changes, even breaking ones, are isolated to the duplicate and cannot impact the production query.",
+      "whyOthersLose": {
+        "0": "Reference Query creates a dependent copy — changes to the parent propagate downstream. If the developer restructures the reference's parent, those changes affect the reference. This is the opposite of isolation.",
+        "2": "Merge Queries joins two tables horizontally on a key. It does not create an independent experimental copy.",
+        "3": "Append Queries combines tables vertically. It does not create a copy for experimental modification."
+      },
+      "examTip": "Use Duplicate when you need a safe sandbox — changes are isolated to the copy. Use Reference when you want shared logic — changes propagate downstream. In exam scenarios mentioning 'experiment', 'test', 'without affecting', or 'safe copy', Duplicate is the answer."
     }
   },
   {
@@ -8754,6 +9134,15 @@
         ],
         "issue": "Each transaction can be attributed to more than one territory (multi-territory attribution). If a fact row references multiple TerritoryID values, the correct model uses a bridge table — not a direct many-to-many relationship on TerritoryID, which causes ambiguous aggregation."
       }
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Many-to-many cardinality is required when the same transaction can be associated with multiple territories AND the same territory can be associated with multiple transactions. Power BI supports M:M relationships natively in modern versions. Alternatively, a bridge table handles this — but the question asks about cardinality type, which is Many-to-Many (*:*).",
+      "whyOthersLose": {
+        "0": "One-to-many (1:*) assumes each transaction belongs to exactly one territory. The scenario explicitly states each transaction can have MORE THAN ONE territory association — so 1:* is incorrect.",
+        "2": "One-to-one (1:1) assumes each transaction maps to exactly one unique territory, and each territory maps to one unique transaction. This is far too restrictive for the described relationship.",
+        "3": "Not using a relationship and using LOOKUPVALUE forces all relationship logic into DAX measures — losing the ability to filter bi-directionally and making the model harder to maintain."
+      },
+      "examTip": "M:M cardinality in Power BI is supported but should be used carefully. Key signals for M:M: 'each X can have many Ys AND each Y can have many Xs.' When M:M carries intersection attributes, use a bridge table with two 1:M relationships instead of a direct M:M."
     }
   },
   {
@@ -8791,7 +9180,16 @@
       "2": "ALL(Sales[Country]) used outside of CALCULATE removes a filter when used as a CALCULATE argument, but it cannot function as a standalone measure expression. It returns a table, not a numeric total.",
       "3": "SUM(Sales[Amount]) respects all active filters including any Country slicer selection. It does not ignore the Country filter and will return filtered results when a country is selected."
     },
-    "daxExpression": "Company Revenue =\n    CALCULATE(\n        SUM(Sales[Amount]),\n        ALL(Sales[Country])   -- removes only the Country filter\n    )\n\n-- Unlike ALL(Sales) which removes ALL filters from Sales,\n-- ALL(Sales[Country]) removes ONLY the Country column filter.\n-- Other filters on Sales (e.g. ProductCategory slicer) still apply."
+    "daxExpression": "Company Revenue =\n    CALCULATE(\n        SUM(Sales[Amount]),\n        ALL(Sales[Country])   -- removes only the Country filter\n    )\n\n-- Unlike ALL(Sales) which removes ALL filters from Sales,\n-- ALL(Sales[Country]) removes ONLY the Country column filter.\n-- Other filters on Sales (e.g. ProductCategory slicer) still apply.",
+    "microsoftReasoning": {
+      "whyItWins": "ALL(Sales[Country]) removes only the filter on the Country column while preserving all other active filters (dates, regions, etc.). Wrapping the SUM in CALCULATE with this ALL() argument ensures the measure always returns the company-wide total regardless of country slicer selection.",
+      "whyOthersLose": {
+        "1": "FILTER(ALL(Sales[Country]), 1=1) returns a table (all distinct country values) with the trivially true condition — it does not produce a scalar revenue measure and would cause an error if used as a standalone measure.",
+        "2": "ALL(Sales[Country]) cannot stand alone as a measure — it returns a table of distinct country values, not a revenue total.",
+        "3": "SUM(Sales[Amount]) without any filter modification respects all active filters including Country. When a user selects 'France' in the country slicer, this measure returns only France's sales."
+      },
+      "examTip": "ALL(column) vs ALL(table): ALL(Sales[Country]) removes only the Country filter. ALL(Sales) removes ALL filters from the entire Sales table including Date, Region, etc. Choose based on which filters you want to preserve."
+    }
   },
   {
     "id": 144,
@@ -8827,6 +9225,15 @@
       "1": "Correct. CALCULATE is the only DAX function that can modify the filter context when evaluating an expression. It accepts filter arguments that add, replace, or remove filters before evaluating the inner expression.",
       "2": "ALL removes filters on a column or table when used as an argument inside CALCULATE. On its own it returns a table but cannot modify the filter context independently — it always requires CALCULATE to take effect.",
       "3": "FILTER iterates a table and returns a subset of rows matching a condition. It evaluates within the current filter context but does not modify the filter context for any expression — only CALCULATE can do that."
+    },
+    "microsoftReasoning": {
+      "whyItWins": "CALCULATE evaluates an expression (first argument) after applying one or more filter modifications (subsequent arguments). It is the only DAX function that can override, add, or remove filters from the filter context — making it the core tool for any calculation that needs to behave differently from the current visual's active filters.",
+      "whyOthersLose": {
+        "0": "SUMX is an iterator that evaluates an expression per row before aggregating. It operates WITHIN the current filter context but cannot modify the outer filter context itself.",
+        "2": "ALL removes filters when used INSIDE CALCULATE as a filter argument. On its own, ALL is a table function that returns a table without filters — it cannot evaluate an expression or modify context independently.",
+        "3": "FILTER returns a filtered table. It is often used as an argument TO CALCULATE, but FILTER itself does not modify the filter context — it just produces a filtered table that CALCULATE then uses."
+      },
+      "examTip": "CALCULATE is the single most important DAX function for the PL-300 exam. Every question about 'overriding filters', 'ignoring slicers', 'activating relationships', or 'modifying context' leads back to CALCULATE."
     }
   },
   {
@@ -8933,6 +9340,15 @@
           "1200"
         ]
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "SUMX(FILTER(Sales, Sales[UnitPrice] > 100), Sales[Qty] * Sales[UnitPrice]) first reduces the Sales table to only high-value transactions (FILTER step), then iterates only those qualifying rows to compute Qty × UnitPrice per row. This is the most efficient pattern: filter first, then iterate a smaller set.",
+      "whyOthersLose": {
+        "1": "SUMX(ALL(Sales), IF(...)) removes all filters (ALL), then iterates ALL rows, and uses IF to conditionally include. This evaluates every row including filtered-out ones and returns 0 for those — correct result but processes more rows than necessary.",
+        "2": "CALCULATE(SUMX(Sales, ...), Sales[UnitPrice] > 100) is actually equivalent and also correct — CALCULATE's filter applies before SUMX iterates, resulting in the same behavior. However, option 0 (SUMX + FILTER) is more explicit and commonly taught.",
+        "3": "SUMX(Sales, IF(Sales[UnitPrice] > 100, ...)) iterates ALL Sales rows (not just the filtered subset) and skips rows with IF. Functionally similar but processes the full table unnecessarily."
+      },
+      "examTip": "SUMX(FILTER(table, condition), expression) is the canonical pattern for 'sum an expression for rows matching a condition'. The FILTER reduces the iteration set BEFORE SUMX begins its loop — the preferred, explicit pattern taught by Microsoft."
     }
   },
   {
@@ -9157,6 +9573,15 @@
       "1": "Creating a separate workspace with only North region data adds architectural complexity — a separate dataset must be maintained, refreshed, and governed. This approach does not scale to many regions and duplicates content unnecessarily.",
       "2": "Correct. Multiple users can be assigned to the same RLS role in Power BI Service. Adding all five users to the 'NorthRegion' role in the dataset's Security settings means all five will see only Region = 'North' data with a single role configuration.",
       "3": "Sharing the report individually and instructing users to apply a North filter is not enforced security — users can remove the filter and see all data. RLS is a server-enforced row filter, not a user-applied visual filter."
+    },
+    "microsoftReasoning": {
+      "whyItWins": "In Power BI, RLS roles are assigned to AAD users or security groups in the dataset's Security settings. Adding all five users to the existing 'NorthRegion' role is the correct approach — they all share the same data restriction, so they all belong in the same role. This is a single configuration action.",
+      "whyOthersLose": {
+        "0": "Creating five separate roles — one per user — with identical filter logic is excessive maintenance. Each time a user needs access changes, five separate role definitions must be updated. Roles should represent access patterns, not individuals.",
+        "1": "Creating a separate workspace with only North data is an access architecture approach, not RLS. This would require duplicating the dataset and all reports — a significant overhead for what should be a simple filter.",
+        "3": "Individual sharing does not enforce RLS. A shared report still shows all data unless the underlying dataset has RLS configured. Users could potentially access more data than intended."
+      },
+      "examTip": "RLS roles define WHAT data is filtered. Role MEMBERSHIP defines WHO gets that filter. Multiple users with the same data restriction should all be added to ONE role — not separate identical roles. Roles should map to access patterns, not individuals."
     }
   },
   {
@@ -10803,6 +11228,16 @@
         ],
         "issue": "Dynamic RLS filters DimRegion to rows where ManagerEmail = USERPRINCIPALNAME(). Executives need an unfiltered role (no DAX filter) or a role that uses USERPRINCIPALNAME() to branch: executives bypass the filter while managers are restricted."
       }
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Dynamic RLS uses USERPRINCIPALNAME() in a DAX filter that matches the authenticated user's email to a mapping table. One role definition handles all 500 managers — adding a new manager means adding a row to the mapping table, not editing the RLS role. Executives simply need to NOT be members of the RLS role, so they see unfiltered data.",
+      "whyOthersLose": {
+        "0": "500 static roles (one per region or manager) is unmaintainable. Each personnel change requires modifying RLS role definitions in the dataset — a Power BI Desktop change requiring republication.",
+        "2": "Workspace Viewer/Member roles control what users can DO with content (view, edit, share) — they do not filter the DATA visible within reports. This confuses workspace permissions with data-level security.",
+        "3": "Object-Level Security (OLS) hides columns or tables entirely — it doesn't filter rows based on user identity. An executive who needs all rows but managers who need row-level filtering cannot be solved with OLS."
+      },
+      "maintainabilityPerspective": "Dynamic RLS scales infinitely: 500 managers or 50,000 managers — the same single DAX filter expression handles all of them. Onboarding a new manager = adding one row to the mapping table.",
+      "examTip": "Static RLS = hardcoded region names in DAX filter. Maintenance nightmare at scale. Dynamic RLS = USERPRINCIPALNAME() + mapping table. Scales to any number of users. PL-300 asks about both — dynamic RLS is the 'most scalable' and 'least maintenance' answer."
     }
   },
   {
@@ -10893,6 +11328,15 @@
           "4,800 (only Phone rows)"
         ]
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Power BI visuals apply their own filter context based on their row/column configuration. A matrix with products on rows creates a separate filter context for each product row — restricting the Sales table to only that product's transactions before SUMX iterates. The card visual has no such row filter, so SUMX sees all rows and returns the grand total.",
+      "whyOthersLose": {
+        "0": "SUMX works correctly in matrix visuals. The 'problem' described is actually correct behavior — each matrix row returns the right value for that product.",
+        "2": "Card visuals do NOT inherently ignore all filters. Card visuals respect slicer filters, report filters, and page filters. They only show a single value because they have no row/column dimension breakdown.",
+        "3": "REMOVEFILTERS() is not required for SUMX to produce consistent results. The inconsistency described is intentional and correct — SUMX correctly respects each visual's filter context."
+      },
+      "examTip": "Understanding why the same measure returns different values in different visuals is a core PL-300 concept. The visual's field assignments (row, column, legend) create implicit filters that the measure's engine must evaluate within. This is filter context working as designed."
     }
   },
   {
@@ -10992,6 +11436,16 @@
       "1": "Correct. Calculated columns in DirectQuery mode are re-evaluated by the Formula Engine on every visual query against all 15M rows. Converting to Import stores data in VertiPaq (compressed columnar), and rewriting YTD/comparison logic as DAX measures evaluates against aggregated values — reducing Formula Engine work by orders of magnitude.",
       "2": "Reducing the visible date range reduces the rows processed by visuals, but the calculated columns still exist in the model and still force Formula Engine evaluation on the filtered row set. It is a partial workaround, not a root-cause fix.",
       "3": "DirectLake is a Microsoft Fabric storage mode that reads from OneLake parquet files with near-Import speed. It cannot connect to on-premises SQL Server and is not available in this architecture."
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Complex DAX time intelligence measures (YTD, prior-year comparisons) are notoriously slow in DirectQuery mode because each measure generates multiple SQL queries to the source, and the database must compute date-range filtering at query time. Converting to Import mode brings the 15M rows into Vertipaq's columnar storage where YTD and comparison patterns execute in milliseconds.",
+      "whyOthersLose": {
+        "0": "Adding indexes to YTD columns may reduce individual query time but doesn't address the fundamental issue: each DAX time intelligence call in DirectQuery generates multiple SQL round-trips. The bottleneck is the pattern, not the index strategy.",
+        "2": "A 24-month date filter reduces visible data but doesn't fix the underlying time intelligence performance problem. The measure still generates multiple SQL queries per calculation even for a shorter period.",
+        "3": "DirectLake connects directly to OneLake/Delta tables — for Azure SQL Server source data, this would require migrating the data to OneLake first. DirectLake also has its own complex time intelligence behavior."
+      },
+      "performancePerspective": "Import mode's Vertipaq engine is specifically optimized for the patterns Power BI DAX generates. Time intelligence measures that require 12-second DirectQuery calls often execute in under 100ms in Import mode with equivalent data.",
+      "examTip": "If a DirectQuery report is slow due to DAX time intelligence or complex DAX measures, the recommended fix is usually Import mode (with an acceptable refresh schedule) or hybrid tables. DirectQuery's performance ceiling is bounded by the source database's query speed."
     }
   },
   {
@@ -11175,6 +11629,16 @@
           ]
         }
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Performance Analyzer shows 5,620ms of Formula Engine time vs only 180ms of Storage Engine time. The Storage Engine (Vertipaq or DirectQuery source) is fast. The Formula Engine (DAX interpreter) is the bottleneck. Formula Engine overhead is caused by complex iterators, nested CALCULATE calls, or DAX patterns that cannot be parallelized — the measure logic itself needs optimization.",
+      "whyOthersLose": {
+        "0": "Visual cardinality (number of rows displayed) affects Storage Engine query size, not Formula Engine computation time. The Storage Engine time is only 180ms — visual cardinality is not the bottleneck.",
+        "1": "Switching to DirectQuery pushes query load to the source database, reducing Storage Engine time. But the bottleneck is Formula Engine (DAX), which still runs in Power BI regardless of storage mode. DirectQuery doesn't bypass DAX computation.",
+        "3": "The Storage Engine time is 180ms — indicating the database is responding quickly. Adding indexes would address a Storage Engine bottleneck, not a Formula Engine one."
+      },
+      "performancePerspective": "Formula Engine bottlenecks require DAX-level optimization: simplify complex nested CALCULATE patterns, use variables (VAR) to avoid repeated subexpression evaluation, or replace complex iterator patterns with pre-computed measures.",
+      "examTip": "Performance Analyzer interpretation rule: Storage Engine slow = database query problem (add indexes, reduce rows). Formula Engine slow = DAX complexity problem (simplify measures, use VAR, reduce nesting). Know both causes and their respective solutions."
     }
   },
   {
@@ -11211,6 +11675,16 @@
       "1": "Full DirectQuery mode provides live query access, but with a 500M-row table, complex analytical queries would perform extremely poorly. Every visual interaction generates a SQL query against 500M rows, making the dashboard unusable for analytical reporting.",
       "2": "Correct. Hybrid tables combine incremental refresh with DirectQuery on the most recent partition. Historical partitions remain as fast Import data in VertiPaq. The most recent partition (e.g., last 7 days) uses DirectQuery, providing near-real-time access without refreshing the entire 500M-row table. This is the purpose-built solution for this exact scenario.",
       "3": "Streaming datasets with Event Hubs push real-time event data to Power BI and work well for IoT or operational dashboards. They are not designed for querying a large transactional SQL database — they receive pushed events and do not replace scheduled or incremental refresh of existing relational data."
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Hybrid tables combine Import mode partitions for historical data with a DirectQuery partition for recent data. Incremental refresh keeps only the last 7 days in the DQ partition — so reports always show data up to the current moment. Historical data (older than 7 days) loads from fast Vertipaq Import partitions, providing both freshness AND performance.",
+      "whyOthersLose": {
+        "0": "Power BI Premium supports up to 48 scheduled refreshes per day — one every 30 minutes. For a 10-minute requirement, this is insufficient. Additionally, refresh itself takes time, so even a 30-minute refresh means data is sometimes over 30 minutes stale.",
+        "1": "Full DirectQuery means ALL queries hit Azure SQL directly. This can meet freshness requirements but sacrifices performance, especially for complex DAX measures. For large datasets, this often produces unacceptably slow reports.",
+        "3": "Streaming datasets use push-based real-time ingestion (webhooks, Event Hubs). They are designed for true real-time dashboards with simple tile visuals, not complex Power BI reports with relationships, DAX measures, and multiple visuals."
+      },
+      "performancePerspective": "Hybrid tables give the best of both worlds: Import-speed performance for historical queries and DirectQuery freshness for recent data. The 10-minute freshness window fits perfectly with a short DQ partition window.",
+      "examTip": "Hybrid tables + incremental refresh = the recommended architecture for near-real-time requirements on large datasets. This is a Fabric/Premium feature. The PL-300 may test when to use this vs full DirectQuery vs Import + scheduled refresh."
     }
   },
   {
@@ -11310,6 +11784,15 @@
         ],
         "issue": "RegionManager → Region is Single direction, which filters Region → RegionManager (the '1' side filters the '*' side) — not the reverse. The RLS filter on RegionManager cannot propagate to Region, so it never reaches Sales either."
       }
+    },
+    "microsoftReasoning": {
+      "whyItWins": "RegionManager is on the 'many' side of its relationship to Region (many managers per region, or many rows in RegionManager per region). Filters propagate FROM the one-side TO the many-side by default. When RLS is defined on RegionManager, the filter cannot propagate upstream to Region (one-side) without bidirectional filtering enabled on that relationship. The result: Region data is not filtered.",
+      "whyOthersLose": {
+        "1": "USERPRINCIPALNAME() returns the full email in Azure AD format (user@domain.com), which is the standard format used in Power BI Service. If the ManagerEmail column stores emails correctly, the match should work — this is not the cause of the issue.",
+        "2": "RLS filters can be placed on any table in the model — not just fact tables. Filters on dimension or mapping tables are standard practice for dynamic RLS.",
+        "3": "Making the Region-to-Sales relationship many-to-many does not fix the upstream filter propagation issue from RegionManager to Region. The problem is the filter direction between RegionManager and Region."
+      },
+      "examTip": "RLS filter direction: by default, filters propagate from the 'one' side to the 'many' side. If your RLS filter is on the 'many' side, it won't reach the 'one' side unless bidirectional filtering is enabled on that relationship. This is a common RLS design pitfall."
     }
   },
   {
@@ -11514,6 +11997,15 @@
         ],
         "issue": "RLS filter on DimProduct restricts which product rows the user sees. Products with no sales in the period still exist in DimProduct — single-direction filter flows DimProduct → FactSales, so those products appear in DimProduct but show no sales rows. This is expected behavior, not a bug."
       }
+    },
+    "microsoftReasoning": {
+      "whyItWins": "The 'Products with no sales' visual is using either CROSSFILTER() in a DAX measure or an explicit DAX pattern that deliberately includes products regardless of whether they have sales transactions. When a DAX measure explicitly fetches all products (bypassing the Sales relationship), the RLS filter on the Product dimension still applies — but the measure's logic overrides the join, making products visible that shouldn't be.",
+      "whyOthersLose": {
+        "0": "RLS is not visual-specific — it applies to the entire semantic model. There is no such thing as a separate RLS role per visual.",
+        "2": "Inactive relationships do NOT bypass RLS. RLS is enforced at the data engine level, before any relationship traversal. Whether a relationship is active or inactive, RLS still filters which rows are visible.",
+        "3": "RLS filters on dimension tables DO apply to matrix visuals. This statement is incorrect — RLS is model-level and applies to all visuals without exception."
+      },
+      "examTip": "RLS is enforced by the Vertipaq engine BEFORE query evaluation. It cannot be bypassed by visual type, relationship state, or report design. However, DAX measures that explicitly use CROSSFILTER or ALL() on a filtered table can inadvertently include rows that should be RLS-filtered by constructing their result from a wider scope."
     }
   },
   {
@@ -11652,6 +12144,15 @@
         ],
         "issue": "Two fact tables sharing DimDate creates a chasm schema. A date slicer filters both fact tables via DimDate. Measures combining rows from both facts need careful design — CROSSJOIN between the two fact tables via shared dimensions can cause row-count fan-out in totals."
       }
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Two fact tables sharing dimension tables is a standard star schema pattern. OnlineSales and StoreSales each have their own foreign keys to the shared dimensions. Each fact joins to each dimension with a separate one-to-many relationship. Filters from a Date slicer propagate to BOTH fact tables through their respective Date relationships — enabling correct cross-table analysis.",
+      "whyOthersLose": {
+        "0": "A direct bidirectional M:M between Product and Promotions is a separate concern — it addresses how promotions relate to products, not how dual fact tables share dimensions. This is a modeling anti-pattern for a different problem.",
+        "1": "Adding a PromotionKey to the Product dimension table conflates the Promotions relationship with the Product dimension — a fundamentally incorrect design that breaks the separation of facts and dimensions.",
+        "2": "LOOKUPVALUE in calculated columns can retrieve values from other tables but creates static column values at refresh time. This approach loses the dynamic filtering that comes from proper model relationships."
+      },
+      "examTip": "Multiple fact tables sharing the same dimensions is the 'conformed dimensions' star schema pattern. It allows meaningful cross-table analysis: 'Compare online vs store sales by product and date' — one Product slicer filters both fact tables simultaneously through their shared dimension."
     }
   },
   {
@@ -11902,6 +12403,15 @@
         ],
         "issue": "Power BI auto-detected many-to-many because CustomerID has unexpected duplicates in the Customers table (data quality issue). The intended relationship is one-to-many (Customers is a dimension with unique CustomerIDs). Fix: remove duplicate CustomerIDs in Power Query before importing."
       }
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Power BI auto-detects M:M when it finds non-unique values on both sides of a join. However, M:M between Customers and Contracts often indicates a data quality issue — CustomerID that should be unique in Contracts is actually duplicated. Investigating first determines whether this is a real M:M or a data problem. If Contracts should have one CustomerID per contract, the correct fix is data deduplication, not a M:M relationship.",
+      "whyOthersLose": {
+        "0": "Adding DISTINCTCOUNT measures patches the symptom without fixing the cause. If CustomerID is duplicated in Contracts due to a data error, DISTINCTCOUNT inflates customer counts rather than revealing the true data quality issue.",
+        "1": "Immediately creating a bridge table assumes the M:M is intentional — but it may be a data quality error. A bridge table for an unintended duplication adds unnecessary complexity without fixing the root cause.",
+        "3": "Switching to one-to-one forces both tables to have unique keys on the join column. If the data isn't truly one-to-one (it has duplicates), this will cause errors — and it doesn't address why duplicates exist."
+      },
+      "examTip": "When Power BI auto-detects M:M, the first question is ALWAYS: 'Is this intentionally M:M, or is it a data quality issue?' Investigate first. Accept M:M only when the business relationship is genuinely many-to-many by design."
     }
   },
   {
@@ -11991,6 +12501,15 @@
           "Revenue for ALL products in North (same number)"
         ]
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "ALL(Product) removes all filters from the Product table — including the Product[Category] row context from the matrix rows. However, the Region slicer applies filters to a different table (e.g., DimRegion or Sales[Region]), which is NOT affected by ALL(Product). So the measure returns all-product revenue for each region individually, following the active region slicer selection per column.",
+      "whyOthersLose": {
+        "0": "ALL(Product) completely removes Product filters — there is NO product filter left for the matrix rows to override. The matrix row's product category cannot override ALL(Product).",
+        "1": "ALL(Product) only removes Product-table filters. Region filters from the slicer operate on a different table/column and are NOT removed by ALL(Product). Region filtering is preserved.",
+        "2": "ALL() does not cause an error. CALCULATE is valid with any filter context, including when slicers are active. ALL() and slicers coexist — ALL() simply overrides context for its specified table/column."
+      },
+      "examTip": "ALL(Product) removes filters on the Product table only. Slicers on other dimensions (Region, Date) remain active. This is a key distinction: ALL is table/column-specific. A measure using ALL(Product) in a matrix still respects Date and Region filters."
     }
   },
   {
@@ -12337,6 +12856,15 @@
           "2023-02-01 row exists — returns 5,000"
         ]
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "SAMEPERIODLASTYEAR shifts the current date context back one year and returns the matching date range. For January 2024 selected in the matrix, it returns January 2023. If no Sales transactions exist in January 2023 (the data starts from March 2023), the SUM of Sales[Amount] for an empty date range returns BLANK — not zero. This is the correct behavior, not an error.",
+      "whyOthersLose": {
+        "0": "SAMEPERIODLASTYEAR works correctly at month granularity. It does not require DATEADD for month-level comparisons — it shifts the entire selected period back one year, preserving month-level granularity.",
+        "2": "The Date table MUST be marked as a Date Table for SAMEPERIODLASTYEAR to work — but the question states the Date table contains data and the measure 'is used in a monthly trend matrix', implying it is already set up correctly. The issue is missing data, not table marking.",
+        "3": "SAMEPERIODLASTYEAR can shift dates to any year present in the Date table. The issue is not the date table's year coverage — it's that no SALES DATA exists for those prior-year dates in the fact table."
+      },
+      "examTip": "SAMEPERIODLASTYEAR returns BLANK (not zero) when no data exists for the prior-year period. This is correct behavior. If you need zero instead of BLANK, use IF(ISBLANK([LY Sales]), 0, [LY Sales]). The exam may ask whether BLANK in a YoY comparison indicates a function error or a data absence."
     }
   },
   {
@@ -12916,6 +13444,15 @@
           ]
         }
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Disabling Load on a staging query prevents it from loading into the Power BI data model as a table (saving memory and storage), while still keeping it active for downstream queries that reference it. The staging query still executes — its output is available to downstream queries — but it does not appear as a table in the report.",
+      "whyOthersLose": {
+        "0": "Adding a step that returns an empty table would break all downstream queries by providing an empty input instead of the cleaned data.",
+        "2": "DirectQuery is a storage mode for fact tables connecting to live data sources — it has no relevance to intermediate Power Query transformation queries. You cannot set a Power Query intermediate query to DirectQuery mode.",
+        "3": "Deleting the staging query would break all downstream queries that depend on it — they would lose their data source and fail to load."
+      },
+      "examTip": "Disabling Load is a critical Power Query optimization technique. Staging/intermediate queries should have 'Enable Load' turned off to prevent them from consuming data model storage. Only final output queries (those used in visuals) should have Load enabled. This is tested on PL-300."
     }
   },
   {
@@ -13244,7 +13781,17 @@
       "Correct. Calculated columns are materialized at refresh time for every row. Storing 10 million Profit values inflates model size and increases refresh duration compared to a measure that computes only at query time."
     ],
     "questionGroupId": "calc_col_perf",
-    "variantId": "business_01"
+    "variantId": "business_01",
+    "microsoftReasoning": {
+      "whyItWins": "Calculated columns are computed at refresh time and stored as physical columns in the Vertipaq in-memory engine. For a 10M-row table, a Profit calculated column stores 10 million pre-computed values — each consuming memory proportional to the value's cardinality and data type. This increases both model size and refresh duration. It also prevents Vertipaq from optimizing storage of that column as effectively as source columns.",
+      "whyOthersLose": {
+        "0": "Calculated columns are always stored in Vertipaq (Import mode). They do not switch to DirectQuery — calculated columns simply cannot exist in pure DirectQuery tables.",
+        "1": "Calculated columns can be used in measure expressions (e.g., AVERAGE(Sales[Profit])). They can also be used in visual fields, as filter conditions, and in relationships.",
+        "2": "Calculated columns do not cause circular dependency unless they reference each other circularly. A simple Profit = Revenue - Cost column has no circular dependency."
+      },
+      "performancePerspective": "The correct alternative is a DAX measure: Profit = [Total Revenue] - [Total Cost]. Measures are not stored — they are computed at query time for exactly the rows in the current filter context. They add zero to model size.",
+      "examTip": "Calculated column vs measure trade-off: Calculated columns increase model size (stored per row) but enable row-level filtering. Measures add zero storage but compute at query time. On large fact tables, prefer measures. The exam regularly tests this performance distinction."
+    }
   },
   {
     "id": 223,
@@ -13358,7 +13905,17 @@
       "Correct. Dynamic RLS with USERPRINCIPALNAME() and a mapping table scales to any number of users. Adding a new manager only requires adding a row to the mapping table."
     ],
     "questionGroupId": "dynamic_rls_scale",
-    "variantId": "business_02"
+    "variantId": "business_02",
+    "microsoftReasoning": {
+      "whyItWins": "Dynamic RLS uses USERPRINCIPALNAME() in a single DAX filter expression that compares the authenticated user's Azure AD email against a mapping table column. One role definition handles all 500 managers. When a new manager joins, you add one row to the mapping table — the RLS role itself never needs to change.",
+      "whyOthersLose": {
+        "0": "Object-Level Security hides entire tables or columns from users — it does not filter rows. A manager who can't see the region column at all cannot use the report effectively. OLS is for structural access control, not row-based data filtering.",
+        "1": "500 separate workspaces — one per manager with one region's data — would require publishing 500 separate dataset copies, 500 separate reports, and maintaining all of them independently. This is architecturally unacceptable.",
+        "2": "500 static RLS roles means every personnel change (new hire, territory reassignment, departure) requires modifying role definitions, reopening the .pbix file, and republishing. At scale, this is operationally unsustainable."
+      },
+      "maintainabilityPerspective": "Dynamic RLS with a mapping table scales to any organization size with zero additional development. The mapping table becomes the security management interface — accessible to business admins without Power BI Desktop access.",
+      "examTip": "Scale = dynamic RLS. The exam's language signals: 'impractical', 'doesn't scale', 'too many users' → always means dynamic RLS with USERPRINCIPALNAME() is the answer. Static RLS is only appropriate for a small, fixed number of access patterns."
+    }
   },
   {
     "id": 226,
@@ -13468,6 +14025,15 @@
           ]
         }
       ]
+    },
+    "microsoftReasoning": {
+      "whyItWins": "Time intelligence functions (TOTALYTD, SAMEPERIODLASTYEAR, DATEADD) require a continuous date range in the Date table — every calendar date must be present with no gaps. The fact table's missing dates are not the issue; the Date table must cover dates contiguously. TOTALYTD computes cumulative sums by querying the Date table's range. If the Date table has gaps, the date range queries produce incomplete or incorrect cumulative values.",
+      "whyOthersLose": {
+        "0": "TOTALYTD does NOT require a fiscal year parameter when used with calendar years. The optional third argument [YE_Date] is for fiscal year-end date (e.g., '06-30' for fiscal year ending June 30). It is optional for standard calendar years.",
+        "2": "Power BI accepts both Date and DateTime data types for time intelligence. The DateTime requirement is a common misconception — Date type is fully supported and commonly used.",
+        "3": "TOTALYTD works in both Import and DirectQuery modes. Storage mode does not affect time intelligence function availability."
+      },
+      "examTip": "Date table requirements for time intelligence — memorize all four: (1) Marked as Date Table. (2) Contiguous dates, no gaps. (3) One row per date. (4) Covers the full range of dates referenced in fact tables. Missing ANY of these causes time intelligence to return incorrect results."
     }
   },
   {
@@ -26226,5 +26792,834 @@
     ],
     "estimatedTimeSeconds": 90,
     "domain_weight": 0.17
+  },
+  {
+    "id": 509,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Relationships and Cardinality",
+    "difficulty": "Medium",
+    "question": "A data model has a Products table and a Sales table. ProductID in Products is unique, but ProductID in Sales repeats many times. Which cardinality should be used for the relationship between Products and Sales?",
+    "choices": [
+      "Many-to-Many, because Sales has many products",
+      "One-to-One, because each product has unique sales",
+      "One-to-Many from Products to Sales",
+      "Many-to-One from Products to Sales"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "When the join column is unique on one side (Products) and repeats on the other (Sales), this is a One-to-Many relationship from the unique side (Products) to the repeating side (Sales). Filters flow from Products to Sales.",
+    "estimatedTimeSeconds": 75,
+    "tags": [
+      "Cardinality",
+      "Relationships",
+      "Star Schema"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "understanding"
+  },
+  {
+    "id": 510,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Relationships and Cardinality",
+    "difficulty": "Medium",
+    "question": "A Power BI report shows a [Total Sales] measure returning BLANK when filtered by product category. The formula is Total Sales = SUM(Sales[Amount]). The Products and Sales tables both exist in the model. What is the most likely cause?",
+    "choices": [
+      "The SUM function cannot be used with filter context",
+      "The relationship between Products and Sales is missing or inactive",
+      "The Sales table does not contain an Amount column",
+      "The Products table must be imported using DirectQuery"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "When a measure returns BLANK after filtering a dimension table, the most common cause is a missing or inactive relationship. Without a relationship, the filter cannot propagate from Products to Sales, so the measure sees no rows. Always verify the relationship in Model View.",
+    "estimatedTimeSeconds": 90,
+    "tags": [
+      "Relationships",
+      "Filter Propagation",
+      "Diagnostics"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application"
+  },
+  {
+    "id": 511,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Active and inactive relationships",
+    "difficulty": "Hard",
+    "question": "A Sales fact table has two date columns: OrderDate and ShipDate. A single Date dimension table is connected to Sales via both columns. A data analyst creates a measure to calculate sales by ship date. Which DAX pattern should be used?",
+    "choices": [
+      "Create a second Date table specifically for ShipDate",
+      "Use CALCULATE with USERELATIONSHIP to activate the ShipDate relationship",
+      "Change the active relationship to ShipDate and update all existing measures",
+      "Use FILTER on the Sales table to filter by ShipDate directly"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "CALCULATE with USERELATIONSHIP temporarily activates the inactive ShipDate relationship for that measure only. Creating a second date table (option A) is an anti-pattern that duplicates date hierarchies. Switching the active relationship (option C) breaks all existing measures that depend on OrderDate.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "USERELATIONSHIP",
+      "Active vs Inactive",
+      "Role-Playing Dimensions",
+      "DAX"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application"
+  },
+  {
+    "id": 512,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Relationships and Cardinality",
+    "difficulty": "Hard",
+    "question": "A company reports that [Total Revenue] measures are returning values that are approximately twice the expected amount when filtered by territory. The model has a direct Many-to-Many relationship between SalesPerson and Territory tables. What is the most appropriate fix?",
+    "choices": [
+      "Enable bidirectional cross-filter on the existing relationship",
+      "Change the relationship cardinality to One-to-Many",
+      "Add a bridge table (SalesPersonTerritory) and replace the direct M:M with two 1:M relationships",
+      "Use CALCULATE with REMOVEFILTERS to ignore the territory filter"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "A direct Many-to-Many relationship without a bridge table causes double-counting because each sales row matches multiple territory rows. A bridge table (junction table) that explicitly maps each salesperson-territory pairing converts the M:M into two clean 1:M relationships, eliminating the duplication.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Many-to-Many",
+      "Bridge Table",
+      "Cardinality",
+      "Diagnostics"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis"
+  },
+  {
+    "id": 513,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Relationships and Cardinality",
+    "difficulty": "Medium",
+    "question": "In a Power BI data model, between which two tables can Power BI have only ONE active relationship at a time?",
+    "choices": [
+      "Between any two tables that share more than one column",
+      "Between any pair of tables in the model",
+      "Between fact tables only",
+      "Between dimension tables only"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Power BI enforces a rule that between ANY pair of tables, only one relationship can be active at a time. Additional relationships between the same pair of tables are automatically set to inactive and must be activated explicitly using USERELATIONSHIP.",
+    "estimatedTimeSeconds": 75,
+    "tags": [
+      "Active vs Inactive",
+      "Relationships",
+      "Cardinality"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "direct",
+    "cognitiveLevel": "recall"
+  },
+  {
+    "id": 514,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Star schema design",
+    "difficulty": "Medium",
+    "question": "A Power BI developer has a flat denormalized table with 5 million rows containing repeated product names, category names, and customer names on every row. What is the most appropriate action to improve model performance?",
+    "choices": [
+      "Enable aggregations on the flat table",
+      "Switch the table to DirectQuery mode",
+      "Restructure the model as a star schema with separate dimension and fact tables",
+      "Increase the number of partitions in the table"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "A star schema dramatically reduces model size by storing repeated text values (product names, categories, customer names) once each in dimension tables, instead of repeating them across millions of fact rows. Power BI's VertiPaq engine compresses dimension columns very efficiently, leading to faster queries and lower memory usage.",
+    "estimatedTimeSeconds": 90,
+    "tags": [
+      "Star Schema",
+      "Performance",
+      "Data Modeling"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application"
+  },
+  {
+    "id": 515,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Cross-filter direction",
+    "difficulty": "Hard",
+    "question": "A Power BI model has a Products dimension connected to both a Sales fact table and a Returns fact table. A developer enables bidirectional cross-filter on the Products-to-Sales relationship. What unexpected behavior might occur?",
+    "choices": [
+      "Sales measures will no longer be filterable by product category",
+      "The Returns table may be unexpectedly filtered when a Sales filter is active",
+      "The relationship will automatically become inactive",
+      "Power BI will require a bridge table between Sales and Returns"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "With bidirectional cross-filter, a filter on Sales can flow back to Products, which then flows forward to Returns — causing Returns measures to be unexpectedly filtered by Sales context. This cross-contamination between fact tables is the primary risk of bidirectional filtering on shared dimensions.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Cross-Filter Direction",
+      "Bidirectional",
+      "Relationships",
+      "Diagnostics"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis"
+  },
+  {
+    "id": 516,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Role-playing dimensions",
+    "difficulty": "Medium",
+    "question": "A data model has a single DimDate table connected to an Orders fact table via three relationships: OrderDate (active), ShipDate (inactive), and DueDate (inactive). How should a developer create a measure that calculates total orders by ship date?",
+    "choices": [
+      "Create three separate Date tables, one for each date role",
+      "Change the active relationship to ShipDate",
+      "Use CALCULATE([Total Orders], USERELATIONSHIP(DimDate[DateID], Orders[ShipDate]))",
+      "Add a ShipDate column to the DimDate table"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "USERELATIONSHIP inside CALCULATE temporarily activates the inactive ShipDate relationship for that specific measure. This is the standard pattern for role-playing dimensions — one Date table plays multiple roles without creating redundant tables or disrupting the active relationship used by all other measures.",
+    "estimatedTimeSeconds": 90,
+    "tags": [
+      "Role-Playing Dimensions",
+      "USERELATIONSHIP",
+      "Active vs Inactive",
+      "DAX"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application"
+  },
+  {
+    "id": 517,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Star schema design",
+    "difficulty": "Medium",
+    "question": "A source database uses a snowflake schema where Products references Subcategories, which references Categories. A Power BI developer wants to optimize the model for query performance. What is the recommended approach?",
+    "choices": [
+      "Import all three tables and create 1:M relationships between them",
+      "Import only the Subcategories and Categories tables and skip Products",
+      "Flatten the snowflake into a single Products dimension table using Power Query merges",
+      "Use DirectQuery to preserve the normalized structure"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "Microsoft recommends flattening snowflake schemas into star schema using Power Query merge operations. This combines Categories and Subcategories into a single Products dimension table, reducing the number of relationships, simplifying DAX, and improving VertiPaq compression. Each extra \"hop\" in a snowflake adds join overhead.",
+    "estimatedTimeSeconds": 90,
+    "tags": [
+      "Star Schema",
+      "Power Query",
+      "Data Modeling",
+      "Performance"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application"
+  },
+  {
+    "id": 518,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Relationships and Cardinality",
+    "difficulty": "Medium",
+    "question": "A slicer placed on Sales[Region] is not filtering a Products table visual in the same report. The relationship between Products and Sales is configured as One-to-Many with single cross-filter direction (Products → Sales). What is the most likely cause?",
+    "choices": [
+      "The Products table is in a different dataset",
+      "Slicers on fact table columns cannot filter dimension tables with single cross-filter direction",
+      "Region must be added as a key column in the relationship",
+      "The slicer requires a bidirectional relationship to function"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "With single cross-filter direction, filters flow from Products (1) to Sales (M), not the reverse. A slicer on Sales[Region] can filter the Sales table itself, but cannot propagate back \"uphill\" to Products. To filter Products from a Sales column, either enable bidirectional cross-filter (with caution) or move the slicer to a Products column.",
+    "estimatedTimeSeconds": 90,
+    "tags": [
+      "Cross-Filter Direction",
+      "Filter Propagation",
+      "Diagnostics",
+      "Relationships"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis"
+  },
+  {
+    "id": 519,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Relationships and Cardinality",
+    "difficulty": "Easy",
+    "question": "In a Power BI star schema, where should dimension tables be positioned in a relationship?",
+    "choices": [
+      "On the \"many\" side of 1:M relationships",
+      "On the \"one\" side of 1:M relationships",
+      "Connected to each other, not to the fact table",
+      "Only connected to the fact table via M:M relationships"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Dimension tables should be on the \"one\" (1) side of One-to-Many relationships. This allows filters to flow from dimension tables into the fact table. Dimension tables contain unique key values (e.g., one row per ProductID), while fact tables contain repeated foreign keys.",
+    "estimatedTimeSeconds": 60,
+    "tags": [
+      "Star Schema",
+      "Relationships",
+      "Cardinality"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "direct",
+    "cognitiveLevel": "recall"
+  },
+  {
+    "id": 520,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Active and inactive relationships",
+    "difficulty": "Hard",
+    "question": "A developer has created three inactive relationships between DimDate and FactOrders (for ShipDate and DueDate, in addition to the active OrderDate relationship). A new report requires a bar chart showing order count by month using ship date. Which measure is correct?",
+    "choices": [
+      "Orders by Ship = CALCULATE(COUNTROWS(FactOrders), DimDate[DateID] = FactOrders[ShipDate])",
+      "Orders by Ship = COUNTROWS(FILTER(FactOrders, FactOrders[ShipDate] = SELECTEDVALUE(DimDate[DateID])))",
+      "Orders by Ship = CALCULATE(COUNTROWS(FactOrders), USERELATIONSHIP(DimDate[DateID], FactOrders[ShipDate]))",
+      "Orders by Ship = COUNTROWS(FactOrders) WITH RELATIONSHIP ShipDate"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "CALCULATE with USERELATIONSHIP is the correct pattern. It temporarily activates the inactive ShipDate relationship for this measure, allowing the Date axis filter to propagate via ShipDate instead of OrderDate. Options A and B do not correctly activate the relationship context. Option D is not valid DAX syntax.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "USERELATIONSHIP",
+      "Active vs Inactive",
+      "DAX",
+      "CALCULATE"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application"
+  },
+  {
+    "id": 521,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Relationships and Cardinality",
+    "difficulty": "Easy",
+    "question": "In which direction do filters propagate by default through a One-to-Many relationship in Power BI?",
+    "choices": [
+      "From the \"many\" (fact) side to the \"one\" (dimension) side",
+      "In both directions simultaneously",
+      "From the \"one\" (dimension) side to the \"many\" (fact) side",
+      "Filters do not propagate through relationships"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "By default, filters in Power BI propagate from the \"one\" (dimension) side to the \"many\" (fact) side. This means a slicer on a dimension table column will filter the fact table. The reverse direction requires enabling bidirectional cross-filter, which should be used carefully.",
+    "estimatedTimeSeconds": 60,
+    "tags": [
+      "Filter Propagation",
+      "Cardinality",
+      "Relationships"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "direct",
+    "cognitiveLevel": "recall"
+  },
+  {
+    "id": 522,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Relationships and Cardinality",
+    "difficulty": "Medium",
+    "question": "A data model contains Employees and Projects tables where an employee can work on multiple projects and a project can have multiple employees. What model design should be used?",
+    "choices": [
+      "A direct Many-to-Many relationship between Employees and Projects with bidirectional cross-filter",
+      "A One-to-Many relationship from Employees to Projects",
+      "A bridge table (EmployeeProjects) with 1:M relationships from both Employees and Projects",
+      "Merge Employees and Projects into a single flat table"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "A Many-to-Many relationship between employees and projects requires a bridge table (EmployeeProjects) that contains one row per employee-project assignment. This converts the M:M into two 1:M relationships, providing clean filter propagation and correct aggregations without double-counting.",
+    "estimatedTimeSeconds": 90,
+    "tags": [
+      "Many-to-Many",
+      "Bridge Table",
+      "Cardinality",
+      "Data Modeling"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application"
+  },
+  {
+    "id": 523,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Cross-filter direction",
+    "difficulty": "Medium",
+    "question": "A Power BI developer needs Products dimension attributes (like Category) to appear in a filter pane that controls both Sales and Returns fact tables. Currently, Category slicers only filter Sales. What is the recommended approach?",
+    "choices": [
+      "Enable bidirectional cross-filter on both the Products-Sales and Products-Returns relationships",
+      "Duplicate the Products table and connect one copy to each fact table",
+      "The single Products table with single-direction 1:M relationships to both fact tables already supports this requirement",
+      "Create a Products bridge table to connect to both fact tables"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "A single Products dimension table connected via single-direction 1:M relationships to both Sales and Returns fact tables already allows Category filters to affect both fact tables simultaneously. Filters flow from Products to both fact tables — this is exactly how shared dimensions are designed to work in a star schema. Bidirectional cross-filter is not needed here.",
+    "estimatedTimeSeconds": 90,
+    "tags": [
+      "Star Schema",
+      "Filter Propagation",
+      "Cross-Filter Direction",
+      "Relationships"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis"
+  },
+  {
+    "id": 524,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Star schema design",
+    "difficulty": "Medium",
+    "question": "An organization has an Employees table and an EmployeeSalaries table with a One-to-One relationship (each employee has exactly one salary record). What does Microsoft recommend for this scenario?",
+    "choices": [
+      "Keep the 1:1 relationship but enable bidirectional cross-filter",
+      "Merge the two tables into a single Employees table in Power Query",
+      "Convert the relationship to One-to-Many by duplicating salary rows",
+      "Use RELATED() to access salary data from the Employees table"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Microsoft recommends merging tables that have a One-to-One relationship into a single table in Power Query. This removes the unnecessary relationship overhead, simplifies the model, reduces model complexity, and typically improves query performance since Power BI does not need to join two tables on every calculation.",
+    "estimatedTimeSeconds": 90,
+    "tags": [
+      "Star Schema",
+      "Data Modeling",
+      "Power Query",
+      "Cardinality"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application"
+  },
+  {
+    "id": 525,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Relationships and Cardinality",
+    "difficulty": "Hard",
+    "question": "A Power BI model has three tables: Customers, Orders, and Products. Customers connects to Orders via CustomerID (1:M). Orders connects to Products via ProductID (1:M in reverse: Products to Orders). A slicer on Customers[Region] should filter a visual showing Products[Category]. What determines whether this works correctly?",
+    "choices": [
+      "Both relationships must use bidirectional cross-filter",
+      "Filters propagate from Customers → Orders → Products if all relationships allow forward propagation",
+      "A direct relationship must be created between Customers and Products",
+      "Region and Category must be added to the Orders fact table"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Filters travel through multiple relationship \"hops\" automatically in Power BI as long as each relationship allows propagation in the correct direction. Customers → Orders (1:M, single direction) and Products → Orders (1:M, single direction from Products) creates a valid path: Region filter enters Customers, propagates to Orders, which is then filtered — and since Products → Orders is 1:M, the Orders filter does NOT propagate back to Products. To filter Products from Customers, you need bidirectional on the Products-Orders relationship, or redesign the path.",
+    "estimatedTimeSeconds": 150,
+    "tags": [
+      "Filter Propagation",
+      "Multi-Hop",
+      "Relationships",
+      "Cardinality"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis"
+  },
+  {
+    "id": 526,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Role-playing dimensions",
+    "difficulty": "Medium",
+    "question": "A data model uses a DimDate table with three roles for an Orders table: OrderDate (active), ShipDate (inactive), DueDate (inactive). A developer changes the active relationship to ShipDate. What is the most significant risk of this action?",
+    "choices": [
+      "The model will no longer support time intelligence functions",
+      "All existing measures that depended on the OrderDate active relationship will now return incorrect results",
+      "The DimDate table will be duplicated in the model",
+      "ShipDate cannot be used as an active relationship in Power BI"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Changing the active relationship affects ALL measures that rely on the default relationship between DimDate and Orders. Any measure using time intelligence functions like TOTALYTD, SAMEPERIODLASTYEAR, or simple date filters will now use ShipDate instead of OrderDate, producing incorrect results for all order-date-based analysis.",
+    "estimatedTimeSeconds": 90,
+    "tags": [
+      "Active vs Inactive",
+      "Role-Playing Dimensions",
+      "Relationships",
+      "DAX"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis"
+  },
+  {
+    "id": 527,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Relationships and Cardinality",
+    "difficulty": "Hard",
+    "question": "A regional manager reports that the [Units Sold] measure displays the same value regardless of which product category is selected in the slicer. The category slicer is on Products[Category]. Which diagnostic step should be performed first?",
+    "choices": [
+      "Check whether the measure formula uses SUM or SUMX",
+      "Verify that the relationship between Products and Sales exists and is active",
+      "Check whether the Sales table has a Category column",
+      "Confirm that the date table is correctly marked as a date table"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "When a measure is unresponsive to a slicer on a dimension table, the most likely cause is a broken or missing relationship between the dimension and fact table. Without an active relationship, the filter cannot propagate from Products to Sales, so the measure always sees all rows regardless of the slicer selection. Always check the model relationship first.",
+    "estimatedTimeSeconds": 90,
+    "tags": [
+      "Diagnostics",
+      "Relationships",
+      "Filter Propagation",
+      "Cardinality"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis"
+  },
+  {
+    "id": 528,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Star schema design",
+    "difficulty": "Medium",
+    "question": "A Power BI developer is importing data from a normalized relational database that has separate tables for Countries, States, Cities, and Stores. All four tables chain together (Country → State → City → Store) before connecting to a Sales fact table. What is the recommended Power BI model design?",
+    "choices": [
+      "Import all four tables and create 1:M relationships between each consecutive pair",
+      "Import only the Stores table since it contains all the hierarchy needed",
+      "Merge Countries, States, Cities, and Stores into a single Geography dimension table in Power Query",
+      "Create a snowflake schema and use bidirectional cross-filter throughout"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "The recommended approach is to flatten the four-level snowflake into a single Geography dimension table using Power Query merge operations. Each geography level becomes a column (Country, State, City, StoreName) in one table. This reduces model complexity from 5 tables and 4 relationships to 2 tables and 1 relationship, improving performance and simplifying DAX.",
+    "estimatedTimeSeconds": 90,
+    "tags": [
+      "Star Schema",
+      "Power Query",
+      "Data Modeling",
+      "Performance"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application"
+  },
+  {
+    "id": 529,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Cross-filter direction",
+    "difficulty": "Hard",
+    "question": "A Power BI model uses a bridge table pattern: Customers (dim) → CustomerSegments (bridge) ← Segments (dim). The bridge table CustomerSegments assigns each customer to one or more segments. A measure counting customers per segment is returning incorrect results. What is the most likely configuration issue?",
+    "choices": [
+      "The Customers table needs a direct relationship to the Segments table",
+      "The bridge table relationships need bidirectional cross-filter enabled on the Segments-to-bridge relationship",
+      "The CustomerSegments table should be converted to a fact table type",
+      "A Many-to-Many relationship should be used directly between Customers and Segments"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "In a bridge table pattern, when you filter from Segments and need to count Customers, filters must flow: Segments → CustomerSegments (1:M) → Customers. But the relationship from Customers to CustomerSegments is 1:M, meaning filters naturally flow Customers → bridge, not the reverse. To allow Segments to filter through the bridge to Customers, bidirectional cross-filter must be enabled on the Segments-to-bridge relationship.",
+    "estimatedTimeSeconds": 150,
+    "tags": [
+      "Bridge Table",
+      "Many-to-Many",
+      "Cross-Filter Direction",
+      "Bidirectional"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis"
+  },
+  {
+    "id": 530,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Relationships and Cardinality",
+    "difficulty": "Easy",
+    "question": "A data analyst needs to determine the cardinality of a relationship. The ProductID column in the Products table contains [1, 2, 3, 4, 5] and the ProductID column in Sales contains [1, 1, 2, 3, 1, 4, 2]. What is the cardinality?",
+    "choices": [
+      "One-to-One, because both tables have ProductID",
+      "Many-to-Many, because both tables have repeated values",
+      "One-to-Many from Products to Sales, because Products[ProductID] is unique but Sales[ProductID] repeats",
+      "Many-to-One from Products to Sales"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "Products[ProductID] contains unique values (1,2,3,4,5 — no repeats). Sales[ProductID] repeats values (1 appears three times, 2 appears twice). When one side is unique and the other repeats, this is One-to-Many. The relationship runs from Products (unique \"1\" side) to Sales (repeating \"M\" side).",
+    "estimatedTimeSeconds": 60,
+    "tags": [
+      "Cardinality",
+      "Relationships",
+      "Data Modeling"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "understanding"
+  },
+  {
+    "id": 531,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Star schema design",
+    "difficulty": "Medium",
+    "question": "A retail company stores all sales data in a single flat table with columns: ProductName, CategoryName, CustomerName, Region, SaleDate, Year, Month, Amount. The report is slow and the model consumes significant memory. Which change would have the greatest performance impact?",
+    "choices": [
+      "Add a numeric index column to the flat table",
+      "Split the table into a star schema: Sales fact table plus Products, Customers, and Date dimension tables",
+      "Enable query folding on the flat table connection",
+      "Compress the flat table using aggregations"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Converting from a flat table to a star schema has the greatest performance impact. Text columns like ProductName, CategoryName, and CustomerName repeat on every row in the flat table, consuming large amounts of memory. In a star schema, each unique text value is stored once in a dimension table and referenced by a small integer ID in the fact table — VertiPaq compresses this very efficiently.",
+    "estimatedTimeSeconds": 90,
+    "tags": [
+      "Star Schema",
+      "Performance",
+      "Data Modeling"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis"
+  },
+  {
+    "id": 532,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Active and inactive relationships",
+    "difficulty": "Medium",
+    "question": "When Power BI automatically sets a relationship to inactive, what is the primary reason?",
+    "choices": [
+      "The relationship column contains null values",
+      "A relationship already exists between the same two tables (only one active relationship is allowed per table pair)",
+      "The cardinality is Many-to-Many",
+      "The relationship was created between two dimension tables"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Power BI automatically sets a relationship to inactive when another relationship already exists between the same two tables. Power BI enforces a rule that only ONE relationship can be active between any pair of tables at a time. This is common when a fact table has multiple date columns (e.g., OrderDate and ShipDate) that both connect to the same Date dimension.",
+    "estimatedTimeSeconds": 75,
+    "tags": [
+      "Active vs Inactive",
+      "Relationships",
+      "Cardinality"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "direct",
+    "cognitiveLevel": "understanding"
+  },
+  {
+    "id": 533,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Relationships and Cardinality",
+    "difficulty": "Hard",
+    "question": "A healthcare company has a Patients table and a Diagnoses table. Each patient can have multiple diagnoses. Each diagnosis applies to one patient. A developer creates a relationship but the [Average Diagnoses per Patient] measure returns 1.0 for every patient. What is the most likely cause?",
+    "choices": [
+      "The relationship is defined backwards: Diagnoses (1) → Patients (M) instead of Patients (1) → Diagnoses (M)",
+      "AVERAGE cannot be used with relationship-based calculations",
+      "The Patients table is missing a DateID column for time filtering",
+      "The measure requires CALCULATE to work with relationships"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "If the relationship is defined in the wrong direction — Diagnoses on the \"1\" side and Patients on the \"M\" side — then each row in Patients is matched to exactly one diagnosis row (forcing 1:1 behavior). The correct relationship is Patients (1) → Diagnoses (M), where Patients[PatientID] is unique and Diagnoses[PatientID] repeats for patients with multiple diagnoses.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Cardinality",
+      "Relationships",
+      "Diagnostics"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis"
+  },
+  {
+    "id": 534,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Star schema design",
+    "difficulty": "Medium",
+    "question": "Which table type should be on the \"one\" side of all relationships in a properly designed Power BI star schema?",
+    "choices": [
+      "Fact tables, because they contain the numeric measures",
+      "Dimension tables, because they contain unique key values",
+      "Bridge tables, because they resolve Many-to-Many relationships",
+      "Either type, as long as the relationship is 1:M"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Dimension tables should be on the \"one\" (1) side of all relationships in a star schema. Dimension tables contain unique key values (one row per entity), while fact tables contain the measurements with repeated foreign keys. Filters flow from dimension tables (1 side) into the fact table (M side), enabling correct slicing and aggregation.",
+    "estimatedTimeSeconds": 75,
+    "tags": [
+      "Star Schema",
+      "Cardinality",
+      "Data Modeling"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "direct",
+    "cognitiveLevel": "understanding"
+  },
+  {
+    "id": 535,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Cross-filter direction",
+    "difficulty": "Medium",
+    "question": "A developer needs to display a count of distinct Products that have been sold in each Region. The model has Products (dim) → Sales (fact) with single cross-filter direction. What approach allows counting distinct sold products when filtered by Region from a Customers dimension?",
+    "choices": [
+      "Enable bidirectional cross-filter on the Products-Sales relationship",
+      "Add Region directly to the Products table as a calculated column",
+      "Use DISTINCTCOUNT(Sales[ProductID]) in a measure — it naturally works in the Sales filter context from Customers",
+      "Create a direct relationship from Customers to Products"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "DISTINCTCOUNT(Sales[ProductID]) evaluates in the current filter context. When Region from Customers filters Sales (via the Customers → Sales 1:M relationship), the measure counts distinct ProductIDs in the filtered Sales rows. No bidirectional cross-filter on Products is needed because the measure reads ProductID from the Sales table, not from the Products dimension.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Cross-Filter Direction",
+      "Filter Propagation",
+      "DISTINCTCOUNT",
+      "DAX"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis"
+  },
+  {
+    "id": 536,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Active and inactive relationships",
+    "difficulty": "Hard",
+    "question": "A developer creates a measure: Shipped Orders = CALCULATE([Order Count], USERELATIONSHIP(DimDate[DateID], Orders[ShipDate])). When this measure is placed in a table visual with DimDate[Month] on rows, what determines which rows appear in the visual?",
+    "choices": [
+      "The OrderDate active relationship determines the row context",
+      "The Month column from DimDate determines the rows, and the measure filters Orders using ShipDate via USERELATIONSHIP",
+      "USERELATIONSHIP only works inside FILTER, not in visual row context",
+      "Both the OrderDate and ShipDate relationships are active simultaneously"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "In a table visual, DimDate[Month] creates a filter context for each row. USERELATIONSHIP activates the ShipDate relationship, so the measure counts Orders where ShipDate falls within the Month filter from DimDate. The visual rows are driven by DimDate[Month] (the row header), and the measure uses ShipDate as the relationship path — this is precisely how role-playing dimensions are used in practice.",
+    "estimatedTimeSeconds": 150,
+    "tags": [
+      "USERELATIONSHIP",
+      "Active vs Inactive",
+      "DAX",
+      "Filter Context"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis"
+  },
+  {
+    "id": 537,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Relationships and Cardinality",
+    "difficulty": "Medium",
+    "question": "A Power BI model has Sales and Refunds tables, both connecting to a Products dimension. A developer wants to show [Net Sales] = [Total Sales] - [Total Refunds] in a visual filtered by Product Category. Which model configuration supports this correctly with minimum complexity?",
+    "choices": [
+      "Enable bidirectional cross-filter on both Sales and Refunds relationships to Products",
+      "Single-direction 1:M relationships from Products to both Sales and Refunds — the standard star schema pattern",
+      "Create a bridge table that connects Products to both Sales and Refunds",
+      "Use a direct M:M relationship between Sales and Refunds through Products"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "This is a standard shared-dimension star schema pattern. Products connects to both Sales and Refunds via single-direction 1:M relationships. A Category filter on Products propagates to BOTH fact tables simultaneously, making [Net Sales] = [Total Sales] - [Total Refunds] work correctly without bidirectional filters, bridge tables, or additional complexity.",
+    "estimatedTimeSeconds": 90,
+    "tags": [
+      "Star Schema",
+      "Filter Propagation",
+      "Relationships",
+      "Data Modeling"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis"
+  },
+  {
+    "id": 538,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Relationships and Cardinality",
+    "difficulty": "Hard",
+    "question": "A [Total Sales by Country] measure is returning totals that include sales from all countries regardless of the country selected in a slicer. The model has: Country → Region → Sales (two 1:M hops). The relationship between Region and Sales was recently recreated. What should the developer verify first?",
+    "choices": [
+      "That the Country table has a DateID column for time filtering",
+      "That the recreated Region-to-Sales relationship is active and in the correct direction (Region 1 → Sales M)",
+      "That the Country measure uses CALCULATE with ALLEXCEPT",
+      "That the Sales table has a Country column as a redundant filter"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "When a multi-hop filter chain breaks, the issue is almost always a relationship that is inactive, in the wrong direction, or missing. Since the Region-Sales relationship was recently recreated, the first verification should confirm: (1) it is active, not accidentally set to inactive, and (2) the direction is correct — Region on the \"1\" side and Sales on the \"M\" side. An incorrect direction would block the filter from Country reaching Sales.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Diagnostics",
+      "Relationships",
+      "Filter Propagation",
+      "Multi-Hop"
+    ],
+    "topic": "Data Modeling",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis"
   }
 ]

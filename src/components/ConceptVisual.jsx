@@ -100,21 +100,37 @@ function FilteredTableVisual({ v }) {
 
 function ComparisonVisual({ v }) {
   const { left, right, winner } = v
+  const hasWinner = winner === 'left' || winner === 'right'
   return (
     <div>
       {v.title && <p className="text-xs font-semibold text-gray-500 mb-2">{v.title}</p>}
       <div className="grid grid-cols-2 gap-2 text-xs">
         {[left, right].map((side, si) => {
-          const isWinner = winner === (si === 0 ? 'left' : 'right')
+          const sideKey = si === 0 ? 'left' : 'right'
+          const isWinner = hasWinner && winner === sideKey
+          const isLoser  = hasWinner && winner !== sideKey
+
+          const borderCls = isWinner ? 'border-green-400 bg-green-50'
+            : isLoser ? 'border-red-200 bg-red-50'
+            : 'border-blue-200 bg-blue-50'
+          const labelCls  = isWinner ? 'text-green-800'
+            : isLoser ? 'text-red-700'
+            : 'text-blue-800'
+          const textCls   = isWinner ? 'text-green-900'
+            : isLoser ? 'text-red-800'
+            : 'text-blue-900'
+          const prefix    = isWinner ? '✓ ' : isLoser ? '✗ ' : ''
+          const bullet    = isWinner ? '•' : isLoser ? '–' : '•'
+
           return (
-            <div key={si} className={`rounded-lg border-2 p-2.5 ${isWinner ? 'border-green-400 bg-green-50' : 'border-red-200 bg-red-50'}`}>
-              <p className={`font-semibold mb-1.5 ${isWinner ? 'text-green-800' : 'text-red-700'}`}>
-                {isWinner ? '✓ ' : '✗ '}{side.label}
+            <div key={si} className={`rounded-lg border-2 p-2.5 ${borderCls}`}>
+              <p className={`font-semibold mb-1.5 ${labelCls}`}>
+                {prefix}{side.label}
               </p>
               <ul className="space-y-1">
                 {side.items.map((item, ii) => (
-                  <li key={ii} className={`flex items-start gap-1 leading-snug ${isWinner ? 'text-green-900' : 'text-red-800'}`}>
-                    <span className="flex-shrink-0 mt-0.5">{isWinner ? '•' : '–'}</span>
+                  <li key={ii} className={`flex items-start gap-1 leading-snug ${textCls}`}>
+                    <span className="flex-shrink-0 mt-0.5">{bullet}</span>
                     <span>{item}</span>
                   </li>
                 ))}

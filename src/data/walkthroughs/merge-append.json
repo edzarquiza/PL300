@@ -3,7 +3,7 @@
   "concept": "Merge vs Append",
   "category": "Power Query",
   "tagline": "Combine queries horizontally (columns) or vertically (rows)",
-  "relatedTags": ["Merge Queries", "Append Queries"],
+  "relatedTags": ["Merge Queries", "Append Queries", "Merge", "Append", "Power Query"],
   "slides": [
     {
       "type": "intro",

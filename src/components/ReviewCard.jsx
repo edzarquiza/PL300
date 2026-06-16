@@ -5,6 +5,7 @@ import VisualQuestionContext from './VisualQuestionContext'
 import SampleDataTable from './SampleDataTable'
 import ResultTable from './ResultTable'
 import { addToRetryQueue, removeFromRetryQueue, isInRetryQueue } from '../services/retryQueueService'
+import MicrosoftReasoningCard from './MicrosoftReasoningCard'
 import { formatTime } from '../utils/examUtils'
 import { DAX_FUNCTIONS } from '../data/daxFunctions'
 import { getWalkthroughForTags } from '../data/walkthroughs'
@@ -293,6 +294,13 @@ export default function ReviewCard({ question, userAnswer, questionNumber, confi
               </span>
             ))}
           </div>
+        </CollapseSection>
+      )}
+
+      {/* Expandable: How Microsoft Thinks */}
+      {question.microsoftReasoning && (
+        <CollapseSection title="💡 How Microsoft Thinks" defaultOpen={false}>
+          <MicrosoftReasoningCard question={question} />
         </CollapseSection>
       )}
 

@@ -3,7 +3,7 @@
   "concept": "COUNTROWS & DISTINCTCOUNT",
   "category": "DAX",
   "tagline": "Count table rows vs count unique values — a critical PL-300 distinction",
-  "relatedTags": ["COUNTROWS", "DISTINCTCOUNT", "Aggregation", "COUNT"],
+  "relatedTags": ["COUNTROWS", "DISTINCTCOUNT", "Aggregation", "Aggregations", "COUNT", "DAX", "FILTER"],
   "slides": [
     {
       "type": "intro",

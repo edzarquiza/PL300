@@ -4,7 +4,7 @@
   "category": "DAX",
   "tagline": "Returns a filtered table — used inside CALCULATE or other table functions",
   "daxFunctionId": "filter",
-  "relatedTags": ["FILTER"],
+  "relatedTags": ["FILTER", "DAX", "Performance"],
   "slides": [
     {
       "type": "intro",

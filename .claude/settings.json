@@ -5,7 +5,9 @@
       "PowerShell(*)",
       "Read(//tmp/**)",
       "Read(//d/d/CLAUDE Projects/PL300/src/components/**)",
-      "Read(//d/d/CLAUDE Projects/PL300/src/pages/**)"
+      "Read(//d/d/CLAUDE Projects/PL300/src/pages/**)",
+      "Skill(code-review)",
+      "Skill(code-review:*)"
     ],
     "additionalDirectories": [
       "D:\\CLAUDE Projects\\PL300"

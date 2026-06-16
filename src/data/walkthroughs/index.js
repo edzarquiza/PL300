@@ -60,12 +60,16 @@ export const WALKTHROUGH_BY_DAX_FN = Object.fromEntries(
   WALKTHROUGHS.filter(w => w.daxFunctionId).map(w => [w.daxFunctionId, w])
 )
 
-// Lookup by tag — any question tag can match a walkthrough
+// Lookup by tag — returns the walkthrough with the most matching tags
 export function getWalkthroughForTags(tags = []) {
   const upper = tags.map(t => t.toUpperCase())
-  return WALKTHROUGHS.find(w =>
-    (w.relatedTags || []).some(rt => upper.includes(rt.toUpperCase()))
-  ) ?? null
+  let best = null
+  let bestScore = 0
+  for (const w of WALKTHROUGHS) {
+    const score = (w.relatedTags || []).filter(rt => upper.includes(rt.toUpperCase())).length
+    if (score > bestScore) { best = w; bestScore = score }
+  }
+  return best
 }
 
 export const WALKTHROUGH_CATEGORIES = ['DAX', 'Power Query', 'Data Modeling', 'Security', 'Visualization']

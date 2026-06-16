@@ -4,7 +4,7 @@
   "category": "DAX",
   "tagline": "Modifies filter context — the most important DAX function",
   "daxFunctionId": "calculate",
-  "relatedTags": ["CALCULATE", "Filter Context"],
+  "relatedTags": ["CALCULATE", "Filter Context", "DAX"],
   "slides": [
     {
       "type": "intro",
