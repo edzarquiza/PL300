@@ -15,6 +15,7 @@ import { getExamHistory } from '../services/historyService'
 import { getPsychologyAnalytics } from '../services/psychologyAnalyticsService'
 import { EXAM_TRACKS } from '../data/examTracks'
 import { recordExamAnswers } from '../services/exposureTrackingService'
+import { isAnswerEmpty, isAnswerCorrect } from '../utils/answerUtils'
 
 export default function ResultsPage() {
   const { state } = useLocation()
@@ -36,6 +37,18 @@ export default function ResultsPage() {
   const isStudy = mode === 'study'
   const track = EXAM_TRACKS.find(t => t.id === trackId)
 
+  function handleRetakeWrong() {
+    const wrongIds = questions
+      .filter(q => {
+        const ans = answers[q.id]
+        return !isAnswerEmpty(ans, q) && !isAnswerCorrect(ans, q)
+      })
+      .map(q => String(q.id))
+    if (!wrongIds.length) return
+    startExam({ questionIds: wrongIds, questionCount: wrongIds.length, examMode: mode, track: trackId })
+    navigate('/exam')
+  }
+
   function handleRetryExact() {
     const ids = questions.map(q => String(q.id))
     startExam({
@@ -43,6 +56,7 @@ export default function ResultsPage() {
       questionCount: ids.length,
       examMode: mode,
       track: trackId,
+      seed: examSeed,
     })
     navigate('/exam')
   }
@@ -426,6 +440,14 @@ export default function ResultsPage() {
           >
             ↺ Retry Same
           </button>
+          {incorrect > 0 && (
+            <button
+              onClick={handleRetakeWrong}
+              className="flex-1 py-3 text-sm font-semibold text-white rounded-xl transition-colors bg-red-500 hover:bg-red-600"
+            >
+              ✗ Retake Wrong ({incorrect})
+            </button>
+          )}
           <button
             onClick={() => navigate('/')}
             className={`flex-1 py-3 text-sm font-semibold text-white rounded-xl transition-colors ${

@@ -26,6 +26,20 @@ export default function HistoryPage() {
     navigate('/exam')
   }
 
+  function handleRetakeWrong(entry) {
+    const wrongIds = Object.entries(entry.questionResults ?? {})
+      .filter(([, correct]) => correct === false)
+      .map(([id]) => id)
+    if (!wrongIds.length) return
+    startExam({
+      questionIds: wrongIds,
+      questionCount: wrongIds.length,
+      examMode: entry.mode ?? 'exam',
+      track: entry.trackId ?? 'full_pl300',
+    })
+    navigate('/exam')
+  }
+
   function handleClear() {
     clearHistory()
     setHistory([])
@@ -169,14 +183,27 @@ export default function HistoryPage() {
                         {isExpanded ? '▲ Hide answers' : `▼ Review ${entry.questionIds.length} answers`}
                       </button>
                     ) : <span />}
-                    {hasAnswers && (
-                      <button
-                        onClick={() => handleRetake(entry)}
-                        className="text-xs font-semibold text-white bg-amber-500 hover:bg-amber-600 px-3 py-1.5 rounded-lg transition-colors flex-shrink-0"
-                      >
-                        ↺ Retake
-                      </button>
-                    )}
+                    {hasAnswers && (() => {
+                      const wrongCount = Object.values(entry.questionResults ?? {}).filter(v => v === false).length
+                      return (
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          {wrongCount > 0 && (
+                            <button
+                              onClick={() => handleRetakeWrong(entry)}
+                              className="text-xs font-semibold text-white bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-lg transition-colors"
+                            >
+                              ✗ Wrong only ({wrongCount})
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleRetake(entry)}
+                            className="text-xs font-semibold text-white bg-amber-500 hover:bg-amber-600 px-3 py-1.5 rounded-lg transition-colors"
+                          >
+                            ↺ Retake
+                          </button>
+                        </div>
+                      )
+                    })()}
                   </div>
 
                   {isExpanded && hasAnswers && (
