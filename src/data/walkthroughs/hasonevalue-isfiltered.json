@@ -1,0 +1,72 @@
+{
+  "id": "hasonevalue-isfiltered",
+  "concept": "HASONEVALUE & ISFILTERED",
+  "category": "DAX",
+  "tagline": "Detect the filter context state — make measures that behave differently depending on how they are sliced",
+  "daxFunctionId": "hasonevalue",
+  "relatedTags": ["HASONEVALUE", "ISFILTERED", "SELECTEDVALUE", "Filter Context", "DAX"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Context Detection Functions",
+      "icon": "🔍",
+      "body": "HASONEVALUE and ISFILTERED let your DAX measures check the current filter context and change their behavior accordingly. HASONEVALUE returns TRUE if a column has exactly one value in the current filter context (only one item selected). ISFILTERED returns TRUE if a column has any direct filter applied to it. These are the foundation of conditional measures — showing a subtotal when no selection is made, or displaying 'Select one product' when multiple are selected.",
+      "keyPoint": "HASONEVALUE(column) = exactly one unique value is visible in the current context. ISFILTERED(column) = at least one filter has been directly applied to the column. They answer different questions about the filter context."
+    },
+    {
+      "type": "table",
+      "title": "Filter Context Scenarios",
+      "caption": "How each function behaves depending on slicer state",
+      "headers": ["Slicer State", "HASONEVALUE", "ISFILTERED", "SELECTEDVALUE"],
+      "rows": [
+        ["No slicer (all data)", "FALSE", "FALSE", "BLANK"],
+        ["One product selected", "TRUE", "TRUE", "\"Widget A\""],
+        ["Two products selected", "FALSE", "TRUE", "BLANK"],
+        ["One region (cross-filter)", "Depends on indirect filter", "FALSE (no direct filter)", "BLANK"]
+      ],
+      "note": "ISFILTERED detects DIRECT filters only. A cross-filter from another table (e.g., Region slicer filtering via relationship) does NOT make ISFILTERED return TRUE on the filtered table's column."
+    },
+    {
+      "type": "dax",
+      "title": "Conditional Measure Patterns",
+      "code": "-- Pattern 1: Show a specific value only when one product is selected\nSingle Product Revenue =\nIF(\n    HASONEVALUE(DimProduct[ProductName]),\n    [Total Revenue],\n    \"Select exactly one product\"\n)\n\n-- Pattern 2: Show selected value or a default message\nSelected Region =\nIF(\n    HASONEVALUE(DimRegion[Region]),\n    SELECTEDVALUE(DimRegion[Region]),\n    \"All Regions\"\n)\n\n-- Pattern 3: Change metric when category is filtered\nDynamic KPI =\nIF(\n    ISFILTERED(DimProduct[Category]),\n    [Category Revenue Share %],\n    [Total Revenue]\n)\n\n-- Pattern 4: Check if MULTIPLE items are selected\nMultiSelect Warning =\nIF(\n    ISFILTERED(DimProduct[ProductKey]) && NOT HASONEVALUE(DimProduct[ProductKey]),\n    \"⚠ Multiple products selected\",\n    BLANK()\n)",
+      "annotation": "Pattern 4 combines ISFILTERED (something is selected) with NOT HASONEVALUE (more than one thing selected) to detect a multi-select state — useful for warning users when a metric only makes sense for a single selection."
+    },
+    {
+      "type": "table",
+      "title": "Result — Context-Aware Measure Behavior",
+      "caption": "The same measure produces different output depending on slicer state",
+      "headers": ["Slicer Selection", "HASONEVALUE", "ISFILTERED", "Measure Output"],
+      "rows": [
+        ["(nothing selected)", "FALSE", "FALSE", "Total Revenue: $4.2M"],
+        ["Widget A only", "TRUE", "TRUE", "Widget A Revenue: $48,500"],
+        ["Widget A + Widget B", "FALSE", "TRUE", "⚠ Multiple products selected"]
+      ],
+      "note": "Context-detection functions are most useful for card visuals and KPI tiles where showing a company-wide total alongside a per-product detail would be confusing."
+    },
+    {
+      "type": "text",
+      "title": "HASONEVALUE vs SELECTEDVALUE vs ISINSCOPE",
+      "bullets": [
+        "HASONEVALUE(col) → TRUE/FALSE — 'Is exactly one value in context?'",
+        "SELECTEDVALUE(col, [alternate]) → returns the single value or alternate — combines HASONEVALUE check internally",
+        "ISFILTERED(col) → TRUE/FALSE — 'Has a direct filter been applied to this column?'",
+        "ISCROSSFILTERED(col) → TRUE/FALSE — 'Is this column filtered directly OR through a relationship?'",
+        "ISINSCOPE(col) → TRUE/FALSE — 'Is this column at a visible level in a matrix subtotal hierarchy?'"
+      ],
+      "keyPoint": "SELECTEDVALUE(col, 'All') is shorthand for IF(HASONEVALUE(col), VALUES(col), 'All'). Use it when you want the single selected value or a fallback. Use HASONEVALUE when you need a boolean condition for more complex logic."
+    },
+    {
+      "type": "text",
+      "title": "PL-300 Exam — Key Facts",
+      "bullets": [
+        "HASONEVALUE checks the filter context, not the visual rendering — it evaluates at the data engine level",
+        "ISFILTERED(col) = TRUE only for DIRECT filters on the column; cross-filters from relationships return FALSE",
+        "ISCROSSFILTERED(col) = TRUE for both direct and indirect (relationship) filters — use this to detect filters from related tables",
+        "Common exam scenario: 'A card visual should show total revenue when no product is selected, or product-specific revenue when one is selected' → IF(HASONEVALUE(Product[Name]), [Product Revenue], [Total Revenue])",
+        "SELECTEDVALUE is the most concise solution for single-selection display — the exam often rewards using it over a verbose IF/HASONEVALUE construct"
+      ],
+      "keyPoint": "HASONEVALUE = context guard. ISFILTERED = filter detection. SELECTEDVALUE = context-aware display. Know when to use each — and remember ISFILTERED only detects direct filters, not cross-filter propagation."
+    }
+  ]
+}

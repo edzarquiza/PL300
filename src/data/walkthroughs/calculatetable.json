@@ -1,0 +1,75 @@
+{
+  "id": "calculatetable",
+  "concept": "CALCULATETABLE",
+  "category": "DAX",
+  "tagline": "Return a filtered table expression — CALCULATE's table-returning counterpart, used inside iterators and table functions",
+  "daxFunctionId": "calculatetable",
+  "relatedTags": ["CALCULATETABLE", "CALCULATE", "Filter Context", "Table Functions", "DAX"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "CALCULATETABLE — CALCULATE for Tables",
+      "icon": "🗂️",
+      "body": "CALCULATETABLE works exactly like CALCULATE but returns a filtered table instead of a scalar value. It applies filter arguments to a table expression and returns the rows that pass those filters. This makes it essential for creating filtered tables to pass into iterators (SUMX, COUNTROWS), relationship functions (USERELATIONSHIP), or other table-consuming DAX functions. Anywhere you need a filtered table — not just a filtered scalar — CALCULATETABLE is the answer.",
+      "keyPoint": "CALCULATETABLE(Table, Filter1, Filter2, ...) → returns a filtered table. CALCULATE(Expression, Filter1, ...) → returns a scalar. They share the same filter modification logic — CALCULATETABLE just targets a table instead of an expression."
+    },
+    {
+      "type": "table",
+      "title": "Sales Data — Full Table",
+      "caption": "We want to count only active customers who have placed orders over $500",
+      "headers": ["CustomerID", "OrderAmount", "Status"],
+      "rows": [
+        ["C001", "750", "Active"],
+        ["C002", "200", "Inactive"],
+        ["C003", "1200", "Active"],
+        ["C004", "450", "Active"],
+        ["C005", "800", "Inactive"]
+      ],
+      "note": "Goal: COUNTROWS of the filtered table where Status = 'Active' AND OrderAmount > 500. Result should be 2 (C001 and C003)."
+    },
+    {
+      "type": "dax",
+      "title": "CALCULATETABLE vs FILTER — Key Difference",
+      "code": "-- Using CALCULATETABLE (modifies filter context — preferred)\nActiveHighValue =\nCOUNTROWS(\n    CALCULATETABLE(\n        Sales,\n        Sales[Status] = \"Active\",\n        Sales[OrderAmount] > 500\n    )\n)\n-- Returns: 2 (C001, C003)\n\n-- Using FILTER (iterates rows — slower on large tables)\nActiveHighValueFilter =\nCOUNTROWS(\n    FILTER(\n        Sales,\n        Sales[Status] = \"Active\" && Sales[OrderAmount] > 500\n    )\n)\n-- Returns: 2 (same result, different mechanism)\n\n-- CALCULATETABLE in a security filter (RLS alternative)\nDeptAccess =\nCALCULATETABLE(\n    Employees,\n    DeptAccess[ManagerEmail] = USERPRINCIPALNAME()\n)",
+      "annotation": "CALCULATETABLE applies filter arguments as context modifications — using the same efficient engine as CALCULATE. FILTER iterates row by row. For simple column filters, CALCULATETABLE is faster and more readable."
+    },
+    {
+      "type": "table",
+      "title": "Result — Filtered Table from CALCULATETABLE",
+      "caption": "CALCULATETABLE returns only rows matching both filter conditions",
+      "headers": ["CustomerID", "OrderAmount", "Status", "Included?"],
+      "rows": [
+        ["C001", "750", "Active", "Yes — active AND > $500"],
+        ["C002", "200", "Inactive", "No — inactive"],
+        ["C003", "1,200", "Active", "Yes — active AND > $500"],
+        ["C004", "450", "Active", "No — active but ≤ $500"],
+        ["C005", "800", "Inactive", "No — inactive"]
+      ],
+      "note": "COUNTROWS of the CALCULATETABLE result = 2. The filtered table contains only C001 and C003."
+    },
+    {
+      "type": "text",
+      "title": "When to Use CALCULATETABLE",
+      "bullets": [
+        "Inside an iterator that needs a pre-filtered table: SUMX(CALCULATETABLE(Sales, ...), [Amount])",
+        "To create a virtual security filter table for RLS: CALCULATETABLE(Employees, AccessTable[Email] = USERPRINCIPALNAME())",
+        "When building virtual relationships using TREATAS: TREATAS(CALCULATETABLE(Budget, ...), Actuals[CostCenter])",
+        "Inside COUNTROWS when you need a filtered count: COUNTROWS(CALCULATETABLE(Orders, Orders[Status] = \"Shipped\"))",
+        "The key distinction: CALCULATETABLE returns a TABLE; CALCULATE returns a SCALAR — choose based on what the outer function expects"
+      ],
+      "keyPoint": "Use CALCULATETABLE when the outer function expects a table argument and you need to apply filters to that table. CALCULATE wraps a scalar expression. Never mix them up — CALCULATE cannot be used where a table is expected."
+    },
+    {
+      "type": "text",
+      "title": "PL-300 Exam — Key Facts",
+      "bullets": [
+        "CALCULATETABLE and CALCULATE share the same filter argument syntax and semantics — they differ only in what they return (table vs scalar)",
+        "CALCULATETABLE is frequently used in RLS expressions to filter a security bridge table",
+        "FILTER(Table, condition) is the alternative — but CALCULATETABLE is preferred for simple column filters because it is evaluated at the storage engine level (faster than FILTER's Formula Engine row iteration)",
+        "CALCULATETABLE cannot be used inside a measure's return position where a scalar is expected — it returns a table",
+        "Common exam scenario: 'A measure needs to count rows matching multiple conditions' → COUNTROWS(CALCULATETABLE(...))"
+      ],
+      "keyPoint": "Exam shortcut: whenever a question asks for a filtered COUNT of rows, COUNTROWS(CALCULATETABLE(Table, filter1, filter2)) is almost always the cleanest answer — and one CALCULATE call with ALL the filter args is more readable than nested FILTERs."
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "id": "dateadd",
+  "concept": "DATEADD",
+  "category": "DAX",
+  "tagline": "Shift a date context forward or backward by a specified number of intervals — the foundation of period-over-period comparisons",
+  "daxFunctionId": "dateadd",
+  "relatedTags": ["DATEADD", "Time Intelligence", "Period Over Period", "SAMEPERIODLASTYEAR"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Period-Over-Period Comparisons with DATEADD",
+      "icon": "📅",
+      "body": "DATEADD shifts the current date filter context by a fixed number of intervals — days, months, quarters, or years. The result is a new set of dates from which you can calculate a measure, enabling you to compare the current period against any prior or future period. SAMEPERIODLASTYEAR is actually a special case of DATEADD(-1, YEAR).",
+      "keyPoint": "DATEADD(DateColumn, -1, MONTH) shifts the filter context back one month. The measure you wrap inside CALCULATE then evaluates as if the current month were the previous month — producing last month's value."
+    },
+    {
+      "type": "table",
+      "title": "Sample Sales Data",
+      "caption": "Monthly sales across three periods we want to compare",
+      "headers": ["Month", "Sales"],
+      "rows": [
+        ["Jan 2024", "85,000"],
+        ["Feb 2024", "92,000"],
+        ["Mar 2024", "110,000"],
+        ["Jan 2023", "78,000"],
+        ["Feb 2023", "86,000"],
+        ["Mar 2023", "99,000"]
+      ],
+      "note": "Goal: for each month in 2024, show the same month from 2023 as 'Sales LY'. Report filter context: the user is viewing Q1 2024."
+    },
+    {
+      "type": "dax",
+      "title": "Period-Over-Period Measures with DATEADD",
+      "code": "-- Last Year (same month, prior year)\nSales LY =\nCALCULATE(\n    [Total Sales],\n    DATEADD(DimDate[Date], -1, YEAR)\n)\n\n-- Last Month\nSales Last Month =\nCALCULATE(\n    [Total Sales],\n    DATEADD(DimDate[Date], -1, MONTH)\n)\n\n-- Last Quarter\nSales Last Quarter =\nCALCULATE(\n    [Total Sales],\n    DATEADD(DimDate[Date], -1, QUARTER)\n)\n\n-- Year over Year % Change\nYoY % =\nDIVIDE([Total Sales] - [Sales LY], [Sales LY])",
+      "annotation": "DATEADD returns a table of dates shifted by the specified interval. CALCULATE then evaluates [Total Sales] in the context of those shifted dates — effectively reading the prior period's data."
+    },
+    {
+      "type": "table",
+      "title": "Result — Sales with Prior Year Comparison",
+      "caption": "DATEADD shifts the filter context to produce the prior period comparison",
+      "headers": ["Month", "Sales 2024", "Sales LY (2023)", "YoY %"],
+      "rows": [
+        ["Jan 2024", "85,000", "78,000", "+9.0%"],
+        ["Feb 2024", "92,000", "86,000", "+7.0%"],
+        ["Mar 2024", "110,000", "99,000", "+11.1%"]
+      ],
+      "note": "DATEADD(-1, YEAR) on Jan 2024 returns Jan 2023. CALCULATE([Total Sales]) then reads the Jan 2023 value — 78,000."
+    },
+    {
+      "type": "text",
+      "title": "DATEADD vs SAMEPERIODLASTYEAR",
+      "bullets": [
+        "SAMEPERIODLASTYEAR(DimDate[Date]) is identical to DATEADD(DimDate[Date], -1, YEAR)",
+        "DATEADD is more flexible — you can shift by any number of any interval (days, months, quarters, years)",
+        "DATEADD(DimDate[Date], -2, QUARTER) compares against 2 quarters ago — no equivalent shorthand function exists",
+        "Both require a marked Date Table with a contiguous date range",
+        "Positive numbers shift FORWARD in time; negative numbers shift BACKWARD"
+      ],
+      "keyPoint": "Use SAMEPERIODLASTYEAR for simple year-over-year comparisons. Use DATEADD for any other period shift — last month, last quarter, or multi-period offsets."
+    },
+    {
+      "type": "text",
+      "title": "PL-300 Exam — Key Facts",
+      "bullets": [
+        "DATEADD requires a marked Date Table — without it, results will be BLANK or incorrect",
+        "The date range must be contiguous — gaps in the date table cause incorrect shifted periods",
+        "DATEADD(-1, YEAR) and SAMEPERIODLASTYEAR produce identical results — both are correct on the exam",
+        "DATEADD shifts the entire visible date range — in a Q1 2024 context, it returns all of Q1 2023",
+        "Common exam scenario: 'Calculate sales for the same period last year' → CALCULATE([Sales], DATEADD(Date[Date], -1, YEAR))"
+      ],
+      "keyPoint": "DATEADD is the most flexible time-shift function. Memorise the syntax: DATEADD(DateColumn, NumberOfIntervals, YEAR|QUARTER|MONTH|DAY). Negative = back in time, positive = forward."
+    }
+  ]
+}

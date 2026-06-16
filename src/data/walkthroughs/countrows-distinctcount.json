@@ -1,0 +1,71 @@
+{
+  "id": "countrows-distinctcount",
+  "concept": "COUNTROWS & DISTINCTCOUNT",
+  "category": "DAX",
+  "tagline": "Count table rows vs count unique values — a critical PL-300 distinction",
+  "relatedTags": ["COUNTROWS", "DISTINCTCOUNT", "Aggregation", "COUNT"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Counting in DAX — Two Different Questions",
+      "icon": "🔢",
+      "body": "DAX has several count functions that answer fundamentally different questions. COUNTROWS asks: how many rows exist in this table or result set? DISTINCTCOUNT asks: how many unique values exist in this column? Because customers, products, and regions can repeat across many rows, these two functions often return very different numbers.",
+      "keyPoint": "COUNTROWS counts rows. DISTINCTCOUNT counts unique column values. Read the business question carefully to choose between them."
+    },
+    {
+      "type": "table",
+      "title": "Orders Table — Sample Data",
+      "caption": "Five order rows, but only three distinct customers",
+      "headers": ["OrderID", "CustomerID", "Amount"],
+      "rows": [
+        ["ORD-001", "C101", 500],
+        ["ORD-002", "C102", 200],
+        ["ORD-003", "C101", 350],
+        ["ORD-004", "C103", 800],
+        ["ORD-005", "C102", 150]
+      ],
+      "note": "C101 placed two orders (rows 1 and 3). C102 placed two orders (rows 2 and 5). C103 placed one order."
+    },
+    {
+      "type": "dax",
+      "title": "Two Measures — One Table",
+      "code": "Order Count =\nCOUNTROWS(Orders)\n\nUnique Customer Count =\nDISTINCTCOUNT(Orders[CustomerID])",
+      "annotation": "COUNTROWS counts every row regardless of duplicate CustomerIDs. DISTINCTCOUNT ignores repeated CustomerID values — C101 and C102 each count as one customer."
+    },
+    {
+      "type": "result",
+      "title": "Results Compared",
+      "steps": [
+        "COUNTROWS(Orders) → 5  (five rows in the table)",
+        "DISTINCTCOUNT(Orders[CustomerID]) → 3  (C101, C102, C103 — each counted once)",
+        "Difference: two customers placed more than one order, creating the gap between 5 and 3"
+      ],
+      "value": "5 orders / 3 customers",
+      "unit": "Same table, two very different answers"
+    },
+    {
+      "type": "text",
+      "title": "PL-300 Exam — Choosing the Right Function",
+      "bullets": [
+        "'How many orders were placed this month?' → COUNTROWS(Orders) — each order is a row",
+        "'How many customers placed orders?' → DISTINCTCOUNT(Orders[CustomerID]) — customers repeat across orders",
+        "'How many products are in the catalog?' → COUNTROWS(DimProduct) — each product is one row in the dimension",
+        "'How many distinct products were sold?' → DISTINCTCOUNT(FactSales[ProductKey]) — products repeat in sales rows",
+        "'How many sales regions had activity?' → DISTINCTCOUNT(FactSales[RegionID]) — same region appears in many rows"
+      ],
+      "keyPoint": "The word 'distinct' or 'unique' almost always signals DISTINCTCOUNT. Row counts, transaction counts, and record counts signal COUNTROWS.",
+      "warning": "Both functions respect filter context. In a matrix filtered to Q1, COUNTROWS returns only Q1 rows and DISTINCTCOUNT returns only customers who appear in Q1 rows."
+    },
+    {
+      "type": "text",
+      "title": "Related Count Functions",
+      "bullets": [
+        "COUNT(column) — counts non-blank numeric or date values in a column",
+        "COUNTA(column) — counts non-blank values in any data type including text",
+        "COUNTBLANK(column) — counts null or empty values in a column",
+        "COUNTROWS(FILTER(Table, condition)) — counts rows that meet a condition; often cleaner as CALCULATE(COUNTROWS(Table), condition)"
+      ],
+      "keyPoint": "For the PL-300 exam: DISTINCTCOUNT is nearly always the answer when the scenario asks 'how many unique customers, products, or categories.' COUNTROWS is the answer when the scenario asks about orders, transactions, or record counts."
+    }
+  ]
+}

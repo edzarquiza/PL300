@@ -8,12 +8,32 @@
     "visual": {
       "type": "table",
       "title": "Visual Selection Guide",
-      "headers": ["Analysis Goal", "Best Visual", "Why"],
+      "headers": [
+        "Analysis Goal",
+        "Best Visual",
+        "Why"
+      ],
       "rows": [
-        ["Trend over time", "Line chart", "Shows continuous change clearly"],
-        ["Compare categories", "Bar / Column chart", "Easy side-by-side comparison"],
-        ["Part of whole (few)", "Donut / Pie chart", "Works for 3–5 categories max"],
-        ["Correlation / outliers", "Scatter plot", "Shows relationship between two measures"]
+        [
+          "Trend over time",
+          "Line chart",
+          "Shows continuous change clearly"
+        ],
+        [
+          "Compare categories",
+          "Bar / Column chart",
+          "Easy side-by-side comparison"
+        ],
+        [
+          "Part of whole (few)",
+          "Donut / Pie chart",
+          "Works for 3–5 categories max"
+        ],
+        [
+          "Correlation / outliers",
+          "Scatter plot",
+          "Shows relationship between two measures"
+        ]
       ],
       "note": "Pie/donut charts become unreadable above 5–7 categories — use a sorted bar chart instead"
     },
@@ -32,7 +52,10 @@
     },
     "difficulty": "Easy",
     "estimatedReviewTime": 45,
-    "tags": ["Visualization", "Visual Selection"]
+    "tags": [
+      "Visualization",
+      "Visual Selection"
+    ]
   },
   {
     "id": "viz_slicers_filters",
@@ -78,7 +101,11 @@
     },
     "difficulty": "Medium",
     "estimatedReviewTime": 45,
-    "tags": ["Slicers", "Filters", "Visualization"]
+    "tags": [
+      "Slicers",
+      "Filters",
+      "Visualization"
+    ]
   },
   {
     "id": "viz_drillthrough",
@@ -112,7 +139,11 @@
     },
     "difficulty": "Medium",
     "estimatedReviewTime": 45,
-    "tags": ["Drillthrough", "Visualization", "Navigation"]
+    "tags": [
+      "Drillthrough",
+      "Visualization",
+      "Navigation"
+    ]
   },
   {
     "id": "viz_bookmarks",
@@ -146,7 +177,11 @@
     },
     "difficulty": "Medium",
     "estimatedReviewTime": 45,
-    "tags": ["Bookmarks", "Visualization", "Navigation"]
+    "tags": [
+      "Bookmarks",
+      "Visualization",
+      "Navigation"
+    ]
   },
   {
     "id": "viz_conditional_formatting",
@@ -157,12 +192,32 @@
     "visual": {
       "type": "table",
       "title": "Conditional Formatting Color Rules",
-      "headers": ["Sales vs Target", "Color", "Rule Type"],
+      "headers": [
+        "Sales vs Target",
+        "Color",
+        "Rule Type"
+      ],
       "rows": [
-        ["< 50% of target", "Red", "Below threshold"],
-        ["50%–79% of target", "Yellow", "Approaching target"],
-        [">= 80% of target", "Green", "On or above target"],
-        ["Per-region target (varies)", "Dynamic", "Measure-based rule required"]
+        [
+          "< 50% of target",
+          "Red",
+          "Below threshold"
+        ],
+        [
+          "50%–79% of target",
+          "Yellow",
+          "Approaching target"
+        ],
+        [
+          ">= 80% of target",
+          "Green",
+          "On or above target"
+        ],
+        [
+          "Per-region target (varies)",
+          "Dynamic",
+          "Measure-based rule required"
+        ]
       ],
       "note": "Use a DAX measure for per-row dynamic thresholds — fixed rules cannot vary by context"
     },
@@ -181,7 +236,10 @@
     },
     "difficulty": "Medium",
     "estimatedReviewTime": 45,
-    "tags": ["Conditional Formatting", "Visualization"]
+    "tags": [
+      "Conditional Formatting",
+      "Visualization"
+    ]
   },
   {
     "id": "viz_paginated_reports",
@@ -227,7 +285,10 @@
     },
     "difficulty": "Easy",
     "estimatedReviewTime": 45,
-    "tags": ["Paginated Reports", "Visualization"]
+    "tags": [
+      "Paginated Reports",
+      "Visualization"
+    ]
   },
   {
     "id": "viz_ai_visuals",
@@ -238,12 +299,32 @@
     "visual": {
       "type": "table",
       "title": "AI Visual Selection Guide",
-      "headers": ["AI Visual", "Purpose", "When to Use"],
+      "headers": [
+        "AI Visual",
+        "Purpose",
+        "When to Use"
+      ],
       "rows": [
-        ["Key Influencers", "Finds statistical drivers of a metric", "Why is churn high? What drives revenue?"],
-        ["Decomposition Tree", "Manual breakdown across dimensions", "Explore a measure by any dimension interactively"],
-        ["Q&A", "Natural language queries", "Let users ask questions in plain English"],
-        ["Smart Narrative", "Auto-generated text summary", "Add dynamic written insights to a report"]
+        [
+          "Key Influencers",
+          "Finds statistical drivers of a metric",
+          "Why is churn high? What drives revenue?"
+        ],
+        [
+          "Decomposition Tree",
+          "Manual breakdown across dimensions",
+          "Explore a measure by any dimension interactively"
+        ],
+        [
+          "Q&A",
+          "Natural language queries",
+          "Let users ask questions in plain English"
+        ],
+        [
+          "Smart Narrative",
+          "Auto-generated text summary",
+          "Add dynamic written insights to a report"
+        ]
       ],
       "note": "Key Influencers = automatic analysis; Decomposition Tree = manual exploration"
     },
@@ -262,7 +343,12 @@
     },
     "difficulty": "Easy",
     "estimatedReviewTime": 45,
-    "tags": ["AI Visuals", "Key Influencers", "Decomposition Tree", "Visualization"]
+    "tags": [
+      "AI Visuals",
+      "Key Influencers",
+      "Decomposition Tree",
+      "Visualization"
+    ]
   },
   {
     "id": "viz_mobile_design",
@@ -296,6 +382,934 @@
     },
     "difficulty": "Easy",
     "estimatedReviewTime": 45,
-    "tags": ["Mobile Layout", "Visualization", "Report Design"]
+    "tags": [
+      "Mobile Layout",
+      "Visualization",
+      "Report Design"
+    ]
+  },
+  {
+    "id": "viz_custom_tooltips",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Enhance reports for usability and storytelling",
+    "concept": "Custom Tooltips",
+    "summary": "Custom tooltips replace the default hover popup with a full report page you design. The tooltip page shows additional context when users hover over a data point — charts, KPIs, tables — without leaving the main visual.",
+    "visual": {
+      "type": "table",
+      "title": "Default vs Custom Tooltip",
+      "headers": [
+        "Feature",
+        "Default Tooltip",
+        "Custom Tooltip Page"
+      ],
+      "rows": [
+        [
+          "Content",
+          "Field values only",
+          "Any visuals, measures, images"
+        ],
+        [
+          "Configuration",
+          "Automatic",
+          "Page set as Tooltip type"
+        ],
+        [
+          "Use case",
+          "Simple value display",
+          "Rich contextual insights on hover"
+        ],
+        [
+          "Trigger",
+          "Hover any data point",
+          "Hover — page auto-sized and displayed"
+        ]
+      ],
+      "note": "Set page type to 'Tooltip' in Page Information. Then assign the tooltip page to a visual via Format > Tooltips > Report page."
+    },
+    "keyInsight": "Custom tooltip pages are full report pages with Page type set to 'Tooltip'. You can include any visual on them — a trend line, a mini KPI card, a comparison chart — all shown on hover.",
+    "commonTrap": "Forgetting to set the page type to 'Tooltip' in Page Information. Without this, the page cannot be assigned as a tooltip to any visual and does not display on hover.",
+    "miniQuiz": {
+      "question": "A product manager wants hovering over a bar chart category to show a mini trend line for that category's sales over the last 12 months. Which feature supports this?",
+      "choices": [
+        "Add a tooltip field to the visual using the Fields pane",
+        "Create a report page with Page type set to Tooltip, add the trend line visual, then assign it as the report page tooltip on the bar chart",
+        "Enable the built-in analytics pane trend line and configure it to appear on hover",
+        "Use a bookmark that activates when a user hovers over a bar"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Custom tooltip pages allow rich visuals (including a full line chart) to appear on hover. Set the page type to Tooltip, design the content, then assign the page under Format > Tooltips > Report page on the target visual."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": [
+      "Custom Tooltips",
+      "Visualization",
+      "Report Design"
+    ]
+  },
+  {
+    "id": "viz_edit_interactions",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Enhance reports for usability and storytelling",
+    "concept": "Edit Interactions",
+    "summary": "By default, clicking a data point in one visual cross-filters or cross-highlights all other visuals on the page. Edit Interactions lets you change this behavior per visual pair — switching to cross-highlight, filter, or none.",
+    "visual": {
+      "type": "table",
+      "title": "Interaction Types Between Visuals",
+      "headers": [
+        "Interaction Type",
+        "Effect",
+        "When to Use"
+      ],
+      "rows": [
+        [
+          "Cross-filter",
+          "Removes non-matching rows from target visual",
+          "When selection should hide unrelated data"
+        ],
+        [
+          "Cross-highlight",
+          "Dims non-matching values (default)",
+          "When you want context preserved visually"
+        ],
+        [
+          "None",
+          "Target visual ignores the selection",
+          "Independent visuals — KPI cards, metrics"
+        ]
+      ],
+      "note": "Enable Edit Interactions from the Format tab. The icons appear above each target visual — click to set the behavior."
+    },
+    "keyInsight": "Cross-filter removes non-matching data from the target visual completely. Cross-highlight keeps all data visible but dims non-selected portions. 'None' makes a visual completely ignore selections on the page.",
+    "commonTrap": "Confusing cross-filter and cross-highlight. Cross-filtering changes totals (data is removed), while cross-highlighting keeps totals the same (data is visually dimmed but still present in the aggregation).",
+    "miniQuiz": {
+      "question": "A report has a bar chart and a KPI card showing total company revenue. Selecting a region on the bar chart should NOT change the KPI total — it must always show the company-wide figure. What interaction type should be set?",
+      "choices": [
+        "Cross-filter — so only the selected region's revenue shows in the KPI",
+        "Cross-highlight — so the region portion is highlighted in the KPI",
+        "None — the KPI card ignores all other visual selections",
+        "Drill-down — so the KPI expands when a region is selected"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Setting the interaction from the bar chart to the KPI card as 'None' means the KPI ignores all selections on the page and always shows the full company total — exactly the requirement."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": [
+      "Edit Interactions",
+      "Cross-Filter",
+      "Cross-Highlight",
+      "Visualization"
+    ]
+  },
+  {
+    "id": "viz_sync_slicers",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Create reports",
+    "concept": "Sync Slicers",
+    "summary": "Sync Slicers (View > Sync Slicers pane) configures a slicer to filter multiple pages simultaneously. A slicer can be synchronized to any combination of pages — and configured to be visible on some pages but hidden on others while still filtering them.",
+    "visual": {
+      "type": "table",
+      "title": "Sync Slicers Configuration Options",
+      "headers": [
+        "Setting",
+        "What It Controls",
+        "Key Point"
+      ],
+      "rows": [
+        [
+          "Sync (chain icon)",
+          "Pages the slicer actively filters",
+          "Slicer changes propagate to all synced pages"
+        ],
+        [
+          "Visible (eye icon)",
+          "Pages where slicer is shown",
+          "Can be synced but hidden — filters without visual"
+        ],
+        [
+          "New pages",
+          "Auto-sync to new report pages",
+          "Disabled by default — requires explicit opt-in"
+        ],
+        [
+          "Group (optional)",
+          "Syncs multiple slicer instances as one",
+          "Useful when same field appears as slicer on each page"
+        ]
+      ],
+      "note": "A slicer can SYNC (filter) a page without being VISIBLE on it — the slicer is hidden but its selection still applies."
+    },
+    "keyInsight": "Sync and Visible are independent settings. A slicer can be synced (actively filtering) to a page while being invisible on it — allowing a global filter to be set from one page without cluttering others.",
+    "commonTrap": "Assuming synced means visible. If you add a slicer to Page 1 and sync it to Page 2, users won't see the slicer on Page 2 unless you also enable Visible for Page 2.",
+    "miniQuiz": {
+      "question": "A date slicer on the Overview page should filter both the Overview and Detail pages, but should only be visible on the Overview page. How should Sync Slicers be configured?",
+      "choices": [
+        "Enable Sync and Visible for Overview; enable Sync only (not Visible) for Detail",
+        "Enable Sync and Visible for both Overview and Detail pages",
+        "Enable Visible for both pages; Sync is automatic once Visible is enabled",
+        "Enable Sync for Overview only — synced slicers automatically filter all other pages"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Sync controls which pages the slicer filters; Visible controls which pages display the slicer. Enable both for Overview (filter + show); enable Sync only for Detail (filter without displaying the slicer)."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": [
+      "Sync Slicers",
+      "Slicers",
+      "Visualization",
+      "Report Design"
+    ]
+  },
+  {
+    "id": "viz_selection_pane",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Enhance reports for usability and storytelling",
+    "concept": "Selection Pane — Layering and Grouping",
+    "summary": "The Selection pane (View > Selection) shows all visuals on the page as a stacked list. You can reorder the visual Z-order (which appears on top), toggle visibility (eye icon), and group visuals together for collective formatting or animation.",
+    "visual": {
+      "type": "table",
+      "title": "Selection Pane Capabilities",
+      "headers": [
+        "Action",
+        "How",
+        "Use Case"
+      ],
+      "rows": [
+        [
+          "Z-order (layering)",
+          "Drag visuals up/down the list",
+          "Place a shape behind a chart; show image under KPIs"
+        ],
+        [
+          "Toggle visibility",
+          "Click eye icon next to visual name",
+          "Hide/show visuals — used with bookmarks for toggles"
+        ],
+        [
+          "Group visuals",
+          "Select multiple → Group",
+          "Animate or format multiple visuals as one unit"
+        ],
+        [
+          "Name visuals",
+          "Double-click name in pane",
+          "Makes bookmark targeting and management clearer"
+        ]
+      ],
+      "note": "Renaming visuals in the Selection pane makes bookmark creation much easier — 'Sales Chart' is clearer than 'BarChart1' when setting visibility per bookmark."
+    },
+    "keyInsight": "The Selection pane is essential for bookmark-based view toggling: hide the visual → capture bookmark → show it → capture another bookmark. Naming visuals here makes this workflow manageable.",
+    "commonTrap": "Toggling visibility directly on the canvas during design and expecting bookmarks to remember it. Bookmarks only capture the state at the moment of creation — always use the Selection pane eye icon in the correct state before capturing each bookmark.",
+    "miniQuiz": {
+      "question": "A report developer needs to layer a text box label on top of a background image and behind a chart. Which tool controls the visual stacking order?",
+      "choices": [
+        "Format pane → Position settings for each visual",
+        "View > Selection pane — drag visuals up or down the Z-order list",
+        "Right-click canvas → Arrange → Bring to Front / Send to Back",
+        "Both B and C are correct and achieve the same result"
+      ],
+      "correctAnswer": 3,
+      "explanation": "Both the Selection pane (drag Z-order) and right-click Arrange (Bring to Front / Send to Back / Forward / Backward) control visual stacking order. Both methods achieve the same result and are equally valid."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": [
+      "Selection Pane",
+      "Bookmarks",
+      "Layering",
+      "Visualization"
+    ]
+  },
+  {
+    "id": "viz_auto_page_refresh",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Create reports",
+    "concept": "Auto Page Refresh",
+    "summary": "Auto page refresh (available in DirectQuery/Dual mode) automatically re-queries the data source on a set interval. Two modes: Fixed interval (queries on a schedule) and Change detection (queries a special measure to check if data changed before refreshing visuals).",
+    "visual": {
+      "type": "table",
+      "title": "Auto Page Refresh Modes",
+      "headers": [
+        "Mode",
+        "How It Works",
+        "Resource Use",
+        "Best For"
+      ],
+      "rows": [
+        [
+          "Fixed interval",
+          "Queries source every N seconds/minutes",
+          "Higher — queries every interval",
+          "Simple real-time dashboards"
+        ],
+        [
+          "Change detection",
+          "Queries a detection measure first; only refreshes visuals if data changed",
+          "Lower — skips refresh if unchanged",
+          "High-frequency scenarios with occasional updates"
+        ]
+      ],
+      "note": "Auto page refresh requires DirectQuery or Dual storage mode — Import mode stores a snapshot and cannot auto-refresh from source."
+    },
+    "keyInsight": "Change detection mode reduces query load by only triggering a full visual refresh when the change detection measure returns a new value — ideal for near-real-time dashboards where data changes infrequently.",
+    "commonTrap": "Expecting auto page refresh to work with Import mode. It does not — Import data is a snapshot loaded at refresh time. Auto page refresh requires DirectQuery or Dual mode to query the source on each interval.",
+    "miniQuiz": {
+      "question": "A manufacturing floor dashboard needs to update every 30 seconds but only when machine status data actually changes, to minimise database load. Which auto page refresh mode is most appropriate?",
+      "choices": [
+        "Fixed interval set to 30 seconds",
+        "Change detection mode with a DAX measure that returns the latest timestamp — visuals only refresh when the timestamp changes",
+        "Import mode with a scheduled dataset refresh every 30 seconds",
+        "Incremental refresh configured at the 30-second granularity"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Change detection checks a specified measure (such as MAX(MachineStatus[UpdateTimestamp])) every interval. Visuals only re-query when the value changes — reducing unnecessary database queries when data is unchanged."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": [
+      "Auto Page Refresh",
+      "Change Detection",
+      "DirectQuery",
+      "Real-Time",
+      "Visualization"
+    ]
+  },
+  {
+    "id": "viz_report_navigation",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Enhance reports for usability and storytelling",
+    "concept": "Report Navigation Buttons",
+    "summary": "Power BI supports on-canvas navigation buttons that link to pages, bookmarks, URLs, or drillthrough destinations. Button actions include: Back, Bookmark, Page navigation, Drillthrough, Q&A, and Web URL.",
+    "visual": {
+      "type": "table",
+      "title": "Button Action Types",
+      "headers": [
+        "Action Type",
+        "Navigates To",
+        "Common Use Case"
+      ],
+      "rows": [
+        [
+          "Page navigation",
+          "A specific report page",
+          "Main menu, tab-style navigation"
+        ],
+        [
+          "Bookmark",
+          "A saved report state",
+          "View toggle, story navigation"
+        ],
+        [
+          "Drillthrough",
+          "Drillthrough detail page with context",
+          "From summary → filtered detail"
+        ],
+        [
+          "Back",
+          "Previous page in navigation history",
+          "Return button from drillthrough pages"
+        ],
+        [
+          "Web URL",
+          "External website",
+          "Link to source system or documentation"
+        ]
+      ],
+      "note": "The 'Back' button on drillthrough destination pages automatically returns users to where they came from — no manual page link needed."
+    },
+    "keyInsight": "The 'Back' button action uses navigation history — it always returns to the previous page regardless of where the user came from. This is the standard pattern for drillthrough return navigation.",
+    "commonTrap": "Adding a manual 'Back to Summary' page navigation button that always goes to a fixed page. If users arrive from different pages, the Back action is more flexible — it returns them to whichever page they navigated from.",
+    "miniQuiz": {
+      "question": "A drillthrough detail page should return users to whichever page they came from when they click a 'Return' button. Which button action type should be used?",
+      "choices": [
+        "Page navigation action pointing to Page 1",
+        "Bookmark action pointing to the original page bookmark",
+        "Back button action — it uses navigation history to return to the previous page",
+        "Drillthrough action in reverse — from detail back to summary"
+      ],
+      "correctAnswer": 2,
+      "explanation": "The Back button action uses Power BI's navigation history — it always returns to the page the user navigated from, regardless of the source page. This makes it more flexible than a fixed Page navigation link."
+    },
+    "difficulty": "Easy",
+    "estimatedReviewTime": 45,
+    "tags": [
+      "Report Navigation",
+      "Buttons",
+      "Drillthrough",
+      "Bookmarks",
+      "Visualization"
+    ]
+  },
+  {
+    "id": "viz_grouping_binning",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Identify patterns and trends",
+    "concept": "Grouping, Binning, and Clustering",
+    "summary": "Grouping combines specific values into custom named categories. Binning automatically creates evenly-spaced numerical or date ranges. Clustering uses machine learning to detect natural groupings in scatter plot data.",
+    "visual": {
+      "type": "table",
+      "title": "Three Analytical Grouping Techniques",
+      "headers": [
+        "Technique",
+        "Applies To",
+        "How It Works",
+        "Example"
+      ],
+      "rows": [
+        [
+          "Grouping",
+          "Category fields",
+          "Manually select values → assign to a named group",
+          "Group 'UK','US','AU' → 'English-Speaking'"
+        ],
+        [
+          "Binning",
+          "Numeric or date fields",
+          "Auto-creates equal-size buckets",
+          "Age: 0–19, 20–39, 40–59, 60+"
+        ],
+        [
+          "Clustering",
+          "Scatter plot data points",
+          "Unsupervised ML identifies natural clusters",
+          "Customer segments by spend & frequency"
+        ]
+      ],
+      "note": "Grouping and binning create a new field in the field list — reusable across visuals. Clustering assigns a cluster label to each data point in the scatter visual."
+    },
+    "keyInsight": "Binning is for continuous numeric/date data (auto-creates ranges). Grouping is for discrete categories (manually combine specific values). Both create reusable fields in the data pane — they are not visual-specific.",
+    "commonTrap": "Using binning when grouping is needed (or vice versa). Binning creates even-sized numeric ranges automatically. Grouping is manual — you select which specific values belong together. Use grouping for custom category combinations.",
+    "miniQuiz": {
+      "question": "A report needs to group customers by age into ranges: Under 25, 25–44, 45–64, 65+. The Age column is numeric. Which feature should be used?",
+      "choices": [
+        "Grouping — manually select age values and assign them to named groups",
+        "Binning — automatically creates equal-width age ranges",
+        "Clustering — detects natural age groupings from scatter plot data",
+        "A DAX calculated column with IF()/SWITCH() logic"
+      ],
+      "correctAnswer": 3,
+      "explanation": "The required age bands (Under 25, 25–44, 45–64, 65+) are not equal-width — standard binning creates equal intervals (e.g., 0–21, 22–43). A DAX calculated column with SWITCH() defines the exact custom boundaries. Grouping works for discrete values, not continuous ranges."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": [
+      "Grouping",
+      "Binning",
+      "Clustering",
+      "Analytics",
+      "Visualization"
+    ]
+  },
+  {
+    "id": "viz_analytics_pane",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Identify patterns and trends",
+    "concept": "Reference Lines, Error Bars, and Forecasting",
+    "summary": "The Analytics pane (accessed in visual Focus mode) adds statistical overlays: constant reference lines, min/max/average/median lines, percentile lines, error bars, trend lines, and forecast lines with confidence bands.",
+    "visual": {
+      "type": "table",
+      "title": "Analytics Pane Features",
+      "headers": [
+        "Feature",
+        "What It Shows",
+        "Typical Use"
+      ],
+      "rows": [
+        [
+          "Constant line",
+          "A fixed horizontal/vertical value",
+          "Targets, thresholds, regulatory limits"
+        ],
+        [
+          "Average / Median line",
+          "Running mean or median of plotted data",
+          "Baseline comparison within the visual"
+        ],
+        [
+          "Forecast",
+          "Projected future trend + confidence interval",
+          "Sales projections, demand forecasting"
+        ],
+        [
+          "Error bars",
+          "Uncertainty or variance range per data point",
+          "Statistical reports, survey results"
+        ],
+        [
+          "Trend line",
+          "Best-fit line through data points",
+          "Regression trend, growth rate visualisation"
+        ]
+      ],
+      "note": "Forecasting is only available on line charts with a continuous time axis. It uses exponential smoothing — not available for bar or column charts."
+    },
+    "keyInsight": "Forecast lines (with confidence bands) are only available on line charts with a continuous date/time X axis. You must set the seasonality explicitly or let Power BI detect it — but the model is exponential smoothing, not a full ML model.",
+    "commonTrap": "Adding a forecast to a bar chart or a line chart with a categorical (non-date) X axis. Forecasting requires a continuous time axis — without it, the Forecast option does not appear in the Analytics pane.",
+    "miniQuiz": {
+      "question": "A line chart showing monthly revenue over the last 24 months needs a projected trend for the next 6 months with a 95% confidence band. Where should this be configured?",
+      "choices": [
+        "Format pane → Data labels → enable Forecast",
+        "Analytics pane → Forecast → set forecast length and confidence interval",
+        "Insert a calculated column with future date rows and NULL revenue values",
+        "Use the Q&A visual and ask 'show forecast for next 6 months'"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The Analytics pane for a line chart includes a Forecast section — set the number of periods to forecast and the confidence interval percentage (e.g., 95%). Power BI uses exponential smoothing to project the trend with upper and lower confidence bands."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": [
+      "Analytics Pane",
+      "Forecasting",
+      "Reference Lines",
+      "Trend Lines",
+      "Visualization"
+    ]
+  },
+  {
+    "id": "viz_accessibility",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Create reports",
+    "concept": "Accessibility in Reports",
+    "summary": "PL-300 tests accessibility features: alt text for visuals (for screen readers), tab order (keyboard navigation sequence), high-contrast themes, and ensuring color is not the only means of conveying information.",
+    "visual": {
+      "type": "table",
+      "title": "Accessibility Checklist for PL-300",
+      "headers": [
+        "Feature",
+        "Where to Configure",
+        "Purpose"
+      ],
+      "rows": [
+        [
+          "Alt text",
+          "Format pane → General → Alt text (static or DAX measure)",
+          "Screen readers announce visual content"
+        ],
+        [
+          "Tab order",
+          "View > Selection pane → Tab order",
+          "Keyboard users navigate visuals in logical sequence"
+        ],
+        [
+          "High contrast theme",
+          "Report theme or OS setting detection",
+          "Supports users with visual impairments"
+        ],
+        [
+          "Color redundancy",
+          "Add data labels, markers, or patterns in addition to color",
+          "Colorblind users can distinguish data series"
+        ]
+      ],
+      "note": "Alt text can be a static string or a dynamic DAX measure — use a measure when the alt text should reflect the current data (e.g., 'Total revenue is $4.2M this quarter')."
+    },
+    "keyInsight": "Alt text for visuals is configured in Format pane > General > Alt text, not in report settings. A DAX measure can generate dynamic alt text that changes with filter context — useful for KPI visuals.",
+    "commonTrap": "Setting a static alt text string for a KPI visual. If the KPI value changes with filters, a static alt text ('Revenue is $4.2M') becomes inaccurate. Use a DAX measure for dynamic alt text that always reflects the current filtered value.",
+    "miniQuiz": {
+      "question": "A report must be accessible to users who rely on screen readers. The KPI card showing current quarter revenue should announce the actual value to screen readers as it changes with slicer selections. How should alt text be configured?",
+      "choices": [
+        "Add a static alt text string: 'This card shows quarterly revenue' in Format > General > Alt text",
+        "Enable the 'Screen reader' toggle in Report Settings",
+        "Write a DAX measure returning the current revenue as a formatted string, and reference it as the alt text in Format > General > Alt text",
+        "Use a text box visual next to the KPI card to display the value as screen-reader-readable text"
+      ],
+      "correctAnswer": 2,
+      "explanation": "A DAX measure can return a dynamic text string (e.g., 'Current quarter revenue: ' & FORMAT([Revenue], '$#,##0')) that updates with filter context. Referencing this measure as alt text means screen readers always announce the current value."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": [
+      "Accessibility",
+      "Alt Text",
+      "Tab Order",
+      "Screen Reader",
+      "Visualization"
+    ]
+  },
+  {
+    "id": "viz_personalize_visuals",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Enhance reports for usability and storytelling",
+    "concept": "Personalize Visuals",
+    "summary": "Personalize Visuals allows report consumers to modify visuals in published reports — swapping fields, changing visual type, adjusting axes — without editing the underlying report. Changes are saved per-user in the Power BI Service.",
+    "visual": {
+      "type": "table",
+      "title": "Personalize Visuals — What Users Can Change",
+      "headers": [
+        "Allowed",
+        "NOT Allowed",
+        "Key Constraint"
+      ],
+      "rows": [
+        [
+          "Change visual type",
+          "Add new visuals",
+          "Users personalize existing visuals only"
+        ],
+        [
+          "Swap fields in axes/values",
+          "Modify the data model",
+          "No access to model or relationships"
+        ],
+        [
+          "Add/remove fields from field well",
+          "Share their personalized view as the default",
+          "Personalization is user-specific"
+        ],
+        [
+          "Reset to report default",
+          "Remove or add report pages",
+          "Publisher controls page structure"
+        ]
+      ],
+      "note": "Personalize Visuals is enabled per report in File > Report Settings. When users publish or share the report, recipients see the original author's version — not the personalized view."
+    },
+    "keyInsight": "Personalization is user-specific and saved in the Power BI Service. When a user shares the report URL, recipients see the original design — not the personalized version. Personalization cannot be embedded in a published snapshot.",
+    "commonTrap": "Expecting personalized views to persist when re-publishing the report. Re-publishing resets all user personalizations back to the report default. Users need to re-apply their preferences after each republish.",
+    "miniQuiz": {
+      "question": "A report author enables Personalize Visuals. A user personalizes a bar chart into a line chart and shares the report URL with a colleague. What does the colleague see?",
+      "choices": [
+        "The line chart — personalized views are shared via the URL",
+        "The original bar chart — personalizations are user-specific and not shared through the URL",
+        "An error — only the report author can view customized visuals",
+        "A prompt asking the colleague which version to view"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Personalized views are stored per-user in the Power BI Service. Sharing the report URL gives the recipient the original published version — personalizations are not embedded in or transmitted through the URL."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 45,
+    "tags": [
+      "Personalize Visuals",
+      "Self-Service",
+      "Report Design",
+      "Visualization"
+    ]
+  },
+  {
+    "id": "viz_decomposition_tree",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Identify patterns and trends",
+    "concept": "Decomposition Tree",
+    "summary": "The Decomposition Tree is an AI visual that allows users to break down a measure across multiple dimensions interactively. Users add dimensions one at a time — either manually choosing a dimension or using AI splits (High value / Low value) to find the largest contributor.",
+    "visual": {
+      "type": "table",
+      "title": "Decomposition Tree vs Key Influencers",
+      "headers": [
+        "Feature",
+        "Decomposition Tree",
+        "Key Influencers"
+      ],
+      "rows": [
+        [
+          "Analysis type",
+          "Manual exploration — user drives",
+          "Automatic — AI identifies drivers"
+        ],
+        [
+          "Use case",
+          "Breaking down a KPI by multiple dimensions",
+          "Finding what statistically impacts a metric"
+        ],
+        [
+          "Output",
+          "Hierarchical breakdown at each level",
+          "Ranked list of influencing factors"
+        ],
+        [
+          "AI split option",
+          "Available — suggests highest/lowest contributor",
+          "Core feature — fully automated"
+        ],
+        [
+          "Best question",
+          "'What is driving high returns by category?'",
+          "'Why is churn rate high?'"
+        ]
+      ],
+      "note": "Lock a level in the Decomposition Tree to prevent users from changing it — useful when the first breakdown dimension is always required."
+    },
+    "keyInsight": "The Decomposition Tree's 'AI split' feature suggests which dimension value contributes most to the measure at each level — it bridges manual exploration with AI assistance. But unlike Key Influencers, the user still controls the navigation path.",
+    "commonTrap": "Using a Decomposition Tree to find the root cause of a metric automatically. Key Influencers does this — the Decomposition Tree requires users to select each dimension level manually. For automated root-cause, Key Influencers is the correct answer.",
+    "miniQuiz": {
+      "question": "A logistics manager wants to explore where delivery delays are concentrated — starting by region, then by carrier, then by product category — choosing the dimensions in that order. Which visual is most appropriate?",
+      "choices": [
+        "Key Influencers — it automatically identifies the top drivers of delivery delays",
+        "Decomposition Tree — allows the manager to break down delays by region, then carrier, then product in a specific order",
+        "Scatter chart — shows the correlation between delay time and each dimension",
+        "Matrix visual — shows delays in a grid of region × carrier"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The Decomposition Tree allows the user to manually navigate through dimension levels in a chosen order — region first, then carrier, then product. Key Influencers would automatically find drivers but not allow user-directed exploration in a specific sequence."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": [
+      "Decomposition Tree",
+      "AI Visuals",
+      "Analytics",
+      "Visualization"
+    ]
+  },
+  {
+    "id": "viz_report_themes",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Create reports",
+    "concept": "Report Themes",
+    "summary": "Report themes apply consistent visual styling — colors, fonts, visual defaults, and background settings — across all visuals on all report pages in a single action. Themes are JSON files that can be imported or selected from the built-in gallery.",
+    "visual": {
+      "type": "table",
+      "title": "What Report Themes Control",
+      "headers": [
+        "Theme Element",
+        "Example",
+        "Scope"
+      ],
+      "rows": [
+        [
+          "Color palette",
+          "Brand colors for data series",
+          "All visuals on all pages"
+        ],
+        [
+          "Background color",
+          "Light grey, white, or custom hex",
+          "All pages (can be overridden per page)"
+        ],
+        [
+          "Font settings",
+          "Font family, size, color for labels",
+          "All text elements across report"
+        ],
+        [
+          "Default visual formatting",
+          "Border style, shadow, padding",
+          "Newly added visuals (existing not changed)"
+        ],
+        [
+          "Data label settings",
+          "Default on/off, position, format",
+          "New visuals only"
+        ]
+      ],
+      "note": "A theme changes formatting for newly added visuals and globally resets existing visual defaults. Per-visual manual formatting overrides the theme for that specific visual."
+    },
+    "keyInsight": "Report themes apply globally but can be overridden per visual. If you manually format a visual's color and then change the theme, the manually formatted visual retains its color — manual formatting takes precedence over the theme.",
+    "commonTrap": "Expecting a theme change to override manual per-visual formatting. Manual formatting (set in the Format pane for a specific visual) persists even when the theme changes. Only visuals using default theme settings update when the theme is swapped.",
+    "miniQuiz": {
+      "question": "A BI team creates a corporate report theme with brand colors and imports it. One bar chart was manually formatted with a bright red color before the theme was applied. After importing the theme, the bar chart remains red. Why?",
+      "choices": [
+        "The theme import failed — themes cannot override existing visuals",
+        "Manual per-visual formatting takes precedence over the theme — the bar chart keeps its manually set color",
+        "The theme only applies to new pages added after the import",
+        "Bar charts are excluded from theme color settings by default"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Per-visual manual formatting overrides the theme for that specific element. The theme sets defaults, but any explicit formatting applied to an individual visual persists. To reset to the theme, use 'Reset to default' for the formatted visual property."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": [
+      "Report Themes",
+      "Formatting",
+      "Report Design",
+      "Visualization"
+    ]
+  },
+  {
+    "id": "viz_sorting",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Create reports",
+    "concept": "Sorting Visuals",
+    "summary": "Visuals can be sorted by any field in their field well. Sorting options: ascending/descending, by a different field (sort by column), or alphabetically. The 'Sort by column' feature in the model allows a dimension's display order to be controlled by a numeric sort key.",
+    "visual": {
+      "type": "table",
+      "title": "Sorting Options and Their Use Cases",
+      "headers": [
+        "Sort Method",
+        "Where Configured",
+        "Use Case"
+      ],
+      "rows": [
+        [
+          "Ascending / Descending",
+          "Visual header '...' menu → Sort by",
+          "Rank highest/lowest values in a bar chart"
+        ],
+        [
+          "Sort by different field",
+          "Visual header '...' → Sort by [field]",
+          "Sort product names alphabetically but chart by revenue"
+        ],
+        [
+          "Sort by column (model)",
+          "Modeling tab → Sort by Column",
+          "Month names sorted 1–12 not A–Z"
+        ],
+        [
+          "Custom sort order",
+          "Create sort index column in Power Query",
+          "Fiscal quarters: Q3, Q4, Q1, Q2"
+        ]
+      ],
+      "note": "Month names sort alphabetically by default (April, August...). Fix: create a MonthNumber column, then set Sort by Column on MonthName to MonthNumber in the model."
+    },
+    "keyInsight": "Month names and day names sort alphabetically by default in Power BI. The fix is always 'Sort by Column' in the Modeling tab — point the text field at a numeric key column. This is a very common PL-300 exam scenario.",
+    "commonTrap": "Trying to fix month name ordering inside the visual sort menu. The visual sort can only choose which field to sort by — it cannot override alphabetical sorting of a text field. The model-level 'Sort by Column' setting is required to control sort order for text fields.",
+    "miniQuiz": {
+      "question": "A line chart shows monthly revenue with months along the X-axis. The months appear in alphabetical order (April, August, December...) instead of January–December. What is the correct fix?",
+      "choices": [
+        "In the visual's sort menu, select Sort descending",
+        "Rename months to 01-January, 02-February, etc. so they sort correctly",
+        "In the Modeling tab, set Sort by Column on MonthName to a MonthNumber (1–12) column",
+        "Use a slicer to reorder the months before they appear on the axis"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Sort by Column (Modeling tab) tells Power BI to use a numeric MonthNumber column (1 = January, 12 = December) to determine the sort order of the MonthName text field. This is the correct, model-level solution that works across all visuals."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": [
+      "Sorting",
+      "Sort by Column",
+      "Month Names",
+      "Visualization",
+      "Report Design"
+    ]
+  },
+  {
+    "id": "viz_visual_calculations",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Create reports",
+    "concept": "Visual Calculations (DAX)",
+    "summary": "Visual calculations are DAX expressions written directly on a visual — not stored in the data model. They operate on the visual matrix (the data as displayed) rather than the underlying table, enabling running totals, ranks, and moving averages without complex model-level DAX.",
+    "visual": {
+      "type": "table",
+      "title": "Visual Calculations vs Model Measures",
+      "headers": [
+        "Dimension",
+        "Visual Calculations",
+        "Model Measures"
+      ],
+      "rows": [
+        [
+          "Where defined",
+          "On the visual itself (not the model)",
+          "In the semantic model (reusable)"
+        ],
+        [
+          "Scope",
+          "Uses visual matrix rows/columns as context",
+          "Uses filter/row context from model"
+        ],
+        [
+          "Reusability",
+          "Visual-only — not available in other visuals",
+          "Available to any visual in the report"
+        ],
+        [
+          "Use case",
+          "Running totals, ranks within a specific visual",
+          "Shared KPIs, complex business logic"
+        ],
+        [
+          "DAX functions",
+          "RUNNINGSUM, RANK, MOVINGAVERAGE, INDEX",
+          "Full DAX library"
+        ]
+      ],
+      "note": "Visual calculations use ROWS/COLUMNS as context axes instead of filter context — PREVIOUS(SalesAmount) returns the previous row in the visual matrix, not the previous date in the model."
+    },
+    "keyInsight": "Visual calculations are scoped to the visual matrix — they are ideal for visual-specific running totals, percent-of-parent, and rank within the displayed data. They are NOT available in other visuals or reports — they live only on the visual where they are defined.",
+    "commonTrap": "Using a visual calculation when the same logic is needed across multiple visuals. Visual calculations are not reusable — they exist only on the visual where they are written. For shared logic, write a model-level measure.",
+    "miniQuiz": {
+      "question": "A matrix visual showing quarterly sales by region needs a running total column that accumulates sales left to right across quarters within each region row. Which approach requires the LEAST effort and no model changes?",
+      "choices": [
+        "Write a CALCULATE measure with DATESYTD to accumulate by date",
+        "Add a visual calculation using RUNNINGSUM on the SalesAmount value",
+        "Create a calculated column in the data model using EARLIER",
+        "Use TOTALYTD in a new measure added to the data model"
+      ],
+      "correctAnswer": 1,
+      "explanation": "RUNNINGSUM is a visual calculation function that accumulates values across the visual matrix axis without any model changes. It operates on the visual's displayed rows/columns — the simplest solution for a within-visual running total."
+    },
+    "difficulty": "Hard",
+    "estimatedReviewTime": 60,
+    "tags": [
+      "Visual Calculations",
+      "DAX",
+      "RUNNINGSUM",
+      "Running Total",
+      "Visualization"
+    ]
+  },
+  {
+    "id": "viz_subscriptions_alerts",
+    "domain": "Visualize and analyze data",
+    "subtopic": "Manage and secure Power BI",
+    "concept": "Subscriptions and Data Alerts",
+    "summary": "Subscriptions send scheduled email snapshots of a report page or dashboard at defined intervals. Data alerts notify a user when a dashboard tile's value crosses a specified threshold — alerts only work on KPI-style tiles (numeric) in dashboards.",
+    "visual": {
+      "type": "table",
+      "title": "Subscriptions vs Data Alerts",
+      "headers": [
+        "Feature",
+        "Subscriptions",
+        "Data Alerts"
+      ],
+      "rows": [
+        [
+          "What it sends",
+          "Email snapshot of report page / dashboard",
+          "Email notification when threshold crossed"
+        ],
+        [
+          "Trigger",
+          "Schedule (daily, weekly, custom)",
+          "Data change beyond threshold"
+        ],
+        [
+          "Works on",
+          "Report pages and dashboard pages",
+          "Dashboard tiles only (not report visuals)"
+        ],
+        [
+          "Who can set",
+          "Any report/dashboard consumer with access",
+          "Only tile owner or admin"
+        ],
+        [
+          "Frequency",
+          "User-defined schedule",
+          "Checked at each dataset refresh"
+        ]
+      ],
+      "note": "Data alerts are evaluated at each scheduled refresh — if the dataset only refreshes daily, alerts can only fire once per day maximum, even if data changes intra-day."
+    },
+    "keyInsight": "Data alerts only work on dashboard tiles (pinned from reports or built on the dashboard). They cannot be set on report page visuals directly. Alerts fire when a threshold is crossed at the time of dataset refresh.",
+    "commonTrap": "Expecting a data alert to fire in real time when data changes. Alerts are evaluated at each dataset refresh — if a dataset refreshes once per day, the alert fires at most once per day, even if the underlying source data changed hours earlier.",
+    "miniQuiz": {
+      "question": "A sales manager wants an email notification when total revenue for the month drops below $500K. The Power BI dataset refreshes once daily. Which feature provides this, and what is the maximum alert frequency?",
+      "choices": [
+        "A subscription set to daily delivery, which will notify when revenue drops below threshold",
+        "A data alert set on the revenue dashboard tile — fires at most once per day (each scheduled refresh)",
+        "A report-level filter that triggers email when the threshold is breached in real time",
+        "An Azure Logic App connected to the Power BI REST API for real-time threshold monitoring"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Data alerts must be configured on a dashboard tile (pin the revenue visual to a dashboard first). The alert is evaluated at each dataset refresh — once per day in this case. Subscriptions send scheduled snapshots but do not check thresholds."
+    },
+    "difficulty": "Medium",
+    "estimatedReviewTime": 45,
+    "tags": [
+      "Subscriptions",
+      "Data Alerts",
+      "Dashboard",
+      "Notification",
+      "Manage Power BI"
+    ]
   }
 ]

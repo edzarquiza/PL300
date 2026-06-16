@@ -1,0 +1,75 @@
+{
+  "id": "rankx",
+  "concept": "RANKX",
+  "category": "DAX",
+  "tagline": "Rank a value within a table — the correct way to build top-N lists and league tables in DAX",
+  "daxFunctionId": "rankx",
+  "relatedTags": ["RANKX", "Ranking", "TOPN", "Iterator", "DAX"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Ranking in DAX with RANKX",
+      "icon": "🏆",
+      "body": "RANKX evaluates an expression for every row in a table and assigns a rank based on the sorted order. It is an iterator — it loops through the table you provide, evaluates the expression for each row, sorts the values, then returns the rank of the expression in the current filter context. RANKX is the standard DAX pattern for building product rankings, customer league tables, and top-N analysis.",
+      "keyPoint": "RANKX(Table, Expression, [Value], [Order], [Ties]) — Table is the full ranking universe (often ALL(DimProduct)), Expression is what to rank, Value is the current item's value (usually omitted — it defaults to evaluating Expression in the current context)."
+    },
+    {
+      "type": "table",
+      "title": "Product Sales Data — Ranking Universe",
+      "caption": "Five products with their total sales amounts — we want to rank them 1–5",
+      "headers": ["Product", "Total Sales"],
+      "rows": [
+        ["Widget A", "48,500"],
+        ["Widget B", "72,300"],
+        ["Widget C", "31,200"],
+        ["Widget D", "72,300"],
+        ["Widget E", "15,800"]
+      ],
+      "note": "Widget B and Widget D have identical sales — a tie. How ties are handled depends on the Ties parameter."
+    },
+    {
+      "type": "dax",
+      "title": "RANKX Measure — All Products Ranking",
+      "code": "Product Rank =\nRANKX(\n    ALL(DimProduct),        -- rank across ALL products, ignoring filters\n    [Total Sales],          -- expression to rank by\n    ,                       -- value (omit = use current product's sales)\n    DESC,                   -- highest sales = rank 1\n    DENSE                   -- ties share the same rank, no gap after\n)\n\n-- DENSE tie handling: B=1, D=1, A=3, C=4, E=5\n-- SKIP  tie handling: B=1, D=1, A=3, C=4, E=5 (gap after tied rank)\n-- SKIP would produce: B=1, D=1, A=3, C=4, E=5 → no rank 2 exists",
+      "annotation": "ALL(DimProduct) is critical — without it, RANKX only sees the current filter context (e.g., one product), and every product would rank #1 within its own one-row context."
+    },
+    {
+      "type": "table",
+      "title": "Result — Products Ranked by Sales",
+      "caption": "RANKX with DESC order and DENSE tie-handling",
+      "headers": ["Product", "Total Sales", "Product Rank (DENSE)", "Product Rank (SKIP)"],
+      "rows": [
+        ["Widget B", "72,300", "1", "1"],
+        ["Widget D", "72,300", "1", "1"],
+        ["Widget A", "48,500", "3", "3"],
+        ["Widget C", "31,200", "4", "4"],
+        ["Widget E", "15,800", "5", "5"]
+      ],
+      "note": "DENSE: tied items share a rank, next rank is immediate (1,1,3,4,5). SKIP: tied items share a rank, next rank skips (1,1,3,4,5 — in this case same, but with more ties: 1,1,1,4,5 vs 1,1,1,4,5)."
+    },
+    {
+      "type": "text",
+      "title": "The ALL() Requirement — Why It Matters",
+      "bullets": [
+        "Without ALL(DimProduct): each product is ranked within a one-row context → every product is rank 1 within its own slice",
+        "With ALL(DimProduct): RANKX sees all products simultaneously and assigns ranks across the full set",
+        "In a filtered context (e.g., a slicer for category = 'Electronics'): RANKX with ALL() still ranks across all products in DimProduct — not just Electronics",
+        "To rank within the current slicer context use VALUES(DimProduct[ProductKey]) or ALLSELECTED(DimProduct) instead of ALL()",
+        "ALLSELECTED() — ranks within the user's current slicer selection rather than the full table"
+      ],
+      "keyPoint": "The table argument to RANKX defines the universe of comparison. ALL() = all rows in the table regardless of filters. ALLSELECTED() = rows within the current slicer selection. VALUES() = only visible rows in the current context."
+    },
+    {
+      "type": "text",
+      "title": "PL-300 Exam — Key Facts",
+      "bullets": [
+        "RANKX is an iterator — it evaluates the expression for every row in the table argument before assigning ranks",
+        "Order parameter: DESC (default, largest = rank 1), ASC (smallest = rank 1)",
+        "Ties parameter: DENSE (shared rank, no gap), SKIP (shared rank, gap after) — DENSE is the most common exam answer",
+        "Common exam trap: forgetting ALL() — without it, every item ranks #1 in its own filter context",
+        "TOPN(3, ALL(DimProduct), [Total Sales], DESC) returns the top 3 products — complementary to RANKX"
+      ],
+      "keyPoint": "RANKX exam pattern: RANKX(ALL(DimTable), [Measure], , DESC, DENSE). Memorise this as the standard template. The most common mistake on the exam — and in real models — is omitting ALL()."
+    }
+  ]
+}

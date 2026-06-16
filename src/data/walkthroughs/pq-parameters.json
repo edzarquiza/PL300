@@ -1,0 +1,72 @@
+{
+  "id": "pq-parameters",
+  "concept": "Power Query Parameters",
+  "category": "Power Query",
+  "tagline": "Replace hardcoded values with named, reusable inputs — making data connections and transformations flexible and maintainable",
+  "relatedTags": ["Parameters", "Power Query", "Dynamic Connection", "M", "Data Source"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Why Parameters Matter in Power Query",
+      "icon": "⚙️",
+      "body": "Power Query parameters are named values that can be reused across multiple queries and transformation steps. Instead of hardcoding a server name, folder path, date cutoff, or filter value directly in your M code, you define a parameter once and reference it everywhere. Parameters can be changed in one place to update all queries that reference them — critical for moving models between Development, Test, and Production environments or for user-configurable filtering.",
+      "keyPoint": "A parameter is a named, single-value placeholder. Changing the parameter value updates every query that references it — no need to find and replace hardcoded values across multiple steps."
+    },
+    {
+      "type": "table",
+      "title": "Common Parameter Use Cases",
+      "caption": "Parameters replace hardcoded values with reusable named references",
+      "headers": ["Use Case", "Without Parameter (Hardcoded)", "With Parameter"],
+      "rows": [
+        ["Server name", "Source = Sql.Database(\"PROD-SQL01\", \"SalesDB\")", "Source = Sql.Database(ServerName, DatabaseName)"],
+        ["Folder path", "Source = Folder.Files(\"C:\\Data\\Reports\")", "Source = Folder.Files(ReportFolder)"],
+        ["Date cutoff", "Table.SelectRows(t, each [Date] >= #date(2023,1,1))", "Table.SelectRows(t, each [Date] >= StartDate)"],
+        ["Environment switch", "Hardcoded 'DEV' URL in 6 queries", "Environment parameter referenced in all 6 queries"]
+      ],
+      "note": "Parameters support types: Text, Number, Date, DateTime, Duration, Binary, Logical, Any. The type restricts what values can be assigned."
+    },
+    {
+      "type": "dax",
+      "title": "Creating and Referencing a Parameter in M",
+      "code": "// Step 1: Define a parameter (created via Manage Parameters UI)\n// Power BI creates this automatically in the background:\nServerName = \"PROD-SQL01\" meta [IsParameterQuery = true, Type = type text]\n\n// Step 2: Reference the parameter in a query\nlet\n    Source = Sql.Database(ServerName, DatabaseName),\n    Sales = Source{[Schema=\"dbo\",Item=\"Sales\"]}[Data],\n    FilteredRows = Table.SelectRows(Sales, each [OrderDate] >= StartDate)\nin\n    FilteredRows\n\n// Step 3: Change environment in one place\n// Edit parameter: ServerName = \"TEST-SQL01\"\n// All queries using ServerName automatically point to the test server",
+      "annotation": "Parameters appear in the Queries pane alongside data queries. They are evaluated before any query runs — every query referencing the parameter sees the current value at refresh time."
+    },
+    {
+      "type": "table",
+      "title": "Query Folding and Parameters",
+      "caption": "Parameter usage affects whether query folding is preserved",
+      "headers": ["Scenario", "Folding Status", "Why"],
+      "rows": [
+        ["Parameter used in Table.SelectRows filter", "Folds if source supports it", "Simple comparison folds to WHERE clause"],
+        ["Parameter used in dynamic column name selection", "Usually breaks folding", "Dynamic column names cannot be expressed in SQL"],
+        ["Parameter in Source connection string", "Neutral — folding begins after Source step", "Connection string parameters don't affect folding behavior"],
+        ["Parameter compared against non-foldable step output", "Breaks folding", "Once any step breaks folding, all subsequent steps also break"]
+      ],
+      "note": "Using a parameter in a filter step (e.g., StartDate parameter in Table.SelectRows) typically preserves query folding — the value is passed as a literal to the WHERE clause."
+    },
+    {
+      "type": "text",
+      "title": "Dynamic Data Sources and Gateway Implications",
+      "bullets": [
+        "When a data source connection uses a parameter (dynamic data source), Power BI may classify it as a 'dynamic data source'",
+        "Dynamic data sources cannot always use scheduled refresh in the Power BI Service without additional configuration",
+        "To avoid issues: use parameters only in filter steps AFTER the Source step, not in the Source connection itself, where possible",
+        "If parameters are used in Source connections, the gateway must be configured with the static source addresses — or use an on-premises gateway with credential mapping",
+        "The 'Skip Test Connection' option in data source settings can sometimes resolve dynamic source refresh errors"
+      ],
+      "keyPoint": "Parameters in Source connection strings (server names, file paths) create dynamic data sources that may block scheduled refresh in the Power BI Service. This is a common PL-300 scenario — the fix is either static source connections or proper gateway configuration."
+    },
+    {
+      "type": "text",
+      "title": "PL-300 Exam — Key Facts",
+      "bullets": [
+        "Parameters are created in Home > Manage Parameters in Power Query Editor",
+        "Parameters can be used in: Source connections, filter conditions, column name references, and as inputs to custom functions",
+        "A parameter referenced in a Source step makes the data source 'dynamic' — this can prevent scheduled refresh unless the gateway is configured to handle it",
+        "Parameters enable environment switching (Dev/Test/Prod) without editing each query — the standard enterprise approach to multi-environment deployment",
+        "Power BI Template (.pbit) files include parameter prompts — users fill in values when opening the template"
+      ],
+      "keyPoint": "Parameters are the Power Query answer to hardcoded values — they enable flexible, maintainable, multi-environment M code. The exam tests both how to create them and the scheduling/gateway implications of dynamic sources."
+    }
+  ]
+}

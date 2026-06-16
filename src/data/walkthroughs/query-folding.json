@@ -1,0 +1,82 @@
+{
+  "id": "query-folding",
+  "concept": "Query Folding",
+  "category": "Power Query",
+  "tagline": "Power Query pushes transformation steps back to the data source — reducing data transfer and improving refresh speed",
+  "relatedTags": ["Query Folding", "Power Query", "Performance", "DirectQuery"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "What Is Query Folding?",
+      "icon": "⚡",
+      "body": "Query Folding is Power Query's ability to translate M transformation steps into native query language (SQL, OData, etc.) that runs on the data source instead of in Power BI. When folding occurs, the source database filters and transforms data before sending it — Power BI receives a smaller, pre-processed result set. When folding does not occur, Power BI downloads all raw data and transforms it locally, which is slower and uses more memory.",
+      "keyPoint": "Query folding = let the source do the work. The fewer rows and columns Power BI downloads, the faster and more efficient the refresh."
+    },
+    {
+      "type": "table",
+      "title": "Without Query Folding — Inefficient Path",
+      "caption": "Power BI downloads 10 million raw rows, then filters in memory",
+      "headers": ["Step", "Where It Runs", "Rows Processed"],
+      "rows": [
+        ["Connect to SQL Server", "Source", "10,000,000"],
+        ["Download all data", "Network transfer", "10,000,000"],
+        ["Filter: Year = 2024", "Power BI (in memory)", "10,000,000"],
+        ["Remove 40 unused columns", "Power BI (in memory)", "10,000,000"],
+        ["Load to model", "VertiPaq", "450,000"]
+      ],
+      "note": "Network transfers 10M rows; filter and column removal run locally — slow and resource-intensive."
+    },
+    {
+      "type": "table",
+      "title": "With Query Folding — Efficient Path",
+      "caption": "Power Query translates the M steps into SQL; the database does the filtering",
+      "headers": ["Step", "Where It Runs", "Rows Processed"],
+      "rows": [
+        ["Connect to SQL Server", "Source", "—"],
+        ["Filter: Year = 2024 → WHERE clause", "Source (SQL)", "10,000,000 scanned"],
+        ["Remove 40 columns → SELECT list", "Source (SQL)", "—"],
+        ["Download filtered result", "Network transfer", "450,000"],
+        ["Load to model", "VertiPaq", "450,000"]
+      ],
+      "note": "Network transfers only the 450K rows that match. The source database uses its indexes for fast filtering."
+    },
+    {
+      "type": "text",
+      "title": "Steps That Preserve Folding",
+      "bullets": [
+        "Filter rows (e.g., keep rows where Year = 2024) → translated to WHERE clause",
+        "Remove columns / choose columns → translated to SELECT list",
+        "Group by and aggregate → translated to GROUP BY",
+        "Sort rows → translated to ORDER BY",
+        "Merge queries (join) — may fold if both sources support it and use the same connection",
+        "Add conditional column based on source columns → often translated to CASE WHEN"
+      ],
+      "keyPoint": "Standard relational transformations (filter, select, aggregate, sort, join) almost always fold against SQL-based sources."
+    },
+    {
+      "type": "text",
+      "title": "Steps That Break Folding",
+      "bullets": [
+        "Merging with a non-foldable or different-source query — folding stops at the merge",
+        "Adding an index column (Table.AddIndexColumn) — no SQL equivalent",
+        "Using Table.Buffer() — explicitly forces local evaluation",
+        "Complex M expressions not translatable to the source's SQL dialect",
+        "Connecting to sources that don't support folding (CSV, Excel, JSON files, some REST APIs)"
+      ],
+      "warning": "Once a step breaks folding, ALL subsequent steps in that query also run locally — even steps that would otherwise fold. Place non-foldable steps as late as possible in the query to minimize the impact.",
+      "keyPoint": "Check folding status by right-clicking a step in the Applied Steps pane — a grayed-out 'View Native Query' option means folding stopped at or before that step."
+    },
+    {
+      "type": "text",
+      "title": "PL-300 Exam — Key Facts",
+      "bullets": [
+        "Query folding applies only to Import mode — DirectQuery sends every visual query directly to the source in real time",
+        "The 'View Native Query' option in Power Query Editor shows the SQL being generated — if it is grayed out, folding is not occurring for that step",
+        "Incremental refresh REQUIRES query folding on the date/time partition column — if folding is broken, incremental refresh falls back to a full refresh",
+        "Reference queries do not fold against the original source — duplicate queries are preferred when folding is important for a subset",
+        "Table.Buffer() forces local evaluation of a table, permanently breaking folding for all downstream steps"
+      ],
+      "keyPoint": "Incremental refresh dependency on query folding is a high-frequency PL-300 exam topic. If incremental refresh is not reducing refresh time, check whether the date column step is still folding."
+    }
+  ]
+}

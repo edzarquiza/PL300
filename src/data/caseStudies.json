@@ -93,6 +93,62 @@
           "Export Restrictions"
         ],
         "coversRequirementIndex": 3
+      },
+      {
+        "id": "cs_fabrikam_q4",
+        "type": "single",
+        "domain": "Model the data",
+        "subtopic": "Create model calculations by using DAX",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_fabrikam",
+        "question": "The CFO requires a rolling 12-month total revenue trend compared to the same rolling 12-month window one year prior. The measure must update dynamically as users change the date slicer on the report. DimDate is marked as a Date Table with a contiguous range. Which pair of measures BEST satisfies this requirement?",
+        "choices": [
+          "Revenue Rolling 12M = CALCULATE([Total Revenue], DATESINPERIOD(DimDate[Date], LASTDATE(DimDate[Date]), -12, MONTH)) and Revenue Rolling 12M LY = CALCULATE([Revenue Rolling 12M], SAMEPERIODLASTYEAR(DimDate[Date]))",
+          "Revenue YTD = TOTALYTD([Total Revenue], DimDate[Date]) and Revenue LY YTD = CALCULATE([Revenue YTD], SAMEPERIODLASTYEAR(DimDate[Date]))",
+          "Revenue TTM = SUMX(DATESINPERIOD(DimDate[Date], TODAY(), -12, MONTH), [Total Revenue]) and Revenue TTM LY = CALCULATE([Revenue TTM], DATEADD(DimDate[Date], -12, MONTH))",
+          "Revenue 12M = CALCULATE([Total Revenue], FILTER(DimDate, DimDate[Date] >= DATE(YEAR(TODAY())-1, MONTH(TODAY()), DAY(TODAY())))) and a parallel prior-year measure using the same static range offset"
+        ],
+        "correctAnswers": [
+          0
+        ],
+        "explanation": "DATESINPERIOD with LASTDATE returns the 12-month window ending at the last date visible in the current filter context — meaning the window moves dynamically with any slicer selection. SAMEPERIODLASTYEAR then shifts that entire window back 12 months for the prior-period comparison. Together they produce a truly dynamic rolling 12-month vs. prior rolling 12-month comparison. TOTALYTD (B) resets at January 1 and reflects year-to-date — it is not a rolling window and would confuse the CFO. TODAY() in a measure (C) is evaluated at query time but anchors the window to the current date, not the slicer selection — the window does not move with user navigation. Static FILTER dates (D) break when the slicer changes because the DATE() expressions ignore the filter context.",
+        "trapType": "DATESINPERIOD vs TOTALYTD",
+        "tags": [
+          "DATESINPERIOD",
+          "SAMEPERIODLASTYEAR",
+          "Time Intelligence",
+          "Rolling 12 Month",
+          "DAX"
+        ],
+        "coversRequirementIndex": 2
+      },
+      {
+        "id": "cs_fabrikam_q5",
+        "type": "single",
+        "domain": "Manage and secure Power BI",
+        "subtopic": "Choose a distribution method",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_fabrikam",
+        "question": "The solution must be accessible to 250 internal employees (each with a Power BI Pro license) and 20 external distributors who have no Power BI licenses. The workspace is hosted on a Premium Per Capacity (P1) capacity. Which distribution approach MOST effectively serves both user groups from a single published solution?",
+        "choices": [
+          "Publish a Power BI app from the Premium workspace — internal Pro users and external distributors (invited as Azure AD guest users) can both access the app, with Premium capacity covering consumption for users without their own Pro licenses",
+          "Share the workspace directly with all 270 users by adding them as workspace Members — Premium capacity allows direct workspace sharing with free users including external guests",
+          "Use the Publish to web (public) option to generate a shareable link for the 20 external distributors while internal users access the report via the workspace directly",
+          "Create a second Pro-capacity workspace and republish the same reports there specifically for external distributors, managing the two workspaces separately"
+        ],
+        "correctAnswers": [
+          0
+        ],
+        "explanation": "Power BI Premium Per Capacity allows users who consume content to access apps, dashboards, and reports without a Pro license — this is the core value proposition of Premium. Publishing a Power BI app from the Premium workspace means both internal Pro users and external Azure AD guest users (B2B) can access it through the app, with Premium covering consumption licenses for those without Pro. Direct workspace sharing (B) exposes the workspace navigation to external parties and is not best practice for distributing to large or external audiences — apps are the correct distribution vehicle. Publish to web (C) creates a publicly anonymous embed link with no authentication, which exposes confidential sales data to anyone with the URL. Two workspaces (D) creates maintenance duplication and security management overhead unnecessarily.",
+        "trapType": "Premium Distribution Licensing",
+        "tags": [
+          "Power BI Apps",
+          "Premium Capacity",
+          "Distribution",
+          "Licensing",
+          "External Users"
+        ],
+        "coversRequirementIndex": 3
       }
     ],
     "recommendedSolutions": [
@@ -219,6 +275,62 @@
           "Compliance",
           "MiFID II",
           "Label Inheritance"
+        ],
+        "coversRequirementIndex": 2
+      },
+      {
+        "id": "cs_northwind_q4",
+        "type": "single",
+        "domain": "Manage and secure Power BI",
+        "subtopic": "Assign workspace roles",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_northwind",
+        "question": "The data governance requirement states that the BI team must be able to grant and revoke access to reports and semantic models for any analyst independently, without opening IT service tickets for Active Directory group changes. Currently all workspace access is controlled through AD security groups managed by IT. Which approach BEST enables this self-service access management while maintaining appropriate security?",
+        "choices": [
+          "Assign BI team leads as workspace Admins in the Power BI Service — Admins can directly add or remove individuals and groups from the workspace without requiring IT to modify AD groups",
+          "Ask IT to create a single master AD group called Power-BI-Access and manage all workspace access through this one group, reducing IT ticket volume to a single group",
+          "Switch the workspace to a My Workspace deployment model so each analyst manages their own content independently without shared access management",
+          "Use the Power BI Service tenant admin portal to configure workspace access through Microsoft 365 groups that the BI team owns and can modify independently"
+        ],
+        "correctAnswers": [
+          0
+        ],
+        "explanation": "Power BI workspace Admin role allows direct management of workspace members — adding and removing individuals or groups via the Power BI Service UI, with no AD group change required and no IT involvement. This gives the BI team full self-service control over who can access the workspace and at what privilege level. A master AD group (B) still requires IT to manage membership within that group — it reduces ticket volume but does not eliminate IT dependency, which is the stated requirement. My Workspace (C) is personal and not collaborative — each user works in isolation and cannot share reports. M365 group ownership (D) is a viable approach but typically still involves some IT setup for group creation and may not be self-service depending on tenant configuration.",
+        "trapType": "Workspace Role vs AD Group Management",
+        "tags": [
+          "Workspace Roles",
+          "Admin",
+          "Access Management",
+          "Self-Service",
+          "Governance"
+        ],
+        "coversRequirementIndex": 3
+      },
+      {
+        "id": "cs_northwind_q5",
+        "type": "single",
+        "domain": "Manage and secure Power BI",
+        "subtopic": "Apply sensitivity labels",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_northwind",
+        "question": "Northwind's compliance team discovers that when analysts export data from the Highly Confidential-labeled semantic model to Excel, the resulting file has no sensitivity label applied. The compliance requirement states the Highly Confidential label must persist on any Office document produced from Power BI exports. What must be configured to satisfy this requirement?",
+        "choices": [
+          "In Microsoft Purview, configure the Highly Confidential label policy to enable downstream label inheritance — when data is exported from a labeled Power BI item, the label and its protection settings are applied automatically to the resulting Excel or CSV file",
+          "Disable all data export functionality for the semantic model in the Power BI Service report settings, preventing analysts from exporting to Excel or CSV entirely",
+          "Require analysts to manually re-apply the Highly Confidential label in Excel after each export using the Microsoft 365 sensitivity label menu",
+          "Switch all reports to paginated report format — paginated report PDF exports carry sensitivity labels from the underlying semantic model automatically without additional configuration"
+        ],
+        "correctAnswers": [
+          0
+        ],
+        "explanation": "Microsoft Purview sensitivity label policies support downstream label inheritance: when a Power BI item carries a sensitivity label, exports derived from it (Excel, CSV, PowerPoint) can automatically receive the same label and its associated protection settings (encryption, rights management). This must be configured in the Purview admin center under Information Protection — the policy must specify that downstream Office files inherit the parent label. Without this policy enabled, the export drops the label. Disabling export (B) prevents the legitimate analyst workflow entirely. Manual re-application (C) is unreliable and non-enforceable — compliance cannot depend on individual user behavior. Paginated reports (D) do not automatically transfer sensitivity labels to exported files without the same Purview policy configuration.",
+        "trapType": "Sensitivity Label Downstream Inheritance",
+        "tags": [
+          "Sensitivity Labels",
+          "Microsoft Purview",
+          "Export",
+          "Compliance",
+          "Information Protection"
         ],
         "coversRequirementIndex": 2
       }
@@ -351,6 +463,64 @@
           "Sensitivity Labels"
         ],
         "coversRequirementIndex": 3
+      },
+      {
+        "id": "cs_contoso_q4",
+        "type": "single",
+        "domain": "Manage and secure Power BI",
+        "subtopic": "Apply sensitivity labels",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_contoso_health",
+        "question": "The compliance requirement states that PHI fields (patient names, SSNs, diagnosis codes) must not be accessible in any exported file from the Power BI solution, while authorized clinical staff must still see these fields in the interactive report. Which combination of controls MOST effectively satisfies both requirements simultaneously?",
+        "choices": [
+          "Apply a Highly Confidential sensitivity label with a Microsoft Purview DLP policy that blocks export-to-CSV and export-to-Excel operations for items with this label, while clinical staff retain full interactive report access through their assigned workspace roles",
+          "Remove all PHI columns from the semantic model and display patient identifiers only through card visuals connected to a separate lookup API that is not part of the Power BI data model",
+          "Use visual-level filters on every visual to hide PHI fields from display, and configure report settings to disable the Export data option for each visual individually",
+          "Switch all PHI data to a DirectQuery partition so that exported queries contain only SQL statements without actual data values, preventing PHI from appearing in export files"
+        ],
+        "correctAnswers": [
+          0
+        ],
+        "explanation": "A Microsoft Purview DLP (Data Loss Prevention) policy tied to the sensitivity label is the correct enterprise-grade control: it enforces export restrictions at the tenant policy level rather than relying on report-level configuration, which can be bypassed. Clinical staff retain full interactive report access because the DLP policy targets export actions specifically, not viewing. The label also provides audit trails. Removing PHI from the model (B) prevents the report from showing patient-level context entirely — clinical staff cannot use it for patient identification, violating the interactive access requirement. Visual-level filters (C) are UI controls that can be circumvented through other visuals or export buttons and are not a compliant data protection mechanism. DirectQuery (D) does not prevent data from being returned and stored in Excel when a user triggers an export — the query executes and the results are written to the file.",
+        "trapType": "DLP Policy vs Visual-Level Security",
+        "tags": [
+          "Sensitivity Labels",
+          "DLP",
+          "PHI",
+          "Compliance",
+          "Microsoft Purview",
+          "Healthcare"
+        ],
+        "coversRequirementIndex": 3
+      },
+      {
+        "id": "cs_contoso_q5",
+        "type": "single",
+        "domain": "Model the data",
+        "subtopic": "Optimize model performance",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_contoso_health",
+        "question": "The executive summary page contains an Average Length of Stay (ALOS) measure over a PatientVisit fact table with 28 million rows. The measure is defined as AVERAGEX(PatientVisit, DATEDIFF(PatientVisit[AdmitDate], PatientVisit[DischargeDate], DAY)). Performance Analyzer shows this measure takes 7.4 seconds — the primary bottleneck. Data is imported daily and does not change intra-day. Which change provides the GREATEST performance improvement for this measure?",
+        "choices": [
+          "Add a calculated column LengthOfStayDays = DATEDIFF([AdmitDate], [DischargeDate], DAY) to the PatientVisit table during Power Query load, then rewrite the measure as AVERAGE(PatientVisit[LengthOfStayDays]) — pre-computing the duration at load time eliminates row-by-row DATEDIFF evaluation at query time",
+          "Switch PatientVisit to DirectQuery mode so AVERAGEX pushes the row-level DATEDIFF calculation to the SQL Server engine, which processes it more efficiently using native date functions",
+          "Replace AVERAGEX with SUMX(PatientVisit, DATEDIFF([AdmitDate],[DischargeDate],DAY)) divided by COUNTROWS(PatientVisit) — SUMX accumulates in a single pass while AVERAGEX requires two passes through the table",
+          "Enable the large dataset storage format on the semantic model and increase the Premium capacity memory allocation to allow the full 28M-row table to remain in cache between refreshes"
+        ],
+        "correctAnswers": [
+          0
+        ],
+        "explanation": "AVERAGEX iterates 28 million rows calling DATEDIFF per row at query time — this is Formula Engine row iteration and is slow at this scale. Pre-computing LengthOfStayDays as a calculated column (added in Power Query as a custom column) shifts the DATEDIFF calculation to load time, storing the integer result in VertiPaq columnar storage. The measure then becomes AVERAGE on a pre-computed column — VertiPaq evaluates simple column aggregations in milliseconds even over tens of millions of rows. DirectQuery (B) moves the work to SQL but does not fundamentally resolve row iteration over 28M rows, and adds network round-trip latency to every report interaction. SUMX/COUNTROWS (C) still iterates 28M rows twice with the same Formula Engine cost as AVERAGEX. Large dataset format (D) helps with memory management for large models but does not change the algorithmic cost of per-row iteration at query time.",
+        "trapType": "AVERAGEX vs AVERAGE on Pre-Computed Column",
+        "tags": [
+          "AVERAGEX",
+          "Performance",
+          "Calculated Columns",
+          "Power Query",
+          "VertiPaq",
+          "Optimization"
+        ],
+        "coversRequirementIndex": 1
       }
     ],
     "recommendedSolutions": [
@@ -472,6 +642,62 @@
           "DAX"
         ],
         "coversRequirementIndex": 2
+      },
+      {
+        "id": "cs_aw_q4",
+        "type": "single",
+        "domain": "Model the data",
+        "subtopic": "Design and implement a data model",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_adventure_works",
+        "question": "The SCD Type 2 DimCustomer table contains historical customer profiles with EffectiveDate and ExpiryDate columns (current rows have ExpiryDate = 9999-12-31). Sales transactions in FactSales reference CustomerKey — the surrogate key that uniquely identifies each historical snapshot. A sales analysis shows that revenue attributed to the high-value loyalty tier segment is overstated compared to finance records. Which is the MOST likely modeling cause?",
+        "choices": [
+          "FactSales[CustomerKey] is joined to DimCustomer[CustomerKey] on the surrogate key, but the report does not filter by EffectiveDate or ExpiryDate — queries may be double-counting revenue when a customer has multiple snapshot rows with the same loyalty tier active across overlapping reporting periods",
+          "The relationship between FactSales and DimCustomer is many-to-many because multiple surrogate keys exist for the same natural customer ID — the relationship should be changed to one-to-one using a bridge table",
+          "The LoyaltyTier column in DimCustomer is a slowly changing attribute and should not be stored in a dimension table — it must be moved to the fact table alongside each sales row",
+          "FactSales[CustomerKey] contains natural customer ID values instead of surrogate keys, causing multiple historical DimCustomer rows to match each fact row and producing duplicated revenue totals"
+        ],
+        "correctAnswers": [
+          3
+        ],
+        "explanation": "In a correctly implemented SCD Type 2, each fact row stores the surrogate key (CustomerKey) of the specific customer profile that was active at transaction time — so each fact row joins to exactly one dimension snapshot. If FactSales instead stores the natural customer ID, a single fact row matches multiple DimCustomer rows (one per historical snapshot), causing each revenue row to be counted multiple times in aggregations — the classic fan-out duplication that overstates revenue. This is the most direct cause of overstated totals. While incorrect EffectiveDate filtering (A) can cause attribution errors, it would more likely cause misattribution to the wrong tier rather than outright overstatement. Many-to-many on surrogate keys (B) should not occur if surrogate keys are unique per snapshot. LoyaltyTier in a dimension (C) is perfectly appropriate and standard for SCD Type 2.",
+        "trapType": "SCD Type 2 Surrogate Key Fan-Out",
+        "tags": [
+          "SCD Type 2",
+          "Surrogate Keys",
+          "Data Modeling",
+          "Relationships",
+          "Fan-Out"
+        ],
+        "coversRequirementIndex": 1
+      },
+      {
+        "id": "cs_aw_q5",
+        "type": "single",
+        "domain": "Manage and secure Power BI",
+        "subtopic": "Implement row-level security roles",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_adventure_works",
+        "question": "Regional directors must see all stores in their assigned region; store managers see only their own store. Both roles must be enforced through the same semantic model without creating separate models. DimStore has RegionID and StoreID columns. DimStoreAccess is a security bridge table with ManagerEmail, StoreID, and RegionID — regional directors have one row per store in their region; store managers have one row for their store only. Which RLS implementation MOST effectively satisfies both access patterns?",
+        "choices": [
+          "Create one RLS role with DAX filter [ManagerEmail] = USERPRINCIPALNAME() on DimStoreAccess. Relate DimStoreAccess to DimStore on StoreID with bidirectional cross-filter. Assign both regional directors and store managers to this single role — the bridge table rows define each user's accessible stores",
+          "Create two separate RLS roles — RegionalDirector and StoreManager — with different DAX filters on DimStore, and require administrators to assign users to the correct role based on their job function",
+          "Apply report-level filters on RegionID for regional directors and visual-level filters on StoreID for store managers, configured per report page based on the intended audience",
+          "Create a calculated column in DimStore using AccessLevel = IF([RegionID] IN VALUES(DimStoreAccess[RegionID]), \"Region\", \"Store\") and apply a security filter based on this column"
+        ],
+        "correctAnswers": [
+          0
+        ],
+        "explanation": "A single RLS role using a security bridge table is the standard pattern for hierarchical access. DimStoreAccess encodes each user's access scope in data: regional directors have multiple rows (one per store in their region), store managers have one row. The DAX filter [ManagerEmail] = USERPRINCIPALNAME() on DimStoreAccess limits the bridge table to the current user's rows; bidirectional cross-filter propagates this restriction to DimStore and onwards to FactSales. One role handles both access tiers because the access scope is data-driven. Two separate roles (B) require administrators to manually assign each user to the correct role — any misconfiguration exposes data or over-restricts access. Report-level and visual-level filters (C) are UI controls, not server-enforced security — users with edit permissions can bypass them. Calculated columns (D) cannot reference USERPRINCIPALNAME(), which is a runtime function evaluated per query, not at refresh time.",
+        "trapType": "RLS Bridge Table Pattern",
+        "tags": [
+          "RLS",
+          "Bridge Table",
+          "Bidirectional Filter",
+          "USERPRINCIPALNAME",
+          "Hierarchical Security"
+        ],
+        "coversRequirementIndex": 3
       }
     ],
     "recommendedSolutions": [
@@ -632,6 +858,62 @@
           "Data Leakage"
         ],
         "coversRequirementIndex": 2
+      },
+      {
+        "id": "cs_tailspin_q4",
+        "type": "single",
+        "domain": "Prepare the data",
+        "subtopic": "Transform and load the data",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_tailspin",
+        "question": "The BI team must ensure that schema changes in supplier CSV files (new columns added or column names changed) do not silently break the Power Query pipeline. The current query references columns by name directly in each transformation step. When a supplier adds a column the query produces unexpected downstream results; when a supplier renames a column the query fails mid-refresh. Which Power Query design pattern MOST effectively protects against both failure modes?",
+        "choices": [
+          "Add an explicit Table.SelectColumns step early in the query specifying only the required columns, followed by Table.RenameColumns to normalize any known name variants — extra columns are discarded and missing or renamed required columns fail early with a clear error",
+          "Enable the query folding setting in the data source connector so Power Query pushes schema validation back to the CSV source, which rejects non-conforming files before Power BI processes them",
+          "Use Table.PromoteHeaders followed by Table.TransformColumnTypes without specifying column names — when column types are inferred, Power BI adapts automatically to renamed columns by matching data types",
+          "Configure the CSV connector to reject files with a column count that differs from the expected schema, discarding non-conforming files at the source step before any transformation runs"
+        ],
+        "correctAnswers": [
+          0
+        ],
+        "explanation": "Explicitly selecting required columns early with Table.SelectColumns achieves two things: (1) it strips any extra columns suppliers add, preventing them from affecting downstream steps silently; (2) it fails immediately and clearly if a required column is missing or has been renamed, producing an actionable error at the right step rather than a cryptic failure deep in the query. Table.RenameColumns can additionally normalize known name variants from different suppliers. Query folding (B) applies only to relational sources that support native query translation — CSV files are not foldable. Type inference (C) cannot distinguish columns by type when multiple columns share the same type, and renamed columns are not detected by type matching. A fixed column-count rejection (D) is not a configurable CSV connector parameter in Power Query.",
+        "trapType": "Schema Drift Protection Pattern",
+        "tags": [
+          "Power Query",
+          "Schema Drift",
+          "Table.SelectColumns",
+          "CSV",
+          "Defensive ETL"
+        ],
+        "coversRequirementIndex": 1
+      },
+      {
+        "id": "cs_tailspin_q5",
+        "type": "single",
+        "domain": "Manage and secure Power BI",
+        "subtopic": "Create and manage workspaces and assets",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_tailspin",
+        "question": "The product master data team needs to update product descriptions, categories, and regional mappings in the Power BI model weekly without involving the BI team. The BI team wants to preserve full ownership of the ETL pipeline and report definitions. Which approach MOST effectively satisfies the self-service product data update requirement with the LEAST disruption to the existing BI pipeline?",
+        "choices": [
+          "Store the product master data in a SharePoint Online list that the product team owns and updates directly. Reference the SharePoint list as a data source in Power Query alongside the transactional sources — scheduled refresh picks up list changes automatically without BI team involvement",
+          "Grant the product master data team Contributor access to the Power BI workspace so they can edit the data model directly in Power BI Service and publish updates",
+          "Create a separate Power BI workspace for the product team where they maintain a standalone product master semantic model and use composite models to connect the main report to both semantic models",
+          "Export the product master data as a CSV after each update, instruct the product team to upload the CSV to a SharePoint folder, then manually trigger a Power BI refresh after each upload"
+        ],
+        "correctAnswers": [
+          0
+        ],
+        "explanation": "Storing product master data in a SharePoint Online list gives the product team direct data ownership using a familiar interface with no Power BI expertise required. Power Query connects to SharePoint lists natively, and scheduled refresh automatically picks up list changes — no BI team involvement needed. The BI team retains full ownership of the ETL pipeline and model structure. This cleanly separates data ownership from model ownership. Contributor workspace access (B) gives the product team write access to the full Power BI model, risking accidental modification of measures, relationships, or reports. Composite models (C) add architectural complexity and require the product team to publish and maintain a separate Power BI semantic model. A manual CSV upload + manual refresh process (D) is not truly self-service and introduces human error at both steps.",
+        "trapType": "Self-Service Data Ownership Pattern",
+        "tags": [
+          "SharePoint",
+          "Power Query",
+          "Self-Service",
+          "Workspace Management",
+          "Data Ownership"
+        ],
+        "coversRequirementIndex": 3
       }
     ],
     "recommendedSolutions": [
@@ -688,10 +970,18 @@
           "Add a custom column using: = List.First(List.Select([event_params], each _[key] = \"page_location\"), null)?[value.string_value], then promote it",
           "Use Table.TransformColumns to apply Text.FromBinary to the event_params column, then use JSON.Document to re-parse each row"
         ],
-        "correctAnswers": [2],
+        "correctAnswers": [
+          2
+        ],
         "explanation": "Option C uses List.Select to filter the nested list to matching records, List.First to safely get the first match (returning null if not found), and the ?[] null-safe accessor to extract the field. This pattern is robust when a session may not have the target event parameter. Option A would error when no matching row exists in the list. Option B (expand + filter + pivot) is valid but inefficient at 140M rows — it creates enormous intermediate tables before reducing. Option D applies Text transformation to structured data types, which would error or produce '[List]' string representation.",
         "trapType": "Semi-structured Data Expansion",
-        "tags": ["Power Query", "Semi-structured", "JSON", "BigQuery", "List.Select"],
+        "tags": [
+          "Power Query",
+          "Semi-structured",
+          "JSON",
+          "BigQuery",
+          "List.Select"
+        ],
         "coversRequirementIndex": 0
       },
       {
@@ -708,10 +998,18 @@
           "Customer LTV = CALCULATE(SUM(FactOrders[Revenue]), REMOVEFILTERS(DimDate[Date]))",
           "Customer LTV = DIVIDE(SUM(FactOrders[Revenue]), DISTINCTCOUNT(FactOrders[CustomerKey]))"
         ],
-        "correctAnswers": [1],
+        "correctAnswers": [
+          1
+        ],
         "explanation": "CLV should sum all revenue per customer regardless of any date slicer in the report — but respect customer-level filters (channel, cohort). SUMX over VALUES(CustomerKey) iterates each customer in the current filter context and CALCULATE within it sums that customer's total revenue without date restriction. Option A uses ALL(DimDate) which removes date filters globally but is a table-level function applied at measure level — this correctly removes date context but doesn't iterate per-customer correctly. Option C (REMOVEFILTERS on a single column) is similar to A but only removes the Date column filter, not filters on year/month slicers. Option D calculates average revenue per customer — not lifetime value.",
         "trapType": "Iterator vs Aggregation Context",
-        "tags": ["DAX", "SUMX", "Customer LTV", "VALUES", "Iterator Functions"],
+        "tags": [
+          "DAX",
+          "SUMX",
+          "Customer LTV",
+          "VALUES",
+          "Iterator Functions"
+        ],
         "coversRequirementIndex": 2
       },
       {
@@ -728,10 +1026,17 @@
           "Waterfall chart showing the decremental change between each funnel stage",
           "Line chart with stages on the X-axis to show sequential progression"
         ],
-        "correctAnswers": [1],
+        "correctAnswers": [
+          1
+        ],
         "explanation": "The Funnel chart is designed precisely for sequential stage analysis — it renders stages as proportional horizontal bars narrowing toward the bottom, making drop-off immediately visible. It natively supports value labels showing count and percentage of first stage. A stacked bar chart (A) shows parts-of-a-whole within categories, not sequential narrowing — it would require manual workarounds and loses the funnel metaphor. A waterfall chart (C) shows incremental additions/subtractions, not proportional stage flow. A line chart (D) implies continuous trend over time rather than discrete conversion stages.",
         "trapType": "Visual Selection",
-        "tags": ["Funnel Chart", "Visualization", "Conversion", "Report Design"],
+        "tags": [
+          "Funnel Chart",
+          "Visualization",
+          "Conversion",
+          "Report Design"
+        ],
         "coversRequirementIndex": 0
       },
       {
@@ -748,11 +1053,76 @@
           "Apply a sensitivity label marked 'Confidential' to the semantic model — this restricts column-level access for non-admin users",
           "Grant the marketing manager Viewer access to the workspace instead of Member access to limit data visibility"
         ],
-        "correctAnswers": [1],
+        "correctAnswers": [
+          1
+        ],
         "explanation": "Removing PII columns from the semantic model at publish time is the most effective and lowest-maintenance solution. If the columns don't exist in the published model, they cannot be accessed by any report or direct query — regardless of workspace role. RLS (A) operates at the row level, not the column level, and cannot hide specific columns from a role while showing the rest of the row. Sensitivity labels (C) control export and sharing policies but do not enforce column-level access in reports — the data remains visible in the visual. Workspace roles (D) control whether a user can edit or share content, not which data columns they can see within a report.",
         "trapType": "RLS vs Column Security",
-        "tags": ["Data Security", "Column Security", "PII", "Sensitivity Labels", "Workspace Roles"],
+        "tags": [
+          "Data Security",
+          "Column Security",
+          "PII",
+          "Sensitivity Labels",
+          "Workspace Roles"
+        ],
         "coversRequirementIndex": 3
+      },
+      {
+        "id": "cs_lucerne_q5",
+        "type": "single",
+        "domain": "Model the data",
+        "subtopic": "Create model calculations by using DAX",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_lucerne_ecommerce",
+        "question": "The marketing team requires revenue to be attributed to the last campaign a customer clicked before making a purchase (last-touch attribution). FactCampaignClicks contains CampaignKey, CustomerKey, ClickTimestamp; FactPurchases contains PurchaseKey, CustomerKey, PurchaseTimestamp, Revenue. There is no direct foreign key between the two tables. Which DAX approach MOST accurately implements last-touch attribution?",
+        "choices": [
+          "Add a calculated column to FactPurchases using CALCULATE(LASTNONBLANKVALUE(FactCampaignClicks[ClickTimestamp], MAX(FactCampaignClicks[CampaignKey])), FILTER(FactCampaignClicks, FactCampaignClicks[CustomerKey] = EARLIER(FactPurchases[CustomerKey]) && FactCampaignClicks[ClickTimestamp] <= EARLIER(FactPurchases[PurchaseTimestamp]))) to identify the last campaign key before each purchase",
+          "Create a measure: Attributed Revenue = SUMX(FactPurchases, IF(MAX(FactCampaignClicks[ClickTimestamp]) <= [PurchaseTimestamp], [Revenue], BLANK())) to filter revenue to purchases following a campaign click",
+          "Add a many-to-many relationship between FactCampaignClicks and FactPurchases on CustomerKey, then filter campaign visuals using the purchase date as a cross-filter to associate clicks with purchases",
+          "Use LOOKUPVALUE(FactCampaignClicks[CampaignKey], FactCampaignClicks[CustomerKey], [CustomerKey]) as a calculated column — LOOKUPVALUE returns the matching campaign row from the clicks table"
+        ],
+        "correctAnswers": [
+          0
+        ],
+        "explanation": "Last-touch attribution requires identifying, for each purchase row, the most recent campaign click that occurred before the purchase timestamp for the same customer. This is a row-context lookup with a temporal filter — exactly what EARLIER enables inside a calculated column. EARLIER(FactPurchases[PurchaseTimestamp]) accesses the current purchase row's timestamp within the FILTER iterator over FactCampaignClicks, restricting clicks to those before the purchase for the same customer. LASTNONBLANKVALUE returns the CampaignKey at the maximum (most recent) ClickTimestamp in that filtered set. Option B attempts this as a measure but cannot access individual FactPurchases row timestamps without a row iterator context, and MAX(FactCampaignClicks[ClickTimestamp]) compares against the slicer context — not each purchase row. Many-to-many (C) expands row combinations and cannot implement temporal ordering logic. LOOKUPVALUE (D) returns any matching row arbitrarily when a customer has multiple clicks and will error or return unpredictable results.",
+        "trapType": "EARLIER for Cross-Table Row Context",
+        "tags": [
+          "EARLIER",
+          "Calculated Columns",
+          "Attribution",
+          "DAX",
+          "FILTER",
+          "LASTNONBLANKVALUE"
+        ],
+        "coversRequirementIndex": 1
+      },
+      {
+        "id": "cs_lucerne_q6",
+        "type": "single",
+        "domain": "Visualize and analyze the data",
+        "subtopic": "Identify patterns and trends",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_lucerne_ecommerce",
+        "question": "The marketing team wants to visualize customer lifetime value (CLV) cohorts — customers grouped by their first-purchase month — showing how each cohort's cumulative revenue grows over subsequent months. The report must allow filtering by acquisition channel (organic, paid, email) and support up to 24 months of cohort progression. Which visual configuration BEST represents this multi-cohort CLV data?",
+        "choices": [
+          "A matrix visual with cohort month as rows and months-since-first-purchase (0 through 23) as columns, with cumulative CLV as the value — conditional formatting color scales reveal relative cohort performance across all time periods simultaneously",
+          "A line chart with months-since-first-purchase on the X-axis and one line per cohort month — the line chart natively handles 24 cohort lines with a color legend allowing users to compare trajectory shapes",
+          "A waterfall chart with each cohort month as a category showing incremental revenue additions month-over-month with running totals, filtered by acquisition channel",
+          "A scatter chart with first-purchase month on the X-axis and total CLV at month 24 on the Y-axis, with bubble size representing cohort size and color representing acquisition channel"
+        ],
+        "correctAnswers": [
+          0
+        ],
+        "explanation": "CLV cohort analysis is the canonical use case for a matrix (cohort table) layout: rows represent the cohort (acquisition month), columns represent elapsed time (Month 0 through Month 23), and each cell shows cumulative revenue through that elapsed period. A conditional formatting color scale immediately reveals which cohorts are performing above or below average at any point in time — the entire progression is visible at once. This is the industry-standard cohort visualization in e-commerce analytics. A line chart (B) with 24 cohort lines creates severe visual clutter — crossing lines become indistinguishable and color legends with 24 entries are unreadable. A waterfall chart (C) is designed for sequential additions to a single series and cannot compare multiple cohort trajectories. A scatter chart (D) collapses 24 months of progression into a single endpoint value, losing the temporal cohort progression that makes this analysis meaningful.",
+        "trapType": "Cohort Analysis Visual Selection",
+        "tags": [
+          "CLV",
+          "Cohort Analysis",
+          "Matrix Visual",
+          "Conditional Formatting",
+          "Visualization"
+        ],
+        "coversRequirementIndex": 2
       }
     ],
     "recommendedSolutions": [
@@ -805,10 +1175,18 @@
           "Use a workspace role-based security policy that assigns each HRBP to a separate workspace containing only their region's app",
           "Add a calculated column to DimEmployee: IsMyRegion = IF(USERPRINCIPALNAME() = LOOKUPVALUE(...), 1, 0) and filter the RLS role on IsMyRegion = 1"
         ],
-        "correctAnswers": [0],
+        "correctAnswers": [
+          0
+        ],
         "explanation": "LOOKUPVALUE inside an RLS DAX expression is the standard pattern for dynamic RLS when the user-to-data mapping is stored in a separate table without a model relationship. It returns the Region value for the currently authenticated user from BridgeHRBPRegion, and that value is compared to DimEmployee[Region] to filter visible rows. PATHCONTAINS (B) is for parent-child hierarchies (org charts), not region security. Workspace-per-region (C) is a distribution strategy, not security enforcement — determined users can still extract data. Calculated columns (D) evaluated at publish time cannot use USERPRINCIPALNAME() dynamically at runtime — the column value is fixed when the model is refreshed.",
         "trapType": "Dynamic RLS",
-        "tags": ["RLS", "USERPRINCIPALNAME", "LOOKUPVALUE", "Dynamic Security", "Row-Level Security"],
+        "tags": [
+          "RLS",
+          "USERPRINCIPALNAME",
+          "LOOKUPVALUE",
+          "Dynamic Security",
+          "Row-Level Security"
+        ],
         "coversRequirementIndex": 0
       },
       {
@@ -825,10 +1203,18 @@
           "Attrition Rate = DIVIDE(DISTINCTCOUNT(FactAttrition[EmployeeKey]), CALCULATE(DISTINCTCOUNT(FactHeadcountSnapshot[EmployeeKey]), ALL(DimDate)))",
           "Attrition Rate = [Total Terminations] / [Opening Headcount]"
         ],
-        "correctAnswers": [0],
+        "correctAnswers": [
+          0
+        ],
         "explanation": "Option A correctly calculates average headcount by iterating over each MonthEnd value in the current date filter context using AVERAGEX and counts snapshot rows per month. This respects any Region/Department/JobLevel filter applied to the visual because those filters propagate through the relationships. Option B uses COUNT which counts non-blank values — it counts all snapshots (one per employee per month) rather than per-month averages. Option C uses ALL(DimDate) which removes the date filter completely from the denominator — this produces an average headcount across all history regardless of the selected period. Option D uses Opening Headcount as denominator instead of average, which is a different (less accurate) formula and introduces ambiguity when the period spans multiple months.",
         "trapType": "Iterator vs Aggregation Context",
-        "tags": ["DAX", "AVERAGEX", "DIVIDE", "HR Metrics", "Attrition"],
+        "tags": [
+          "DAX",
+          "AVERAGEX",
+          "DIVIDE",
+          "HR Metrics",
+          "Attrition"
+        ],
         "coversRequirementIndex": 2
       },
       {
@@ -845,10 +1231,19 @@
           "Create a measure: Time to Fill = DIVIDE(SUMX(FactHires, DATEDIFF([OpenDate], [HireDate], DAY)), COUNTROWS(FactHires))",
           "Add a calculated column IsFilled = IF(ISBLANK([HireDate]), 0, 1) then measure: Time to Fill = CALCULATE(AVERAGE(FactHires[DaysToFill]), FactHires[IsFilled] = 1)"
         ],
-        "correctAnswers": [1],
+        "correctAnswers": [
+          1
+        ],
         "explanation": "Option B is correct: AVERAGEX with FILTER(FILTER handles the null exclusion dynamically, and DATEDIFF computes the duration per row within the iterator. This respects any report filters (SourceChannel, region, etc.) applied to the visual. Option A (calculated column) works but has a flaw: AVERAGE of a column that contains blank values from open requisitions will still include those rows in Power BI's column average unless explicitly filtered — calculated columns containing BLANK are excluded from aggregation, so actually A would work, but B is more explicit and filter-context-aware. Option C divides by COUNTROWS(FactHires) which includes open requisitions in the denominator — producing a lower average than correct. Option D requires maintaining two calculated columns and is unnecessarily complex.",
         "trapType": "Calculated Column vs Measure",
-        "tags": ["DAX", "AVERAGEX", "FILTER", "ISBLANK", "HR Metrics", "Time to Fill"],
+        "tags": [
+          "DAX",
+          "AVERAGEX",
+          "FILTER",
+          "ISBLANK",
+          "HR Metrics",
+          "Time to Fill"
+        ],
         "coversRequirementIndex": 3
       },
       {
@@ -865,11 +1260,76 @@
           "A clustered bar chart with [Hires] and [Terminations] as two series by month, with a secondary axis for [Net Change]",
           "A matrix visual with months as rows and [Hires], [Terminations], [Net Change] as columns, formatted with conditional formatting on [Net Change]"
         ],
-        "correctAnswers": [0],
+        "correctAnswers": [
+          0
+        ],
         "explanation": "A line chart with a 0 reference line and conditional coloring is the clearest way to show signed net change — months above zero are positive (growth) and months below are negative (decline). The reference line creates an immediate visual anchor. In Power BI, you can use the line chart's analytics pane to add a constant line at 0. Option B (waterfall) is excellent for showing cumulative running totals but makes MoM change comparison harder across many months — it's better for YTD bridges. Option C uses two series which forces users to mentally subtract bars rather than showing the net signal directly. Option D (matrix) is a table — it requires reading numbers rather than visually identifying growth vs decline months.",
         "trapType": "Visual Selection",
-        "tags": ["Visualization", "Line Chart", "Reference Lines", "MoM", "Headcount Trend"],
+        "tags": [
+          "Visualization",
+          "Line Chart",
+          "Reference Lines",
+          "MoM",
+          "Headcount Trend"
+        ],
         "coversRequirementIndex": 1
+      },
+      {
+        "id": "cs_wingtip_q5",
+        "type": "single",
+        "domain": "Visualize and analyze the data",
+        "subtopic": "Configure drillthrough navigation, including pages, filters, and buttons",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_wingtip_hr",
+        "question": "HRBPs need to drill from the regional attrition summary page to an employee-level detail page showing individual terminations. The drillthrough must pass both the selected region and department from the summary page context, and the detail page must display only employees matching both filters simultaneously. Which drillthrough configuration MOST accurately implements this two-filter requirement?",
+        "choices": [
+          "On the drillthrough detail page, add both Region and Department to the drillthrough field well. On the summary page, right-click a visual element that carries both Region and Department in its filter context — Power BI passes both values simultaneously through the drillthrough",
+          "Create two separate drillthrough pages — one filtered by Region and one filtered by Department — and add navigation buttons on the summary page that trigger each drillthrough independently",
+          "Use cross-report drillthrough so that Region filters navigate to Report A and Department filters navigate to Report B, then link the two reports through shared bookmarks",
+          "On the drillthrough detail page, add a page-level filter for Region and a visual-level filter for Department — drillthrough populates these filter slots automatically when navigation occurs"
+        ],
+        "correctAnswers": [
+          0
+        ],
+        "explanation": "Power BI drillthrough supports multiple fields in the drillthrough field well simultaneously. When a user right-clicks on a visual element (such as a row in a Region-Department matrix or table) that exists in a filter context combining both Region and Department, Power BI passes both values through to the drillthrough page as concurrent active filters. Both fields must be placed in the drillthrough field well on the destination page — this is distinct from the Filters pane. The drillthrough filters are then applied on top of any existing page-level filters on the destination page. Two separate drillthrough pages (B) cannot apply both filters simultaneously in a single navigation — they require two separate actions. Cross-report drillthrough (C) is designed for navigation between different report files, not combined filter passage within one report. Page-level and visual-level filters (D) are design-time static filters that do not receive dynamic runtime values from drillthrough navigation.",
+        "trapType": "Multi-Field Drillthrough Configuration",
+        "tags": [
+          "Drillthrough",
+          "Report Navigation",
+          "Filter Context",
+          "HR Analytics",
+          "Multi-Filter"
+        ],
+        "coversRequirementIndex": 0
+      },
+      {
+        "id": "cs_wingtip_q6",
+        "type": "single",
+        "domain": "Manage and secure Power BI",
+        "subtopic": "Promote or certify Power BI content",
+        "difficulty": "Hard",
+        "caseStudyId": "cs_wingtip_hr",
+        "question": "The HR analytics semantic model is now the authoritative source for all people analytics across the organization. The Chief People Officer requires that the model be clearly distinguishable from unofficial HR data copies in Power BI, and that only the Analytics Center of Excellence (CoE) team — not individual dataset owners — can confer this official status. Which endorsement action MOST directly satisfies both requirements?",
+        "choices": [
+          "A Power BI admin configures Certification eligibility in the admin portal, designating the Analytics CoE as authorized certifiers. The CoE then certifies the HR semantic model — it receives a Certified badge visible in the data hub, and only CoE members can apply or revoke it",
+          "The semantic model owner applies the Promoted badge to the model — Promoted items appear in search results with a gold endorsement badge indicating production-readiness and organizational approval",
+          "Apply a sensitivity label of Official — Internal to the semantic model — this label signals organizational approval and restricts who can modify the label",
+          "Pin the semantic model to the Power BI Home featured section — featured content receives maximum organizational visibility and the Home page placement implicitly signals governance approval"
+        ],
+        "correctAnswers": [
+          0
+        ],
+        "explanation": "Power BI Certification is the governance-controlled endorsement tier: a tenant admin must first configure which users or groups are authorized certifiers (typically a CoE or governance team) in the Power BI admin portal. Only those designated certifiers can apply or revoke the Certified badge — individual dataset owners cannot self-certify their own content. Certified items display a distinct badge in the data hub (semantic model discovery) and appear in a dedicated Certified filter in search results, satisfying both requirements: clear official identification and restricted endorsement authority. Promotion (B) is self-applied by any content owner — there is no restriction on who can promote their own content, so it does not satisfy the requirement that only the CoE can confer the status. Sensitivity labels (C) classify data sensitivity and access rights, not organizational trust or content authority status. Featured content (D) is a Home page placement mechanism for discoverability, not an endorsement or trust signal.",
+        "trapType": "Certification vs Promotion Governance",
+        "tags": [
+          "Certification",
+          "Endorsement",
+          "Governance",
+          "CoE",
+          "Data Hub",
+          "Content Management"
+        ],
+        "coversRequirementIndex": 0
       }
     ],
     "recommendedSolutions": [

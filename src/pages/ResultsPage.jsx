@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import ReviewCard from '../components/ReviewCard'
+import ReadinessWidget from '../components/ReadinessWidget'
 import { useExam } from '../context/ExamContext'
 import { formatTime } from '../utils/examUtils'
 import {
@@ -162,6 +163,9 @@ export default function ResultsPage() {
             </div>
           </div>
         )}
+
+        {/* PL-300 Readiness Estimate */}
+        <ReadinessWidget />
 
         {/* Timing Analysis */}
         {timingData && (

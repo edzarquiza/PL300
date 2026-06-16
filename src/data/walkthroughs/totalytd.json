@@ -1,0 +1,86 @@
+{
+  "id": "totalytd",
+  "concept": "TOTALYTD",
+  "category": "DAX",
+  "tagline": "Accumulates a measure from the start of the fiscal or calendar year to the current date",
+  "daxFunctionId": "totalytd",
+  "relatedTags": ["TOTALYTD", "Time Intelligence", "DATESYTD", "YTD"],
+  "slides": [
+    {
+      "type": "intro",
+      "title": "Year-to-Date Accumulation",
+      "icon": "📈",
+      "body": "TOTALYTD calculates a measure by accumulating values from the start of the year through the latest date in the current filter context. Instead of seeing each month in isolation, users see a running total that grows through the year — essential for YTD Revenue, YTD Budget vs. Actual, and cumulative KPI tracking.",
+      "keyPoint": "TOTALYTD(measure, date_column) resets to zero on January 1 (or your fiscal year-start) and adds each period cumulatively. Requires a marked Date Table."
+    },
+    {
+      "type": "table",
+      "title": "Monthly Sales — Raw Data",
+      "caption": "Each month shows only that month's Sales — no accumulation yet",
+      "headers": ["Month", "Monthly Sales"],
+      "rows": [
+        ["Jan 2024", 85000],
+        ["Feb 2024", 92000],
+        ["Mar 2024", 110000],
+        ["Apr 2024", 97000],
+        ["May 2024", 105000]
+      ],
+      "note": "The report is filtered to 2024. Without YTD logic, each month shows only its own sales."
+    },
+    {
+      "type": "dax",
+      "title": "Defining the YTD Measure",
+      "code": "Sales YTD =\nTOTALYTD(\n    [Total Sales],\n    DimDate[Date]\n)\n\n-- Equivalent using CALCULATE + DATESYTD:\nSales YTD =\nCALCULATE(\n    [Total Sales],\n    DATESYTD(DimDate[Date])\n)",
+      "annotation": "TOTALYTD is shorthand for CALCULATE([Total Sales], DATESYTD(DimDate[Date])). Both forms are equivalent and produce identical results. DATESYTD returns a table of all dates from Jan 1 to the last date in the current filter."
+    },
+    {
+      "type": "table",
+      "title": "Result — Running YTD Accumulation",
+      "caption": "Sales YTD accumulates from January 1, adding each month cumulatively",
+      "headers": ["Month", "Monthly Sales", "Sales YTD"],
+      "rows": [
+        ["Jan 2024", "85,000", "85,000"],
+        ["Feb 2024", "92,000", "177,000"],
+        ["Mar 2024", "110,000", "287,000"],
+        ["Apr 2024", "97,000", "384,000"],
+        ["May 2024", "105,000", "489,000"]
+      ],
+      "note": "Sales YTD at May = 85K + 92K + 110K + 97K + 105K = 489,000"
+    },
+    {
+      "type": "text",
+      "title": "Fiscal Year Support",
+      "bullets": [
+        "Default year-end is December 31. For fiscal years that end on a different date, add the year-end-date parameter.",
+        "Fiscal year ending June 30: TOTALYTD([Total Sales], DimDate[Date], \"06/30\")",
+        "Fiscal year ending March 31: TOTALYTD([Total Sales], DimDate[Date], \"03/31\")",
+        "The year-end date tells TOTALYTD when to reset the accumulation to zero and start a new YTD cycle"
+      ],
+      "keyPoint": "The optional third argument to TOTALYTD is the fiscal year-end date in MM/DD format. Without it, December 31 is assumed.",
+      "warning": "Without the fiscal year-end parameter, a company with a July–June fiscal year will see incorrect YTD values — the accumulation resets at the wrong time."
+    },
+    {
+      "type": "text",
+      "title": "Prerequisites and Common Mistakes",
+      "bullets": [
+        "DimDate must be marked as a Date Table (Table Tools → Mark as Date Table) — otherwise TOTALYTD returns BLANK",
+        "DimDate must have a contiguous date range with no gaps — missing dates cause incorrect YTD accumulation",
+        "TOTALYTD resets at the fiscal year-start — do not confuse with TOTALQTD (quarter-to-date) or TOTALMTD (month-to-date)",
+        "If the Date column passed to TOTALYTD is not from the marked Date Table, time intelligence will not work correctly"
+      ],
+      "warning": "If TOTALYTD returns BLANK or the same value as the monthly measure, the most likely cause is: (1) the Date table is not marked as Date Table, or (2) the DimDate[Date] column passed has date gaps. Check the Date Table settings first."
+    },
+    {
+      "type": "text",
+      "title": "TOTALYTD vs DATESYTD — Exam Clarity",
+      "bullets": [
+        "TOTALYTD(measure, date) — a self-contained time intelligence function. Takes a measure directly.",
+        "DATESYTD(date) — returns a table of dates from year-start to the current date. Used inside CALCULATE.",
+        "CALCULATE([Total Sales], DATESYTD(DimDate[Date])) is identical to TOTALYTD([Total Sales], DimDate[Date])",
+        "DATESYTD gives more flexibility: you can add additional CALCULATE filters alongside it",
+        "PL-300 tests both forms — know that TOTALYTD is shorthand for the CALCULATE + DATESYTD pattern"
+      ],
+      "keyPoint": "Choose TOTALYTD for concise YTD measures. Choose CALCULATE + DATESYTD when you need additional filter conditions beyond the YTD date range."
+    }
+  ]
+}

@@ -14,6 +14,14 @@ import cardinalityWt from './cardinality.json'
 import modelFilterFlowWt from './model-filter-flow.json'
 import modelMmBridgeWt from './model-mm-bridge.json'
 import modelRolePlayingWt from './model-role-playing.json'
+import countrowsDistinctcountWt from './countrows-distinctcount.json'
+import totalytdWt from './totalytd.json'
+import queryFoldingWt from './query-folding.json'
+import dateaddWt from './dateadd.json'
+import rankxWt from './rankx.json'
+import calculatetableWt from './calculatetable.json'
+import hasonevalueIsfilteredWt from './hasonevalue-isfiltered.json'
+import pqParametersWt from './pq-parameters.json'
 
 export const WALKTHROUGHS = [
   calculateWt,
@@ -32,6 +40,14 @@ export const WALKTHROUGHS = [
   modelFilterFlowWt,
   modelMmBridgeWt,
   modelRolePlayingWt,
+  countrowsDistinctcountWt,
+  totalytdWt,
+  queryFoldingWt,
+  dateaddWt,
+  rankxWt,
+  calculatetableWt,
+  hasonevalueIsfilteredWt,
+  pqParametersWt,
 ]
 
 // Lookup by walkthrough ID

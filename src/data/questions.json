@@ -94,12 +94,12 @@
     "domain": "Model the data",
     "subtopic": "Use time intelligence",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Model the data > Time intelligence",
     "commonTrap": "Thinking TOTALYTD and CALCULATE+DATESYTD produce different results",
     "trapType": "Time Intelligence Requirements",
-    "question": "Which of the following DAX measures correctly calculates year-to-date total sales using a Date table?",
+    "question": "A BI developer is building a cumulative revenue dashboard for the CFO. The report uses a DimDate table marked as a Date Table with a contiguous date range, and must display year-to-date total sales that reset at January 1 each year. Which measure definition should be used?",
     "choices": [
       "Both 'Sales YTD = CALCULATE(SUM(Sales[Amount]), DATESYTD(Dates[Date]))' and 'Sales YTD = TOTALYTD(SUM(Sales[Amount]), Dates[Date])' are correct and produce the same result",
       "Sales YTD = SUMX(Sales, Sales[Amount]) + YEAR(TODAY())",
@@ -228,7 +228,73 @@
       "A flat table eliminates relationships and can speed up simple queries, but creates massive data redundancy (dimension values repeat on every fact row), inflates model size, and complicates DAX measure authoring."
     ],
     "questionGroupId": "star_schema",
-    "variantId": "full_pl300_01"
+    "variantId": "full_pl300_01",
+    "visualContext": {
+      "relationshipDiagram": {
+        "tables": [
+          {
+            "name": "DimDate",
+            "type": "dimension",
+            "position": "left",
+            "keyColumns": [
+              "DateKey"
+            ],
+            "columns": [
+              "Date",
+              "Year",
+              "Quarter",
+              "Month"
+            ]
+          },
+          {
+            "name": "FactSales",
+            "type": "fact",
+            "position": "center",
+            "keyColumns": [
+              "SaleKey"
+            ],
+            "columns": [
+              "DateKey",
+              "ProductKey",
+              "CustomerKey",
+              "Amount"
+            ]
+          },
+          {
+            "name": "DimProduct",
+            "type": "dimension",
+            "position": "right",
+            "keyColumns": [
+              "ProductKey"
+            ],
+            "columns": [
+              "ProductName",
+              "Category",
+              "SubCategory"
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "from": "DimDate",
+            "fromKey": "DateKey",
+            "to": "FactSales",
+            "toKey": "DateKey",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          },
+          {
+            "from": "DimProduct",
+            "fromKey": "ProductKey",
+            "to": "FactSales",
+            "toKey": "ProductKey",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          }
+        ],
+        "issue": "Star schema: FactSales (center) connects directly to each dimension table with single-direction, one-to-many relationships. Dimensions do NOT connect to each other — this maximises VertiPaq compression and query performance."
+      }
+    }
   },
   {
     "id": 6,
@@ -437,7 +503,7 @@
     "domain": "Model the data",
     "subtopic": "Write DAX measures",
     "difficulty": "Easy",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Model the data > DAX best practices",
     "commonTrap": "Thinking DIVIDE performs faster",
@@ -570,7 +636,7 @@
     "domain": "Model the data",
     "subtopic": "Write DAX measures",
     "difficulty": "Hard",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "analysis",
     "examObjective": "Model the data > Row context vs filter context",
     "commonTrap": "Assuming measures can use row context without transition",
@@ -929,7 +995,51 @@
       "3": "Bidirectional filtering doesn't break measures outright. The risk is unexpected or incorrect results from ambiguous filter propagation in multi-table scenarios, not measures ceasing to work."
     },
     "questionGroupId": "bidir_relationship",
-    "variantId": "full_pl300_01"
+    "variantId": "full_pl300_01",
+    "visualContext": {
+      "relationshipDiagram": {
+        "tables": [
+          {
+            "name": "DimProduct",
+            "type": "dimension",
+            "position": "left",
+            "keyColumns": [
+              "ProductKey"
+            ],
+            "columns": [
+              "ProductName",
+              "Category",
+              "Price"
+            ]
+          },
+          {
+            "name": "FactSales",
+            "type": "fact",
+            "position": "right",
+            "keyColumns": [
+              "SaleKey"
+            ],
+            "columns": [
+              "ProductKey",
+              "CustomerKey",
+              "Date",
+              "Amount"
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "from": "DimProduct",
+            "fromKey": "ProductKey",
+            "to": "FactSales",
+            "toKey": "ProductKey",
+            "cardinality": "one-to-many",
+            "direction": "both"
+          }
+        ],
+        "issue": "Bidirectional cross-filter (Both) allows FactSales to push filters back to DimProduct. In multi-table models, this risks ambiguous filter paths and circular propagation — Power BI may apply unexpected filters or refuse the model."
+      }
+    }
   },
   {
     "id": 17,
@@ -1196,12 +1306,12 @@
     "domain": "Model the data",
     "subtopic": "Write DAX measures",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Model the data > Iterator vs aggregation functions",
     "commonTrap": "Thinking SUM and COUNT are iterators",
     "trapType": "Iterator vs Aggregator",
-    "question": "Which TWO of the following are iterator functions in DAX that evaluate an expression for each row in a table before aggregating?",
+    "question": "A developer needs to create two measures: one that calculates a weighted average unit price by evaluating each row in a sales table before averaging, and another that sums discounted amounts per order row before totaling. Which TWO DAX functions are iterator functions — evaluating an expression row-by-row before aggregating — that could be used for these measures?",
     "choices": [
       "SUM",
       "SUMX",
@@ -1274,12 +1384,12 @@
     "domain": "Model the data",
     "subtopic": "Design a data model",
     "difficulty": "Hard",
-    "questionStyle": "direct",
+    "questionStyle": "business_case",
     "cognitiveLevel": "analysis",
     "examObjective": "Model the data > Composite models and storage modes",
     "commonTrap": "Thinking composite models require Premium licensing",
     "trapType": "Storage Mode Selection",
-    "question": "Which TWO statements about composite models in Power BI are correct?",
+    "question": "A finance team needs to combine near-real-time currency exchange rates (sourced via DirectQuery) with an existing imported historical sales table in a single Power BI semantic model. A BI architect is reviewing the composite model capabilities to determine whether this is feasible. Which TWO statements about composite models in Power BI are correct?",
     "choices": [
       "A composite model can mix DirectQuery and Import storage modes in the same dataset",
       "Composite models require a Power BI Premium Per User (PPU) or Premium capacity license",
@@ -1312,12 +1422,12 @@
     "domain": "Manage and secure Power BI",
     "subtopic": "Apply sensitivity labels",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Manage and secure Power BI > Information protection",
     "commonTrap": "Thinking sensitivity labels replace RLS",
     "trapType": "Security Layer Confusion",
-    "question": "Which TWO statements about Microsoft Information Protection sensitivity labels in Power BI are correct?",
+    "question": "An organization's compliance officer asks the BI team to clarify how sensitivity labels behave in Power BI before rolling out a new classification policy. The team needs to confirm how labels propagate to reports and to exported files. Which TWO statements about Microsoft Information Protection sensitivity labels in Power BI are correct?",
     "choices": [
       "A sensitivity label applied to a dataset is automatically inherited by reports built on that dataset",
       "Sensitivity labels in Power BI replace and supersede Row-Level Security rules",
@@ -1903,7 +2013,7 @@
     "domain": "Prepare the data",
     "subtopic": "Profile and clean data",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Prepare the data > Deduplication",
     "commonTrap": "Thinking Remove Duplicates only flags rows",
@@ -2270,12 +2380,12 @@
     "domain": "Prepare the data",
     "subtopic": "Transform data with Power Query",
     "difficulty": "Hard",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "examObjective": "Prepare the data > M language text functions",
     "commonTrap": "Using Text.Start() with fixed count instead of delimiter",
     "trapType": "Power Query Transformation Order",
-    "question": "You need a custom column that returns the first word from a full name stored in [FullName]. Which M expression is correct?",
+    "question": "A Power Query developer is cleaning a contacts table that stores full names in a single [FullName] column (e.g., \"Maria Gonzalez\"). The business requirement is to extract only the first name into a separate column for personalised email salutations. Which M expression correctly returns the text before the first space character?",
     "choices": [
       "Text.BeforeDelimiter([FullName], \" \")",
       "Text.Start([FullName], 5)",
@@ -2345,7 +2455,7 @@
     "domain": "Model the data",
     "subtopic": "Use time intelligence",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Model the data > Time intelligence prerequisites",
     "commonTrap": "Not knowing Date table must have no gaps and be marked",
@@ -2445,7 +2555,70 @@
       "Power BI does support direct many-to-many relationships, but they can cause ambiguous filter propagation in complex models. A bridge table is the recommended approach for predictability and model clarity."
     ],
     "questionGroupId": "many_to_many_bridge",
-    "variantId": "full_pl300_01"
+    "variantId": "full_pl300_01",
+    "visualContext": {
+      "relationshipDiagram": {
+        "tables": [
+          {
+            "name": "Students",
+            "type": "dimension",
+            "position": "left",
+            "keyColumns": [
+              "StudentID"
+            ],
+            "columns": [
+              "StudentName",
+              "Grade",
+              "Email"
+            ]
+          },
+          {
+            "name": "StudentCourses",
+            "type": "fact",
+            "position": "center",
+            "keyColumns": [],
+            "columns": [
+              "StudentID",
+              "CourseID",
+              "EnrollDate",
+              "Status"
+            ]
+          },
+          {
+            "name": "Courses",
+            "type": "dimension",
+            "position": "right",
+            "keyColumns": [
+              "CourseID"
+            ],
+            "columns": [
+              "CourseName",
+              "Credits",
+              "Instructor"
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "from": "Students",
+            "fromKey": "StudentID",
+            "to": "StudentCourses",
+            "toKey": "StudentID",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          },
+          {
+            "from": "Courses",
+            "fromKey": "CourseID",
+            "to": "StudentCourses",
+            "toKey": "CourseID",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          }
+        ],
+        "issue": "Bridge table (StudentCourses) resolves the many-to-many between Students and Courses. Each row represents one enrollment. Filters from Students and Courses both flow through the bridge table independently."
+      }
+    }
   },
   {
     "id": 46,
@@ -2898,7 +3071,7 @@
     "domain": "Visualize and analyze the data",
     "subtopic": "Choose appropriate visualizations",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Visualize and analyze data > Financial visualization",
     "commonTrap": "Using stacked bar instead of waterfall for cumulative flow",
@@ -3202,7 +3375,51 @@
       "Correct. USERPRINCIPALNAME() returns the Azure AD UPN (e.g., jane@contoso.com), which matches the email format stored in the ManagerEmail column.",
       "USERNAME() returns the Windows identity in DOMAIN\\username format (e.g., CONTOSO\\jane). This does not match email addresses stored in columns like ManagerEmail, so no rows would be returned for cloud-based Power BI service.",
       "CUSTOMDATA() reads an optional custom string passed via the connection string. It requires the application layer to inject the value and is used in embedded scenarios, not standard Power BI Service RLS."
-    ]
+    ],
+    "visualContext": {
+      "relationshipDiagram": {
+        "tables": [
+          {
+            "name": "Plants",
+            "type": "dimension",
+            "position": "left",
+            "keyColumns": [
+              "PlantID"
+            ],
+            "columns": [
+              "PlantName",
+              "ManagerEmail",
+              "Region"
+            ]
+          },
+          {
+            "name": "FactProduction",
+            "type": "fact",
+            "position": "right",
+            "keyColumns": [
+              "ProductionKey"
+            ],
+            "columns": [
+              "PlantID",
+              "ProductID",
+              "UnitsProduced",
+              "Date"
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "from": "Plants",
+            "fromKey": "PlantID",
+            "to": "FactProduction",
+            "toKey": "PlantID",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          }
+        ],
+        "issue": "RLS filter on Plants: [ManagerEmail] = USERPRINCIPALNAME() restricts which plant rows each manager can see. The single-direction filter then propagates from Plants into FactProduction automatically — managers only see production data for their plant."
+      }
+    }
   },
   {
     "id": 64,
@@ -4544,6 +4761,52 @@
           ]
         }
       ]
+    },
+    "visualContext": {
+      "relationshipDiagram": {
+        "tables": [
+          {
+            "name": "Products",
+            "type": "dimension",
+            "position": "left",
+            "keyColumns": [
+              "ProductID"
+            ],
+            "columns": [
+              "ProductID",
+              "ProductName",
+              "Category",
+              "Price"
+            ]
+          },
+          {
+            "name": "Sales",
+            "type": "fact",
+            "position": "right",
+            "keyColumns": [
+              "SaleID"
+            ],
+            "columns": [
+              "SaleID",
+              "ProductID",
+              "CustomerID",
+              "Quantity",
+              "Revenue"
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "from": "Products",
+            "fromKey": "ProductID",
+            "to": "Sales",
+            "toKey": "ProductID",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          }
+        ],
+        "issue": "RELATED(Products[Category]) navigates from the Sales table (many side) upstream to the Products table (one side) to retrieve the Category for each row. RELATED requires an active relationship and operates in row context inside a calculated column."
+      }
     }
   },
   {
@@ -4636,6 +4899,50 @@
           ]
         }
       ]
+    },
+    "visualContext": {
+      "relationshipDiagram": {
+        "tables": [
+          {
+            "name": "Products",
+            "type": "dimension",
+            "position": "left",
+            "keyColumns": [
+              "ProductID"
+            ],
+            "columns": [
+              "ProductID (unique)",
+              "ProductName",
+              "Category"
+            ]
+          },
+          {
+            "name": "Sales",
+            "type": "fact",
+            "position": "right",
+            "keyColumns": [
+              "SaleID"
+            ],
+            "columns": [
+              "SaleID",
+              "ProductID (repeating)",
+              "Date",
+              "Amount"
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "from": "Products",
+            "fromKey": "ProductID",
+            "to": "Sales",
+            "toKey": "ProductID",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          }
+        ],
+        "issue": "ProductID is unique in Products (dimension — one row per product) but appears multiple times in Sales (fact — one row per sale). This determines one-to-many (1:*) cardinality from Products to Sales."
+      }
     }
   },
   {
@@ -4950,6 +5257,72 @@
           ]
         }
       ]
+    },
+    "visualContext": {
+      "relationshipDiagram": {
+        "tables": [
+          {
+            "name": "DimDate",
+            "type": "dimension",
+            "position": "left",
+            "keyColumns": [
+              "DateKey"
+            ],
+            "columns": [
+              "Date",
+              "Year",
+              "Quarter",
+              "Month"
+            ]
+          },
+          {
+            "name": "FactSales",
+            "type": "fact",
+            "position": "center",
+            "keyColumns": [
+              "SaleKey"
+            ],
+            "columns": [
+              "DateKey",
+              "CustomerKey",
+              "ProductKey",
+              "Amount"
+            ]
+          },
+          {
+            "name": "DimProduct",
+            "type": "dimension",
+            "position": "right",
+            "keyColumns": [
+              "ProductKey"
+            ],
+            "columns": [
+              "ProductName",
+              "Category",
+              "SubCategory"
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "from": "DimDate",
+            "fromKey": "DateKey",
+            "to": "FactSales",
+            "toKey": "DateKey",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          },
+          {
+            "from": "DimProduct",
+            "fromKey": "ProductKey",
+            "to": "FactSales",
+            "toKey": "ProductKey",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          }
+        ],
+        "issue": "Star schema: all dimension tables (DimDate, DimProduct, DimCustomer) connect directly to FactSales. DimCustomer not shown but follows the same pattern. Dimensions do not chain through each other — that would create a snowflake, which performs worse in VertiPaq."
+      }
     }
   },
   {
@@ -5022,7 +5395,61 @@
         }
       ]
     },
-    "daxExpression": "Sales by Ship Date =\nCALCULATE(\n  SUM(Sales[Amount]),\n  USERELATIONSHIP(Sales[ShipDate], Date[Date])\n)"
+    "daxExpression": "Sales by Ship Date =\nCALCULATE(\n  SUM(Sales[Amount]),\n  USERELATIONSHIP(Sales[ShipDate], Date[Date])\n)",
+    "visualContext": {
+      "relationshipDiagram": {
+        "tables": [
+          {
+            "name": "DimDate",
+            "type": "dimension",
+            "position": "left",
+            "keyColumns": [
+              "DateKey"
+            ],
+            "columns": [
+              "Date",
+              "Year",
+              "Quarter",
+              "Month"
+            ]
+          },
+          {
+            "name": "FactSales",
+            "type": "fact",
+            "position": "right",
+            "keyColumns": [
+              "SaleKey"
+            ],
+            "columns": [
+              "SaleKey",
+              "OrderDateKey",
+              "ShipDateKey",
+              "ProductKey",
+              "Amount"
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "from": "DimDate",
+            "fromKey": "DateKey",
+            "to": "FactSales",
+            "toKey": "OrderDateKey",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          },
+          {
+            "from": "DimDate",
+            "fromKey": "DateKey",
+            "to": "FactSales",
+            "toKey": "ShipDateKey",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          }
+        ],
+        "issue": "Role-playing dimension: DimDate has two relationships to FactSales — one active (OrderDateKey, solid line) and one inactive (ShipDateKey, dashed line). Measures use USERELATIONSHIP(FactSales[ShipDateKey], DimDate[DateKey]) to activate the inactive relationship for ship-date analysis."
+      }
+    }
   },
   {
     "id": 87,
@@ -5196,6 +5623,69 @@
           ]
         }
       ]
+    },
+    "visualContext": {
+      "relationshipDiagram": {
+        "tables": [
+          {
+            "name": "Products",
+            "type": "dimension",
+            "position": "left",
+            "keyColumns": [
+              "ProductID"
+            ],
+            "columns": [
+              "ProductName",
+              "Category",
+              "BasePrice"
+            ]
+          },
+          {
+            "name": "ProductPromotion",
+            "type": "fact",
+            "position": "center",
+            "keyColumns": [],
+            "columns": [
+              "ProductID",
+              "PromotionID",
+              "StartDate",
+              "EndDate"
+            ]
+          },
+          {
+            "name": "Promotions",
+            "type": "dimension",
+            "position": "right",
+            "keyColumns": [
+              "PromotionID"
+            ],
+            "columns": [
+              "PromotionName",
+              "DiscountPct",
+              "Type"
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "from": "Products",
+            "fromKey": "ProductID",
+            "to": "ProductPromotion",
+            "toKey": "ProductID",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          },
+          {
+            "from": "Promotions",
+            "fromKey": "PromotionID",
+            "to": "ProductPromotion",
+            "toKey": "PromotionID",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          }
+        ],
+        "issue": "Bridge table (ProductPromotion) resolves the many-to-many between Products and Promotions. Each row represents one product-promotion assignment. Filters from both dimension tables flow through the bridge independently."
+      }
     }
   },
   {
@@ -7364,6 +7854,69 @@
       "1": "A direct many-to-many relationship between Products and Promotions does not have a place to store the DiscountPct specific to each product-promotion pair. The DiscountPct is an attribute of the relationship, not of either dimension.",
       "2": "Adding a single DiscountPct column to Products assumes one discount per product, which contradicts the scenario where each product-promotion combination has its own discount.",
       "3": "Correct. A bridge table (ProductPromotion) with ProductID, PromotionID, and DiscountPct stores the pair-specific discount and uses one-to-many relationships to both dimensions. This is the standard pattern for many-to-many relationships with additional attributes."
+    },
+    "visualContext": {
+      "relationshipDiagram": {
+        "tables": [
+          {
+            "name": "Products",
+            "type": "dimension",
+            "position": "left",
+            "keyColumns": [
+              "ProductID"
+            ],
+            "columns": [
+              "ProductName",
+              "Category",
+              "BasePrice"
+            ]
+          },
+          {
+            "name": "ProductPromotion",
+            "type": "fact",
+            "position": "center",
+            "keyColumns": [],
+            "columns": [
+              "ProductID",
+              "PromotionID",
+              "DiscountPct"
+            ]
+          },
+          {
+            "name": "Promotions",
+            "type": "dimension",
+            "position": "right",
+            "keyColumns": [
+              "PromotionID"
+            ],
+            "columns": [
+              "PromotionName",
+              "Type",
+              "StartDate",
+              "EndDate"
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "from": "Products",
+            "fromKey": "ProductID",
+            "to": "ProductPromotion",
+            "toKey": "ProductID",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          },
+          {
+            "from": "Promotions",
+            "fromKey": "PromotionID",
+            "to": "ProductPromotion",
+            "toKey": "PromotionID",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          }
+        ],
+        "issue": "DiscountPct is stored in the bridge table ProductPromotion — not in Products or Promotions alone — because the discount is specific to the Product+Promotion combination. This is the key insight: attributes of a relationship belong in the bridge, not in either parent dimension."
+      }
     }
   },
   {
@@ -8156,6 +8709,51 @@
       "1": "Correct. Many-to-many (*:*) between Sales and Territory correctly represents the scenario where each transaction can belong to multiple territories and each territory can be associated with multiple transactions.",
       "2": "One-to-one (1:1) assumes each transaction corresponds to exactly one territory and each territory to exactly one transaction. This does not match a scenario with multiple territories per transaction.",
       "3": "While LOOKUPVALUE can retrieve individual values without a relationship, it cannot represent a true many-to-many association where each transaction relates to multiple territories. A model relationship is the correct approach."
+    },
+    "visualContext": {
+      "relationshipDiagram": {
+        "tables": [
+          {
+            "name": "SalesTransactions",
+            "type": "fact",
+            "position": "left",
+            "keyColumns": [
+              "TransactionID"
+            ],
+            "columns": [
+              "TransactionID",
+              "TerritoryID (multiple per Tx)",
+              "CustomerID",
+              "Amount"
+            ]
+          },
+          {
+            "name": "Territory",
+            "type": "dimension",
+            "position": "right",
+            "keyColumns": [
+              "TerritoryID"
+            ],
+            "columns": [
+              "TerritoryID (unique)",
+              "TerritoryName",
+              "Region",
+              "Manager"
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "from": "Territory",
+            "fromKey": "TerritoryID",
+            "to": "SalesTransactions",
+            "toKey": "TerritoryID",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          }
+        ],
+        "issue": "Each transaction can be attributed to more than one territory (multi-territory attribution). If a fact row references multiple TerritoryID values, the correct model uses a bridge table — not a direct many-to-many relationship on TerritoryID, which causes ambiguous aggregation."
+      }
     }
   },
   {
@@ -10161,6 +10759,50 @@
       "1": "Correct. One dynamic role with USERPRINCIPALNAME() + a mapping table handles all regions without role proliferation. Executives in a separate unfiltered role see all data.",
       "2": "Workspace roles control who can access workspace items, not which rows a user sees within a dataset. RLS is required for row-level data restriction.",
       "3": "OLS hides entire columns from users — it cannot restrict a manager to specific region rows while showing all region columns."
+    },
+    "visualContext": {
+      "relationshipDiagram": {
+        "tables": [
+          {
+            "name": "DimRegion",
+            "type": "dimension",
+            "position": "left",
+            "keyColumns": [
+              "RegionID"
+            ],
+            "columns": [
+              "RegionName",
+              "ManagerEmail",
+              "Country"
+            ]
+          },
+          {
+            "name": "FactSales",
+            "type": "fact",
+            "position": "right",
+            "keyColumns": [
+              "SaleKey"
+            ],
+            "columns": [
+              "RegionID",
+              "ProductKey",
+              "Date",
+              "Amount"
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "from": "DimRegion",
+            "fromKey": "RegionID",
+            "to": "FactSales",
+            "toKey": "RegionID",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          }
+        ],
+        "issue": "Dynamic RLS filters DimRegion to rows where ManagerEmail = USERPRINCIPALNAME(). Executives need an unfiltered role (no DAX filter) or a role that uses USERPRINCIPALNAME() to branch: executives bypass the filter while managers are restricted."
+      }
     }
   },
   {
@@ -10826,7 +11468,53 @@
       "2": "Inactive relationships are not used by default — they require USERELATIONSHIP to activate. An inactive relationship would not cause extra products to appear; it would cause measures using that relationship to return BLANK.",
       "3": "RLS filters on dimension tables DO apply to matrix visuals. The visual type does not determine whether RLS is enforced. If RLS were bypassed by default for matrix visuals, it would be a critical platform-level security vulnerability."
     },
-    "daxExpression": "-- The visual may use a measure that explicitly bypasses the Product filter:\n-- Example that would cause this:\nAll Products in Category =\n    CALCULATE(\n        COUNTROWS(Products),\n        ALL(Products)   -- bypasses RLS filter on Product table\n    )\n\n-- RLS filters are enforced at table read time.\n-- A measure using ALL(Product), REMOVEFILTERS, or CROSSFILTER\n-- can override the RLS-applied filter in specific calculations."
+    "daxExpression": "-- The visual may use a measure that explicitly bypasses the Product filter:\n-- Example that would cause this:\nAll Products in Category =\n    CALCULATE(\n        COUNTROWS(Products),\n        ALL(Products)   -- bypasses RLS filter on Product table\n    )\n\n-- RLS filters are enforced at table read time.\n-- A measure using ALL(Product), REMOVEFILTERS, or CROSSFILTER\n-- can override the RLS-applied filter in specific calculations.",
+    "visualContext": {
+      "relationshipDiagram": {
+        "tables": [
+          {
+            "name": "DimProduct",
+            "type": "dimension",
+            "position": "left",
+            "keyColumns": [
+              "ProductKey"
+            ],
+            "columns": [
+              "ProductKey",
+              "ProductName",
+              "Category",
+              "IsActive"
+            ]
+          },
+          {
+            "name": "FactSales",
+            "type": "fact",
+            "position": "right",
+            "keyColumns": [
+              "SaleKey"
+            ],
+            "columns": [
+              "SaleKey",
+              "ProductKey",
+              "Date",
+              "CustomerKey",
+              "Amount"
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "from": "DimProduct",
+            "fromKey": "ProductKey",
+            "to": "FactSales",
+            "toKey": "ProductKey",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          }
+        ],
+        "issue": "RLS filter on DimProduct restricts which product rows the user sees. Products with no sales in the period still exist in DimProduct — single-direction filter flows DimProduct → FactSales, so those products appear in DimProduct but show no sales rows. This is expected behavior, not a bug."
+      }
+    }
   },
   {
     "id": 198,
@@ -10897,6 +11585,73 @@
       "1": "Adding a PromotionKey directly to the Product dimension table assumes each product has exactly one promotion. This cannot represent a product with multiple active promotions or a promotion covering multiple products — it violates the true many-to-many nature of the relationship.",
       "2": "Using LOOKUPVALUE to store promotion data as calculated columns in the Product table has the same limitation as option B — LOOKUPVALUE returns a single value per row. It cannot represent multiple promotions per product.",
       "3": "Correct. A bridge (junction) table with ProductKey, PromotionKey, and DiscountPct resolves the many-to-many through two one-to-many relationships. Setting cross-filter to Both on each leg allows filters from either dimension to flow through the bridge to the other dimension and to the fact tables. This is the standard modeling pattern for true M:M with additional attributes on the junction."
+    },
+    "visualContext": {
+      "relationshipDiagram": {
+        "tables": [
+          {
+            "name": "DimDate",
+            "type": "dimension",
+            "position": "left",
+            "keyColumns": [
+              "DateKey"
+            ],
+            "columns": [
+              "Date",
+              "Year",
+              "Quarter",
+              "Month"
+            ]
+          },
+          {
+            "name": "OnlineSales",
+            "type": "fact",
+            "position": "center",
+            "keyColumns": [
+              "SaleKey"
+            ],
+            "columns": [
+              "DateKey",
+              "CustomerKey",
+              "ProductKey",
+              "OnlineAmount"
+            ]
+          },
+          {
+            "name": "StoreSales",
+            "type": "fact",
+            "position": "right",
+            "keyColumns": [
+              "SaleKey"
+            ],
+            "columns": [
+              "DateKey",
+              "CustomerKey",
+              "ProductKey",
+              "StoreAmount"
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "from": "DimDate",
+            "fromKey": "DateKey",
+            "to": "OnlineSales",
+            "toKey": "DateKey",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          },
+          {
+            "from": "DimDate",
+            "fromKey": "DateKey",
+            "to": "StoreSales",
+            "toKey": "DateKey",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          }
+        ],
+        "issue": "Two fact tables sharing DimDate creates a chasm schema. A date slicer filters both fact tables via DimDate. Measures combining rows from both facts need careful design — CROSSJOIN between the two fact tables via shared dimensions can cause row-count fan-out in totals."
+      }
     }
   },
   {
@@ -11102,6 +11857,51 @@
       "1": "Creating a bridge table is the correct architectural solution for a true many-to-many relationship, but the first step is always to investigate the data — the M:M might be unintentional due to dirty data. Creating a bridge table prematurely adds unnecessary complexity for what may just be a data quality issue.",
       "2": "Correct. Auto-detected many-to-many relationships almost always indicate one side has duplicate values on the join column when it should be unique. Before restructuring the model, investigate why CustomerID is not unique in Contracts — duplicate contract records, data quality issues, or legitimate multiple contracts per customer? Clean the data first, then define the appropriate relationship cardinality.",
       "3": "Switching to one-to-one cardinality when neither table has unique keys would produce incorrect results — Power BI would enforce a 1:1 join but the data doesn't support it. This would create row mismatches, not fix the duplication."
+    },
+    "visualContext": {
+      "relationshipDiagram": {
+        "tables": [
+          {
+            "name": "Customers",
+            "type": "dimension",
+            "position": "left",
+            "keyColumns": [
+              "CustomerID"
+            ],
+            "columns": [
+              "CustomerID (duplicates found)",
+              "CustomerName",
+              "Email",
+              "Region"
+            ]
+          },
+          {
+            "name": "Contracts",
+            "type": "fact",
+            "position": "right",
+            "keyColumns": [
+              "ContractID"
+            ],
+            "columns": [
+              "ContractID",
+              "CustomerID (repeating)",
+              "StartDate",
+              "ContractValue"
+            ]
+          }
+        ],
+        "relationships": [
+          {
+            "from": "Customers",
+            "fromKey": "CustomerID",
+            "to": "Contracts",
+            "toKey": "CustomerID",
+            "cardinality": "one-to-many",
+            "direction": "single"
+          }
+        ],
+        "issue": "Power BI auto-detected many-to-many because CustomerID has unexpected duplicates in the Customers table (data quality issue). The intended relationship is one-to-many (Customers is a dimension with unique CustomerIDs). Fix: remove duplicate CustomerIDs in Power Query before importing."
+      }
     }
   },
   {
@@ -15654,7 +16454,7 @@
     "domain": "Prepare the data",
     "subtopic": "Transform and load the data",
     "difficulty": "Easy",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Prepare the data > Split Column vs Extract",
     "commonTrap": "Confusing Extract (which replaces the existing column) with Split Column (which creates new columns)",
@@ -16117,7 +16917,7 @@
     "domain": "Prepare the data",
     "subtopic": "Transform and load the data",
     "difficulty": "Easy",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Prepare the data > Conditional Column",
     "commonTrap": "Reaching for a custom M formula (Add Column - Custom Column) when a no-code Conditional Column would meet a fixed set of business rules",
@@ -16329,12 +17129,12 @@
     "domain": "Model the data",
     "subtopic": "Define relationship cardinality and cross-filter direction",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Model the data > Cross-filter direction",
     "commonTrap": "Thinking bidirectional is better because it is more flexible",
     "trapType": "Performance vs Flexibility",
-    "question": "When you create a relationship between two tables, the default cross-filter direction is 'single'. Why is the default cross-filter direction 'single' and not 'both'?",
+    "question": "A data modeler notices that the default cross-filter direction for all new relationships in Power BI is Single rather than Both. A junior analyst asks why Both is not the default, since it would allow slicers to filter in either direction automatically. Which reason BEST explains why Single is the default cross-filter direction?",
     "choices": [
       "It is because a 'single' cross-filter direction simplifies the user experience, and makes filtering easier.",
       "It is because a 'single' cross-filter direction allows for bidirectional filtering and more flexible reporting.",
@@ -16437,7 +17237,7 @@
     "domain": "Model the data",
     "subtopic": "Create model calculations by using DAX",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "examObjective": "Model the data > SWITCH function",
     "commonTrap": "Using CHOOSE instead of SWITCH for value-mapping",
@@ -16503,7 +17303,7 @@
     "domain": "Model the data",
     "subtopic": "Create model calculations by using DAX",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "examObjective": "Model the data > IF and OR functions",
     "commonTrap": "Writing OR as an infix operator (A OR B) or using IF...THEN...ELSE syntax borrowed from other languages",
@@ -16930,7 +17730,7 @@
     "domain": "Model the data",
     "subtopic": "Create model calculations by using DAX",
     "difficulty": "Easy",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "examObjective": "Model the data > MOD function",
     "commonTrap": "Confusing MOD's remainder result with the quotient of the division",
@@ -17124,7 +17924,7 @@
     "domain": "Model the data",
     "subtopic": "Create model calculations by using DAX",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "examObjective": "Model the data > FORMAT function",
     "commonTrap": "Using padded format codes like 'yyyy' or 'dd' when the target string requires unpadded codes like 'yy' or 'd'",
@@ -17186,7 +17986,7 @@
     "domain": "Model the data",
     "subtopic": "Create model calculations by using DAX",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "examObjective": "Model the data > FIXED function",
     "commonTrap": "Misreading FIXED's no_commas argument — FALSE() means commas ARE included, not excluded",
@@ -17251,7 +18051,7 @@
     "domain": "Model the data",
     "subtopic": "Create model calculations by using DAX",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "examObjective": "Model the data > MID function",
     "commonTrap": "Miscounting the start position or character count in MID, producing an off-by-one result",
@@ -17334,12 +18134,12 @@
     "domain": "Model the data",
     "subtopic": "Create model calculations by using DAX",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Model the data > FIND vs SEARCH",
     "commonTrap": "Mixing up which of FIND and SEARCH is case-sensitive",
     "trapType": "DAX Function Confusion",
-    "question": "While writing a DAX measure that searches for a substring within a text field, a developer is deciding between the FIND and SEARCH functions. What is the difference between these two functions?",
+    "question": "A developer is writing a DAX measure that must locate a product code substring within a description field. The field contains mixed-case entries, and the product codes are case-sensitive identifiers. The developer is choosing between the FIND and SEARCH functions. Which statement correctly describes the difference between them?",
     "choices": [
       "There is no difference — they always give the same result.",
       "The FIND function is case-insensitive. The SEARCH function is case-sensitive.",
@@ -17403,7 +18203,7 @@
     "domain": "Model the data",
     "subtopic": "Use the CALCULATE function",
     "difficulty": "Hard",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "examObjective": "Model the data > ALLEXCEPT",
     "commonTrap": "Forgetting ALLEXCEPT requires the table as the first argument",
@@ -17461,7 +18261,7 @@
     "domain": "Model the data",
     "subtopic": "Use the CALCULATE function",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "examObjective": "Model the data > FILTER function",
     "commonTrap": "Passing the filter condition as a separate argument to FILTER or COUNTROWS, instead of writing FILTER(table, condition) as a single table-expression argument",
@@ -17652,12 +18452,12 @@
     "domain": "Model the data",
     "subtopic": "Create model calculations by using DAX",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Model the data > RELATED function",
     "commonTrap": "Believing RELATED can traverse a relationship from the one-side to the many-side, or that it accepts more than one argument",
     "trapType": "DAX Function Confusion",
-    "question": "Which of these pairs of statements about the RELATED function is true?",
+    "question": "A developer is writing a calculated column in FactSales that must retrieve the product category description stored in the related DimProduct table. The relationship between FactSales and DimProduct is many-to-one on ProductKey. Which pair of statements about the RELATED function is correct?",
     "choices": [
       "RELATED uses at least three arguments.\nIt flows to tables related upstream towards the \"one\" in a Many-to-one relationship.",
       "RELATED uses one argument.\nIt flows to tables related downstream towards the \"many\" in a Many-to-one relationship.",
@@ -18010,12 +18810,12 @@
     "domain": "Model the data",
     "subtopic": "Implement role-playing dimensions",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Model the data > Role-playing dimensions",
     "commonTrap": "Confusing a role-playing dimension (one dimension table connected multiple times to a fact table, e.g., a Date table for Order/Ship/Invoice dates) with role-based security filtering or access restrictions",
     "trapType": "Schema Design Confusion",
-    "question": "A data modeler is designing a star schema and needs to identify which of the following describes a role-playing dimension.",
+    "question": "A data model contains a FactSales table with two date columns: OrderDate and ShipDate. The modeler adds two relationships between FactSales and DimDate — one active (on OrderDate) and one inactive (on ShipDate) — so that measures can switch between dates using USERELATIONSHIP. Which statement correctly describes this design pattern?",
     "choices": [
       "A dimension which changes its values based on user roles.",
       "A dimension which is used multiple times or with multiple relationships with the same table.",
@@ -18196,12 +18996,12 @@
     "domain": "Manage and secure Power BI",
     "subtopic": "Create and configure a workspace",
     "difficulty": "Easy",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Manage and secure Power BI > Apps vs Workspaces",
     "commonTrap": "Reversing the roles of workspaces and apps — workspaces are where content is built and collaborated on, while apps are read-only packages published from a workspace for wider distribution",
     "trapType": "Service Feature Confusion",
-    "question": "An administrator is organizing content in the Power BI Service and needs to understand the relationship between apps and workspaces. What is the main difference between the two?",
+    "question": "A BI team is explaining to a new analyst why reports for 500 business users are distributed through a Power BI app rather than granting direct workspace access to everyone. Which statement BEST explains the fundamental difference between a workspace and a Power BI app from a distribution perspective?",
     "choices": [
       "Apps are used to package reports and dashboards.\nWorkspaces are used for creating reports and dashboards.",
       "Workspaces are used to package reports and dashboards.\nApps are used for creating reports and dashboards.",
@@ -19697,12 +20497,12 @@
     "domain": "Visualize and analyze the data",
     "subtopic": "Create reports",
     "difficulty": "Easy",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Visualize and analyze the data > Select an appropriate visual",
     "commonTrap": "Confusing stacked column chart with clustered column chart",
     "trapType": "Visual Type Identification",
-    "question": "A visual shows years 2000-2016 along the X-axis, Sales Volume on the Y-axis, and a series of bars in different colors for each region stacked on top of each other per year. What type of visual is this?",
+    "question": "A regional sales director describes a visual she sees in a report: \"There are years from 2000 to 2016 across the bottom, Sales Volume on the vertical axis, and for each year there is a single bar divided into colored sections — one color per region — stacked vertically on top of each other.\" Which visual type does this description match?",
     "choices": [
       "Clustered column chart",
       "Stacked column chart",
@@ -19768,12 +20568,12 @@
     "domain": "Visualize and analyze the data",
     "subtopic": "Create reports",
     "difficulty": "Easy",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Visualize and analyze the data > Select an appropriate visual",
     "commonTrap": "Thinking both table and matrix can summarise data",
     "trapType": "Visual Capability",
-    "question": "A report developer is deciding whether to display a dataset using a table or a matrix visual. What is the difference between these two visual types?",
+    "question": "A report developer needs to display sales data with countries as rows and product categories as columns, showing individual cell values and row subtotals per country. A colleague suggests using a table visual. Which statement correctly identifies why a matrix visual is more appropriate for this specific layout requirement?",
     "choices": [
       "A table can summarise data. A matrix cannot summarise data.",
       "A table cannot summarise data. A matrix can summarise data.",
@@ -20187,22 +20987,22 @@
     "domain": "Visualize and analyze the data",
     "subtopic": "Enhance reports for usability and storytelling",
     "difficulty": "Easy",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Visualize and analyze the data > Configure drillthrough navigation",
     "commonTrap": "Confusing drill-through with drill-down within a visual",
     "trapType": "Drill Navigation Confusion",
-    "question": "A report developer wants to let users navigate from a summary page to a more detailed page based on a selected data point. What is an example of what a drill-through does?",
+    "question": "A sales report has a summary page showing revenue by region. When a user clicks on a specific region bar, they need to navigate to a separate page that shows only the individual store transactions for that region. Which Power BI feature directly supports this interaction pattern?",
     "choices": [
-      "In a visual, the X-axis can change from Years to Quarters.",
-      "You can go from a summary page to a detailed page.",
-      "In a visual, the X-axis can change from Years to Years and Quarters.",
-      "In a visual, the X-axis can change from showing all years to focusing on one particular year and showing Quarters."
+      "Drill down within the same visual — the X-axis changes from Region to Store without leaving the visual",
+      "Drillthrough — right-clicking a data point on the source page passes its filter context to a dedicated detail page",
+      "Drill up — a button that expands the visual hierarchy from regions to stores within the same chart",
+      "Page navigation buttons — static buttons that always navigate to the detail page regardless of which region is selected"
     ],
     "correctAnswers": [
       1
     ],
-    "explanation": "Drill-through navigates from one report page to another (e.g., summary to detail). Drill-down changes hierarchy levels within the same visual.",
+    "explanation": "Drillthrough enables navigation from one report page to another while passing the filter context of the selected data point. The destination page applies that context automatically — in this case, filtering all visuals to the selected region. Drill down (A) and drill up (C) operate within the same visual hierarchy without leaving the page. Page navigation buttons (D) are static and navigate to the same destination regardless of selection, without passing filter context.",
     "estimatedTimeSeconds": 60,
     "tags": [
       "Drill-through",
@@ -21250,7 +22050,7 @@
     "domain": "Prepare the data",
     "subtopic": "Transform and load the data",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Prepare the data > Transform and load the data > Identify when to use reference or duplicate queries",
     "commonTrap": "Thinking Duplicate and Reference behave the same way",
@@ -21738,12 +22538,12 @@
     "domain": "Prepare the data",
     "subtopic": "Transform and load the data",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "analysis",
     "examObjective": "Prepare the data > Transform and load the data > Merge and append queries",
     "commonTrap": "Thinking you can merge three queries simultaneously",
     "trapType": "Merge Query Limitation",
-    "question": "Which of these statements about merging queries is NOT correct?",
+    "question": "A developer is designing a Power Query pipeline to combine data from three separate queries — Orders, Returns, and Adjustments — in a single operation. Which statement about combining queries in Power Query is NOT correct?",
     "choices": [
       "I can merge three queries together at the same time.",
       "I can append three queries together at the same time.",
@@ -23458,7 +24258,12 @@
       "Show how total IT spend breaks down across departments and sub-departments",
       "Compare total sales achieved by each of 10 regional sales managers"
     ],
-    "choices": ["Line chart", "Gauge", "Treemap", "Clustered bar chart"],
+    "choices": [
+      "Line chart",
+      "Gauge",
+      "Treemap",
+      "Clustered bar chart"
+    ],
     "correctMapping": {
       "Show how monthly revenue has changed over the past two years": "Line chart",
       "Display year-to-date sales progress against an annual target": "Gauge",
@@ -23467,7 +24272,11 @@
     },
     "explanation": "Line charts are best for showing trends over a continuous time axis. Gauges communicate progress toward a single target value. Treemaps show hierarchical part-to-whole relationships using nested, size-proportional rectangles. Clustered bar charts are ideal for comparing a metric across a moderate number of discrete categories, especially when category labels are long.",
     "estimatedTimeSeconds": 90,
-    "tags": ["Visualization", "Select an appropriate visual", "Report Design"],
+    "tags": [
+      "Visualization",
+      "Select an appropriate visual",
+      "Report Design"
+    ],
     "questionGroupId": "visual_selection_matching",
     "variantId": "full_pl300_01"
   },
@@ -23477,7 +24286,7 @@
     "domain": "Model the data",
     "subtopic": "Write DAX measures",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Model the data > Create model calculations by using DAX",
     "commonTrap": "Confusing iterator functions with simple aggregations, or assuming RELATED works inside measures without row context",
@@ -23489,7 +24298,12 @@
       "Retrieves a column value from the one-side of a relationship for use in a calculated column",
       "Returns a one-column table of the unique values currently visible in a column"
     ],
-    "choices": ["SUMX", "CALCULATE", "RELATED", "VALUES"],
+    "choices": [
+      "SUMX",
+      "CALCULATE",
+      "RELATED",
+      "VALUES"
+    ],
     "correctMapping": {
       "Iterates a table row by row, evaluates an expression for each row, then sums the results": "SUMX",
       "Evaluates an expression under a modified filter context": "CALCULATE",
@@ -23498,7 +24312,13 @@
     },
     "explanation": "SUMX is an iterator — it computes a row-level expression first, then aggregates the results. CALCULATE is the only function that can directly modify filter context, making it the foundation of advanced DAX. RELATED traverses a many-to-one relationship and requires row context, so it only works in calculated columns or inside iterators. VALUES returns the distinct values of a column under the current filter context as a table, commonly used with SELECTEDVALUE or COUNTROWS.",
     "estimatedTimeSeconds": 90,
-    "tags": ["DAX", "SUMX", "CALCULATE", "RELATED", "VALUES"],
+    "tags": [
+      "DAX",
+      "SUMX",
+      "CALCULATE",
+      "RELATED",
+      "VALUES"
+    ],
     "questionGroupId": "dax_function_matching",
     "variantId": "full_pl300_01"
   },
@@ -23508,7 +24328,7 @@
     "domain": "Prepare the data",
     "subtopic": "Merge and append queries",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Prepare the data > Merge and append queries",
     "commonTrap": "Confusing Merge (joining columns) with Append (stacking rows), or Duplicate with Reference",
@@ -23520,7 +24340,12 @@
       "Rotates unique values from one column into new column headers",
       "Creates a fully independent copy of a query, with no dependency on the original"
     ],
-    "choices": ["Merge", "Append", "Pivot", "Duplicate"],
+    "choices": [
+      "Merge",
+      "Append",
+      "Pivot",
+      "Duplicate"
+    ],
     "correctMapping": {
       "Joins columns from a second table based on matching key values": "Merge",
       "Stacks rows from two queries with the same column structure into a single table": "Append",
@@ -23529,7 +24354,13 @@
     },
     "explanation": "Merge performs a join, adding columns from a second query based on matching key values (similar to a SQL JOIN). Append stacks rows from queries with compatible columns into one table (similar to UNION). Pivot turns distinct values from a column into new columns, redistributing related values into the new structure. Duplicate creates a completely independent copy — changes to the original query do not affect it. Reference, by contrast, creates a new query that depends on and is affected by changes to the original.",
     "estimatedTimeSeconds": 90,
-    "tags": ["Power Query", "Merge", "Append", "Pivot", "Duplicate Query"],
+    "tags": [
+      "Power Query",
+      "Merge",
+      "Append",
+      "Pivot",
+      "Duplicate Query"
+    ],
     "questionGroupId": "power_query_operation_matching",
     "variantId": "full_pl300_01"
   },
@@ -23539,7 +24370,7 @@
     "domain": "Manage and secure Power BI",
     "subtopic": "Secure and govern Power BI items",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Manage and secure Power BI > Secure and govern Power BI items",
     "commonTrap": "Confusing RLS (row filtering) with OLS (column/object hiding), or sensitivity labels with workspace roles",
@@ -23551,7 +24382,12 @@
       "Classify a semantic model as containing confidential information for compliance tracking",
       "Control who can edit, publish, or manage content within a workspace"
     ],
-    "choices": ["Row-level security (RLS)", "Object-level security (OLS)", "Sensitivity label", "Workspace role"],
+    "choices": [
+      "Row-level security (RLS)",
+      "Object-level security (OLS)",
+      "Sensitivity label",
+      "Workspace role"
+    ],
     "correctMapping": {
       "Restrict which rows of data a user can see based on their identity": "Row-level security (RLS)",
       "Restrict which columns or measures a user is allowed to view": "Object-level security (OLS)",
@@ -23560,7 +24396,13 @@
     },
     "explanation": "RLS filters the rows returned to a user based on role rules and their identity. OLS hides entire tables, columns, or measures from members of a role — it is a visibility control, not a row filter. Sensitivity labels (from Microsoft Purview) classify and protect content based on data sensitivity, independent of who can query it. Workspace roles (Admin, Member, Contributor, Viewer) govern what actions a user can take on the content within a workspace.",
     "estimatedTimeSeconds": 90,
-    "tags": ["RLS", "OLS", "Sensitivity Labels", "Workspace Roles", "Security"],
+    "tags": [
+      "RLS",
+      "OLS",
+      "Sensitivity Labels",
+      "Workspace Roles",
+      "Security"
+    ],
     "questionGroupId": "security_layer_matching",
     "variantId": "full_pl300_01"
   },
@@ -23592,7 +24434,12 @@
     ],
     "explanation": "Power Query preparation follows a logical pipeline: connect and preview the source, profile the data to understand quality issues using the Column Quality, Column Distribution, and Column Profile tools, clean by removing errors, duplicates, and unneeded columns, set correct data types now that the values are clean, and finally load the result into the model. Setting data types before cleaning can cause type-conversion errors on dirty data, and loading before cleaning pushes data quality problems into the model.",
     "estimatedTimeSeconds": 100,
-    "tags": ["Power Query", "Data Cleaning", "Workflow", "Data Profiling"],
+    "tags": [
+      "Power Query",
+      "Data Cleaning",
+      "Workflow",
+      "Data Profiling"
+    ],
     "questionGroupId": "pq_prep_workflow",
     "variantId": "full_pl300_01"
   },
@@ -23624,7 +24471,12 @@
     ],
     "explanation": "A typical modeling workflow starts by importing the fact and dimension tables, then establishing relationships so filters can propagate correctly. A marked date table should be in place before writing time intelligence measures, since functions like TOTALYTD and SAMEPERIODLASTYEAR depend on it. DAX measures are created once the relationships and date table exist. Finally, the model is polished — hiding foreign keys and unused columns and organizing fields into folders — to improve the report-authoring experience.",
     "estimatedTimeSeconds": 100,
-    "tags": ["Data Modeling", "Star Schema", "Workflow", "Relationships"],
+    "tags": [
+      "Data Modeling",
+      "Star Schema",
+      "Workflow",
+      "Relationships"
+    ],
     "questionGroupId": "model_building_workflow",
     "variantId": "full_pl300_01"
   },
@@ -23656,7 +24508,12 @@
     ],
     "explanation": "Dynamic RLS depends on a user-mapping table being present and related to the model before a role's DAX filter can reference it. The setup order is: build the security table, relate it to the relevant dimension, define the role's filter expression — typically USERPRINCIPALNAME() compared against the mapping table, or LOOKUPVALUE to retrieve the allowed value — validate the role locally with View As Roles before publishing, and only then publish and assign real users to the role in the Power BI service. Skipping the View As Roles step risks publishing a misconfigured role that exposes or hides the wrong data.",
     "estimatedTimeSeconds": 110,
-    "tags": ["Dynamic RLS", "Row-level Security", "USERPRINCIPALNAME", "Workflow"],
+    "tags": [
+      "Dynamic RLS",
+      "Row-level Security",
+      "USERPRINCIPALNAME",
+      "Workflow"
+    ],
     "questionGroupId": "dynamic_rls_workflow",
     "variantId": "full_pl300_01"
   },
@@ -23666,7 +24523,7 @@
     "domain": "Manage and secure Power BI",
     "subtopic": "Manage deployment lifecycle",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "examObjective": "Manage and secure Power BI > Choose a distribution method",
     "commonTrap": "Creating an app before configuring refresh, or distributing content before validating the report",
@@ -23688,7 +24545,13 @@
     ],
     "explanation": "After building and validating the report locally, it is published to a workspace. Before users rely on it, a gateway (if the source is on-premises) and a scheduled refresh should be configured so the data stays current. Once the workspace content is ready and refreshing correctly, an app is created to package the content for end users, and finally the app is distributed to the target audience. Distributing before refresh is configured can expose stale or broken data to end users.",
     "estimatedTimeSeconds": 100,
-    "tags": ["Deployment", "Apps", "Workflow", "Gateway", "Scheduled Refresh"],
+    "tags": [
+      "Deployment",
+      "Apps",
+      "Workflow",
+      "Gateway",
+      "Scheduled Refresh"
+    ],
     "questionGroupId": "publish_deploy_workflow",
     "variantId": "full_pl300_01"
   },
@@ -23698,7 +24561,7 @@
     "domain": "Model the data",
     "subtopic": "Create model calculations by using DAX",
     "difficulty": "Easy",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "examObjective": "Model the data > MOD function",
     "commonTrap": "Confusing MOD's remainder result with the quotient of the division",
@@ -23758,7 +24621,7 @@
     "domain": "Model the data",
     "subtopic": "Create model calculations by using DAX",
     "difficulty": "Easy",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "examObjective": "Model the data > MOD function",
     "commonTrap": "Confusing MOD's remainder result with the quotient of the division",
@@ -23818,7 +24681,7 @@
     "domain": "Model the data",
     "subtopic": "Create model calculations by using DAX",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "examObjective": "Model the data > MID function",
     "commonTrap": "Miscounting the start position or character count in MID, producing an off-by-one result",
@@ -23892,7 +24755,7 @@
     "domain": "Model the data",
     "subtopic": "Create model calculations by using DAX",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "examObjective": "Model the data > MID function",
     "commonTrap": "Miscounting the start position or character count in MID, producing an off-by-one result",
@@ -23972,7 +24835,7 @@
     "domain": "Model the data",
     "subtopic": "Create model calculations by using DAX",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "examObjective": "Model the data > FIXED function",
     "commonTrap": "Misreading FIXED's no_commas argument — FALSE() means commas ARE included, not excluded",
@@ -24037,7 +24900,7 @@
     "domain": "Model the data",
     "subtopic": "Create model calculations by using DAX",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "application",
     "examObjective": "Model the data > FIXED function",
     "commonTrap": "Misreading FIXED's no_commas argument — FALSE() means commas ARE included, not excluded",
@@ -24102,7 +24965,7 @@
     "domain": "Prepare the data",
     "subtopic": "Optimize data loads",
     "difficulty": "Hard",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "analysis",
     "examObjective": "Prepare the data > Optimize data loads — operations that break query folding",
     "commonTrap": "Assuming common transformations like Filter Rows or Sort always preserve query folding, while Add Index Column and cross-source merges silently break it",
@@ -24141,12 +25004,12 @@
     "domain": "Model the data",
     "subtopic": "Implement time intelligence measures",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Model the data > Implement time intelligence measures — date table requirements",
     "commonTrap": "Assuming any function that involves dates needs a marked date table, when only true time-intelligence functions require it",
     "trapType": "DAX Function Confusion",
-    "question": "Which TWO of the following DAX functions require the model to contain a contiguous date column marked as a Date Table to return correct results?",
+    "question": "A developer is building a year-over-year comparison dashboard and plans to use several DAX functions for time-based analysis. The team lead warns that some time intelligence functions have strict requirements on the Date Table setup. Which TWO of the following DAX functions require the model to contain a contiguous date column marked as a Date Table to return correct results?",
     "choices": [
       "TOTALYTD",
       "RELATED",
@@ -24180,12 +25043,12 @@
     "domain": "Model the data",
     "subtopic": "Define a relationship's cardinality and cross-filter direction",
     "difficulty": "Hard",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "analysis",
     "examObjective": "Model the data > Define a relationship's cardinality and cross-filter direction — many-to-many relationships",
     "commonTrap": "Assuming Power BI requires a hidden bridge table for many-to-many relationships, or that many-to-many is required whenever two fact tables share a dimension",
     "trapType": "Relationship Cardinality",
-    "question": "Which TWO of the following statements about a many-to-many relationship between two tables in a Power BI data model are correct?",
+    "question": "A data modeler is linking a FactBudget table and a FactActuals table through a shared CostCenterID column. Both tables can contain multiple rows for the same cost center within a single period, creating a many-to-many relationship. Which TWO statements about this many-to-many relationship configuration in Power BI are correct?",
     "choices": [
       "Both sides of the relationship can contain duplicate values in the related columns",
       "Power BI automatically generates a hidden bridge table whenever a many-to-many relationship is created",
@@ -24219,12 +25082,12 @@
     "domain": "Visualize and analyze the data",
     "subtopic": "Apply conditional formatting",
     "difficulty": "Easy",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Visualize and analyze the data > Apply conditional formatting — available formatting types for table and matrix visuals",
     "commonTrap": "Confusing conditional formatting options with unrelated report features such as page refresh or bookmark navigation",
     "trapType": "Visualization Selection",
-    "question": "Which TWO of the following are valid conditional formatting options that can be applied to a numeric column in a table or matrix visual?",
+    "question": "A report designer is building a KPI dashboard with a matrix visual showing revenue by region and product category. The designer wants to add dynamic visual cues so that underperforming cells are immediately visible without users needing to compare numbers manually. Which TWO of the following are valid conditional formatting options available for a numeric column in a table or matrix visual?",
     "choices": [
       "Background color based on a rule (e.g., highlight values below a threshold in red)",
       "Data bars showing the relative magnitude of each value",
@@ -24258,7 +25121,7 @@
     "domain": "Manage and secure Power BI",
     "subtopic": "Configure and update an app",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Manage and secure Power BI > Configure and update an app — workspace roles that can update a published app",
     "commonTrap": "Assuming Contributors can update a published app because they can edit content in the workspace",
@@ -24296,12 +25159,12 @@
     "domain": "Prepare the data",
     "subtopic": "Merge and append queries",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Prepare the data > Merge and append queries — join kinds that retain all rows from the left table",
     "commonTrap": "Assuming a Left Anti join returns all rows from the left table, when it returns only the rows with no match",
     "trapType": "Merge vs Append",
-    "question": "When using Merge Queries in Power Query, which TWO join kinds always retain every row from the LEFT (first) table in the result, regardless of whether a match is found in the right table?",
+    "question": "A Power Query developer is merging a customer orders table (left) with a product lookup table (right). Some orders reference product codes that do not exist in the lookup table. The requirement is that every order row must appear in the result — even orders without a matching product. Which TWO merge join kinds will always retain every row from the left table regardless of whether a match is found in the right table?",
     "choices": [
       "Left Outer",
       "Right Outer",
@@ -24334,7 +25197,7 @@
     "domain": "Manage and secure Power BI",
     "subtopic": "Identify when a gateway is required",
     "difficulty": "Medium",
-    "questionStyle": "direct",
+    "questionStyle": "scenario",
     "cognitiveLevel": "understanding",
     "examObjective": "Manage and secure Power BI > Identify when a gateway is required — on-premises vs cloud data sources",
     "commonTrap": "Assuming any database source requires a gateway, including cloud-hosted databases like Azure SQL Database",
@@ -24366,5 +25229,1002 @@
     ],
     "questionGroupId": "gateway_requirements",
     "variantId": "full_pl300_01"
+  },
+  {
+    "id": 481,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Enable personalization in a report, including personalized visuals",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "examObjective": "Visualize and analyze the data > Enable personalization in a report",
+    "commonTrap": "Assuming personalized view saves persist across report republishes",
+    "trapType": "Personalize Visuals Persistence",
+    "question": "A report author enables Personalize visuals for a report and publishes it to the Power BI Service. A sales manager spends time customizing her default view of a visual using the Personalize visuals feature and saves it. Two weeks later, the report author republishes the report with updated measures. The sales manager reports that her personalized view is gone. What is the MOST likely explanation?",
+    "choices": [
+      "Republishing the report resets all user-saved personalizations — users must re-apply their personalizations after each publish cycle because the new publish overwrites the report state",
+      "The personalized view was saved to the manager's OneDrive and was deleted when the report was moved to a different workspace during republish",
+      "Personalized views are stored temporarily and expire after 14 days regardless of report updates",
+      "The report author must explicitly preserve existing user personalizations by exporting them before republishing"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "When a Power BI report is republished, the published artifact is replaced with the new version from Power BI Desktop. User-saved personalizations (created via 'Save as my default' in Personalize visuals) are tied to the specific report version and are cleared when the report is republished. This is a known limitation: frequent republishes disrupt personalized views. Users must re-create their personalizations after each publish. This tradeoff — fast report updates vs. persistent user customizations — is an important planning consideration for report authors.",
+    "choiceExplanations": {
+      "0": "Correct. Publishing overwrites the report definition in the workspace, which resets user personalizations tied to the previous version. There is no automatic migration of saved personalized views across publish events.",
+      "1": "Personalized views are not stored in OneDrive — they are stored in the Power BI Service tied to the user and report combination. Workspace moves do not delete them; republishing does.",
+      "2": "Personalized views do not have a fixed expiry period — they persist until the report is republished or the user resets them. Time alone does not cause loss.",
+      "3": "There is no native export mechanism for user personalizations, and report authors cannot preserve individual user personalization states across republishes. This is not a supported workflow."
+    },
+    "tags": [
+      "Personalize Visuals",
+      "Report Publishing",
+      "User Customization"
+    ],
+    "estimatedTimeSeconds": 90,
+    "questionGroupId": "personalize_visuals",
+    "variantId": "publish_reset_01"
+  },
+  {
+    "id": 482,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Configure automatic page refresh",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "examObjective": "Visualize and analyze the data > Configure automatic page refresh",
+    "commonTrap": "Using fixed-interval refresh for DirectQuery reports when change detection is more efficient",
+    "trapType": "Auto Refresh Strategy",
+    "question": "A Power BI report uses DirectQuery against an operational database that updates approximately every 5 minutes. A report page contains four visuals and is configured for automatic page refresh with a fixed 30-second interval. Users and database administrators both report severe performance degradation and frequent visual timeouts. The report must maintain near-real-time data visibility. Which action MOST effectively reduces source load while preserving the near-real-time requirement?",
+    "choices": [
+      "Switch from fixed interval to change detection refresh, using a lightweight DAX measure that queries a small 'LastUpdated' timestamp column to detect when the data has actually changed",
+      "Reduce the number of visuals on the page from four to two, cutting the number of DirectQuery calls per refresh cycle in half",
+      "Switch the dataset to Import mode with a 5-minute scheduled refresh to match the database update frequency",
+      "Increase the fixed interval from 30 seconds to 5 minutes to align with the actual data update cadence"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Fixed-interval automatic page refresh fires all visual queries to the data source on every tick, regardless of whether data has changed. With four visuals at 30-second intervals, this generates up to 8 DirectQuery calls per minute per user — a significant, continuous load on the source database. Change detection refresh instead evaluates a single lightweight measure (typically querying a MAX timestamp or row count) every interval, and only triggers full visual refresh when that measure indicates a data change. This dramatically reduces source queries during idle periods (no data change) while still ensuring near-real-time updates when changes occur. Import mode (C) would break the near-real-time requirement with 5-minute scheduled refresh. Increasing the interval (D) reduces load but at the cost of timeliness — and doesn't fix the root architectural inefficiency.",
+    "choiceExplanations": {
+      "0": "Correct. Change detection fires one lightweight measure query per interval; visuals refresh only when the measure confirms data changed. This is both more efficient and preserves real-time responsiveness.",
+      "1": "Reducing visuals cuts query count per cycle but doesn't fix the fundamental problem: queries fire even when nothing changes. With 2 visuals at 30-second intervals you still generate 4 queries/minute/user regardless of data freshness.",
+      "2": "Import mode with 5-minute scheduled refresh would violate the near-real-time requirement. Scheduled refresh also cannot match the sub-minute precision of automatic page refresh.",
+      "3": "Increasing to 5-minute intervals aligns with the update cadence but still fires unnecessary queries during the many 5-minute windows where nothing changes. Change detection is the architectural solution."
+    },
+    "tags": [
+      "Automatic Page Refresh",
+      "Change Detection",
+      "DirectQuery",
+      "Performance"
+    ],
+    "estimatedTimeSeconds": 105,
+    "questionGroupId": "auto_page_refresh",
+    "variantId": "change_detection_01"
+  },
+  {
+    "id": 483,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Design and configure Power BI reports for accessibility",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "examObjective": "Visualize and analyze the data > Design and configure Power BI reports for accessibility",
+    "commonTrap": "Confusing visual contrast improvements with screen reader compatibility",
+    "trapType": "Accessibility Mechanism",
+    "question": "A company's IT accessibility policy requires all internal Power BI reports to be fully usable by employees who rely on screen readers. A report developer is auditing an existing report. The report has good color contrast, large fonts, and no color-only indicators. However, screen reader users report that visuals are announced with no meaningful context. Which action has the GREATEST impact on screen reader compatibility for the existing report?",
+    "choices": [
+      "Add descriptive Alt text to each visual using the Format pane, and configure the logical tab order of page elements using the Selection pane",
+      "Increase all font sizes to 16pt or larger and switch to a high-contrast report theme to improve visual clarity for low-vision users",
+      "Remove all custom background images from the canvas, since screen readers cannot interpret image-based content",
+      "Export the completed report as an accessible PDF with tagged headings — screen readers interpret PDF structure more reliably than interactive Power BI reports"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Screen readers announce elements by reading their text labels. Without Alt text, a Power BI visual is announced only as its generic type (e.g., 'clustered bar chart image') with no description of what it shows, which data it contains, or what conclusion the user should draw. Alt text in Power BI (Format pane → General → Alt text) provides the descriptive label. Tab order (Selection pane → Tab order) defines the logical navigation sequence, ensuring screen readers traverse elements in a meaningful order rather than the default layering order. The question notes color contrast and fonts are already good — these address low-vision users but are not the mechanism for screen reader text readability. PDF export removes interactivity and is a one-time workaround, not a report accessibility solution.",
+    "choiceExplanations": {
+      "0": "Correct. Alt text gives screen readers meaningful descriptions of each visual; tab order ensures logical navigation sequence. These are the primary Power BI accessibility controls for screen reader compatibility.",
+      "1": "Larger fonts and high-contrast themes help users with low vision who can see content but struggle with contrast — they do not help users who rely entirely on screen readers for navigation and content interpretation.",
+      "2": "Background images may be irrelevant to screen readers (decorative images can be ignored), but removing them does not add any meaningful content for screen readers. The missing element is Alt text on data visuals.",
+      "3": "PDF export loses interactivity (filtering, drillthrough) and requires a manual conversion step. It is not a sustainable accessibility strategy for a live Power BI report that users need to interact with."
+    },
+    "tags": [
+      "Accessibility",
+      "Alt Text",
+      "Tab Order",
+      "Screen Reader",
+      "Selection Pane"
+    ],
+    "estimatedTimeSeconds": 100,
+    "questionGroupId": "report_accessibility",
+    "variantId": "screen_reader_01"
+  },
+  {
+    "id": 484,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Configure bookmarks",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "examObjective": "Visualize and analyze the data > Configure bookmarks",
+    "commonTrap": "Bookmarks capture all visual states by default — scope must be explicitly limited to selected visuals",
+    "trapType": "Bookmark Scope",
+    "question": "A report developer creates a set of navigation bookmarks to toggle between a Sales view and a Marketing view on the same page. Each view hides certain visuals and shows others. The developer configures navigation buttons that trigger the correct bookmark. After publishing, users report that clicking the Sales bookmark unexpectedly also changes the expanded or collapsed state of several card visuals and resets a date slicer to a value from months ago. What is the MOST likely cause?",
+    "choices": [
+      "The bookmarks were created with 'All visuals' scope, capturing the state of every object on the page at creation time — the fix is to select only the specific visuals that should change and update the bookmark using 'Selected visuals' scope",
+      "Bookmarks saved in Power BI Desktop capture visual states from the development environment, which differ from the published Service state after deployment",
+      "Navigation buttons in Power BI require the bookmark to be assigned to a specific page rather than named bookmarks — the date slicer is resetting because the wrong page action is assigned",
+      "The card visuals and date slicer must be placed on a separate bookmark group — only one bookmark group can be active per page at a time"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "By default, a new bookmark captures the complete state of ALL objects on the page — including visual visibility, slicer values, scroll positions, expanded/collapsed states, selected data points, and applied filters. When the Sales bookmark was created, it froze the state of the date slicer and card visuals at that moment. Navigating to the bookmark restores that frozen state across all objects. The solution: select only the visuals that should change (the show/hide target visuals), then update the bookmark to capture 'Selected visuals' only. This limits the bookmark's effect to those specific elements, leaving all other page objects in their current user-controlled state.",
+    "choiceExplanations": {
+      "0": "Correct. 'All visuals' scope is the default and captures everything on the page. Limiting to 'Selected visuals' scope restricts the bookmark to only the elements that should change, preventing unintended side effects on slicers and other visuals.",
+      "1": "Bookmarks behave consistently between Desktop and Service — there is no environment-specific state divergence for bookmark captures. The root cause is scope, not environment.",
+      "2": "Navigation buttons can be assigned to bookmarks by name and work correctly for show/hide scenarios. The issue is the bookmark's own captured scope, not the button assignment.",
+      "3": "Bookmark groups are useful for organizing sets of bookmarks but do not cause the described symptom. The issue is the breadth of state captured by the bookmark, not group membership."
+    },
+    "tags": [
+      "Bookmarks",
+      "Navigation",
+      "Visual State",
+      "Selected Visuals"
+    ],
+    "estimatedTimeSeconds": 100,
+    "questionGroupId": "bookmark_navigation",
+    "variantId": "scope_all_visuals_01"
+  },
+  {
+    "id": 485,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Apply conditional formatting",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "examObjective": "Visualize and analyze the data > Apply conditional formatting",
+    "commonTrap": "Conditional formatting 'Rules' treat BLANK numerically as 0, triggering the lowest threshold rule",
+    "trapType": "Conditional Formatting BLANK",
+    "question": "A finance analyst configures conditional formatting on a matrix visual's Profit Margin measure using Rules: red for values less than 5%, amber for 5–15%, and green for above 15%. After applying, the analyst notices that cells where Profit Margin is BLANK (product-region combinations with no sales in the period) also display in red. Which action BEST resolves this without removing blank rows from the matrix?",
+    "choices": [
+      "Replace the 'Rules' conditional formatting with a 'Field value' format, driven by a helper measure that explicitly checks ISBLANK and returns an empty string for blank values and the appropriate hex color for valid values",
+      "Add IF(ISBLANK([Profit Margin]), 0, [Profit Margin]) to the Profit Margin measure definition so all blanks are converted to zero before conditional formatting evaluates them",
+      "Enable 'Show items with no data' in the matrix field settings — this forces blank cells to display as zero, which triggers the correct threshold rule",
+      "Change the lowest rule threshold from 'is less than 5%' to 'is between -100% and 5%' to exclude BLANK values from matching the red condition"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Power BI conditional formatting Rules evaluate BLANK numerically as 0. Since 0 is less than 5%, every BLANK cell matches the red rule — which is misleading because 'no data' is different from 'zero margin.' The cleanest fix is to switch to 'Field value' conditional formatting with a helper measure: IF(ISBLANK([Profit Margin]), \"\", IF([Profit Margin]<0.05, \"#FF4444\", IF([Profit Margin]<0.15, \"#FFAA00\", \"#00AA00\"))). An empty string return means no color is applied to BLANK cells. Converting BLANK to 0 in the measure (B) makes zero-margin rows appear red, conflating 'no data' with 'zero profit' — which may be misleading. 'Show items with no data' (C) doesn't change the fact that the formatting rule treats blank numerically as 0. Adjusting the rule threshold (D) cannot distinguish BLANK from a small negative value.",
+    "choiceExplanations": {
+      "0": "Correct. A 'Field value' helper measure using ISBLANK returns an empty string (no color) for BLANK cells and explicit hex colors for valid values — cleanly separating 'no data' from low-margin data.",
+      "1": "Converting BLANK to 0 in the base measure creates a logical inaccuracy: a product-region with no sales (BLANK) is now treated as 0% margin and colored red, potentially misleading stakeholders into treating missing data as a performance problem.",
+      "2": "'Show items with no data' forces blank combinations to appear in the matrix but does not change how BLANK is evaluated numerically — the conditional formatting rule still sees 0 and applies red.",
+      "3": "Adjusting the threshold range cannot distinguish BLANK from a legitimately small or negative margin. The problem is the semantic meaning of BLANK, not the numeric range."
+    },
+    "tags": [
+      "Conditional Formatting",
+      "BLANK",
+      "ISBLANK",
+      "Measures",
+      "Matrix Visual"
+    ],
+    "estimatedTimeSeconds": 110,
+    "questionGroupId": "conditional_formatting",
+    "variantId": "blank_handling_01"
+  },
+  {
+    "id": 486,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Configure sync slicers",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "examObjective": "Visualize and analyze the data > Configure sync slicers",
+    "commonTrap": "Assuming sync slicer scope automatically includes new pages added after the slicer was configured",
+    "trapType": "Sync Slicer New Page Exclusion",
+    "question": "A Power BI report has five pages. A Date Range slicer on Page 1 is configured to sync across all five pages using the Sync slicers pane. A product analyst adds a sixth page (Page 6) to the report and publishes it. Users report that changing the Date Range slicer does not affect any visuals on Page 6. What is the MOST likely cause?",
+    "choices": [
+      "New pages added after the sync slicer was originally configured must be manually added to the slicer's sync scope — the Sync slicers pane must be updated to include Page 6 and the report republished",
+      "The sync slicer automatically syncs to existing pages but requires a report-level filter to extend its effect to newly created pages",
+      "The Date Range slicer type does not support syncing to more than five pages — a list or dropdown slicer type must be used for reports with six or more pages",
+      "The analyst must re-create the sync slicer on Page 6 to create a bidirectional link — one-directional sync from Page 1 does not propagate to pages created after the original sync was configured"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Sync slicer configuration is stored per-slicer with an explicit list of pages: the Sync slicers pane shows each page with checkboxes for 'sync' (share state) and 'visible' (display the slicer on that page). Checking these boxes at configuration time creates an explicit mapping. When a new page is added to the report, it is NOT automatically included in any existing sync slicer's scope — the developer must reopen the Sync slicers pane, check Page 6 for the desired slicer, and republish. This is a common gap in iterative report development: the slicer config is not dynamic.",
+    "choiceExplanations": {
+      "0": "Correct. Sync slicer scope is explicitly configured per page. New pages are not automatically enrolled — each must be manually added in the Sync slicers pane.",
+      "1": "There is no report-level filter mechanism that automatically extends sync slicer scope. Sync slicer scope is controlled solely through the Sync slicers pane.",
+      "2": "There is no page-count limit for sync slicers. A slicer can be synced to as many pages as exist in the report, and the slicer type (Date Range, list, dropdown) does not affect sync scope capability.",
+      "3": "Sync slicers do not work via bidirectional re-creation on each page. A single slicer configured in the Sync slicers pane propagates its state to all pages checked in that pane — no duplicate slicers are required."
+    },
+    "tags": [
+      "Sync Slicers",
+      "Report Navigation",
+      "Slicer Configuration"
+    ],
+    "estimatedTimeSeconds": 90,
+    "questionGroupId": "sync_slicers",
+    "variantId": "new_page_exclusion_01"
+  },
+  {
+    "id": 487,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Choose when to use a paginated report",
+    "difficulty": "Hard",
+    "questionStyle": "best_solution",
+    "cognitiveLevel": "analysis",
+    "examObjective": "Visualize and analyze the data > Choose when to use a paginated report",
+    "commonTrap": "Assuming standard Power BI reports can satisfy pixel-perfect, multi-page print requirements",
+    "trapType": "Paginated vs Standard Report",
+    "question": "A finance team requires a report that meets ALL of the following criteria: (1) generates a separate, identically formatted invoice page for each of 500 customers, with guaranteed page breaks between customers; (2) users enter a customer ID and date range as parameters before the report runs; (3) column headers must repeat on each printed page for long transaction tables; (4) the report will be distributed as a precisely formatted PDF via email subscription. Which report type MOST effectively satisfies ALL four requirements?",
+    "choices": [
+      "A Power BI paginated report built using Report Builder, which natively supports parameterized execution, repeating headers, customer-level page groups with defined page breaks, and subscription-based PDF delivery",
+      "A standard Power BI report with a table visual showing all customers, using visual-level filters and the 'Print to PDF' browser option for each customer individually",
+      "A standard Power BI report with a matrix grouped by customer, with each row group formatted using conditional formatting and exported to PDF via the report export menu",
+      "A Power BI report pinned to a dashboard with a daily email subscription that sends a full-report snapshot to the finance distribution list"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Paginated reports are specifically engineered for pixel-perfect, document-oriented output: (1) row grouping with defined page breaks per customer group; (2) parameter panels that execute before the report renders; (3) tablix controls with repeat header rows across pages; (4) subscription-based delivery in precisely formatted PDF, Word, Excel, or CSV. Standard Power BI reports are designed for interactive exploration — they cannot enforce page breaks per record group, do not have true parameter-driven pre-execution, and cannot repeat headers on print pages. The 'Print to PDF' browser option (B) requires manual execution per customer and yields browser-rendered output rather than a formatted report. Dashboard subscriptions (D) send a visual snapshot image, not a structured document.",
+    "choiceExplanations": {
+      "0": "Correct. Paginated reports address all four requirements natively — this is exactly their design purpose: structured, multi-page, print-ready documents with parameters and repeating headers.",
+      "1": "Manually exporting 500 customer PDFs via browser Print is not scalable or automatable. Standard Power BI reports also lack true parameter-driven pre-execution and enforced print page breaks.",
+      "2": "A matrix grouped by customer provides interactive summarization, not paginated document generation. Conditional formatting does not create page breaks, and export to PDF from a matrix produces a single continuous document, not customer-separated pages.",
+      "3": "Dashboard subscriptions send a PNG snapshot image of dashboard tiles — this is not a formatted document, does not support per-customer parameterization, and cannot deliver precise page-break-separated invoices."
+    },
+    "tags": [
+      "Paginated Reports",
+      "Report Builder",
+      "Parameters",
+      "PDF Export",
+      "Subscriptions"
+    ],
+    "estimatedTimeSeconds": 105,
+    "questionGroupId": "paginated_vs_standard",
+    "variantId": "invoice_requirements_01"
+  },
+  {
+    "id": 488,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Use AI visuals",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "examObjective": "Visualize and analyze the data > Use AI visuals",
+    "commonTrap": "High-cardinality identifier fields in Key Influencers rank as top influencers due to discriminatory power, not business relevance",
+    "trapType": "Key Influencers Identifier Cardinality",
+    "question": "A supply chain analyst adds a Key Influencers visual to identify factors that increase delivery delays. 'Days Delayed' is set as the metric with 'Increase' selected. 'Carrier ID', 'Carrier Name', 'Origin Region', 'Product Category', and 'Ship Method' are added to the 'Explain by' field well. The visual consistently shows 'Carrier ID' as the single most influential factor with a very high impact score. The VP of Operations says Carrier ID is a numeric code with hundreds of unique values and no intrinsic meaning. What is the MOST appropriate action?",
+    "choices": [
+      "Remove Carrier ID from the 'Explain by' field well — high-cardinality identifier fields inflate influence scores due to their ability to discriminate unique records, not because of genuine business causation",
+      "Change the Key Influencers visual type from 'What influences Days Delayed to increase' to 'Top segments' to suppress low-value influencer fields automatically",
+      "Apply a visual-level filter to exclude Carrier ID values with fewer than 10 associated delay records to remove statistically insignificant carriers",
+      "Replace Carrier ID with a calculated column that bins carriers into quintiles by average delay, reducing cardinality while preserving the carrier's contribution"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "The Key Influencers visual uses statistical modeling (decision trees) to evaluate which fields in 'Explain by' most correlate with the outcome. A high-cardinality identifier like Carrier ID (with hundreds of unique values) has extreme discriminatory power — each unique code can almost perfectly separate individual records — which inflates its influence score regardless of business meaning. The correct action is to remove Carrier ID from 'Explain by' entirely. Carrier Name (already included) serves the same business purpose with more readable labels. The remaining fields — Origin Region, Product Category, Ship Method — are the analytically meaningful dimensions. Binning carriers into quintiles (D) creates an artificial grouping that distorts the original data semantics without solving the root problem.",
+    "choiceExplanations": {
+      "0": "Correct. Identifier fields with high cardinality dominate Key Influencers analysis for mathematical reasons, not causal business reasons. Removing them leaves only fields with genuine analytical value.",
+      "1": "'Top segments' changes the analytical mode but does not automatically suppress identifier fields — they would still appear in segment definitions. The visual mode switch doesn't solve the field selection problem.",
+      "2": "Filtering by minimum record count reduces noise but doesn't address the fundamental issue: even among carriers with many records, the Carrier ID code itself has no business meaning. Carrier Name is the correct substitute.",
+      "3": "Quintile binning creates a derived grouping that distorts real carrier performance differences and still assigns arbitrary numerical groupings without business meaning. Removing the field is cleaner."
+    },
+    "tags": [
+      "Key Influencers",
+      "AI Visuals",
+      "Cardinality",
+      "Explain By"
+    ],
+    "estimatedTimeSeconds": 105,
+    "questionGroupId": "ai_visuals",
+    "variantId": "key_influencers_cardinality_01"
+  },
+  {
+    "id": 489,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Configure drillthrough navigation, including pages, filters, and buttons",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "examObjective": "Visualize and analyze the data > Configure drillthrough navigation",
+    "commonTrap": "Placing the drillthrough field in the Filters pane instead of the dedicated drillthrough field well",
+    "trapType": "Drillthrough Field Placement",
+    "question": "A Power BI report has a Sales Summary page and a drillthrough target page called 'Order Detail'. The developer configures the drillthrough to filter by Product Category. On the 'Order Detail' page, Category is added to the Filters pane with no specific value set. A report user right-clicks the 'Clothing' bar on the Sales Summary page and selects 'Drill through → Order Detail'. The Order Detail page loads but shows data for all categories, not just Clothing. What is the MOST likely cause?",
+    "choices": [
+      "Category was placed in the page-level Filters pane on the Order Detail page rather than in the dedicated 'Add drill-through filters here' field well — fields must be placed in the drillthrough well to receive the passed filter context",
+      "The drillthrough relationship between pages requires both pages to use the same visual type — the bar chart source and table target have incompatible drillthrough configurations",
+      "'Keep all filters' is disabled on the Order Detail page, which causes the passed drillthrough context to be discarded when the page loads",
+      "The Category field is in the data model's dimension table, and drillthrough only supports fields from the fact table as filter context"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Drillthrough in Power BI requires the target field to be placed in the dedicated 'Add drill-through filters here' well on the drillthrough page — not in the standard Filters pane. The drillthrough well signals to Power BI's engine: 'when navigation arrives from another page with a Category context value, apply that value as a filter to this page.' If Category is in the regular Filters pane (even without a specific value), it acts as a static page-level filter that has no connection to the incoming drillthrough context. The result: Order Detail loads without the passed Category filter, showing all categories. The fix: remove Category from the Filters pane and drag it into the 'Add drill-through filters here' well.",
+    "choiceExplanations": {
+      "0": "Correct. The drillthrough field well is the mechanism that accepts incoming filter context from the source page. Placing the field in the regular Filters pane creates a static filter with no connection to drillthrough navigation.",
+      "1": "Drillthrough is agnostic to visual type — a bar chart source drilling through to a table target is fully supported. Visual type compatibility is not a drillthrough requirement.",
+      "2": "'Keep all filters' controls whether page-level filters from the source page accompany the drillthrough navigation. Disabling it could cause source page slicers to reset, but it does not discard the specific drillthrough category context — that context comes from a different mechanism.",
+      "3": "Drillthrough supports any field from any table in the model as the filter context. Dimension table fields are commonly used as drillthrough filters precisely because they represent business entities (Product, Customer, Region)."
+    },
+    "tags": [
+      "Drillthrough",
+      "Report Navigation",
+      "Filter Context",
+      "Drillthrough Well"
+    ],
+    "estimatedTimeSeconds": 100,
+    "questionGroupId": "drillthrough_navigation",
+    "variantId": "field_placement_01"
+  },
+  {
+    "id": 490,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Identify patterns and trends",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "examObjective": "Visualize and analyze the data > Identify patterns and trends — forecasting and seasonality",
+    "commonTrap": "Relying on 'Auto' seasonality when the actual seasonal cycle is known and should be specified explicitly",
+    "trapType": "Forecast Seasonality Configuration",
+    "question": "A retail analyst adds a forecast to a line chart showing 24 months of historical monthly sales. The forecast projects a straight upward line that ignores the clear December peaks and February troughs visible in the historical data. The analyst knows sales follow a consistent 12-month seasonal cycle. Which change within Power BI's native Analytics pane forecast configuration MOST directly improves the forecast to reflect seasonality?",
+    "choices": [
+      "Change the 'Seasonality' setting from 'Auto' to a specific value of 12, instructing the forecast algorithm to model a 12-period seasonal pattern",
+      "Add 'Month Number' as a secondary axis field to the line chart so the algorithm can identify repeating monthly patterns",
+      "Increase the forecast confidence interval from 95% to 99% to widen the prediction bands and accommodate seasonal fluctuations",
+      "Switch the X-axis from a continuous date hierarchy to a categorical month field to expose the seasonal pattern to the forecast model"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Power BI's native line chart forecast (in the Analytics pane) uses exponential smoothing and includes a 'Seasonality' parameter. When set to 'Auto', the algorithm attempts to detect seasonality automatically — but for short series or irregular data, Auto may fail to identify the pattern and default to a trend-only model. When the seasonal period is known (12 months), explicitly setting Seasonality to 12 forces the model to fit and extrapolate a 12-period seasonal component, producing forecasts that rise and fall with the expected pattern. Confidence intervals (C) control uncertainty bands, not seasonal shape. The X-axis field type (D) does not affect the forecast algorithm's seasonal detection — the algorithm works on the time series values, not the axis representation.",
+    "choiceExplanations": {
+      "0": "Correct. Setting Seasonality to 12 explicitly models annual seasonality. This is the native control in Power BI's Analytics pane forecast for specifying the expected cycle length.",
+      "1": "Adding Month Number as a secondary axis field changes the visual layout but does not feed the forecast algorithm with seasonal information. The forecast model reads the time series values from the primary axis — it doesn't use secondary categorical fields for seasonality detection.",
+      "2": "The confidence interval controls the width of the shaded forecast uncertainty band (wider = more uncertainty represented visually). It does not affect whether the forecast captures seasonal shape — changing it from 95% to 99% only widens the band.",
+      "3": "The axis field type (continuous date vs. categorical month) affects visual display and interactivity but not the underlying forecast algorithm's access to temporal sequence. The forecast needs a continuous date context to identify time-ordered patterns."
+    },
+    "tags": [
+      "Forecasting",
+      "Seasonality",
+      "Analytics Pane",
+      "Line Chart",
+      "Patterns and Trends"
+    ],
+    "estimatedTimeSeconds": 100,
+    "questionGroupId": "forecast_analytics",
+    "variantId": "seasonality_setting_01"
+  },
+  {
+    "id": 491,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Optimize report performance",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "examObjective": "Visualize and analyze the data > Optimize report performance",
+    "commonTrap": "Assuming SUMX is always the best aggregation — SUMX is expensive when simple SUM or pre-aggregation can replace it",
+    "trapType": "SUMX vs SUM Performance",
+    "question": "A Power BI report has an Overview page that loads in 8–10 seconds. Performance Analyzer reveals that three visuals account for 85% of query time. Each visual uses a measure built with SUMX iterating over a 12-million-row fact table. The SUMX measures multiply two columns already present on the fact table ([Quantity] * [UnitPrice]) and sum the result. No per-row logic or related-table lookups are involved. Which change provides the GREATEST performance improvement for these measures?",
+    "choices": [
+      "Replace each SUMX measure with a pre-computed 'LineRevenue' calculated column ([Quantity] * [UnitPrice]) in Power Query or as a DAX calculated column, and rewrite the measures as simple SUM([LineRevenue])",
+      "Replace SUMX with AVERAGEX to reduce the number of rows iterated before the aggregation function is applied",
+      "Add a numeric index column to the fact table and rewrite SUMX using FILTER to skip rows where the index is above a threshold, reducing the iteration range",
+      "Enable the 'Parallel Query' option in the dataset settings to allow SUMX to iterate multiple row partitions simultaneously"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "SUMX([FactTable], [Quantity] * [UnitPrice]) iterates every row of a 12-million-row table, multiplies two columns, and then aggregates — this is expensive when both columns are already on the same fact table. The multiplication can be pre-computed: in Power Query, add a 'LineRevenue' column as [Quantity] * [UnitPrice] during data loading (this benefits from query folding to the source), or add it as a DAX calculated column (stored in VertiPaq). Then the measure becomes SUM([LineRevenue]) — a simple columnar aggregation that VertiPaq's storage engine handles with column-scan compression, orders of magnitude faster than Formula Engine row iteration. AVERAGEX (B) changes the semantics (average, not sum) and still iterates all rows. FILTER with an index cutoff (C) changes the data being aggregated and doesn't solve the row-by-row iteration cost. 'Parallel Query' (D) is not a standard Power BI dataset setting.",
+    "choiceExplanations": {
+      "0": "Correct. Pre-computing the multiplication as a column moves the row-level work to data load time (once), and SUM on a stored column uses VertiPaq's highly optimized columnar storage engine, which is dramatically faster than SUMX row iteration at query time.",
+      "1": "AVERAGEX would change the measure from a revenue total to an average revenue per row — a different business metric. And it still iterates all 12 million rows, so performance would be similar or worse.",
+      "2": "Filtering rows by an arbitrary index changes the data being aggregated, producing incorrect business results. The performance improvement would be at the cost of data accuracy.",
+      "3": "'Parallel Query' is not a configurable Power BI dataset option. Even if parallel execution were available, it wouldn't address the fundamental inefficiency of row-level Formula Engine iteration when a columnar approach is available."
+    },
+    "tags": [
+      "Performance",
+      "SUMX",
+      "SUM",
+      "Power Query",
+      "Calculated Columns",
+      "VertiPaq"
+    ],
+    "estimatedTimeSeconds": 110,
+    "questionGroupId": "report_performance",
+    "variantId": "sumx_precompute_01"
+  },
+  {
+    "id": 492,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Create reports",
+    "difficulty": "Hard",
+    "questionStyle": "best_solution",
+    "cognitiveLevel": "analysis",
+    "examObjective": "Visualize and analyze the data > Select an appropriate visual — multi-metric cross-dimensional comparison",
+    "commonTrap": "Choosing KPI cards for multi-metric overview — cards show one metric at a time, not multi-dimensional comparison",
+    "trapType": "Visual Selection for Multi-KPI Analysis",
+    "question": "An executive team uses a Power BI report during quarterly business reviews. The current design shows a table with 16 KPI columns (Revenue, Margin, Units Sold, Returns, YoY Growth, etc.) and 25 regional rows — 400 cells total. The CFO states it is impossible to spot which regions are underperforming across multiple KPIs simultaneously without reading every cell. Which visual change MOST directly addresses the CFO's need for immediate multi-dimensional performance identification?",
+    "choices": [
+      "Convert the table to a matrix visual with conditional formatting color scales applied per column — the color gradient lets the eye immediately spot underperforming cells across any region-KPI intersection without reading numeric values",
+      "Replace the table with 16 separate KPI card visuals, one per metric, each showing the company-wide total with a target indicator",
+      "Add a Decomposition Tree visual linked to the table so the CFO can interactively drill into any underperforming metric",
+      "Replace the table with a clustered bar chart showing all 16 KPIs grouped by region, with a legend for each metric"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "The CFO's need is pre-attentive, simultaneous detection of anomalies across a 25×16 data matrix. Conditional formatting color scales (e.g., red-to-green gradient per column, normalized within each KPI's range) use color as a pre-attentive attribute — the brain identifies red cells in a color matrix far faster than scanning 400 numbers. A matrix preserves the original row×column structure while adding the color layer. KPI cards (B) collapse 25 regional rows into one company total per metric, losing regional granularity entirely. A Decomposition Tree (C) requires interaction and shows one dimension at a time — it doesn't provide the simultaneous multi-region, multi-KPI overview. A clustered bar with 16 KPIs per group (D) would produce an illegible visual with 25×16=400 bars clustered together.",
+    "choiceExplanations": {
+      "0": "Correct. Conditional formatting on a matrix uses color as a pre-attentive signal, enabling the human visual system to identify outlier cells across the entire 400-cell grid in seconds — exactly the CFO's requirement.",
+      "1": "KPI cards aggregate to a single value per metric at a company level. They eliminate the regional dimension entirely and require 16 separate visuals — they do not support multi-dimensional regional comparison.",
+      "2": "A Decomposition Tree is interactive and exploratory — it helps users drill into a specific metric after they've identified an area of interest. It does not provide a simultaneous multi-KPI, multi-region overview.",
+      "3": "A clustered bar chart with 16 KPIs grouped by 25 regions would generate 400 bars on a single chart — visually unreadable and practically impossible to interpret at scale."
+    },
+    "tags": [
+      "Visual Selection",
+      "Matrix Visual",
+      "Conditional Formatting",
+      "Multi-KPI",
+      "Executive Reporting"
+    ],
+    "estimatedTimeSeconds": 105,
+    "questionGroupId": "visual_selection",
+    "variantId": "multi_kpi_matrix_01"
+  },
+  {
+    "id": 493,
+    "type": "single",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Apply sensitivity labels",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "examObjective": "Manage and secure Power BI > Apply sensitivity labels — inheritance and automatic labeling",
+    "commonTrap": "Assuming sensitivity labels from source files are automatically inherited by Power BI semantic models on import",
+    "trapType": "Sensitivity Label Inheritance",
+    "question": "A financial services company uses Microsoft Purview sensitivity labels. A business analyst imports data from an Excel workbook that has a 'Confidential — Finance' sensitivity label applied. The resulting Power BI semantic model is published to a Production workspace. The compliance officer reviews the workspace and finds the semantic model has no sensitivity label. What is the MOST likely explanation?",
+    "choices": [
+      "Sensitivity labels are not automatically inherited by Power BI semantic models when data is imported from labeled source files — automatic label inheritance requires the Power BI admin to enable this capability in the Microsoft Purview (Information Protection) settings",
+      "The 'Confidential — Finance' label was applied at the Excel file level only — Power BI reads the cell data during import and discards any file-level metadata, including sensitivity classification",
+      "Sensitivity labels cannot be applied to Power BI semantic models — they are supported only on reports, dashboards, and dataflows",
+      "The workspace must have a Power BI Premium Per User (PPU) license before sensitivity labels from source files can propagate to published semantic models"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "By default, Power BI does not automatically inherit sensitivity labels from source files during data import. When an Excel file with a 'Confidential — Finance' label is imported, Power BI reads the data contents but does not copy the file's sensitivity classification to the semantic model. Automatic label inheritance — where the most restrictive label from any source is applied to the Power BI artifact — is an optional tenant-level capability that a Power BI admin must enable in the Microsoft Purview admin portal under Information Protection settings. Without this setting enabled, semantic model owners must apply labels manually. Sensitivity labels ARE supported on semantic models (C is false). Label propagation does not require Premium licensing (D is false).",
+    "choiceExplanations": {
+      "0": "Correct. Automatic label inheritance is an opt-in tenant setting, not default behavior. Without it enabled, labels must be manually applied to Power BI semantic models regardless of the source file's classification.",
+      "1": "Sensitivity labels on Excel files are indeed file-level metadata and are not embedded in the cell data that Power BI reads. However, the correct explanation is not that Power BI 'discards metadata' — the mechanism is that automatic inheritance is disabled by default, not that the system is unaware of the source label.",
+      "2": "Sensitivity labels can be applied to Power BI semantic models, reports, dashboards, and dataflows. Semantic models are a fully supported labeling target in Power BI.",
+      "3": "Sensitivity label support in Power BI does not require Premium Per User licensing. Labels are available across Power BI Pro and Premium capacities."
+    },
+    "tags": [
+      "Sensitivity Labels",
+      "Microsoft Purview",
+      "Information Protection",
+      "Governance",
+      "Compliance"
+    ],
+    "estimatedTimeSeconds": 100,
+    "questionGroupId": "sensitivity_labels",
+    "variantId": "label_inheritance_01"
+  },
+  {
+    "id": 494,
+    "type": "single",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Configure subscriptions and data alerts",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "examObjective": "Manage and secure Power BI > Configure subscriptions and data alerts",
+    "commonTrap": "Assuming a data alert notification reflects the current dashboard tile value rather than the value at the time the threshold was crossed",
+    "trapType": "Data Alert Timing",
+    "question": "A regional director has a data alert configured on a dashboard tile showing monthly revenue. The alert is set to trigger when revenue exceeds $2,500,000. She receives an alert notification but, when she opens the Power BI dashboard, the tile displays $2,310,000. She has not made any changes to the alert or the dashboard. What is the MOST likely explanation?",
+    "choices": [
+      "The alert fired when the dataset refresh caused the tile value to cross $2,500,000 — a subsequent dataset refresh updated the data again before the director opened the dashboard, resulting in a lower current value",
+      "Data alerts have a 6-hour delivery delay, during which the underlying data continued to change — the alert reflects data from 6 hours before the notification was received",
+      "The alert threshold was evaluated against a 7-day rolling average of the tile value, which exceeded $2,500,000 even though the point-in-time value did not",
+      "The tile is connected to a live DirectQuery model, and data alerts on DirectQuery tiles evaluate against a cached snapshot that can diverge from the live current value"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Power BI data alerts are evaluated each time the underlying dataset refreshes. When a refresh causes the tile value to cross the configured threshold, an alert notification is sent. If the dataset refreshes again before the user opens the dashboard — and the new refresh results in a lower value — the tile will display the updated, lower value, while the already-sent alert still reflects the value that crossed the threshold. This explains the apparent discrepancy: the alert was accurate at the time it fired, but the data subsequently changed. This is expected behavior, not an error — it reflects the point-in-time nature of alert evaluation versus the potentially more frequent refresh cycle. Note: data alerts are NOT supported on DirectQuery-connected tiles (D), which makes choice D factually incorrect as a general mechanism.",
+    "choiceExplanations": {
+      "0": "Correct. Alert evaluation is point-in-time at each refresh. A subsequent refresh with revised data does not retract or update the already-sent notification — it simply updates the tile to the new value.",
+      "1": "Power BI data alert delivery does not have a fixed 6-hour delay. Alerts are delivered relatively promptly after the refresh that triggered them. The delay between notification and current value is explained by subsequent data refresh, not alert delivery lag.",
+      "2": "Data alerts evaluate the current tile value at each refresh against the configured threshold — there is no rolling average calculation in the alert mechanism. The threshold comparison is direct and point-in-time.",
+      "3": "Data alerts are actually NOT supported on dashboard tiles that are sourced from DirectQuery-connected semantic models. If the tile were DirectQuery, the alert would not have been configured or triggered — this option describes a scenario that cannot occur."
+    },
+    "tags": [
+      "Data Alerts",
+      "Dashboard",
+      "Subscriptions",
+      "Scheduled Refresh",
+      "Notifications"
+    ],
+    "estimatedTimeSeconds": 100,
+    "questionGroupId": "data_alerts",
+    "variantId": "refresh_timing_01"
+  },
+  {
+    "id": 495,
+    "type": "single",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Assign workspace roles",
+    "difficulty": "Hard",
+    "questionStyle": "best_solution",
+    "cognitiveLevel": "analysis",
+    "examObjective": "Manage and secure Power BI > Assign workspace roles — least privilege",
+    "commonTrap": "Assigning Member role when Contributor is sufficient — Member allows deleting content owned by others",
+    "trapType": "Workspace Role Over-Privilege",
+    "question": "A consulting team uses a shared Power BI workspace. Three roles must be satisfied with the LEAST possible privilege: (1) the project lead must manage workspace settings, add or remove members, and publish and delete any content; (2) two senior analysts must create, publish, and update reports and datasets but cannot manage workspace settings or remove other users' content; (3) a client stakeholder must view published reports and dashboards only, with no ability to edit or publish content. Which role assignment satisfies ALL requirements with minimum privilege?",
+    "choices": [
+      "Project lead: Admin — Senior analysts: Contributor — Stakeholder: Viewer",
+      "Project lead: Admin — Senior analysts: Member — Stakeholder: Viewer",
+      "Project lead: Member — Senior analysts: Contributor — Stakeholder: Viewer",
+      "Project lead: Admin — Senior analysts: Contributor — Stakeholder: Member"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Power BI workspace roles follow a clear privilege hierarchy: Admin > Member > Contributor > Viewer. Admin: manage settings, manage members, publish, delete any content. Member: publish, update, delete own and others' content, but CANNOT manage workspace settings or add/remove members. Contributor: publish and update content, but CANNOT delete content owned by other users, CANNOT manage workspace settings. Viewer: view published content only. The senior analysts need to publish and update but must NOT delete others' content — Contributor satisfies this. Member would grant them the ability to delete other team members' work, exceeding the stated requirement. The project lead needs Admin for member management. The stakeholder needs only read access — Viewer is correct. Giving the stakeholder Member role (D) grants publishing rights they should not have.",
+    "choiceExplanations": {
+      "0": "Correct. Admin for management capability, Contributor for publish-without-delete-others, Viewer for read-only access — this is the minimum privilege assignment satisfying all stated requirements.",
+      "1": "Assigning Member to the senior analysts grants them the ability to delete content created by other team members (including each other's reports). This exceeds the stated requirement and violates least-privilege. Contributor is sufficient.",
+      "2": "Member role cannot manage workspace settings or add/remove members — so the project lead cannot perform their full administrative duties with a Member role. Admin is required.",
+      "3": "Assigning Member to the stakeholder grants them the ability to publish and update content, which significantly exceeds their stated read-only requirement. Viewer is the correct minimum privilege."
+    },
+    "tags": [
+      "Workspace Roles",
+      "Least Privilege",
+      "Admin",
+      "Contributor",
+      "Viewer",
+      "Security"
+    ],
+    "estimatedTimeSeconds": 100,
+    "questionGroupId": "workspace_roles",
+    "variantId": "least_privilege_01"
+  },
+  {
+    "id": 496,
+    "type": "single",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Configure and update an app",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "examObjective": "Manage and secure Power BI > Configure and update an app",
+    "commonTrap": "Assuming workspace content changes are automatically reflected in a published app without republishing",
+    "trapType": "App vs Workspace Content Versioning",
+    "question": "A Power BI app is distributed to 800 employees across the organization. A data analyst updates two reports in the underlying workspace and verifies the changes look correct when previewing from the workspace. Three days later, the help desk receives tickets from employees saying the app still shows the old report version. The analyst confirms the workspace reports are updated. What is the MOST accurate explanation?",
+    "choices": [
+      "A Power BI app is a published snapshot of workspace content at a point in time — changes made to workspace items after the app was published are not visible in the app until the app is explicitly republished by a workspace Admin or Member",
+      "The app content cache has a 72-hour retention period — employees accessing the app within 72 hours of the workspace update will see the cached prior version until the cache expires",
+      "The analyst's Contributor role allows updating workspace reports but does not trigger app content synchronization — only a workspace Admin's workspace saves propagate to the app automatically",
+      "App consumers must clear their browser cache and refresh the app URL before updated workspace content becomes visible through the app interface"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "A Power BI app is a deliberately versioned publication of workspace content. When 'Publish app' is executed, a snapshot of the workspace's current reports, dashboards, and datasets is packaged and made available to app consumers. Subsequent modifications to the workspace items — however significant — do not flow through to the app automatically. This separation allows the workspace to be used as a development/staging environment while app consumers see a stable, validated version. To release updates to app consumers, someone with Admin or Member role must explicitly republish the app via 'Update app.' The 72-hour cache (B) is not a real mechanism. Contributor-role workspace saves do not trigger any app synchronization (C is incorrect about the automatic trigger, and also Contributors cannot publish/update apps). Browser cache (D) is unrelated to app content versioning.",
+    "choiceExplanations": {
+      "0": "Correct. App publishing is an explicit action that creates a versioned snapshot. Workspace content changes after publish do not surface to app consumers until the app is republished.",
+      "1": "There is no 72-hour content cache for Power BI apps. App content reflects the most recent publish action — not a time-delayed cache of workspace changes.",
+      "2": "Workspace saves by any role (Admin, Member, Contributor) do not automatically synchronize to the app. App publishing is always an explicit action. Also, Contributors cannot publish or update apps — only Admins and Members can.",
+      "3": "Browser cache affects page rendering artifacts, not the Power BI app content version. Clearing a browser cache does not cause the app to show newer workspace content — the app version is controlled server-side by the publish action."
+    },
+    "tags": [
+      "Power BI Apps",
+      "App Publishing",
+      "Workspace",
+      "Content Distribution",
+      "Versioning"
+    ],
+    "estimatedTimeSeconds": 95,
+    "questionGroupId": "app_management",
+    "variantId": "publish_vs_workspace_01"
+  },
+  {
+    "id": 497,
+    "type": "single",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Identify when a gateway is required",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "examObjective": "Manage and secure Power BI > Identify when a gateway is required",
+    "commonTrap": "Assuming all cloud services need a gateway or that OAuth-authenticated public APIs require one",
+    "trapType": "Gateway Requirement Scenarios",
+    "question": "An organization migrates all Power BI reports to the Power BI Service with scheduled daily refresh. The four data sources used are: (1) Azure SQL Database with a public endpoint; (2) SharePoint Online list in Microsoft 365; (3) SQL Server 2019 on a virtual machine inside the company's private corporate network (no public internet access); (4) a public REST API using OAuth 2.0 client credentials authentication. After migration, scheduled refresh fails for exactly one of these sources. Which source MOST likely requires an on-premises data gateway?",
+    "choices": [
+      "SQL Server 2019 on the VM inside the corporate private network — it is not reachable from the Power BI Service over the internet without a gateway bridging the private network",
+      "The public REST API — OAuth 2.0 authentication requires a local credential broker that only the on-premises data gateway can provide",
+      "SharePoint Online — Microsoft 365 services require a gateway for scheduled refresh because they use organizational credentials that the Power BI Service cannot pass through directly",
+      "Azure SQL Database — even though it is a cloud service, cross-cloud connections between Azure and Power BI require gateway authentication for security compliance"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "On-premises data gateways are required when the Power BI Service (a cloud service) needs to connect to data that is not accessible over the public internet — specifically: on-premises databases, files on local networks, or resources inside private corporate networks. SQL Server on a VM inside a private corporate network has no public-facing endpoint; the Power BI Service cannot reach it directly. A gateway installed within the network acts as a secure outbound bridge. Azure SQL with a public endpoint is directly accessible cloud-to-cloud without a gateway. SharePoint Online is a Microsoft 365 cloud service that Power BI can connect to natively without a gateway using organizational OAuth credentials. Public REST APIs with public URLs are reachable from the cloud without a gateway (OAuth credentials are stored in the Power BI Service connector settings).",
+    "choiceExplanations": {
+      "0": "Correct. Private network resources are inaccessible to the Power BI Service directly. An on-premises data gateway must be installed inside the private network to relay requests between the Power BI Service and the SQL Server.",
+      "1": "Public REST APIs with internet-accessible endpoints do not require a gateway. OAuth 2.0 credentials for cloud APIs are stored and managed by the Power BI Service connector settings directly — no local credential broker is needed.",
+      "2": "SharePoint Online is a Microsoft cloud service. Power BI connects to SharePoint Online natively using Microsoft 365 organizational accounts without requiring a gateway. No gateway is needed for cloud-to-cloud connections within the Microsoft ecosystem.",
+      "3": "Azure SQL Database with a public endpoint is designed for cloud connectivity and is directly accessible from the Power BI Service without a gateway. Cross-cloud connections between Azure services and Power BI are supported natively through connection strings and credentials."
+    },
+    "tags": [
+      "Gateway",
+      "On-Premises",
+      "Private Network",
+      "Scheduled Refresh",
+      "Data Sources"
+    ],
+    "estimatedTimeSeconds": 95,
+    "questionGroupId": "gateway_requirements",
+    "variantId": "private_network_01"
+  },
+  {
+    "id": 498,
+    "type": "single",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Promote or certify Power BI content",
+    "difficulty": "Hard",
+    "questionStyle": "best_solution",
+    "cognitiveLevel": "analysis",
+    "examObjective": "Manage and secure Power BI > Promote or certify Power BI content",
+    "commonTrap": "Confusing Promoted (owner-applied, self-certification) with Certified (governance-controlled, highest trust tier)",
+    "trapType": "Endorsement Level Distinction",
+    "question": "A data governance team has built an authoritative semantic model representing company-wide financial KPIs. The team wants to signal to all Power BI users across the organization that this model is the officially governed, verified source of truth, and wants to ensure that only designated governance personnel — not individual dataset owners — can grant this status. Which endorsement approach BEST satisfies both the trust signaling AND the access control requirement?",
+    "choices": [
+      "Apply Certification — the Power BI tenant admin configures who is eligible to certify content (typically a governance team), and Certified content receives a distinct badge in semantic model discovery, communicating the highest trust tier",
+      "Apply Promotion — the semantic model owner applies the Promoted badge directly to signal that the content is production-ready and trusted for broad use",
+      "Apply a sensitivity label of 'Official — Internal' — sensitivity labels signal organizational data classification and restrict who can relabel the content",
+      "Pin the semantic model to Power BI Home as featured content — featured content receives maximum visibility and implicitly signals governance approval"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Power BI content endorsement has two levels: Promoted and Certified. Promoted is self-applied by the content owner or anyone with Member/Admin workspace role — it indicates the content is ready and reliable but carries no governance verification. Certified is the higher tier: a Power BI admin must configure the list of users or groups who are authorized to certify content (via the Endorsement settings in the admin portal). Only those designated certifiers can apply the Certified badge, making Certification governance-controlled. Certified content also receives a distinct badge in dataset discovery (hub, search, lineage view) that clearly signals 'this is the official source.' This satisfies both requirements: highest trust signaling (Certified > Promoted) AND restricted authorization (only admin-designated certifiers can apply it). Sensitivity labels (C) control access and protection, not endorsement trust level. Featured content (D) controls home page prominence, not endorsement.",
+    "choiceExplanations": {
+      "0": "Correct. Certification combines the highest endorsement trust level with admin-controlled eligibility — only Power BI admins can designate who may certify, ensuring governance oversight over which content receives the official stamp.",
+      "1": "Promotion is the lower endorsement tier, applicable by any content owner. It does not restrict who can apply it — any owner can promote their own content. This fails the requirement for governance-controlled authorization.",
+      "2": "Sensitivity labels classify data sensitivity and can restrict operations (export, sharing) through Microsoft Purview policies, but they are not an endorsement mechanism. A label does not appear in semantic model discovery as a trust badge, and it does not communicate 'official source of truth' status.",
+      "3": "Featured content pins items to the Power BI Home page for visibility but carries no formal endorsement, no governance verification process, and no discovery badge. It is a promotion tool, not a trust certification mechanism."
+    },
+    "tags": [
+      "Certification",
+      "Promotion",
+      "Endorsement",
+      "Governance",
+      "Data Discovery",
+      "Content Management"
+    ],
+    "estimatedTimeSeconds": 100,
+    "questionGroupId": "content_endorsement",
+    "variantId": "certification_vs_promotion_01"
+  },
+  {
+    "id": 499,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Create calculation groups",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "question": "A finance model has 15 time intelligence measures: Total Sales LY, Total Sales YTD, Total Margin LY, Total Margin YTD — each a near-identical CALCULATE pattern applied to a different base measure. Maintaining these 30+ measures has become unmanageable and inconsistent. Which modeling approach eliminates the duplication MOST effectively?",
+    "choices": [
+      "Create a calculation group with calculation items for each time period (Current, LY, YTD, YoY %). Apply SELECTEDMEASURE() inside each item so the time intelligence pattern is written once and applied to any base measure — reducing 30 measures to 4 base measures + 1 calculation group",
+      "Create a DAX variable LASTPERIOD = DATEADD(DimDate[Date], -1, YEAR) and reference it across all time intelligence measures to centralize the date logic",
+      "Use USERELATIONSHIP in a hidden calculated table that contains all time period variants, then use TREATAS to apply the date shift to any base measure",
+      "Create a parameter table with period options (LY, YTD, YoY%) and use SWITCH(SELECTEDVALUE(PeriodTable[Period]), ...) inside each of the 15 base measures"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Calculation groups are the purpose-built solution for this pattern. A calculation group defines calculation items (Current, LY, YTD, YoY%) using SELECTEDMEASURE() — a placeholder that represents whichever base measure is being evaluated at the time. This means the time intelligence logic is written once per calculation item and automatically applies to ALL 15 base measures. The result: 4 base measures + 1 calculation group with 4 items replaces 60 manually maintained combinations. DAX variables (B) reduce code inside individual measures but do not eliminate duplication across measures. TREATAS (C) is for relationship virtualization, not time intelligence abstraction. A SWITCH parameter table (D) still requires the SWITCH logic inside every base measure — it does not centralize the pattern.",
+    "trapType": "Calculation Groups vs Manual Measure Duplication",
+    "tags": [
+      "Calculation Groups",
+      "SELECTEDMEASURE",
+      "Time Intelligence",
+      "DAX",
+      "Model Design"
+    ],
+    "estimatedTimeSeconds": 120,
+    "domain_weight": 0.28
+  },
+  {
+    "id": 500,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Create calculation groups",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "question": "A model contains a calculation group called \"Currency\" with calculation items: \"USD\" (no adjustment), \"EUR\" (multiply by EUR rate), \"GBP\" (multiply by GBP rate). The calculation group is defined on the Financials table. A product manager reports that when filtering the report by currency using the calculation group, the Total Units Sold measure is incorrectly multiplied by the exchange rate. Which is MOST likely causing this issue?",
+    "choices": [
+      "The calculation group has Precedence set higher than any other calculation group — it applies to ALL measures in the model, including Total Units Sold, which should not be currency-converted",
+      "Total Units Sold is defined as a calculated column rather than a measure — calculated columns are not affected by calculation groups and the issue must have a different cause",
+      "The calculation group is missing a SELECTEDMEASUREISBLANK() guard to exclude measures that should not be converted",
+      "SELECTEDMEASURE() inside the EUR calculation item returns the raw column value rather than the base measure result, causing incorrect multiplication"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Calculation groups apply to ALL measures in the model by default — not just financial amounts. Total Units Sold is a measure, so it is also affected by the Currency calculation group and gets multiplied by the exchange rate, which is incorrect. The fix is to check SELECTEDMEASURENAME() inside the calculation item and conditionally bypass the exchange rate for non-financial measures: IF(SELECTEDMEASURENAME() = \"Total Units Sold\", SELECTEDMEASURE(), SELECTEDMEASURE() * ExchangeRate). Precedence determines which calculation group takes effect when multiple groups are applied simultaneously — it does not selectively exclude measures. Calculated columns are not affected by calculation groups, so option B is incorrect in its premise. SELECTEDMEASUREISBLANK() checks if the measure returns BLANK, not whether it should be converted.",
+    "trapType": "Calculation Group Scope — ALL Measures Affected",
+    "tags": [
+      "Calculation Groups",
+      "SELECTEDMEASURE",
+      "SELECTEDMEASURENAME",
+      "DAX",
+      "Precedence"
+    ],
+    "estimatedTimeSeconds": 120,
+    "domain_weight": 0.28
+  },
+  {
+    "id": 501,
+    "type": "single",
+    "domain": "Model the data",
+    "subtopic": "Create calculation groups",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "question": "A model has two calculation groups: \"Time Intelligence\" (items: Current, LY, YTD) and \"Currency Conversion\" (items: USD, EUR, GBP). When both are used simultaneously — a matrix with Time Intelligence on columns and Currency on rows — some cells show incorrect values. The issue is that one calculation group overrides the other at the intersection. What configuration controls which calculation group takes effect first when multiple groups interact?",
+    "choices": [
+      "Calculation group Precedence — a numeric property on each calculation group. The group with the HIGHER precedence number is evaluated LAST (innermost), wrapping around the lower-precedence group; the lower-precedence group is evaluated first (outermost)",
+      "Calculation item ordering within each group — items listed first in the group are evaluated before items listed later",
+      "The order in which calculation groups are added to the model determines their evaluation priority — the first group added is always outermost",
+      "The Applies To property on each calculation group restricts which tables or measures it affects, preventing conflicts between groups"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "When multiple calculation groups intersect, Precedence determines evaluation order. The group with the HIGHER precedence number is evaluated INNERMOST (closest to the base measure), and the lower-precedence group wraps around it OUTERMOST. Typically: set Currency Conversion to higher precedence (e.g., 10) so it is applied first to the base measure, then Time Intelligence wraps around to shift the date context. Getting the order wrong causes one group to operate on already-transformed values rather than the raw base measure. Item ordering within a group (B) controls which item is the default when no explicit selection exists — it does not affect multi-group interaction. Creation order (C) has no effect on precedence. \"Applies To\" (D) is not a property that exists on calculation groups in the standard model.",
+    "trapType": "Calculation Group Precedence and Evaluation Order",
+    "tags": [
+      "Calculation Groups",
+      "Precedence",
+      "Multiple Calculation Groups",
+      "DAX"
+    ],
+    "estimatedTimeSeconds": 120,
+    "domain_weight": 0.28
+  },
+  {
+    "id": 502,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Create visual calculations by using DAX",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "question": "A matrix visual shows quarterly sales by product category. A stakeholder requests a \"% of Row Total\" column showing what percentage each quarter contributes to the category's annual total — without adding a new measure to the semantic model. Which visual calculation achieves this?",
+    "choices": [
+      "DIVIDE([SalesAmount], COLLAPSE([SalesAmount], ROWS)) — COLLAPSE aggregates the measure up to the row total level (category total), and DIVIDE produces the percentage without any model changes",
+      "DIVIDE([SalesAmount], CALCULATE([SalesAmount], ALLSELECTED(DimDate[Quarter]))) — removes the quarter filter to get the category total",
+      "DIVIDE([SalesAmount], RUNNINGSUM([SalesAmount])) — RUNNINGSUM accumulates from the first quarter to the last, and the final value equals the row total",
+      "DIVIDE([SalesAmount], GRANDTOTAL([SalesAmount])) — GRANDTOTAL returns the overall report total across all categories and quarters"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "COLLAPSE is a visual calculation function that aggregates a value up to a higher level in the visual matrix axis. COLLAPSE([SalesAmount], ROWS) computes the total for the current row (category total across all quarters), regardless of which column (quarter) the cell is in. DIVIDE([SalesAmount], COLLAPSE([SalesAmount], ROWS)) then produces the percentage of row total for each quarter cell. This is a visual-only calculation requiring no model changes. CALCULATE with ALLSELECTED (B) is a valid model measure approach — but as a visual calculation it references filter context, not the visual matrix rows. RUNNINGSUM (C) accumulates left to right — its final value is the row total, but dividing by RUNNINGSUM at each position gives a ratio to the cumulative total at that point, not the full row total. GRANDTOTAL (D) returns the grand total across all categories and quarters — % of grand total, not % of row total.",
+    "trapType": "COLLAPSE vs RUNNINGSUM vs GRANDTOTAL in Visual Calculations",
+    "tags": [
+      "Visual Calculations",
+      "COLLAPSE",
+      "RUNNINGSUM",
+      "DAX",
+      "Matrix Visual"
+    ],
+    "estimatedTimeSeconds": 120,
+    "domain_weight": 0.28
+  },
+  {
+    "id": 503,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Create visual calculations by using DAX",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "question": "A bar chart ranks products by revenue. A stakeholder wants a \"Rank\" label on each bar showing its position from highest to lowest — but the ranking should reset when the category slicer changes so products are ranked within the currently visible set, not globally. Which visual calculation is correct?",
+    "choices": [
+      "RANK(DENSE, [Revenue], DESC) — visual calculations' RANK function operates on the visible visual matrix rows, automatically ranking only the products currently displayed after slicer filtering",
+      "RANKX(ALL(DimProduct), [Revenue], , DESC, DENSE) — used as a visual calculation, ALL() expands the scope to all products, producing a global rank",
+      "INDEX(ROWS, ORDERBY([Revenue], DESC)) — INDEX returns the row position in the sorted visual matrix, effectively producing a rank within the displayed set",
+      "RUNNINGSUM(1, ROWS, ORDERBY([Revenue], DESC)) — accumulating 1 per row in revenue order produces a sequential rank number"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Visual calculations' RANK function operates natively on the visual matrix — it ranks values within the rows currently visible in the visual, which already reflects any slicer selections. When the category slicer changes, the visual matrix updates to show only matching products, and RANK re-computes within that visible set automatically. This is the key advantage of visual calculations over model measures: they inherit the visual context without needing ALL() or ALLSELECTED() manipulation. RANKX with ALL() (B) is a model measure pattern — in a visual calculation context, ALL() would expand beyond the visual matrix to the full table, producing global ranks that do not reset with slicers. INDEX (C) returns the position of a row in a sorted sequence — it is more appropriate for lookup patterns than ranking. RUNNINGSUM(1) (D) would produce sequential integers but does not handle ties the way RANK does.",
+    "trapType": "Visual Calculation RANK vs Model RANKX",
+    "tags": [
+      "Visual Calculations",
+      "RANK",
+      "RANKX",
+      "DAX",
+      "Slicer Context"
+    ],
+    "estimatedTimeSeconds": 120,
+    "domain_weight": 0.28
+  },
+  {
+    "id": 504,
+    "type": "single",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Create visual calculations by using DAX",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application",
+    "question": "A report developer adds a visual calculation to a table visual that uses PREVIOUS([Revenue]) to show the prior row's revenue alongside the current row's. After publishing, a colleague reports that reordering the table by clicking a column header causes the PREVIOUS values to appear incorrect. Why does this happen?",
+    "choices": [
+      "PREVIOUS() in a visual calculation is evaluated based on the visual matrix row order at the time the visual calculation is defined — resorting the visual changes the row order, which changes what PREVIOUS() returns, since it always refers to the adjacent row in the current display order",
+      "PREVIOUS() references model-level row order determined by the data model sort order, which does not change when the user sorts the visual — the apparent discrepancy is a display rendering bug",
+      "PREVIOUS() is a forward-only function — it can only reference earlier rows in ascending sort order and returns BLANK when rows are in descending order",
+      "Visual calculations are cached at publish time — changing the sort order does not re-evaluate the calculation until the report is re-published"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Visual calculations operate on the visual matrix as displayed — the row order is determined by the current sort state of the visual. PREVIOUS([Revenue]) returns the revenue of the row immediately above in the displayed order. When a user reorders the table by clicking a column header, the display order changes, and PREVIOUS() re-evaluates against the new order — so what was \"previous\" in the original order is no longer previous in the new order. This is expected behavior, not a bug, but it can surprise users if they expect PREVIOUS to reference a model-level or time-based order. To pin the ordering, use ORDERBY in the visual calculation: PREVIOUS([Revenue], ROWS, ORDERBY([ProductName], ASC)) explicitly defines the sort axis regardless of the visual's display sort.",
+    "trapType": "PREVIOUS() and Visual Sort Order Dependency",
+    "tags": [
+      "Visual Calculations",
+      "PREVIOUS",
+      "Row Order",
+      "Sort Order",
+      "DAX"
+    ],
+    "estimatedTimeSeconds": 90,
+    "domain_weight": 0.28
+  },
+  {
+    "id": 505,
+    "type": "single",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Create dashboards",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "question": "A Power BI dashboard aggregates pinned tiles from reports in 3 different workspaces. An executive reports that some dashboard tiles show stale data from yesterday despite all underlying datasets refreshing this morning. Other tiles on the same dashboard are current. What is the MOST likely cause?",
+    "choices": [
+      "Dashboard tiles cache their own snapshot independently of the underlying dataset refresh schedule. A tile's cached value updates when the underlying dataset refreshes AND the tile itself is re-rendered — tiles that have not been viewed since the last refresh may still show the prior snapshot until the cache is invalidated",
+      "The datasets in the 3 different workspaces are using different gateway connections, and the gateway for the stale tiles has lost its connection and is not refreshing",
+      "Dashboard tiles from workspaces on different Premium capacities refresh at different Priority levels, causing some tiles to update before others",
+      "The executive's Power BI account is cached in a different geo-region than the workspace, causing cross-region cache delays in tile rendering"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Dashboard tiles maintain their own cache that is separate from the underlying dataset. When a dataset refreshes, tiles pinned from that dataset are queued for cache invalidation, but the tile snapshot may not update immediately — especially for complex tiles or tiles not recently accessed. Additionally, if a dataset fails to refresh or the refresh has not yet completed for a specific semantic model, tiles from that model will remain at the prior snapshot. Across multiple workspaces, this means tiles can be at different recency states depending on their individual dataset refresh status and tile cache invalidation timing. The most reliable diagnostic is to check the refresh history for each workspace's dataset and compare it to the tile's \"Last refreshed\" timestamp shown in the tile details. Gateway issues (B) would typically prevent refresh entirely, causing an error state on the tile. Premium capacity priority (C) is not a standard tile refresh mechanism. Geo-region delays (D) affect report loading latency, not dataset refresh or tile snapshot updates.",
+    "trapType": "Dashboard Tile Cache vs Dataset Refresh",
+    "tags": [
+      "Dashboards",
+      "Tile Cache",
+      "Scheduled Refresh",
+      "Power BI Service",
+      "Manage Power BI"
+    ],
+    "estimatedTimeSeconds": 90,
+    "domain_weight": 0.17
+  },
+  {
+    "id": 506,
+    "type": "single",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Create dashboards",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "question": "A Power BI dashboard is the primary monitoring surface for an operations team. The team needs a real-time view of a SQL Server database that updates every 60 seconds. They currently use a standard Import-mode report pinned to the dashboard. Which configuration change BEST achieves near-real-time dashboard tile updates?",
+    "choices": [
+      "Switch the underlying report's dataset to DirectQuery mode, pin the visuals to the dashboard, and enable dashboard tile refresh (Dashboard settings → Auto refresh) — DirectQuery tiles can refresh as frequently as every 15 minutes via tile refresh, or use auto page refresh on the source report",
+      "Enable a scheduled dataset refresh to run every 60 seconds in the dataset settings — Power BI Premium supports refresh intervals as short as 60 seconds via incremental refresh partitions",
+      "Create a streaming dataset using the Power BI REST API or a service like Azure Stream Analytics — streaming datasets update tiles in real time as data is pushed, without a polling interval",
+      "Switch to DirectQuery and use Auto Page Refresh (Change Detection mode) on the source report page — this keeps the report page updated in near-real-time, and since dashboard tiles mirror the report visual, they also update at the change detection interval"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "For true near-real-time dashboard tile updates at 60-second intervals, a streaming dataset is the correct approach. Streaming datasets receive data pushes via the Power BI REST API (or Azure Stream Analytics, Event Hubs, etc.) and update dashboard tiles in real time without any polling interval. Tile data appears within seconds of the push. DirectQuery with Dashboard Auto Refresh (A) allows tile refresh but the minimum interval in the UI is typically 15 minutes — not 60 seconds. Scheduled dataset refresh (B) cannot be configured at 60-second intervals — Premium supports more frequent refreshes but the minimum is typically 30 minutes (hourly in most capacities). Auto Page Refresh (D) updates the report page (in the browser), but dashboard tiles are pinned snapshots — they do not inherit the auto page refresh interval from the source report page. Dashboard tiles have their own separate refresh mechanism.",
+    "trapType": "Streaming Datasets vs DirectQuery for Real-Time Dashboards",
+    "tags": [
+      "Dashboards",
+      "Streaming Dataset",
+      "Real-Time",
+      "DirectQuery",
+      "Auto Page Refresh"
+    ],
+    "estimatedTimeSeconds": 120,
+    "domain_weight": 0.17
+  },
+  {
+    "id": 507,
+    "type": "single",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Configure subscriptions and data alerts",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "analysis",
+    "question": "A regional manager sets a data alert on a dashboard KPI tile: \"Notify me when Defect Rate exceeds 5%.\" The underlying dataset refreshes daily at 6 AM. The manager reports receiving the alert email at 6:15 AM on Tuesday — but when they open the dashboard at 8 AM the same day, the defect rate shows 3.8%. Which explanation is MOST accurate?",
+    "choices": [
+      "Data alerts are evaluated immediately after each dataset refresh. On Tuesday the 6 AM refresh found Defect Rate = 5.2% (above threshold), triggering the alert. Between 6 AM and 8 AM, a second refresh (or a manual refresh) updated the value to 3.8% — the alert fired correctly against the 6 AM data state",
+      "The alert system has a known latency — it fires at the previous day's data value and is always one refresh cycle behind the current dashboard display",
+      "The alert was misconfigured — data alerts compare against the PREVIOUS snapshot, not the current refresh value, which is why the current and alert values differ",
+      "The alert fired based on a different measure calculation than the one displayed on the tile — alerts use the raw column aggregate while the tile applies a percentage format that changes the displayed value"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Data alerts are evaluated at the time of each dataset refresh. The alert fires when the evaluated value crosses the threshold at that refresh moment. If a second refresh occurs later in the day (manual, incremental, or automatic) and the value improves, the dashboard tile updates to the new value — but the earlier alert email has already been sent. The alert correctly reflected the data state at 6 AM (5.2%); the subsequent improvement to 3.8% updated the tile but cannot unsend the email. This is expected behavior and not a system error. Option B is incorrect — alerts are evaluated at the current refresh value, not the prior day's value. Option C mischaracterizes how alerts work — they evaluate the current tile value at each refresh. Option D is incorrect — the tile and alert evaluate the same underlying measure.",
+    "trapType": "Data Alert Timing and Subsequent Refresh Updates",
+    "tags": [
+      "Data Alerts",
+      "Subscriptions",
+      "Scheduled Refresh",
+      "Dashboard",
+      "Manage Power BI"
+    ],
+    "estimatedTimeSeconds": 90,
+    "domain_weight": 0.17
+  },
+  {
+    "id": 508,
+    "type": "multi",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Configure subscriptions and data alerts",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application",
+    "question": "A Power BI workspace admin wants to set up automated monitoring for the executive team. The requirements are: (1) Executives should receive a weekly email summary of the full KPI dashboard every Monday morning. (2) The CFO specifically should receive an immediate notification if cash reserves drop below $1M at any point during the week. Which TWO features directly satisfy these two requirements?",
+    "choices": [
+      "Subscription configured to send a weekly email snapshot of the dashboard on Monday mornings — satisfies requirement 1",
+      "Data alert set on the Cash Reserves KPI dashboard tile with threshold \"below $1M\" — fires at each dataset refresh when the condition is met, satisfying requirement 2",
+      "A Power Automate flow triggered by a Power BI dataset refresh event, sending a custom email — an alternative approach to requirement 2 but requires additional configuration beyond native Power BI features",
+      "A scheduled dataset refresh configured to run on Monday mornings — this triggers the dashboard to update but does not send an email to the executive team"
+    ],
+    "correctAnswers": [
+      0,
+      1
+    ],
+    "explanation": "Requirement 1 (weekly Monday email of the dashboard) is satisfied by a Subscription: configure it to send the dashboard as an email attachment or embedded image on a weekly Monday schedule. Any workspace member with view access to the dashboard can create a subscription. Requirement 2 (immediate notification when Cash Reserves drops below $1M) is satisfied by a Data Alert: set a threshold on the Cash Reserves KPI tile. The alert fires automatically at each dataset refresh when the value crosses the threshold — no manual monitoring required. Power Automate (C) is a valid technical alternative for requirement 2 but is more complex and not the native Power BI solution. Scheduled refresh (D) updates the dataset but does not send notifications — it is a prerequisite for alerts and subscriptions to have fresh data, not a notification mechanism itself.",
+    "trapType": "Subscriptions vs Data Alerts vs Scheduled Refresh",
+    "tags": [
+      "Subscriptions",
+      "Data Alerts",
+      "Dashboard",
+      "Notifications",
+      "Manage Power BI"
+    ],
+    "estimatedTimeSeconds": 90,
+    "domain_weight": 0.17
   }
 ]
