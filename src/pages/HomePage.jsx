@@ -127,7 +127,7 @@ export default function HomePage() {
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-1">PL-300 Exam Simulator</h1>
           <p className="text-gray-400 text-sm">Microsoft Power BI Data Analyst · Passing score: 70%</p>
-          <div className="grid grid-cols-2 gap-2 mt-5 sm:grid-cols-3 lg:grid-cols-6">
+          <div className="grid grid-cols-2 gap-2 mt-5 sm:grid-cols-3 lg:grid-cols-7">
             <button
               onClick={() => navigate('/history')}
               className="flex flex-col items-center gap-1 px-3 py-3 rounded-xl bg-blue-50 border border-blue-100 hover:bg-blue-100 hover:border-blue-200 transition-colors"
@@ -169,6 +169,13 @@ export default function HomePage() {
             >
               <span className="text-sm font-semibold text-rose-700">Relationship Lab</span>
               <span className="text-xs text-rose-400">Model simulations</span>
+            </button>
+            <button
+              onClick={() => navigate('/data-labs')}
+              className="flex flex-col items-center gap-1 px-3 py-3 rounded-xl bg-orange-50 border border-orange-100 hover:bg-orange-100 hover:border-orange-200 transition-colors"
+            >
+              <span className="text-sm font-semibold text-orange-700">Data Labs</span>
+              <span className="text-xs text-orange-400">Power Query</span>
             </button>
           </div>
         </div>

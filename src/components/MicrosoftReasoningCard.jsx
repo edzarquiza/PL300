@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { getMicrosoftReasoning } from '../services/microsoftReasoningService'
 
 const CHOICE_LABELS = ['A', 'B', 'C', 'D', 'E']
 
@@ -42,7 +42,7 @@ function WrongChoiceRow({ idx, choiceText, reasoning }) {
 }
 
 export default function MicrosoftReasoningCard({ question }) {
-  const r = question.microsoftReasoning
+  const r = getMicrosoftReasoning(question)
   if (!r) return null
 
   const wrongChoices = (question.choices || [])

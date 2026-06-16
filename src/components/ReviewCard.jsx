@@ -6,6 +6,7 @@ import SampleDataTable from './SampleDataTable'
 import ResultTable from './ResultTable'
 import { addToRetryQueue, removeFromRetryQueue, isInRetryQueue } from '../services/retryQueueService'
 import MicrosoftReasoningCard from './MicrosoftReasoningCard'
+import { getMicrosoftReasoning } from '../services/microsoftReasoningService'
 import { formatTime } from '../utils/examUtils'
 import { DAX_FUNCTIONS } from '../data/daxFunctions'
 import { getWalkthroughForTags } from '../data/walkthroughs'
@@ -193,6 +194,7 @@ export default function ReviewCard({ question, userAnswer, questionNumber, confi
 
   const showMistakeSection  = !isCorrect && !isEmpty &&
     question.type === 'single' && typeof userAnswer === 'number' && question.choiceExplanations
+  const hasMicrosoftReasoning = !!getMicrosoftReasoning(question)
 
   const defaultOpenExplanation = !isCorrect && !isEmpty
 
@@ -298,7 +300,7 @@ export default function ReviewCard({ question, userAnswer, questionNumber, confi
       )}
 
       {/* Expandable: How Microsoft Thinks */}
-      {question.microsoftReasoning && (
+      {hasMicrosoftReasoning && (
         <CollapseSection title="💡 How Microsoft Thinks" defaultOpen={false}>
           <MicrosoftReasoningCard question={question} />
         </CollapseSection>

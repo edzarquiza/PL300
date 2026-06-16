@@ -3450,7 +3450,7 @@
       "DATESYTD returns dates from the start of the YEAR to the current date — not the start of the quarter. This would give year-to-date totals, not quarter-to-date.",
       "Correct. TOTALQTD(SUM(Deposits[Amount]), Dates[Date]) calculates the sum from the start of the current quarter to the selected date."
     ],
-    "daxExpression": "QTD Deposits = TOTALQTD(SUM(Deposits[Amount]), Dates[Date])\n\n-- TOTALQTD accumulates from the first day of the current quarter\n-- to the last date in the current filter context.\n-- Resets at the start of each new quarter (Q1: Jan 1, Q2: Apr 1, etc.)",
+    "daxExpression": "AccumulatedDeposits = [function_name](SUM(Deposits[Amount]), Dates[Date])\n\n-- [function_name] accumulates from the first day of the current quarter\n-- to the last date in the current filter context.\n-- Resets at the start of each new quarter (Q1: Jan 1, Q2: Apr 1, etc.)",
     "expectedOutput": {
       "label": "Quarter-to-date deposits (Q1 2024)",
       "columns": [
@@ -7794,7 +7794,7 @@
       "2": "REMOVEFILTERS() removes the active filter on a column — it does not return a set of values. It is used inside CALCULATE to clear filters, not to enumerate visible values.",
       "3": "ALL() removes all active filters and returns every value in the column regardless of current context. It is used for filter removal, not for returning currently visible distinct values."
     },
-    "daxExpression": "-- VALUES includes the blank row (for unmatched relationships)\n-- DISTINCT excludes the blank row\n\nYears (with blank) = VALUES(DimDate[Year])\nYears (without blank) = DISTINCT(DimDate[Year])\n\n-- Use VALUES when you want unmatched fact rows to surface as blank\n-- Use DISTINCT when you want only real data values",
+    "daxExpression": "-- [function_name] includes the blank row (for unmatched relationships)\n-- DISTINCT excludes the blank row\n\nYears (with blank) = [function_name](DimDate[Year])\nYears (without blank) = DISTINCT(DimDate[Year])\n\n-- Use [function_name] when you want unmatched fact rows to surface as blank\n-- Use DISTINCT when you want only real data values",
     "expectedOutput": {
       "label": "VALUES vs DISTINCT when unmatched Sales rows exist",
       "columns": [
@@ -7945,7 +7945,7 @@
       "2": "RELATEDTABLE(Managers) requires an active relationship and returns an entire table of related rows, not a single scalar Name value. It is used when you need to iterate or aggregate across related rows.",
       "3": "VALUES(Managers[Name]) returns a table of distinct Name values visible in the current filter context. It does not perform a row-by-row lookup by ManagerID and cannot be used in a calculated column to retrieve a matching value."
     },
-    "daxExpression": "-- LOOKUPVALUE retrieves a value without requiring a model relationship\nManager = LOOKUPVALUE(\n    Managers[Name],         -- return this column\n    Managers[ManagerID],    -- search this column\n    Sales[ManagerID]        -- match against this column in current row\n)\n\n-- Equivalent to SQL: SELECT m.Name FROM Managers m WHERE m.ManagerID = Sales.ManagerID",
+    "daxExpression": "-- This function retrieves a value from another table without requiring a model relationship\nManager = [function_name](\n    Managers[Name],         -- return this column\n    Managers[ManagerID],    -- search this column\n    Sales[ManagerID]        -- match against this column in current row\n)\n\n-- Equivalent to SQL: SELECT m.Name FROM Managers m WHERE m.ManagerID = Sales.ManagerID",
     "sampleData": {
       "tables": [
         {
@@ -7974,7 +7974,7 @@
           "columns": [
             "SaleID",
             "ManagerID",
-            "Manager (LOOKUPVALUE)"
+            "Manager"
           ],
           "rows": [
             [
@@ -8041,7 +8041,7 @@
       "2": "SAMEPERIODLASTYEAR(DimDate[Date]) shifts the current selection back by one year to return the same relative period last year. It does not produce a cumulative total from January of the current year.",
       "3": "Correct. TOTALYTD(SUM(Sales[Amount]), DimDate[Date]) accumulates sales from January 1 of the current year through the last date in the current filter context. It automatically adjusts when the month slicer changes, making it the most concise YTD implementation."
     },
-    "daxExpression": "YTD Sales = TOTALYTD(SUM(Sales[Amount]), DimDate[Date])\n\n-- Accumulates from January 1 of the year in the current filter context\n-- to the last visible date. Resets on January 1 of each new year.",
+    "daxExpression": "YTD Sales = [function_name](SUM(Sales[Amount]), DimDate[Date])\n\n-- Accumulates from January 1 of the year in the current filter context\n-- to the last visible date. Resets on January 1 of each new year.",
     "expectedOutput": {
       "label": "Year-to-date accumulation (resets Jan 1)",
       "columns": [
@@ -8442,7 +8442,7 @@
       "2": "Correct. DATESYTD(DimDate[Date]) returns a table of dates starting from January 1 of the current year through the last date in the current filter context. This is exactly what is needed to provide a year-to-date accumulation for CALCULATE.",
       "3": "SAMEPERIODLASTYEAR(DimDate[Date]) returns the equivalent date range from the prior year. It shifts the current selection back by one year and does not accumulate dates from the start of the current year."
     },
-    "daxExpression": "-- DATESYTD returns a table of dates from Jan 1 to the last visible date\nYTD Sales =\n    CALCULATE(\n        SUM(Sales[Amount]),\n        DATESYTD(DimDate[Date])\n    )\n\n-- Equivalent to:\nYTD Sales = TOTALYTD(SUM(Sales[Amount]), DimDate[Date])",
+    "daxExpression": "-- [function_name] returns a table of dates from Jan 1 to the last visible date\nYTD Sales =\n    CALCULATE(\n        SUM(Sales[Amount]),\n        [function_name](DimDate[Date])\n    )\n\n-- Equivalent to:\nYTD Sales = TOTALYTD(SUM(Sales[Amount]), DimDate[Date])",
     "microsoftReasoning": {
       "whyItWins": "DATESYTD(DimDate[Date]) returns the set of dates from January 1 of the current year through the last selected date in the filter context. Used as the filter argument inside CALCULATE, it provides the date range needed for a year-to-date calculation — and updates automatically when the date slicer changes.",
       "whyOthersLose": {
@@ -8634,7 +8634,7 @@
       "2": "SELECTEDVALUE(Products[Category]) returns a scalar (single text value), not a table. It cannot be used as the data source for a slicer.",
       "3": "VALUES(Products[Category]) includes the blank row introduced by unmatched foreign key values. Using it would cause a blank entry to appear in the slicer, which is exactly the problem to be avoided here."
     },
-    "daxExpression": "-- DISTINCT returns unique values, excluding the blank row\n-- Used here for a disconnected slicer table\nCategory Slicer = DISTINCT(Products[Category])\n\n-- Returns only actual category names (no blank)\n-- Safe to use as a slicer disconnected from the main model"
+    "daxExpression": "-- [function_name] returns unique values, excluding the blank row\n-- Used here for a disconnected slicer table\nCategory Slicer = [function_name](Products[Category])\n\n-- Returns only actual category names (no blank)\n-- Safe to use as a slicer disconnected from the main model"
   },
   {
     "id": 135,
@@ -8672,7 +8672,7 @@
       "2": "Correct. RELATEDTABLE(Orders) traverses the one-to-many relationship from Customers to Orders, returning all Order rows related to the current customer. COUNTROWS then counts those rows to give the order count per customer.",
       "3": "RELATED traverses from the many side to the one side of a relationship — from fact to dimension. In a Customers calculated column, you would need to go the other direction (one to many), which requires RELATEDTABLE, not RELATED."
     },
-    "daxExpression": "-- RELATEDTABLE traverses the relationship to the \"many\" side\nOrder Count = COUNTROWS(RELATEDTABLE(Orders))\n\n-- This calculated column is placed in the Customers (one) table.\n-- For each customer row, RELATEDTABLE(Orders) returns all their orders.\n-- COUNTROWS counts how many.",
+    "daxExpression": "-- RELATEDTABLE traverses the relationship to the \"many\" side\nOrder Count = [function_name](RELATEDTABLE(Orders))\n\n-- This calculated column is placed in the Customers (one) table.\n-- For each customer row, RELATEDTABLE(Orders) returns all their orders.\n-- [function_name] counts how many.",
     "visualContext": {
       "relationshipDiagram": {
         "tables": [
@@ -8816,7 +8816,7 @@
       "2": "DATESYTD(DimDate[Date]) returns a year-to-date cumulative range from January 1 of the current year. It does not shift to the prior year.",
       "3": "TOTALYTD(SUM(Sales[Amount]), DimDate[Date]) is a complete measure that returns the year-to-date cumulative total for the current year. It does not return a prior-year comparison."
     },
-    "daxExpression": "Sales Prior Year =\n    CALCULATE([Total Sales], SAMEPERIODLASTYEAR(DimDate[Date]))\n\n-- Shifts the date filter back exactly 12 months.\n-- If the visual shows March 2024 → SAMEPERIODLASTYEAR returns March 2023.\n-- Preserves the granularity of the current period.",
+    "daxExpression": "Sales Prior Year =\n    CALCULATE([Total Sales], [function_name](DimDate[Date]))\n\n-- Shifts the date filter back exactly 12 months.\n-- If the visual shows March 2024 → [function_name] returns March 2023.\n-- Preserves the granularity of the current period.",
     "expectedOutput": {
       "label": "SAMEPERIODLASTYEAR — same period, prior year",
       "columns": [
@@ -9795,7 +9795,7 @@
       "2": "ALL(Products[Category]) removes all filters on the Category column and returns every Category value in the column regardless of the current filter context. It is used inside CALCULATE to remove filters, not to return currently visible values.",
       "3": "Correct. VALUES() returns a single-column table of unique values currently visible in the filter context. It includes a blank row when referential integrity violations exist. COUNTROWS(VALUES(Products[Category])) counts the visible distinct categories."
     },
-    "daxExpression": "Category Count = COUNTROWS(VALUES(Products[Category]))\n\n-- VALUES(Products[Category]) returns a single-column table\n-- of distinct Category values currently visible in the filter context.\n-- COUNTROWS counts those visible distinct values."
+    "daxExpression": "Category Count = COUNTROWS([function_name](Products[Category]))\n\n-- [function_name](Products[Category]) returns a single-column table\n-- of distinct Category values currently visible in the filter context.\n-- COUNTROWS counts those visible distinct values."
   },
   {
     "id": 156,
@@ -9832,7 +9832,7 @@
       "2": "VALUES() returns a table of currently visible column values and can be passed as a filter argument in CALCULATE, but it does not prevent filter replacement — it simply passes the current column values as a new filter constraint. KEEPFILTERS() is the explicit modifier designed to INTERSECT (merge) a new filter with the existing context rather than replacing it.",
       "3": "ALL() removes all active filters on a column or table, returning every value regardless of current context. It expands the filter context rather than merging or intersecting with existing slicer selections — the opposite of what is required."
     },
-    "daxExpression": "-- KEEPFILTERS() merges (intersects) the new filter with existing slicer context\n-- instead of replacing it, preserving the user's current selections\nRevenue Filtered =\n    CALCULATE(\n        SUM(Sales[Amount]),\n        KEEPFILTERS(Sales[Region] = \"East\")  -- merges with slicer\n    )\n\n-- Without KEEPFILTERS, the Region filter would REPLACE any existing slicer\n-- With KEEPFILTERS, it INTERSECTS — only rows matching both the slicer AND East are returned"
+    "daxExpression": "-- [function_name]() merges (intersects) the new filter with existing slicer context\n-- instead of replacing it, preserving the user's current selections\nRevenue Filtered =\n    CALCULATE(\n        SUM(Sales[Amount]),\n        [function_name](Sales[Region] = \"East\")  -- merges with slicer\n    )\n\n-- Without [function_name], the Region filter would REPLACE any existing slicer\n-- With [function_name], it INTERSECTS — only rows matching both the slicer AND East are returned"
   },
   {
     "id": 157,
@@ -18011,7 +18011,7 @@
       "RANK.EQUAL is not a DAX function — the correct name is RANK.EQ.",
       "RANK.SAME is not a DAX function."
     ],
-    "daxExpression": "-- RANK.EQ — equivalent to Excel's RANK.EQ\n-- Returns the rank of a value in a column (handles ties by giving same rank)\nSalaryRank = RANK.EQ(Payroll[Salary], Payroll[Salary])\n\n-- Note: In modern DAX, RANKX is the more common function for measures.\n-- RANK.EQ is available for calculated columns only.",
+    "daxExpression": "-- A DAX ranking function assigns each row a position based on a value column\n-- When multiple rows share the same value, they all receive the same rank\nSalaryRank = [function_name](Payroll[Salary], Payroll[Salary])\n\n-- Note: In modern DAX, RANKX is the more common function for measures.\n-- The function being tested here is available for calculated columns only.",
     "sampleData": {
       "tables": [
         {
@@ -18019,7 +18019,7 @@
           "columns": [
             "EmpID",
             "Salary",
-            "RANK.EQ (ascending)"
+            "Rank (ascending)"
           ],
           "rows": [
             [
@@ -18385,7 +18385,7 @@
       "ROUND([Salary], 100) would attempt to round to 100 decimal places, not the nearest 100.",
       "INT does not take two arguments — it simply truncates to integer."
     ],
-    "daxExpression": "-- Round to nearest $100 using negative decimal places\nROUND([Salary], -2)    -- -2 means round to hundreds\n\n-- OR using MROUND:\nMROUND([Salary], 100)  -- round to nearest multiple of 100\n\n-- Examples:\n-- ROUND(4750, -2)  = 4800\n-- ROUND(4249, -2)  = 4200\n-- MROUND(4750, 100) = 4800",
+    "daxExpression": "-- Round to nearest $100 using negative decimal places\n[function_name]([Salary], -2)    -- -2 means round to hundreds\n\n-- OR using MROUND:\nMROUND([Salary], 100)  -- round to nearest multiple of 100\n\n-- Examples:\n-- [function_name](4750, -2)  = 4800\n-- [function_name](4249, -2)  = 4200\n-- MROUND(4750, 100) = 4800",
     "expectedOutput": {
       "label": "ROUND vs MROUND for rounding to nearest 100",
       "columns": [
@@ -19439,7 +19439,7 @@
       "Correct. CALENDAR(start_date, end_date) creates a date table with the specified range.",
       "DATES is not a DAX function for creating a date table."
     ],
-    "daxExpression": "-- CALENDAR creates a date table with a specified start and end date\nDate Table = CALENDAR(DATE(2020, 1, 1), DATE(2025, 12, 31))\n\n-- Produces one row per date from Jan 1 2020 through Dec 31 2025\n-- Columns: [Date]\n-- Alternative: CALENDARAUTO() — automatically derives dates from the model",
+    "daxExpression": "-- [function_name] creates a date table with a specified start and end date\nDate Table = [function_name](DATE(2020, 1, 1), DATE(2025, 12, 31))\n\n-- Produces one row per date from Jan 1 2020 through Dec 31 2025\n-- Columns: [Date]\n-- Alternative: [function_name_auto]() — automatically derives dates from the model",
     "expectedOutput": {
       "label": "CALENDAR function output (first 4 rows)",
       "columns": [
@@ -19496,7 +19496,7 @@
       "INTERSECT returns rows common to two tables — closer to a filtered intersection, not a column join.",
       "Correct. NATURALINNERJOIN combines columns from two tables based on matching column names, like an inner merge."
     ],
-    "daxExpression": "-- DAX equivalent of Power Query Merge (inner join by common columns)\nResult = NATURALINNERJOIN(Employees, Salaries)\n\n-- Requires both tables to have columns with the same name and data type\n-- Acts as an inner join — only rows with matching keys in BOTH tables appear\n-- In PQ: Merge Queries (inner join) is the equivalent UI operation",
+    "daxExpression": "-- DAX equivalent of Power Query Merge (inner join by common columns)\nResult = [function_name](Employees, Salaries)\n\n-- Requires both tables to have columns with the same name and data type\n-- Acts as an inner join — only rows with matching keys in BOTH tables appear\n-- In PQ: Merge Queries (inner join) is the equivalent UI operation",
     "sampleData": {
       "tables": [
         {
