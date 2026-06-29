@@ -101,7 +101,12 @@ export function getPoolCoverage(questions) {
 }
 
 // Per-track pool (without triplication — just domain + exclusive-tag filtering).
-export function getTrackPool(allQuestions, track) {
+// For source-filtered tracks, pass the source pool directly via msQuestions param.
+export function getTrackPool(allQuestions, track, msQuestions) {
+  if (track.sourceFilter === 'microsoft_practice' && msQuestions) {
+    return msQuestions
+  }
+
   const domains = Object.keys(track.domainWeights)
   let pool = allQuestions.filter(q => domains.includes(q.domain))
   if (track.tagFilter && track.tagExclusive) {

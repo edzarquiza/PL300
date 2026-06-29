@@ -1,0 +1,3196 @@
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 1 of 50
+
+You plan to create a report in Power BI Desktop.
+
+You need to create a visualization to display a running total. The solution must meet the following requirements:
+
+The initial and the final value columns must start on the horizontal axis.
+The intermediate values must be floating columns.
+Which type of visualization should you use?
+
+Select only one answer.
+
+combo
+
+
+funnel
+
+
+scatter
+
+
+waterfall
+
+AI
+
+
+
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 2 of 50
+
+You plan to create a report in Power BI Desktop.
+
+You need to identify the type of visualization that displays data as a set of nested rectangles.
+
+Which visualization should you use?
+
+Select only one answer.
+
+bar chart
+
+
+column chart
+
+
+slicer
+
+
+treemap
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 3 of 50
+
+You plan to create a report in Power BI Desktop that will display sales opportunities by five sales stages, including lead, prospect, qualified, committed, and transacted.
+
+You need to identify the type of visualization that will display a linear process with sequentially connected stages, with one stage transitioning to the next.
+
+Which visualization should you use?
+
+Select only one answer.
+
+funnel
+
+
+slicer
+
+
+treemap
+
+
+waterfall
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 3 of 50
+
+You plan to create a report in Power BI Desktop that will display sales opportunities by five sales stages, including lead, prospect, qualified, committed, and transacted.
+
+You need to identify the type of visualization that will display a linear process with sequentially connected stages, with one stage transitioning to the next.
+
+Which visualization should you use?
+
+Select only one answer.
+
+funnel
+
+This answer is correct.
+
+slicer
+
+
+treemap
+
+
+waterfall
+
+A funnel visualization displays a linear process with sequentially connected stages, with one stage transitioning to the next. A slicer visualization is available in different formats, including list, drop-down, and buttons, but not sequentially connected stages, with one stage transitioning to the next. A treemap visualization displays data as a set of nested rectangles. A waterfall visualization displays a running total as values are added or subtracted.
+
+Design Power BI reports - Training | Microsoft Learn
+
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 4 of 50
+
+You need to create a custom Python visual by using Power BI Desktop.
+
+What do you need to do first?
+
+Select only one answer.
+
+Configure global Python scripting options in Power BI Desktop.
+
+
+Enable preview features in Power BI Desktop.
+
+
+Enable the script visuals option in the Visualization pane of Power BI Desktop.
+
+
+Install Python on your computer.
+
+This answer is correct.
+To create a Python visual by using Power BI Desktop, you first need to install Python on your computer. Once Python is installed, you may need configure the global Python scripting options in Power BI Desktop. Enabling the script visuals option in the Visualization pane of Power BI Desktop is done once Python is installed. Creating a custom Python visual by using Power BI Desktop has no dependency on enabling preview features.
+
+Design Power BI reports - Training | Microsoft Learn
+
+Question 5 of 50
+
+You are editing a report in Power BI Desktop.
+
+You need to adjust the behavior of the report by editing interactions.
+
+Which two types of interaction behavior can you change between visuals? Each correct answer presents a complete solution.
+
+Select all answers that apply.
+
+drillthrough
+
+
+expand
+
+
+filter
+
+This answer is correct.
+
+highlight
+
+This answer is correct.
+A filter will show you the filtered data in this visual. Highlight is the default interaction between visuals. It shows you both the unfiltered and filtered values in the visual, for comparison purposes. Drillthrough is a page navigation experience that takes you from one page to another plus applies a set of filters to page navigated to. Expand is a way to navigate down a level using the hierarchy controls.
+
+Use advanced interactions and drill through - Training | Microsoft Learn
+
+Design Power BI reports - Training | Microsoft Learn
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 6 of 50
+
+You plan to create a report in Power BI Desktop that will display the relationship between the number of orders and the number of orders shipped by product category.
+
+You need to identify the visual that will clearly identify outliers in the data set by displaying them away from the bulk of data.
+
+Which visual should you use?
+
+Select only one answer.
+
+card
+
+
+gauge
+
+
+scatter
+
+This answer is correct.
+
+treemap
+
+A scatter visual displays a relationship between values associated with two axes: one set of numerical data along a horizontal axis and another set of numerical values along a vertical axis. It is particularly suitable for identifying outliers because it displays them away from the bulk of data. A card visual displays a single data point. A treemap visual displays data as a set of nested rectangles. A gauge visual displays a circular arc including a single value that measures progress toward a goal or target.
+
+Identify outliers with Power BI visuals - Training | Microsoft Learn
+
+Question 7 of 50
+
+You need to create a report in Power BI Desktop that will display the sales data of your company such that customers of a similar age will be grouped into clusters.
+
+Which visual should you add to the report?
+
+Select only one answer.
+
+card
+
+
+gauge
+
+
+scatter
+
+This answer is correct.
+
+treemap
+
+This answer is incorrect.
+Creating a scatter visual is the first step of applying the clustering technique that groups data into clusters. Card, gauge, and treemap visuals do not support clustering.
+
+Apply clustering techniques - Training | Microsoft Learn
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 8 of 50
+
+You implement the Q&A feature in a report, so users can get answers to their questions on their own.
+
+You need to improve your Q&A search capabilities for end-users.
+
+Which two configurations can you add? Each correct answer presents a complete solution.
+
+Select all answers that apply.
+
+Add a linguistic schema to the dataset.
+
+This answer is correct.
+
+Add synonyms to model fields.
+
+This answer is correct.
+
+Configure the dataset as a composite model.
+
+
+Organize the dataset columns and measures into logical folders in the Fields pane.
+
+This answer is incorrect.
+Adding synonyms to model fields will help users search for them. For example, you can give a synonym of (Actuals) for the (Sales) measure. A linguistic schema describes terms and phrases that Q&A should understand for objects within a dataset, including parts of speech, synonyms, and phrasings that relate to that dataset. Composite models are not supported by Q&A today. Organizing fields by display folders will not impact Q&A search capabilities.
+
+Perform advanced analytics in Power BI - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 9 of 50
+
+You are using Power BI Desktop to edit a stacked column chart that displays gross sales data with a date hierarchy that contains year, quarter, month, and day.
+
+You need to prevent users from viewing the hierarchy based on the year.
+
+What should you do?
+
+Select only one answer.
+
+In the Filters pane, add a filter based on the quarter, month, and day.
+
+
+In the Filters pane, add a filter based on the year.
+
+
+In the Format pane, modify the Maximum Range setting.
+
+
+In the Visualization pane, remove the year field from the date hierarchy fields in the X-axis.
+
+This answer is correct.
+To prevent users from viewing the hierarchy based on the year, you remove just the year from the date hierarchy fields in the x-axis in the Visualization pane. The quarter, month, and day will remain populated and usable. Modifying the visual Range settings in the Format pane would affect the range of values displayed in the visual. Adding a filter based on the year in the Filters pane would filter the values displayed in the visual, not remove a drilldown level. Adding a filter based on the quarter, month, and day in the Filters pane would filter the values displayed in the visual but would not prevent users from viewing the hierarchy based on the year.
+
+Enhance Power BI report designs for the user experience - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 10 of 50
+
+You plan to build a Power BI report and apply conditional formatting to the columns used by a visual.
+
+Which two visuals support conditional formatting functionality for the report? Each correct answer presents a complete solution.
+
+Select all answers that apply.
+
+gauge
+
+
+matrix
+
+This answer is correct.
+
+scatter chart
+
+
+table
+
+This answer is correct.
+
+treemap
+
+Matrix and table visuals support conditional formatting. Gauge chart, scatter chart, and treemap do not support conditional formatting out of the box when using column formatting.
+
+Enhance Power BI report designs for the user experience - Training | Microsoft Learn
+Apply Conditional Table Formatting in Power BI - Power BI | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 11 of 50
+
+You have a bar chart and column chart visual on a report page. Selecting any column from the bar chart visual filters the column chart data to less than 1% of its unfiltered value.
+
+Which type of visual interaction should be used when the bar chart is filtering the column chart to ensure that you can easily see the data?
+
+Select only one answer.
+
+expand
+
+
+drillthrough
+
+
+filter
+
+This answer is correct.
+
+highlight
+
+This answer is incorrect.
+Filter will show you the filtered data in this visual. So even when showing filtered data that is less than 1% of the unfiltered value, it will still display well in the column visual. Highlight shows you both the unfiltered and filtered values in the visual, for comparison purposes. Drillthrough is a page navigation experience that takes you from one page to another plus applies a set of filters to page navigated to. Expand is a way to navigate down a level using the hierarchy controls.
+
+Enhance Power BI report designs for the user experience - Training | Microsoft Learn
+
+Change how visuals interact in a report - Power BI | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 12 of 50
+
+You have a visual that is being cross-highlighted.
+
+By default, what data will be displayed in a report tooltip?
+
+Select only one answer.
+
+a report page tooltip with cross-highlighted data
+
+This answer is incorrect.
+
+both the un-filtered and filtered (cross-highlighted) data
+
+
+the filtered (cross-highlighted) data
+
+This answer is correct.
+
+the un-filtered (non-cross-highlighted) total data
+
+By default, report tooltips will apply the filter from the cross-highlighted data into the tooltip. Report page tooltips need to be manually created and are not assigned to a visual by default.
+
+Create report tooltip pages in Power BI - Power BI | Microsoft Learn
+
+Enhance Power BI report designs for the user experience - Training | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 13 of 50
+
+You have implemented role-based security that restricts access to a Power BI Desktop semantic model for users who are assigned the role named Salespeople.
+
+You need to validate that the implementation works.
+
+What should you do?
+
+Select only one answer.
+
+In Power Query Editor, add a conditional column to the Salesperson table.
+
+
+In the Report view, activate the View as feature.
+
+This answer is correct.
+
+In the Report view, add a DAX expression filter to the Salesperson table.
+
+
+In the Report view, create a what-if parameter.
+
+Activating the View as feature will allow you test the row-level security as someone with the Salesperson role. A what-if parameter is intended for visualization and analytics of results of changing a value of a variable, not validating row-level security. Adding a DAX expression filter to the Salesperson table is part of implementing row-level security, which is already completed. A conditional column is computed from other columns or values.
+
+Configure row-level security with the static method - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 14 of 50
+
+You are evaluating whether you need to create a dashboard in Power BI.
+
+In which scenario do you need a dashboard instead of a report in Power BI?
+
+Select only one answer.
+
+You need to add filters.
+
+
+You need to add slicers.
+
+
+You need to display visuals on multiple pages.
+
+
+You need to display visuals that use different semantic models.
+
+This answer is correct.
+The ability to combine data from multiple semantic models is one of the features that is available in dashboards but not supported in reports. Dashboards do not include the Filter, Visualization, and Fields panes that are available in Power BI Desktop when working with dashboards. Dashboards, unlike reports, contain only a single page.
+
+Introduction to dashboards - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 15 of 50
+
+You have a Power BI dashboard that is comprised of pinned visuals that are taken from a variety of reports.
+
+Which three objects from a report page can be pinned to the dashboard?
+
+Select all answers that apply.
+
+Custom visual
+
+This answer is correct.
+
+Filter
+
+This answer is incorrect.
+
+Image
+
+This answer is correct.
+
+Ribbon chart
+
+This answer is correct.
+
+Slicer
+
+This answer is incorrect.
+Individual filters and slicers cannot be pinned to a dashboard. This is because dashboards are designed to be an “at-a-glance” perspective. Reports are built to be filtered and interactive. Custom visuals, ribbon charts, and images can be pinned from a report page.
+
+Introduction to dashboards - Training | Microsoft Learn
+
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 16 of 50
+
+You plan to create a Power BI workspace.
+
+You need to ensure that you will be able to configure a Microsoft 365 group whose SharePoint Online document library is available to workspace users once the workspace is created.
+
+Which setting should you configure when creating the workspace?
+
+Select only one answer.
+
+Allow contributors to update the app
+
+
+Develop a template app
+
+
+License mode
+
+
+Workspace OneDrive
+
+This answer is correct.
+The Workspace OneDrive setting allows you to configure a Microsoft 365 group whose SharePoint Online document library is available to workspace users once the workspace is created. The Allow contributors to update the app for this workspace setting is meant to provide additional permissions for workspace contributors. The Develop a template app setting allows you to set up a template app workspace. The license mode allows you to choose between Pro, Premium per user, Premium per capacity, and Embedded licensing.
+
+Create DAX calculations in semantic models - Training | Microsoft Learn
+
+Create a workspace - Power BI | Microsoft Learn
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 17 of 50
+
+You have a collection of semantic models and reports.
+
+You need to share the semantic models and reports together. This solution must NOT send any email notifications to internal users after sharing.
+
+What should you create in the Power BI Service?
+
+Select only one answer.
+
+a deployment pipeline
+
+
+a workspace
+
+
+an app
+
+This answer is correct.
+
+metrics
+
+Workspace apps can be installed automatically for any user in an organization, and without requiring notifications of installation. Deployment pipelines are used for moving artifacts between test, development, and production environments. Metrics are where you can create goals based off existing semantic models. You can add members to a workspace, but they receive a notification that they’ve been added to the workspace.
+
+Create DAX calculations in semantic models - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 18 of 50
+
+You have a Power BI Premium per user workspace.
+
+What is the maximum number of refreshes that can be scheduled each day?
+
+Select only one answer.
+
+1
+
+This answer is incorrect.
+
+8
+
+
+16
+
+
+48
+
+This answer is correct.
+In a Premium per user workspace the limit is 48 refreshes per day for a dataset.
+
+Configure a dataset scheduled refresh - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 19 of 50
+
+You have several on-premises Microsoft SQL Server databases.
+
+You need to provide Power BI Service users access to the data sources without exposing the database servers directly to the internet.
+
+The solution must minimize the configurations that must be performed by each user.
+
+What should you deploy?
+
+Select only one answer.
+
+a virtual network data gateway
+
+
+an ExpressRoute connection
+
+
+an on-premises data gateway
+
+This answer is correct.
+
+an on-premises data gateway (personal mode)
+
+An on-premises gateway is designed to allow multiple users to access multiple data sources. An on-premises data gateway only allows one user to access multiple data sources. A virtual network data gateway is designed to allow multiple users to access multiple online data sources. However, it isn’t installed locally and only works with data sources secured by virtual networks.
+
+Use a Power BI gateway to connect to on-premises data sources - Training | Microsoft Learn
+
+On-premises data gateway - Power BI | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 20 of 50
+
+You use Microsoft Power BI to analyze sales data stored in a database. Each user should only see their own sales records.
+
+You need to configure row-level security (RLS) in Microsoft Power BI to restrict each user's access to only their own sales data.
+
+What configuration should you implement?
+
+Select only one answer.
+
+Use a dynamic DAX filter for each user's email address.
+
+This answer is correct.
+
+Create multiple roles with static filters for each user's email address.
+
+
+Create separate Microsoft Power BI reports for each user.
+
+
+Use a DAX filter to restrict access to the entire table.
+
+Configuring a single role with a DAX filter using the USERPRINCIPALNAME function ensures that data is dynamically filtered based on the logged-in user's email address, meeting the requirement for personalized data access. Static filters for each user are inefficient and require ongoing maintenance, making them unsuitable. Creating separate reports for each user is impractical and contradicts the purpose of RLS, which is to manage access dynamically within a single report. Restricting access to the entire table fails to meet the requirement of allowing users to view only their own data, as it lacks the necessary granularity.
+
+Configure row-level security with the dynamic method
+Get started with Copilot in Power BI
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 21 of 50
+
+Your company has multiple semantic models in Power BI workspaces, and users are confused about which model to use for reports.
+
+You want to indicate which semantic models are reliable.
+
+What action should you take?
+
+Select only one answer.
+
+Certify semantic models.
+
+This answer is correct.
+
+Promote semantic models.
+
+
+Remove unreliable models.
+
+
+Share links for each semantic model.
+
+Certifying semantic models ensures that users can easily identify and rely on authoritative models for their reports. Sharing links for each model does not address the need to differentiate between reliable and unreliable models. Promoting semantic models without distinguishing their reliability could lead to further confusion. Removing unreliable models risks losing valuable data and does not align with best practices for content management.
+
+Manage and promote semantic models
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 22 of 50
+
+Your organization uses Microsoft Power BI to analyze sales data. There is a report on regional sales performance insights in a workspace with multiple reports.
+
+You need to ensure only Sales team members have access to the sales performance report data.
+
+What action should you take?
+
+Select only one answer.
+
+Apply sensitivity labels.
+
+
+Share the report pbix file through OneDrive.
+
+
+Set up row-level security for Sales team members.
+
+This answer is correct.
+
+Share a report link with Sales team members.
+
+Setting up row-level security ensures that only Sales team members access the report by restricting data access based on user roles. Sharing a report link does not address the need for controlled access and allows unauthorized access. Sharing the report pbix file doesn't prevent it from being shared with unauthorized people, and is not a good sharing practice in general. Granting access to all users and relying on individual permissions does not provide sufficient control and risks unauthorized access.
+
+Configure row-level security with the static method
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 23 of 50
+
+You plan to get data from flat files for a Power BI semantic model.
+
+You need to select a location to store the files.
+
+Which location requires an on-premises data gateway?
+
+Select only one answer.
+
+OneDrive for Business
+
+
+Personal OneDrive account
+
+
+SharePoint Online Team Sites
+
+
+Shared folder on a local network
+
+This answer is correct.
+The shared folder on a local network will require a gateway as it is not available to the internet. SharePoint Online, OneDrive, and OneDrive for Business all can be refreshed as cloud data sources without a gateway.
+
+Get data from files - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 24 of 50
+
+You plan to get data for a Power BI semantic model from flat files.
+
+You need to select a location for the files. The location must provide the ability to configure scheduled refresh for the semantic model by using Microsoft 365 credentials.  
+
+Which two location types should you recommend? Each correct answer presents a complete solution.
+
+Select all answers that apply.
+
+local file
+
+
+OneDrive for Business
+
+This answer is correct.
+
+Personal OneDrive account
+
+
+SharePoint – Team Sites
+
+This answer is correct.
+A personal OneDrive account provides the ability to automatically synchronize flat files residing in a user's OneDrive and Power BI datasets. Since it relies on OneDrive access, it requires the user's credentials of the corresponding Microsoft account. The OneDrive - Business option uses Microsoft Entra credentials. The SharePoint – Team Sites option uses the same Microsoft Entra credentials as the ones used to access SharePoint Online. For the local file option, no additional credentials are required to access them.
+
+Get data from files - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 25 of 50
+
+You need to make changes to your data sources.
+
+Which three changes are supported by the Data source settings in the Power Query Editor? Each correct answer presents a complete solution.
+
+Select all answers that apply.
+
+adding a column
+
+This answer is incorrect.
+
+clearing permissions
+
+This answer is correct.
+
+editing permissions
+
+This answer is correct.
+
+modifying the file path
+
+This answer is correct.
+
+renaming a column
+
+This answer is incorrect.
+The Data Source Settings in the Power Query interface supports editing permissions, clearing permissions, and modifying the path of the data source file. Any structural changes to a file, such as adding, removing, or renaming columns are not supported by the Data Source Settings in the Power Query interface.
+
+Get data from files - Training | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 26 of 50
+
+You plan to add data to Power BI Desktop from a new data source. You are evaluating whether you should use the DirectQuery storage mode or the Import storage mode.
+
+What are two benefits of using DirectQuery instead of Import? Each correct answer presents a complete solution.
+
+Select all answers that apply.
+
+full support for the Q&A Power BI service
+
+
+full support for the Quick Insights Power BI service
+
+
+minimized local disk space usage
+
+This answer is correct.
+
+No need for data refresh
+
+This answer is correct.
+DirectQuery minimizes local disk space use and eliminates the need for data refresh. DirectQuery is not fully supported with the Q&A and Quick Insights Power BI services. Both the DirectQuery and Import storage modes support per table configuration.
+
+Select a storage mode - Training | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 27 of 50
+
+You plan to add data to Power BI Desktop from a new data source. You are evaluating whether you should use the DirectQuery storage mode or the Import storage mode.
+
+What are two benefits of using Import instead of DirectQuery? Each correct answer presents a complete solution.
+
+Select all answers that apply.
+
+full support for the Q&A Power BI service
+
+This answer is correct.
+
+full support for the Quick Insights Power BI service
+
+This answer is correct.
+
+minimized local disk space usage
+
+This answer is incorrect.
+
+no need for data refresh
+
+This answer is incorrect.
+The Import storage mode is fully supported with the Q&A and Quick Insights Power BI services. The Import storage, unlike DirectQuery, does not minimize local disk space usage and does not eliminate the need for a data refresh. Both the DirectQuery and Import storage modes support per table configuration
+
+Select a storage mode - Training | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 28 of 50
+
+You have created a Power BI semantic model and need to create multiple reports.
+
+What is a benefit of using a Power BI semantic model as a data source for multiple reports compared to each report having a separate semantic model?
+
+Select only one answer.
+
+It increases the number of scheduled refreshes that can be configured for the Power BI semantic model.
+
+
+It increases the speed of the reports and visuals connected to the Power BI semantic models.
+
+
+It prevents sensitive data from being shared with report consumers.
+
+
+It reduces the number of semantic models, refreshes, and storage requirements in the Power BI service.
+
+This answer is correct.
+When multiple reports use the same Power BI semantic model vs each having their own import model, you reduce the number of datasets that are needed to be published to the Power BI service. Fewer datasets mean fewer refreshes, less storage space requirements, and less overhead for admins.
+
+Get data from Azure Analysis Services - Training | Microsoft Learn
+
+Connect to datasets in the Power BI service from Power BI Desktop - Power BI | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 29 of 50
+
+When importing data from an Excel workbook into Power BI, you receive the error message: “We couldn't find any data formatted as a table.”
+
+What should you do to resolve the error?
+
+Select only one answer.
+
+In the Excel workbook, select the data you want to import, select the Data Validation button, and save the change.
+
+
+In the Excel workbook, select the data you want to import, create a table, and save the change.
+
+This answer is correct.
+
+In Power BI, add a template app.
+
+
+In Power BI, add an organizational app.
+
+The error message indicates that the Excel workbook does not contain a table. To create it, in the Excel workbook, you need to select the data you want to import, press Ctrl+T or choose the Table button, click OK and save the change. Using the Data Validation button in Excel does not create a table. Organizational and template apps provide a way to implement functionality within Power BI, but, in this case, the issue is caused by an absence of a table in the Excel workbook, so installing an app would have no effect on resolving the issue.
+
+Resolve data import errors - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 30 of 50
+
+From Power BI Desktop, you create a data source by importing an Excel file.
+
+You plan to identify data anomalies within the data source.
+
+Which interface should you use to display the column quality feature and column distribution graph?
+
+Select only one answer.
+
+Advanced Editor
+
+
+Power Query Editor
+
+This answer is correct.
+
+the Data view
+
+
+the Model view
+
+Power Query Editor provides the ability to display the column distribution and column quality graphs. Data view provides access to data within a dataset. Model view provides access to the data model of a dataset. Advanced Editor of Power Query Editor provides the ability to work with the M code used for shaping data in Power Query Editor.
+
+Profile data in Power BI - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 31 of 50
+
+You are analyzing query data by using Power Query Editor.
+
+You need to ensure that the Column statistics are based on an analysis of the entire dataset.
+
+What should you do?
+
+Select only one answer.
+
+Recreate the storage mode to be DirectQuery.
+
+
+From the status bar, change profiling status to entire dataset.
+
+This answer is correct.
+
+In Power Query Editor, enable column profiling from the View ribbon.
+
+This answer is incorrect.
+
+Load the data into the data model.
+
+By default, column profiling is only based on the first 1000 rows of the preview. Changing the column profile status to entire dataset will query the entire dataset for the column profiling information.
+
+Profile data in Power BI - Training | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 32 of 50
+
+You import an Excel file into Power BI Desktop and begin to analyze the data in Power Query Editor.
+
+You need to identify outliers in a text column within the data source.
+
+Which information should you use from Power Query Editor?
+
+Select only one answer.
+
+the min and max values in Column profile
+
+
+the top and bottom entries in Value distribution
+
+This answer is correct.
+
+the value of the Distinct entry in Column statistics
+
+
+the value of the Unique entry in Column statistics
+
+The top and bottom entries in Value distribution identify outliers, which appear, respectively, the greatest and the smallest number of times in that column. The value of the Distinct entry in Column statistics indicates the total count of different values. The value of the Unique entry in Column statistics indicates the total count of different values that appear only once. The min and max values in the Column profile of a text column designate the entries which appear, respectively, first and last in alphabetical order.
+
+Profile data in Power BI - Training | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 33 of 50
+
+Your organization uses Microsoft Power BI to analyze sales data from multiple sources. A report visual displays monthly sales figures grouped by product categories.
+
+You need to ensure all product categories appear in the visual, even if they have no sales data for certain months.
+
+What should you do?
+
+Select only one answer.
+
+Create a calculated column to replace blanks with a default value.
+
+This answer is incorrect.
+
+Enable the option to show items with no data.
+
+This answer is correct.
+
+Exclude blank values from the product category field.
+
+
+Perform a cross join between product category and sales tables.
+
+Enabling the option to show items with no data ensures that all product categories are displayed, fulfilling the requirement to include categories with no sales data. Excluding blank values removes relevant categories, which conflicts with the goal. Creating a calculated column modifies the data model but does not directly impact the visual's display. Performing a cross join generates all possible combinations, which is unnecessary and could lead to performance issues.
+
+Configure a semantic model - Training | Microsoft Learn
+Design reports to highlight values - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 34 of 50
+
+You have an Excel spreadsheet that contains three columns labeled Year, 2021, and 2012. The entries in rows for the first column consists of names of the individual months in the year while the other two columns contain the sales amount for each month for the corresponding year.
+
+You import data from the Excel spreadsheet into Power BI Desktop.
+
+You need to transform the data so it will consist of three columns, with the first one containing month, the second containing year, and the third containing the sales amount for that month and year.
+
+Which transformation should you use first?
+
+Select only one answer.
+
+Pivot
+
+
+Remove Columns
+
+
+Transpose Table
+
+This answer is incorrect.
+
+Unpivot
+
+This answer is correct.
+Selecting Unpivot will allow you to shape the current table into the one with the year, month, and sales amount columns, which will need to be renamed afterwards. Pivot would be applicable in the opposite scenario, in which flat data needs to be reorganized into one containing aggregate values for each unique value in each column. Transposing would switch rows and columns. Removing columns would result in a table with insufficient data to perform unpivot.
+
+Shape the initial data - Training | Microsoft Learn
+
+Unpivot columns - Power Query | Microsoft Learn
+
+You have a query that has a column named Country and columns for each month of sales data. The names of the sales data columns use a format of Month Year, for example January 2022. The month columns contain the Sales Amount values for each month.
+
+You need to reshape the table to have all sales amount values in a single column.
+
+A new column should also be added and contain the relevant month year for each row of data.
+
+What should you do from the Power Query Editor?
+
+Select only one answer.
+
+Select the Country column and then select Pivot Column.
+
+
+Select the Country column and then select Unpivot Other Columns.
+
+This answer is correct.
+
+Select the first sales data column and then select Unpivot Columns.
+
+
+Select Transpose.
+
+Selecting Unpivot Other Columns will unpivot all current and future month/year columns into a new sales data column. Transposing treats rows as columns, and columns as rows. It will not create a single sales data column. Selecting Unpivot Columns in the first sales data column will successfully unpivot these columns into a new single column for sales data, but the other sales month/year columns will not be included in the new sales column. Pivoting the data takes values on rows in a column and turns them into new columns.
+
+Shape the initial data - Training | Microsoft Learn
+
+Unpivot columns - Power Query | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 36 of 50
+
+You have a folder that contains monthly transaction extract files.
+
+Each file has the same columns and is named by year and month.
+
+You need to combine the files into a single data table for reporting.
+
+What should you do?
+
+Select only one answer.
+
+Create a CSV data source for each file and append all the queries.
+
+
+Create a query that uses the Folder connector and add an index column.
+
+
+Query the folder and select Combine & Transform Data.
+
+This answer is correct.
+
+Query the folder and select Transform Data.
+
+Using the Folder connector and selecting Combine & Transform Data automatically detects files with the same structure, applies a consistent transformation, and produces a single consolidated table, which is the recommended and most efficient approach for combining multiple files. Selecting Transform Data only loads the folder metadata without merging file contents, adding an index column does not combine files, and manually creating and appending individual CSV queries introduces unnecessary complexity and maintenance overhead.
+
+Combine files (binaries) in Power BI Desktop
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 37 of 50
+
+Your organization is developing a Power BI report to analyze sales data with order and shipping dates but lacks a date table.
+
+You need to create a date table spanning the sales data range to support time intelligence calculations.
+
+Which three actions should you perform to create a functional date table for time intelligence calculations? Each correct answer presents part of the solution.
+
+Select all answers that apply.
+
+Add year, month, and day columns to the date table.
+
+This answer is correct.
+
+Create a table using DISTINCT on the order date column.
+
+
+Enable Auto date/time.
+
+
+Generate a date table in Power Query.
+
+
+Mark the table as a date table.
+
+This answer is correct.
+
+Use CALENDARAUTO to create a date table.
+
+This answer is correct.
+To create a functional date table for time intelligence calculations, adding year, month, and day columns provides the necessary granularity for filtering and grouping in reports. Marking the table as a date table ensures it is recognized by Power BI for time intelligence functions, enabling the use of DAX calculations. Using CALENDARAUTO generates a date table spanning all dates in the model, ensuring full years are included and simplifying the creation process. Creating a table using DISTINCT on the order date column does not ensure a complete range of dates or meet the requirements for a marked date table, making it unsuitable for the scenario. Generating a date table in Power Query is a valid method but is not part of the solution described in this scenario. Enabling Auto date/time creates implicit date tables, which do not support a unified date table approach and are unsuitable for the scenario.
+
+Configure a semantic model - Training | Microsoft Learn
+Use DAX time intelligence functions - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 38 of 50
+
+You need to prevent hidden date tables from being auto generated by Power BI Desktop for every date or datetime data type column in a dataset.
+
+What two tasks should you perform? Each correct answer presents a complete solution
+
+Select all answers that apply.
+
+Enable Mark as date table for the Calendar table.
+
+This answer is correct.
+
+From the Current File options in Power BI Desktop, disable Auto Date/Time
+
+This answer is correct.
+
+From the Global options in Power BI Desktop, disable Auto Date/Time for new files.
+
+This answer is incorrect.
+
+Set the Data Category to None for all Date and DateTime fields.
+
+Disabling Auto Date/Time for new files from the Current File options will disable all Auto Date/Time tables in this dataset. Enabling Mark as date table for the Calendar table will also disable the auto datetime tables in the dataset. Disabling the Global option Auto Date/Time for new files means that new files will no longer have Auto Date/Time enabled, but the file containing the current dataset will still have it enabled until it is disabled. Changing the data category will not impact the auto date table feature.
+
+Configure a semantic model - Training | Microsoft Learn
+
+Auto date/time in Power BI Desktop - Power BI | Microsoft Learn
+
+Auto date/time guidance in Power BI Desktop - Power BI | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 39 of 50
+
+You have a fact table that contains sales data and the following two date columns:
+
+OrderDate
+ShipDate
+Both columns have a relationship to the Date column in the Calendar table, and DAX measures have been configured to use these relationships for calculations related to order or ship dates.
+
+You need to ensure that by default, the Calendar table does NOT filter the fact table, unless it is using a DAX measure that uses these relationships.
+
+What should you do?
+
+Select only one answer.
+
+Disable Make this relationship active for both relationships.
+
+This answer is correct.
+
+Enable Apply security filter in both directions for both relationships.
+
+
+Enable Make this relationship active for both relationships.
+
+
+Set the cross-filter direction to both for each relationship.
+
+You can have multiple inactive relationships between two tables in Power BI datasets. DAX measures can then use the USERELATIONSHIP function to activate a relationship for calculations. Relationship direction is not required for either the relationships or measures to work in this model setup. Only one active relationship can exist between two tables in a Power BI dataset. Applying a security filter in both directions isn’t required for this model setup.
+
+https://learn.microsoft.com/training/modules/design-model-power-bi/5-data-granularity
+
+Configure a semantic model - Training | Microsoft Learn
+
+Active vs inactive relationship guidance - Power BI | Microsoft Learn
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 40 of 50
+
+You need to create a new hierarchy in Power BI Desktop.
+
+What should you do first?
+
+Select only one answer.
+
+From the Model view, drag-and-drop one column onto another column in the Fields pane.
+
+
+From the Model view, right-click on a column name and select Create hierarchy.
+
+This answer is correct.
+
+From the Report view, drag-and-drop one column onto another column in the Fields pane.
+
+To create a new hierarchy in Power BI Desktop, you must select Create hierarchy from the Model view or Report view. The option to create hierarchies by dragging and dropping was removed as an option in 2021 because too many hierarchies were being accidentally created during development. You cannot drag-and-drop one field onto another to create a new hierarchy. You can only use this method to add additional fields to an already existing hierarchy.
+
+Configure a semantic model - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 41 of 50
+
+You plan to use the calculated table functionality to add a duplicate table in Power BI Desktop.
+
+Which characteristics of the original table will be duplicated?
+
+Select only one answer.
+
+hierarchies only
+
+
+data and hierarchies only
+
+
+data and column formatting only
+
+
+data only
+
+This answer is correct.
+A calculated table only duplicates data. Any model configurations such as column formatting or hierarchies must be recreated if needed.
+
+Create DAX calculations in semantic models - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 42 of 50
+
+In Power BI Desktop, you need to create a measure.
+
+Which two interfaces can you use? Each correct answer presents a complete the solution.
+
+Select all answers that apply.
+
+Table view
+
+This answer is correct.
+
+Page view
+
+This answer is incorrect.
+
+Power Query Editor
+
+
+Report view
+
+This answer is correct.
+The Report view provides the ability to create measures. To create a measure, use the context sensitive menu of the Fields list or the Calculations section of the ribbon. The Table view provides access to data within a dataset and includes the option to create a measure in the Calculations section of the ribbon. Page view and Power Query Editor do not include the option to create a measure.
+
+Use DAX in Power BI Desktop - Training | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 43 of 50
+
+You are creating a report in a Power BI Desktop by using a semantic model that contains sales data.
+
+You need to create a measure that always provides the value of total sales for the year 2022, regardless of which year is selected in any visual in the same report.
+
+Which DAX function should you use in combination with the SUM function to override the context and provide the result?
+
+Select only one answer.
+
+CALCULATE
+
+This answer is correct.
+
+FILTER
+
+
+IGNORE
+
+
+SUMX
+
+The CALCULATE function provides the result of the calculation with the ability to override the context. The IGNORE function modifies the behavior of the SUMMARIZECOLUMNS function by omitting specific expressions from the BLANK/NULL evaluation. The FILTER function returns a table that represents a subset of another table or expression. The SUMX function returns the sum of an expression evaluated for each row in a table.
+
+Use DAX in Power BI Desktop - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 44 of 50
+
+You have a Power BI Desktop data model.
+
+You plan to add new model items created through DAX-generated expressions.
+
+You need to identify which model items Power BI creates by using DAX.
+
+Which two model items should you choose? Each correct answer presents a complete solution.
+
+Select all answers that apply.
+
+calculated table
+
+This answer is correct.
+
+display folder
+
+
+hierarchies
+
+This answer is incorrect.
+
+numeric range parameter
+
+This answer is correct.
+Calculated tables are created directly by writing DAX expressions, making them a primary example of model items generated with DAX. Numeric range parameters (What-If parameters) are also created using DAX because Power BI automatically generates a DAX calculated table and a DAX measure to support the parameter. Hierarchies and display folders, however, are metadata structures created entirely through the model interface and do not rely on DAX. Therefore, the correct answers are the model items that originate from DAX-generated expressions: calculated tables and numeric range parameters.
+
+Use DAX in Power BI Desktop - Training | Microsoft Learn
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 45 of 50
+
+You need to use DAX quick measures to generate results to use in a report.
+
+Which type of DAX quick measure calculations will NOT work against a DirectQuery table?
+
+Select only one answer.
+
+aggregate per category
+
+
+mathematical operations
+
+
+time intelligence
+
+This answer is correct.
+
+X-functions
+
+This answer is incorrect.
+Time intelligence functions have performance implications and are disabled for quick measures against DirectQuery tables. Mathematical operations, aggregate per category, and X-functions are all supported against DirectQuery.
+
+Use DAX in Power BI Desktop - Training | Microsoft Learn
+
+Use quick measures for common and powerful calculations - Power BI | Microsoft Learn
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 46 of 50
+
+You have a Power BI Desktop semantic model that includes a table named Salesperson. The table includes a column named UPN. UPN contains the user principal name of the salesperson’s Microsoft Entra ID account.
+
+You need to ensure that each salesperson will only be able to see the rows in the Salesperson table where the UPN column value matches their User Principal Name.
+
+Which two actions should you perform? Each correct answer presents part of the solution.
+
+Select all answers that apply.
+
+Add a calculated column to the Salesperson table.
+
+
+Add a conditional column to the Salesperson table.
+
+
+Add a DAX expression filter to the Salesperson table.
+
+This answer is correct.
+
+Create a role.
+
+This answer is correct.
+
+Create a what-if parameter.
+
+As part of setting up row-level security, it is necessary to create a role. In addition, it is necessary to add a DAX expression filter to the Salesperson table. This expression checks for a match between the salesperson's User Principal Name attribute and the value in the UPN column. If the two match, the salesperson is allowed to view the content of the corresponding row from the Salesperson table.
+
+Configure row-level security with the dynamic method - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 47 of 50
+
+In Power BI Desktop, you plan to use M-language to define a common date table spanning a period of 10 years.
+
+You need identify the M language function that would allow you to specify that rows in the table should represent consecutive days within the date range you designated. Your solution must minimize administrative effort.
+
+Which syntax should you use?
+
+Select only one answer.
+
+#date
+
+
+#duration
+
+This answer is correct.
+
+List.Combine
+
+
+List.Durations
+
+The #duration function of the M language allows you to specify the datetime values that will be entered into individual rows of a date table. The #date function creates a date value based on the date parameters you specify. The List.Combine() combines multiple lists into one. List.Durations returns a list of count duration values, rather than dates.
+
+Configure a semantic model - Training | Microsoft Learn
+
+Power Query M function reference - PowerQuery M | Microsoft Learn
+
+AI Disclaimer
+Previous Versions
+Blog
+Contribute
+Privacy
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 48 of 50
+
+You plan to optimize the performance of Power BI Desktop queries against a remote data source.
+
+You need to disable the default behavior that automatically applies cross highlighting and filtering of visuals within the same report.
+
+Which option should you configure in Power BI Desktop?
+
+Select only one answer.
+
+the Filters Query reduction settings
+
+
+the Persistent filters of Report settings
+
+
+the Reduce number of queries sent by Query reduction setting
+
+This answer is correct.
+
+the Slicers Query reduction settings
+
+This answer is incorrect.
+The Reduce number of queries sent by Query reduction setting disables the default behavior that automatically applies cross highlighting and filtering of visuals within the same report. The Slicers Query reduction settings allow you to instantly apply slicer changes and add an Apply button to each slicer. The Filters Query reduction settings allow you to instantly apply basic filter changes. The Persistent filters of Report settings allow you to prevent users from saving filters in the Power BI service.
+
+Optimize DirectQuery models with table level storage - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 49 of 50
+
+You have Power BI Desktop.
+
+You need to determine query timings for a report page visual.
+
+Which method should you use?
+
+Select only one answer.
+
+Refresh the data model.
+
+
+Run the Best Practices analyzer in Tabular Editor.
+
+
+Use Session Diagnostics from the Power Query Editor.
+
+
+Use the Performance analyzer.
+
+This answer is correct.
+The Performance analyzer will show the query timings for each object on a report page. Session diagnostics measures Power Query query performance as it relates to refresh times. It is unrelated to measuring DAX performance or report page query timings. The Best Practices analyzer reviews the model for best practices around things like model design, relationships, field naming conventions, and measures. But is unrelated to any query timings for report page visuals.
+
+Review performance of measures, relationships, and visuals - Training | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 50 of 50
+
+You have a Power BI Desktop PBIX file that contains a single page report with multiple visuals.
+
+You plan to use Performance Analyzer to evaluate the performance of the visuals.
+
+You need to eliminate the impact of visual caching during the evaluation.
+
+What should you do first?
+
+Select only one answer.
+
+Add a blank page to the PBIX file.
+
+This answer is correct.
+
+Connect DAX Studio to the data model.
+
+
+Reopen the PBIX file.
+
+
+Start recording.
+
+To eliminate the impact of visual caching during a performance evaluation when using Performance Analyzer to evaluate the visuals, you must first add a blank page to the report, select that page, and then reopen the PBIX file. Connecting DAX Studio to the data model is the first step to clear the data engine cache. Recording should not be started until both the visual cache and the data engine cache are cleared.
+
+Review performance of measures, relationships, and visuals
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 2 of 50
+
+You have the following Power Query M formula that generates a range of dates.
+
+= List.Dates(#date(2020,05,31), 365, #duration(1,0,0,0))
+
+What is the resulting date range?
+
+Select only one answer.
+
+a list of days ending on May 31, 2020 and starting 365 days earlier
+
+
+a list of days starting on May 31, 2020 and ending 365 days later
+
+This answer is correct.
+
+a list of months ending in May 2020 and starting 12 months earlier
+
+
+a list of months starting in May 2020 and ending 12 months later
+
+The #date element designates the starting date, 365 designates the duration counter, and #duration(1,0,0,0) designates the duration interval in days, so this formula results in a listing of days starting on May 31, 2020 and ending 365 days later.
+
+Configure a semantic model - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 3 of 50
+
+You are designing a data model in Power BI.
+
+You need to avoid introducing ambiguity into your data model design.
+
+Which type of cardinality should you avoid?
+
+Select only one answer.
+
+many-to-many
+
+This answer is correct.
+
+many-to-one
+
+
+one-to-many
+
+
+one-to-one
+
+Many-to-many cardinality in Power BI should be avoided due to ambiguity, resulting from the presence of non-unique values. One-to-one cardinality in Power BI should be avoided and, if present, should be eliminated by combining the related tables. However, this type does not introduce ambiguity. One-to-many and many-to-one cardinality are two common cardinality types, used for the relationships between a fact and dimension tables.
+
+Configure a semantic model
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 5 of 50
+
+You have a Power BI model.
+
+You need to assign items to a display folder.
+
+Which three items can be assigned to a display folder? Each correct answer presents part of the solution.
+
+Select all answers that apply.
+
+Calculated column
+
+This answer is correct.
+
+Column
+
+This answer is correct.
+
+Measure
+
+This answer is correct.
+
+Report
+
+
+Table
+
+This answer is incorrect.
+Tables and reports cannot be assigned a display folder. Columns, calculated columns, and measures can be assigned a display folder.
+
+Configure a semantic model - Training | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 7 of 50
+
+You need to develop a quick measure in Power BI Desktop.
+
+Which two elements can you use? Each correct answer presents a complete solution.
+
+Select all answers that apply.
+
+Calculations
+
+This answer is correct.
+
+Conditional columns
+
+
+Data Analysis Expression (DAX) queries
+
+
+Fields
+
+This answer is correct.
+
+Power Query M functions
+
+This answer is incorrect.
+When creating a quick measure in Power BI Desktop, you apply calculations to fields. You do not explicitly create a DAX query, but you choose calculations and fields, which result in automatic generation of a DAX query. Conditional columns are separate from quick measures. Unlike quick measures, they create a value for each row in a table and are stored in the .pbix file. Power Query M functions are not directly accessible from the Quick Measure interface.
+
+Configure a semantic model - Training | Microsoft Learn
+
+Use DAX in Power BI Desktop - Training | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 8 of 50
+
+You have a Power BI Desktop model.
+
+You need to determine when to use implicit and explicit measures.
+
+What is a feature of an implicit measure that explicit measure does NOT have?
+
+Select only one answer.
+
+End-users can change the aggregation type of implicit measure from the Values well of a visual.
+
+This answer is correct.
+
+Implicit measures can be used as a Drillthrough field.
+
+
+Implicit measures can be used to create Quick measures.
+
+This answer is incorrect.
+
+Implicit measures can be used with Field Parameters.
+
+Implicit measures can select from one of nine aggregations when placed in the Values well of a visual. Both Implicit and Explicit measures can be used as a Drillthrough field, to create quick measures, and with Field Parameters.
+
+Create DAX calculations in semantic models
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 10 of 50
+
+You have a Power BI Desktop semantic model based on a star schema data source.
+
+You need to use Data Analysis Expression (DAX) to create a date table in the dataset and populate the table with a range of dates based on the earliest and latest date within the semantic model.
+
+Which function should you use?
+
+Select only one answer.
+
+CALENDAR
+
+This answer is incorrect.
+
+CALENDARAUTO
+
+This answer is correct.
+
+DATE
+
+
+DATEDIFF
+
+The CALENDARAUTO function generates a range of dates based on the earliest and latest date within the dataset. The CALENDAR function generates a range of dates, but it requires providing the start and end date. The DATE function returns the specified date in the datetime format. The DATEDIFF function returns an interval between two dates.
+
+Configure a semantic model - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 11 of 50
+
+You need to reduce the cardinality of a column in a Power BI semantic model.
+
+What should you do?
+
+Select only one answer.
+
+Add a prefix to each value in the column.
+
+
+Add a suffix to each value in the column.
+
+
+Replace null values with a value of 0.
+
+This answer is incorrect.
+
+Reduce the number of distinct values
+
+This answer is correct.
+A column that has a lot of repeated values and a low number of distinct values will have a low cardinality. Reducing the number of distinct values reduces cardinality. Replacing nulls does not change the number of distinct values. A static prefix or suffix does not change cardinality.
+
+Reduce cardinality - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 13 of 50
+
+You decide to remove unnecessary columns from your data model.
+
+What are two potential performance benefits of doing this? Each correct answer presents a complete solution.
+
+Select all answers that apply.
+
+decreasing report page load times
+
+
+increasing DAX performance
+
+This answer is incorrect.
+
+increasing the refresh speed
+
+This answer is correct.
+
+reducing the size of the data model
+
+This answer is correct.
+Fewer columns mean there is less data to import and will reduce the model size and decrease the time it takes to refresh the model. Since row counts aren’t changing, the calculation speed of any existing DAX measures won’t change. Report page load times are primarily determined by number of visuals (objects) on the page, and DAX performance. Neither of which are impacted by unnecessary model columns.
+
+Review performance of measures, relationships, and visuals - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 17 of 50
+
+You plan to publish a semantic model from Power BI Desktop.
+
+You need to ensure that your data source server name can be changed after the semantic model has been published to the Power BI Service.
+
+Which two actions should you perform? Each correct answer presents part of the solution.
+
+Select all answers that apply.
+
+Create a parameter.
+
+This answer is correct.
+
+Create a query for the server name.
+
+
+From the Data source settings in Power BI Desktop, update the permissions.
+
+
+From the Data source settings, update the server source to use a parameter.
+
+This answer is correct.
+
+Update the Source applied step of all related queries to reference the server name query.
+
+A parameter is the only part of a query that can be updated or changed in the Power BI service, by accessing the dataset settings. Updating the server source to use a parameter will update all existing queries pointing to the current server to instead use a parameter with that server name. This parameter can now be changed once this dataset is published to the Power BI service.
+
+Get data from relational data sources - Training | Microsoft Learn
+
+Using parameters | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 18 of 50
+
+You have a Power BI model with the following fact tables and storage modes.
+
+FactStoreSales (Import mode)
+FactOnlineSales (DirectQuery mode)
+You have a dimension table named DimCalendar that has a relationship to both fact tables.
+
+You need to assign a storage mode for DimCalendar. The solution must minimize the time to execute queries that combine data from the dimension table and the fact tables.
+
+Which storage mode should you use?
+
+Select only one answer.
+
+DirectQuery
+
+
+Dual
+
+This answer is correct.
+
+Import
+
+
+none
+
+Using Dual mode means that either an import query can be run when accessing data from FactStoreSales, or a DirectQuery query can be run when accessing data from FactOnlineSales. Using Import mode means the queries are only optimized for FactStoreSales (Import). Using DirectQuery mode means the queries are only optimized for FactOnlineSales (DirectQuery). A storage mode of Import, DirectQuery, or Dual must be assigned.
+
+Select a storage mode - Training | Microsoft Learn
+
+Use storage mode in Power BI Desktop - Power BI | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 19 of 50
+
+From Power BI Desktop, you create a data source by importing an Excel file that contains 10,000 rows.
+
+You plan to identify data anomalies within the data source.
+
+You need to ensure that column distribution considers all rows in the Excel file.
+
+What should you do?
+
+Select only one answer.
+
+In the Data Source Settings, modify the Advanced settings.
+
+
+In the Data Source Settings, modify the Edit Permissions settings.
+
+
+In the Power Query Editor window, enable the Column Profile view.
+
+This answer is correct.
+
+In the Power Query Editor window, modify the Query Settings.
+
+By default, Power BI uses the top 1,000 rows for profiling. To ensure that column distribution considers all rows in the Excel file, you need to modify the Power Query Editor profiling status setting. The Power Query Editor settings, Advanced settings, and Permissions settings have no bearing on the profiling characteristics.
+
+Profile data in Power BI - Training | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 20 of 50
+
+From Power BI Desktop, you create a data source by importing an Excel file.
+
+You plan to identify data anomalies within the data source.
+
+Which interface should you use to display the column quality feature and column distribution graph?
+
+Select only one answer.
+
+Advanced Editor
+
+
+Power Query Editor
+
+This answer is correct.
+
+the Data view
+
+
+the Model view
+
+Power Query Editor provides the ability to display the column distribution and column quality graphs. Data view provides access to data within a dataset. Model view provides access to the data model of a dataset. Advanced Editor of Power Query Editor provides the ability to work with the M code used for shaping data in Power Query Editor.
+
+Profile data in Power BI - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 23 of 50
+
+Your company uses Microsoft Power BI to monitor inventory levels across warehouses. A matrix visual shows stock quantities by product and warehouse.
+
+You need to highlight products with stock levels below a critical threshold.
+
+What should you do?
+
+Select only one answer.
+
+Add a trend line to analyze stock level changes over time.
+
+
+Apply conditional formatting with icons.
+
+This answer is correct.
+
+Enable anomaly detection for unusual stock levels.
+
+
+Use a slicer to filter products below the threshold.
+
+Applying conditional formatting with icons is the most effective approach as it provides clear visual indicators for stock levels below the critical threshold. Adding a trend line analyzes trends over time but does not address the requirement for highlighting specific stock levels. Enabling anomaly detection identifies deviations but does not fulfill the need for threshold-based indicators. Using a slicer filters the data but does not provide visual indicators within the matrix.
+
+Configure a semantic model - Training | Microsoft Learn
+Design reports to highlight values - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 25 of 50
+
+You have a Power BI data source that contains the following tables:
+
+ProductCategory: Lists the product category ID and category name
+ProductSubcategory: Lists the product subcategory ID, subcategory name, and the related category ID
+ProductList: Lists the product ID, name, and subcategory ID
+You need to optimize the data to create a dimension for use in a star schema data model.
+
+How should the tables be transformed before loading into the model?
+
+Select only one answer.
+
+Import all three tables into the data model and connect them using relationships.
+
+This answer is incorrect.
+
+Import only the ProductName table into the model.
+
+
+Merge the queries to create a single loaded table for Product.
+
+This answer is correct.
+
+Use the append command to create a single loaded table for product.
+
+A star schema should have a single table for each dimension linking directly to fact table. Using the merge command to create a single product table achieves this objective
+
+Combine multiple tables into a single table - Training | Microsoft Learn
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 26 of 50
+
+From Power BI Desktop, you create a data source by importing a Cosmos DB for NoSQL item collection.
+
+You connect to the Cosmos DB account, database, and collection, but the preview displays only a list of items named Record.
+
+You need to select individual fields from items in the collection that you want to load into Power BI Desktop.
+
+What should you do first?
+
+Select only one answer.
+
+Open Power Query Editor.
+
+This answer is correct.
+
+Retrieve the Cosmos DB account key.
+
+
+Retrieve the Cosmos DB connection string.
+
+
+Switch to the model view.
+
+This behavior is by design. The Preview pane in Power BI shows a list of Record items when connecting to a collection of JSON formatted items. To view individual item fields, open the Power Query window and use the Expander button on the right side of the Column1 header to display the list of fields. Switching to the model view would not benefit us in any way, since the data has not been imported yet. Retrieving Cosmos DB account key or connection string at this point is meaningless, since that was required to connect to Cosmos DB account, which has been already completed.
+
+Get data from a NoSQL database - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 27 of 50
+
+You have an Excel spreadsheet that contains two columns as follows:
+
+Category: Contain names of categories
+Subcategory: Contain names of subcategories for each category
+You import the Excel spreadsheet into Power BI Desktop.
+
+You need to transform the data to meet the following requirements:
+
+Have multiple columns, where one column represents one category
+Have a single row that includes the total count of subcategories for each category
+Which transformation should you use?
+
+Select only one answer.
+
+Pivot Columns
+
+This answer is correct.
+
+Rename Columns
+
+
+Transpose Table
+
+
+Unpivot Columns
+
+This answer is incorrect.
+The pivot column operation converts data into a table by aggregating values in a column. In this case, you can pivot the columns to calculate the count of product subcategories in each product category. The unpivot column operation performs the opposite task, converting columns into rows. Renaming columns would result in a table with different column names but the same data content. Transposing would simply switch rows and columns, without the required aggregation.
+
+Shape the initial data - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 28 of 50
+
+You have a fact table that contains sales data.
+
+The fact table includes a SalesDate column formatted as a Date data type. Auto date/time setting is disabled in both global and current file options.
+
+You load the fact table into Power BI Desktop.
+
+You need to ensure that you are able to analyze data on a yearly, quarterly, monthly, weekly, and daily basis. Your solution must minimize the model size and administrative effort.
+
+What should you do?
+
+Select only one answer.
+
+Add a separate date dimension table.
+
+This answer is correct.
+
+Add a year, month, and week columns to the fact table.
+
+
+Enable the Auto date/time current file option.
+
+
+Enable the Auto date/time global option.
+
+Adding a separate date dimension table that includes year, month, and week information is the optimal approach which provides the required functionality, while minimizing the model size and administrative effort. Adding a year, month, and week columns to the fact table would increase the amount of administrative effort. Enabling the Auto date/time global or current file option would increase the model size. In addition, it would not provide the ability to describe weekly time periods (only year, quarter, month, and day).
+
+Evaluate and change column data types - Training | Microsoft Learn
+
+Auto date/time guidance in Power BI Desktop - Power BI | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 30 of 50
+
+You plan to build a Power BI dashboard and set up alerts that will notify you when data presented in the visuals on the dashboard reach specific thresholds.
+
+Which three types of visuals support the alert functionality? Each correct answer presents a complete solution.
+
+Select all answers that apply.
+
+card
+
+This answer is correct.
+
+gauge
+
+This answer is correct.
+
+KPI
+
+This answer is correct.
+
+treemap
+
+
+waterfall
+
+Alerts are available with KPI visuals, gauges, and cards. Treemaps and waterfall visuals do not support alerts.
+
+Configure data alerts - Training | Microsoft Learn
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 31 of 50
+
+You upload reports to the Power BI service and pin several visuals to a dashboard.
+
+You plan to create alerts rules for several visuals.
+
+What are two locations you can view the alerts? Each correct answer presents a complete solution.
+
+Select all answers that apply.
+
+a report
+
+
+an email
+
+This answer is correct.
+
+Microsoft Teams
+
+
+the Notification Center
+
+This answer is correct.
+By default, notifications are available in the notification center. You also have the option of sending notifications via email. A dashboard, Microsoft Teams channel, and a report are not available as the locations of alerts.
+
+Configure data alerts - Training | Microsoft Learn
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 32 of 50
+
+Your company has a SharePoint server located in a datacenter in Montreal.
+
+You plan to create a report in the Power BI service that will use Microsoft Excel files stored on the SharePoint server.
+
+You need to recommend a solution to ensure that the dataset for the report can automatically refresh daily.
+
+What should you include in the recommendation?
+
+Select only one answer.
+
+a Point to Site virtual private network (VPN)
+
+
+a Site-to-Site virtual private network (VPN)
+
+
+an on-premises data gateway
+
+This answer is correct.
+
+Azure Data Box
+
+An on-premises SharePoint server requires the use of a Power BI gateway since it’s an on-premises data source. VPN-based solutions would provide connectivity to an Azure virtual network, but not Power BI service. Azure Data Box is a solution for migrating data to Azure, which is not applicable in this scenario.
+
+Use a Power BI gateway to connect to on-premises data sources - Training | Microsoft Learn
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 33 of 50
+
+You manage a Power BI workspace in shared capacity. The workspace contains a semantic model named DS1.
+
+You plan to schedule the refresh of DS1.
+
+What is the maximum number of data refreshes per day?
+
+Select only one answer.
+
+1
+
+This answer is incorrect.
+
+4
+
+
+8
+
+This answer is correct.
+
+24
+
+The maximum number of refreshes per day for a Power BI workspace in a shared capacity is 8.
+
+Configure a dataset scheduled refresh - Training | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 35 of 50
+
+Your organization uses Microsoft Power BI to analyze sales data. The sales team is concerned about unauthorized users exporting sensitive data.
+
+You need to ensure that only authorized users can export sensitive data from Power BI reports.
+
+What should you do?
+
+Select only one answer.
+
+Apply sensitivity labels.
+
+This answer is correct.
+
+Assign Contributor roles.
+
+This answer is incorrect.
+
+Disable report sharing.
+
+
+Enable DirectQuery mode.
+
+Applying sensitivity labels ensures that export restrictions are enforced based on user-specific permissions, directly addressing the concern of unauthorized data export. Assigning Contributor roles provides build permissions but lacks mechanisms to restrict data export, potentially increasing access rather than limiting it. Disabling report sharing limits collaboration but does not specifically address export restrictions, making it an overly restrictive solution. Enabling DirectQuery mode facilitates real-time data access but does not offer any functionality to manage or restrict data export, rendering it irrelevant to the stated objective.
+
+Configure data protection - Training | Microsoft Learn
+Select a storage mode - Training | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 36 of 50
+
+You have a Power BI semantic model.
+
+You need to set the semantic model as discoverable.
+
+Which two configurations will allow the semantic model to be marked as discoverable? Each correct answer presents a complete solution.
+
+Select all answers that apply.
+
+Certify the semantic model.
+
+This answer is correct.
+
+Enable RLS on the semantic model.
+
+This answer is incorrect.
+
+Promote the semantic model.
+
+This answer is correct.
+
+Publish the semantic model to a Premium workspace.
+
+This answer is incorrect.
+A certified semantic model can be configured to be discoverable for users without access to request permissions to access. A promoted semantic model can be configured to be discoverable for users without access to request permissions to access. RLS is not required on a semantic model to become discoverable. Premium (capacity or shared) is not required to make a semantic model discoverable.
+
+Endorse your content - Power BI | Microsoft Learn
+
+Create DAX calculations in semantic models - Training | Microsoft Learn
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 37 of 50
+
+You use Microsoft Power BI to manage and analyze sales data for your organization. The sales team requires access to their sales data to be restricted based on department membership.
+
+You need to implement a scalable solution to restrict data access based on department membership for current and future departments.
+
+Each correct answer presents part of the solution. Which two actions should you perform?
+
+Select all answers that apply.
+
+Assign users to roles in the Power BI service.
+
+This answer is correct.
+
+Create separate workspaces for each department.
+
+
+Define Row-Level Security (RLS) roles in Power BI Desktop.
+
+This answer is correct.
+
+Enable bi-directional cross-filtering for relationships in the model.
+
+Defining RLS roles in Power BI Desktop allows for filtering data based on department membership, making it an essential step for implementing RLS. To restrict data access based on department membership, assigning users to roles in the Power BI service ensures that the Row-Level Security (RLS) rules are applied to the correct individuals.
+
+Creating separate workspaces for each department is not necessary because RLS can achieve the same goal more efficiently and is more scalable. Enabling bi-directional cross-filtering for relationships in the model is not directly related to the implementation of RLS for department-based data restriction.
+
+Configure row-level security with the static method - Training | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 38 of 50
+
+You plan to use Power BI Desktop to create a report with multiple visualizations.
+
+You need to create a visual that supports the following:
+
+filters other visuals on the same report page
+allows users to search for values by which to filter the other visuals
+Which type of visualization should you use?
+
+Select only one answer.
+
+Funnel
+
+
+Matrix
+
+
+Scatter chart
+
+
+Slicer
+
+This answer is correct.
+The slicer visualization can be used to filter the other visuals on the page. You can enable a search box in a slicer where users can search for values to filter. A funnel visualization is a chart that that has sequential connected stages, where items flow sequentially from one stage to the next. A matrix visualization displays data in two or more dimensions and cross-highlights with other visuals on the same report page. A scatter chart visualization is a chart with one set of numerical data along a horizontal axis and another set of numerical values along a vertical axis. The matrix, scatter chart, and funnel do not offer a search box.
+
+Design Power BI reports - Training | Microsoft Learn
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 39 of 50
+
+You need to create a bookmark that toggles the visibility of a visual.
+
+This bookmark must only toggle the visibility state and perform no other action.
+
+Which three configurations should you make? Each correct answer presents part of the solution.
+
+Select all answers that apply.
+
+Disable the Data option.
+
+This answer is correct.
+
+Disable the Current Page option.
+
+This answer is correct.
+
+Disable the Display option.
+
+
+Enable the Current Page option.
+
+This answer is incorrect.
+
+Enable the Data option.
+
+This answer is incorrect.
+
+Enable the Display option.
+
+This answer is correct.
+The current page capture allows the bookmark to navigate back to the page of capture. The data capture updates filters and drillthrough which should not occur for this bookmark. The display capture updates visual visibility on the report page.
+
+Enhance Power BI report designs for the user experience - Training | Microsoft Learn
+
+Overview of bookmarks in Power BI service reports - Power BI | Microsoft Learn
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 40 of 50
+
+You need to create a visual that displays sales by employees, trending over months.
+
+The visual must clearly show how employees are performing against each other and have a ranking for each period.
+
+Which visual should you use?
+
+Select only one answer.
+
+clustered bar chart
+
+This answer is incorrect.
+
+ribbon chart
+
+This answer is correct.
+
+scatterplot
+
+
+treemap
+
+A ribbon chart places the highest (ranked) value at the top of the stacked column each month and shows those ranked changes over time. A treemap is not meant for displaying changes over time and wouldn’t easily show ranked comparisons between employees. The clustered bar chart can be used to show changes over time, and a clustered bar chart will show comparisons between employees, but no ranking data is provided between employees. A scatterplot is typically used to compare a relationship between two (or more) calculations and their categorical distribution between each other.
+
+Design Power BI reports - Training | Microsoft Learn
+
+Use ribbon charts in Power BI - Power BI | Microsoft Learn
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 41 of 50
+
+From Power BI Desktop, you open a Power BI report that contains three pages named Main, Error Rate, and On-time Rate.
+
+You add a button to the Main page for navigation.
+
+You need to implement a solution that meets the following requirements:
+
+The navigation destination must change based on the output of a DAX measure named [Error Rate].
+If [Error Rate] is greater than 5%, the button must display the text “Error Rate” and navigate to the Error Rate page.
+Otherwise, the button must display the text “On-time Rate” and navigate to the On-Time Rate page.
+What three actions should you perform? Each correct answer presents part of the solution.
+
+Select all answers that apply.
+
+Create a DAX measure that outputs the correct page name based on the value of [Error Rate].
+
+This answer is correct.
+
+Set the button type to Page Navigation and then use conditional formatting to specify the destination.
+
+This answer is correct.
+
+Set the button type to Bookmark and then use conditional formatting to specify the destination.
+
+
+Set the navigation destination to the Error Rate page.
+
+This answer is incorrect.
+
+Use conditional formatting to set the button text.
+
+This answer is correct.
+To configure a button for conditional page navigation, you need to create a DAX measure that outputs the correct destination page name. Then configure the button to use page navigation and use the newly created DAX measure to specify the navigation destination. To change the button text to match the page name, conditional formatting must be used to set the text to equal the newly created DAX measure. No bookmarks are necessary. It is not necessary to set the destination to a specific page since conditional formatting is used to specify the destination.
+
+Enhance Power BI report designs for the user experience - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 45 of 50
+
+You have a Power BI report that uses data that is imported from a database.
+
+You add a slicer to a report.
+
+You need to sync the slicer to use it on other report pages.
+
+What is required to sync slicers between report pages?
+
+Select only one answer.
+
+Each slicer must be the same slicer type.
+
+
+Each slicer must be visible.
+
+This answer is incorrect.
+
+Each slicer must have the same title.
+
+
+Each slicer must use the same column.
+
+This answer is correct.
+The same column must be used in each slicer for them to recognize each other in the sync slicers settings. Slicers can sync even when hidden. Slicers do not need to be the same slicer type. One slicer could be a list, and the other a dropdown. Slicers do not need the same title to allow them to be synced.
+
+Enhance Power BI report designs for the user experience - Training | Microsoft Learn
+
+Slicers in Power BI - Power BI | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 47 of 50
+
+You need to create a visual that will display information on a continuous axis.
+
+Which two data types can be used to display a continuous axis on a visual? Each correct answer presents a complete solution.
+
+Select all answers that apply.
+
+Binary
+
+
+Date
+
+This answer is correct.
+
+Decimal Number
+
+This answer is correct.
+
+Text
+
+Date data types display well on a continuous (range) axis where report users understand chronological order. Number data types display well on a continuous (range) axis where report users understand the order between min and max values. Binary data and text (categorical) data cannot be displayed on a continuous (range) axis. Date, time, or number are the only data types comparable with a continuous axis.
+
+Conduct time series analysis - Training | Microsoft Learn
+
+Customize X-axis and Y-axis properties - Power BI | Microsoft Learn
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 48 of 50
+
+Which native AI visual helps explain correlations for a metric within the dataset?
+
+Select only one answer.
+
+Decomposition Tree visual
+
+
+Key influencers visual
+
+This answer is correct.
+
+Q&A visual
+
+
+Smart Narrative visual
+
+The Key influencers visual helps you understand correlated factors impacting a particular metric. The Q&A visual allows end-users to ask natural language questions to create AI generated charts based on the questions.
+
+The Decomposition Tree visual lets you visualize data between multiple dimensions and drill down in any order. The Smart Narrative visual lets you combine natural language text with metrics from your model in sentence forms.
+
+Perform advanced analytics in Power BI - Training | Microsoft Learn
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 49 of 50
+
+Your company has a Microsoft Power BI report tracking KPIs for various departments. The report includes a KPI visual for monitoring monthly revenue against targets.
+
+You need to provide a solution so that report users can identify factors driving significant changes in the KPI values.
+
+Which action should you perform?
+
+Select only one answer.
+
+Add a trend line to a line chart.
+
+
+Drill down using Decomposition Tree.
+
+This answer is incorrect.
+
+Ue Quick Insights to create a dashboard.
+
+
+Use Key Influencers visual.
+
+This answer is correct.
+To identify factors influencing significant changes in KPI values, you can use the Key Influencers visual because it identifies factors that significantly impact the metric being analyzed. Adding a trend line does not meet the requirement as it only shows general trends without explaining influencing factors. Drilling down using the Decomposition Tree visual is less effective in this context as it is not specifically designed for analyzing KPI changes. The Quick Insights feature provides details in a separate dashboard, which doesn't support the requirement to allow users to see what is influencing the change.
+
+Use specialized visuals
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 50 of 50
+
+Your organization uses Microsoft Power BI to analyze sales data. A report monitors monthly sales trends.
+
+You need to configure the report to automatically detect unusual patterns in the sales data.
+
+Each correct answer presents part of the solution. Which two actions should you perform?
+
+Select all answers that apply.
+
+Create a custom date hierarchy.
+
+
+Add a line chart visual.
+
+This answer is correct.
+
+Add a Q&A visual.
+
+
+Add anomaly detection.
+
+This answer is correct.
+By adding a line chart to the report, you can then add anomaly detection with the "Find anomalies" option to the visual. A Q&A visual can return replies but cannot automatically track data patterns without user input. A custom date hierarchy doesn't complete this solution because it wouldn't specifically identify unusual patterns.
+
+Anomaly detection
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 4 of 50
+
+You manage a Power BI workspace.
+
+You need to delegate the task to schedule data refreshes. The solution must use the principle of least privilege.
+
+Which role should you use?
+
+Select only one answer.
+
+Admin
+
+
+Contributor
+
+This answer is correct.
+
+Member
+
+This answer is incorrect.
+
+Viewer
+
+The Contributor role is the least privileged role that grants permissions to schedule data refreshes. The Member role grants permission to schedule data refreshes but is more privileged than Contributor. The Admin role grants the permissions to schedule data refreshes but is more privileged than Member. The Viewer role does not grant the permissions to schedule data refreshes.
+
+Create DAX calculations in semantic models - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 6 of 50
+
+Your company has multiple semantic models in Power BI workspaces, and users are confused about which model to use for reports.
+
+You want to indicate which semantic models are reliable.
+
+What action should you take?
+
+Select only one answer.
+
+Certify semantic models.
+
+This answer is correct.
+
+Promote semantic models.
+
+
+Remove unreliable models.
+
+
+Share links for each semantic model.
+
+Certifying semantic models ensures that users can easily identify and rely on authoritative models for their reports. Sharing links for each model does not address the need to differentiate between reliable and unreliable models. Promoting semantic models without distinguishing their reliability could lead to further confusion. Removing unreliable models risks losing valuable data and does not align with best practices for content management.
+
+Manage and promote semantic models
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 7 of 50
+
+You manage a Power BI workspace that includes a semantic model with your company's sales data. You create a report that displays the sales data grouped by department.
+
+You need to use row-level security to ensure that, once the report is published, employees in each department can only see the sales data for their department.
+
+What should you do first?
+
+Select only one answer.
+
+Deploy the report to the Power BI service.
+
+
+In Power BI Desktop, create a role.
+
+This answer is correct.
+
+In Power BI Desktop, define filter parameters.
+
+
+Upgrade the Power BI workspace to the Premium SKU.
+
+To use row-level security to ensure that, once the report is published, employees in each department can only see the sales data for that department, you first need to create a role and a corresponding DAX expression. Filter parameters are used for other purposes, such as incremental refresh policy, not row-level security. Deploying the report to the Power BI service is required for the row-level security to take effect, so it takes place after creating the relevant roles. Row-level security does not require upgrading to the Premium SKU.
+
+Configure row-level security with the static method - Training | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 9 of 50
+
+Your organization uses a Microsoft Power BI workspace to manage and share reports and dashboards.
+
+You need to assign roles to control user permissions for editing, deleting, and viewing content.
+
+Which role should you assign?
+
+Select only one answer.
+
+Admin
+
+
+Contributor
+
+This answer is correct.
+
+Member
+
+This answer is incorrect.
+
+Viewer
+
+
+Do not assign roles and share the workspace link.
+
+Assigning the Contributor role is appropriate for users who need to manage content, as it provides permissions for creating, editing, and deleting content. The Viewer role is suitable for users who only need to view and interact with content without editing capabilities. Sharing the workspace link without assigning roles does not provide controlled access, while assigning the Admin role to all users grants excessive permissions. Similarly, assigning the Member role to all users provides more permissions than necessary for those who only need viewing access.
+
+Roles in workspaces in Power BI
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 10 of 50
+
+You plan to create a report in Power BI Desktop.
+
+You need to create a visualization that displays data in two or more dimensions and cross-highlights with other visuals on the same report page.
+
+Which type of visualization should you use?
+
+Select only one answer.
+
+Card
+
+
+matrix
+
+This answer is correct.
+
+scatter
+
+This answer is incorrect.
+
+table
+
+A matrix visualization displays data in two or more dimensions and cross-highlights with other visuals on the same report page. A card visualization displays a single data point. A scatter visualization is a chart, not a grid. It has two value axes, with one set of numerical data along a horizontal axis and another set of numerical values along a vertical axis. A table visualization is a grid that contains related data in a grid format, with support for two dimensions only.
+
+Design Power BI reports - Training | Microsoft Learn
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 16 of 50
+
+You implement the Q&A feature in a report, so users can get answers to their questions on their own.
+
+You need to improve your Q&A search capabilities for end-users.
+
+Which two configurations can you add? Each correct answer presents a complete solution.
+
+Select all answers that apply.
+
+Add a linguistic schema to the dataset.
+
+This answer is correct.
+
+Add synonyms to model fields.
+
+This answer is correct.
+
+Configure the dataset as a composite model.
+
+
+Organize the dataset columns and measures into logical folders in the Fields pane.
+
+This answer is incorrect.
+Adding synonyms to model fields will help users search for them. For example, you can give a synonym of (Actuals) for the (Sales) measure. A linguistic schema describes terms and phrases that Q&A should understand for objects within a dataset, including parts of speech, synonyms, and phrasings that relate to that dataset. Composite models are not supported by Q&A today. Organizing fields by display folders will not impact Q&A search capabilities.
+
+Perform advanced analytics in Power BI - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 17 of 50
+
+You are modifying a report in Power BI Desktop. The report contains a single report page that has three card visuals and one clustered bar chart.
+
+You need to create a bookmark that displays only the clustered bar chart and hides the cards. The solution must minimize development effort.
+
+What should you do first?
+
+Select only one answer.
+
+Add a bookmark in the Bookmarks Pane.
+
+This answer is incorrect.
+
+Hide the three cards in the Selection Pane.
+
+This answer is correct.
+
+Publish the report to the Power BI Service.
+
+
+Select the Spotlight option on the clustered bar chart.
+
+Before you create a bookmark, you need to configure the report page to show the state you want to capture in the bookmark. Visuals are visible by default, therefore, you must mark them as hidden. To add a bookmark, you first need to update the bookmark after hiding the visuals. Bookmarks can be created in Power BI without publishing to the Power BI service. While spotlight does focus on the clustered bar chart, it does not completely hide the cards.
+
+Enhance Power BI report designs for the user experience - Training | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 18 of 50
+
+You need to create a row level security (RLS) role for a semantic model.
+
+What should you do first?
+
+Select only one answer.
+
+Assign workspace members to the security group in the Power BI service.
+
+
+In Power BI Desktop, open Manage roles.
+
+This answer is correct.
+
+In Power BI Desktop, open the Advanced Editor in the Power Query Editor.
+
+
+In the Power BI service, open the security settings for the dataset.
+
+RLS roles are created or modified from the Manage roles space. You can assign AD users/groups to an existing role in the security settings, but new RLS roles must be created in Power BI desktop or other model authoring external tool. RLS configurations cannot be accessed from any Power Query window. Before you can assign users to a security group, it first needs to be created for the model in Power BI Desktop.
+
+Row-level security (RLS) with Power BI - Power BI | Microsoft Learn
+
+Configure a semantic model - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 20 of 50
+
+You need to create a histogram that will display ranges of integers in groups.
+
+Which two resources do you need to create the histogram? Each correct answer presents part of the solution.
+
+Select all answers that apply.
+
+a Bin group type
+
+This answer is correct.
+
+a Date/time column
+
+This answer is incorrect.
+
+a List group type
+
+This answer is incorrect.
+
+a Numerical column
+
+This answer is correct.
+The group is created against a numerical column using bins.
+
+The Bin group type is an auto grouping of items into bucketed bins (groups). It will display well as a histogram. A DateTime column isn’t required to display histogram type data against a numerical column. A List group type is a manual grouping of items into new group names/categories. It doesn’t create auto (binned) groups.
+
+Explore statistical summary - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 26 of 50
+
+You have multiple Excel files stored in a folder synced with OneDrive for Business.
+
+You need to import data from the files. The solution must NOT use a data gateway.
+
+Which type of connector should you use?
+
+Select only one answer.
+
+Excel workbook
+
+This answer is incorrect.
+
+Folder
+
+
+SharePoint folder
+
+This answer is correct.
+
+SharePoint list
+
+A SharePoint folder is the only connector that will allow the import of multiple Excel (or CSV) files stored in a OneDrive for Business folder, without using a data gateway. While you can connect to the folder on an on-premises device, it would require a data gateway to refresh in the service. An Excel workbook would only connect to a single Excel file and would also require a data gateway. A SharePoint list connector only connects to SharePoint lists and cannot connect to Excel files.
+
+Get data from files - Training | Microsoft Learn
+
+Power Query SharePoint folder connector - Power Query | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 35 of 50
+
+You have a Power BI report that connects to a public data feed.
+
+Users report that the report loads slowly.
+
+You identify that the slow performance is caused by a query in the report.
+
+You need to reduce the load time.
+
+Where should you configure caching for the query?
+
+Select only one answer.
+
+in a dataflow
+
+This answer is correct.
+
+in the report
+
+This answer is incorrect.
+
+Power BI Desktop
+
+
+the Power BI service
+
+Power BI dataflows support query caching by persisting the results of data retrieval and transformation in the Power BI service, which prevents the query from being re-executed against the public data source every time data is loaded and improves overall performance. Power BI Desktop does not provide source-level query caching beyond the imported model, reports do not support query-level caching because they only consume model data, and the Power BI service itself does not offer a standalone mechanism to cache external source queries unless the data is implemented through a dataflow.
+
+Referencing Power Query queries
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 36 of 50
+
+You have a Power BI data model that contains a table named Orders. Orders contains many columns.
+
+You have a report. A page in the report contains many visuals. Each visual references four fields from the Orders table.
+
+When you attempt to publish the report to the Power BI service, you receive an error message.
+
+You need to resolve the error and reduce the size of the data model. The solution must:
+
+Minimize the number of queries executed during scheduled refreshes.
+Prevent changes the columns in the original Orders table.
+What should you do?
+
+Select only one answer.
+
+Duplicate Orders, and then reference the duplicate.
+
+
+Move the four required columns to a new table and update the visuals to use the new table.
+
+
+Reference Orders, remove all columns from the reference except the four used on the report page, and disable load for Orders.
+
+This answer is correct.
+
+Split the queries so that each visual queries only the required fields.
+
+Creating a referenced query allows Orders to remain unchanged as a staging query while producing a reduced table that contains only the required columns, which lowers the dataset size. Disabling load for Orders ensures that only the optimized reference is loaded into the model, helping minimize unnecessary data during scheduled refresh and avoiding redundant queries. Duplicating the table increases refresh workload, splitting queries by visual increases query complexity without reducing model size, and moving columns to a new table introduces unnecessary model restructuring without preserving Orders as an unloaded staging query.
+
+Referencing Power Query queries
+
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 37 of 50
+
+Your organization is developing a Power BI report to analyze sales data with order and shipping dates but lacks a date table.
+
+You need to create a date table spanning the sales data range to support time intelligence calculations.
+
+Which three actions should you perform to create a functional date table for time intelligence calculations? Each correct answer presents part of the solution.
+
+Select all answers that apply.
+
+Add year, month, and day columns to the date table.
+
+This answer is correct.
+
+Create a table using DISTINCT on the order date column.
+
+
+Enable Auto date/time.
+
+This answer is incorrect.
+
+Generate a date table in Power Query.
+
+
+Mark the table as a date table.
+
+This answer is correct.
+
+Use CALENDARAUTO to create a date table.
+
+This answer is correct.
+To create a functional date table for time intelligence calculations, adding year, month, and day columns provides the necessary granularity for filtering and grouping in reports. Marking the table as a date table ensures it is recognized by Power BI for time intelligence functions, enabling the use of DAX calculations. Using CALENDARAUTO generates a date table spanning all dates in the model, ensuring full years are included and simplifying the creation process. Creating a table using DISTINCT on the order date column does not ensure a complete range of dates or meet the requirements for a marked date table, making it unsuitable for the scenario. Generating a date table in Power Query is a valid method but is not part of the solution described in this scenario. Enabling Auto date/time creates implicit date tables, which do not support a unified date table approach and are unsuitable for the scenario.
+
+Configure a semantic model - Training | Microsoft Learn
+Use DAX time intelligence functions - Training | Microsoft Learn
+
+
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 48 of 50
+
+You need to reduce the size of a Power BI semantic model that contains two dimension tables named Date and Location, and one fact table named Temperatures. The Temperatures table contains the following fields:
+
+Reading Time (datetime)
+DateKey (date)
+LocationKey (whole number)
+Temp C (decimal)
+You have one row for every 5-minute interval for each location. The Temperatures table is related to the Date and Location dimensions by using many-to-one relationships.
+
+You need to reduce the cardinality of the table. The solution must ensure that the semantic model supports reports that analyze average temperature by hour and location.
+
+What two actions should you perform? Each correct answer presents part of the solution.
+
+Select all answers that apply.
+
+Create a column that contains the time values for the start of the hour of the Reading Time value.
+
+This answer is correct.
+
+Disable the query load on the Temperatures query in the Power Query Editor.
+
+
+Remove the rows that occur exactly at 0 minutes and 0 seconds on the hour.
+
+
+Use the Group By functionality to aggregate the rows by hour, DateKey, and LocationKey and then create an average Temp C value per row.
+
+This answer is correct.
+
+Use the Group By functionality to aggregate the rows by DateKey, Reading Time, and LocationKey and then create a max Temp C value per row.
+
+Creating a column that displays the hour is necessary to summarize by hour when there is no Time or Hour dimension. Summarizing the table by using the Group By functionality reduces the number of rows. Reporting requirements dictate that the aggregated temperature value should be an average. The table should be summarized by hour, DateKey, and LocationKey in order to support the required reports. Removing rows that occur exactly on the hour removes data and does not support the reporting requirements. Disabling the query load removes the table from the model completely.
+
+Reduce cardinality - Training | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 50 of 50
+
+You decide to start using variables when creating DAX formulas.
+
+What are two benefits of using variables in DAX measures over using original expressions? Each correct answer presents a complete solution.
+
+Select all answers that apply.
+
+allows users to change the data source connection in the DAX measure
+
+This answer is incorrect.
+
+has additional functions that can be used in the DAX measure
+
+
+improves the overall performance of the resulting DAX measure
+
+This answer is correct.
+
+improves the overall readability of the resulting DAX measure
+
+This answer is correct.
+Variable names are often shorter than the original expressions, and the final variable returned at the end of the measure will be more readable with variable names included. Variables cache the defined calculation, allowing it to be referenced multiple times without additional impacts from recalculations. The functions in DAX are universal, and there are no specific functions that can only be used within variables. The data source connection is set in the model and cannot be changed from within a DAX measure.
+
+Use variables to improve performance and troubleshooting - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 1 of 50
+
+You need to create a Power BI dashboard.
+
+Which tool should you use?
+
+Select only one answer.
+
+Power BI Desktop
+
+This answer is incorrect.
+
+Power Query Editor
+
+
+the Power BI mobile app
+
+
+the Power BI service
+
+This answer is correct.
+The Power BI service provides support for creating Power BI dashboards. The Power BI mobile app can be used to view dashboards, but not to create them. Power BI Desktop does not provide support for creating Power BI dashboards. Power Query is a Microsoft Excel tool that is used for importing data, but not for creating dashboards.
+
+Introduction to dashboards - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 2 of 50
+
+You need to create a dashboard from a published report in Power BI.
+
+Which option in the report should you use?
+
+Select only one answer.
+
+Copy visual as image
+
+
+Export data
+
+
+Pin visual
+
+This answer is correct.
+
+Spotlight
+
+The Pin visual option allows you to pin the visual to an existing dashboard or create a new one. The Copy visual as image option allows you to copy a visual as an image to Clipboard. The Export data option allows you to export data in the xlsx or csv formats, but not create a dashboard. The Spotlight option allows you to highlight a visual on the report page, but not create a dashboard.
+
+Introduction to dashboards - Training | Microsoft Learn
+
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 4 of 50
+
+You plan to certify a Power BI semantic model.
+
+You need to identify at which level the permissions to certify a semantic model are assigned.
+
+Which level should you identify?
+
+Select only one answer.
+
+Dataset
+
+
+Tenant
+
+This answer is correct.
+
+Workbook
+
+
+Workspace
+
+This answer is incorrect.
+Admin users who have permissions to certify a semantic model are defined in the Dataset Certification tenant admin setting.
+
+Manage and promote datasets - Training | Microsoft Learn
+Enable item certification - Microsoft Fabric | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 32 of 50
+
+You have a Power BI Desktop semantic model that includes a table named Warehouse. The Warehouse table includes a column named Inventory Count, which contains the current number of items for each row of a particular type on a given day.
+
+You have the following Data Analysis Expression (DAX) query that calculates the sum of all values in the Inventory Count column of the Warehouse table:
+
+Current Inventory Count =
+
+CALCULATE (
+
+    SUM ( 'Warehouse'[Inventory Count] ))
+
+You need to ensure that Current Inventory Count returns only the current total number of inventory items, rather than the sum of all inventory items that includes item counts from previous days.
+
+What DAX function should you include in the query?
+
+Select only one answer.
+
+CALENDAR
+
+
+CALENDARAUTO
+
+
+DISTINCTCOUNT
+
+This answer is incorrect.
+
+LASTDATE
+
+This answer is correct.
+The LASTDATE function will ensure that the SUM function applies only to the last date of the time period, resulting in a semi-additive behavior. The DISTINCTCOUNT function counts the number of distinct values in a column, which results in additive behavior. The CALENDAR function returns a table with a column named Date that contains a contiguous set of dates based on the start date and end date that you specify. The CALENDARAUTO function returns a table with a column named Date that contains a contiguous set of dates based on data in the model.
+
+Use DAX in Power BI Desktop - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 43 of 50
+
+You need to add a new visual to a Power BI Dashboard. This visual does NOT exist on a report in the workspace.
+
+What should you do first?
+
+Select only one answer.
+
+Open See Related Content.
+
+
+Open the File menu.
+
+
+Select Add a tile.
+
+This answer is incorrect.
+
+Select Ask a question about your data.
+
+This answer is correct.
+The Q&A feature lets you create a visual by typing in a question about your data. This new visual can then be pinned to the dashboard, without adding it to a report. Inside the file menu and the tiles menu there are no “visual” options. See Related Content displays related content like reports, datasets, etc. You can’t create a new visual from here.
+
+Explore data by asking questions - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 48 of 50
+
+An organization uses Microsoft Power BI to analyze sales data. The team observed unexpected spikes in revenue on specific dates.
+
+You need to identify and explain these spikes using a Microsoft Power BI report.
+
+What should you do?
+
+Select only one answer.
+
+Analyze revenue factors using Key Influencers visual.
+
+This answer is incorrect.
+
+Use anomaly detection on a line chart.
+
+This answer is correct.
+
+Explore revenue categories using a decomposition tree.
+
+
+Highlight outlier values using conditional formatting.
+
+Highlighting outlier values using conditional formatting only emphasizes the data visually without providing insights into the reasons behind the anomalies. Exploring revenue categories using a decomposition tree allows hierarchical analysis but does not focus on detecting or explaining anomalies. Enabling anomaly detection on a line chart is the most effective approach as it identifies unexpected values in time series data and provides explanations for these anomalies. Analyzing revenue factors using Key Influencers identifies factors influencing a metric but does not address the task of detecting anomalies.
+
+Design reports to highlight values
+Anomaly detection
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 9 of 50
+
+You have a row level security role (RLS) in a dataset called User Security Group. This role needs to filter a RLS table that contains a column with the emails of users in the following format:
+
+name@company.com
+
+Which function should be used in the code for the RLS role to match the users Microsoft Entra ID login credentials with the emails contained in the RLS table column?
+
+Select only one answer.
+
+NAMEOF
+
+
+TREATAS
+
+
+USEROBJECTID
+
+
+USERPRINCIPALNAME
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 12 of 50
+
+You plan to create a report in Power BI Desktop.
+
+You need to create a visualization to display a running total. The solution must meet the following requirements:
+
+The initial and the final value columns must start on the horizontal axis.
+The intermediate values must be floating columns.
+Which type of visualization should you use?
+
+Select only one answer.
+
+combo
+
+
+funnel
+
+This answer is incorrect.
+
+scatter
+
+
+waterfall
+
+This answer is correct.
+A waterfall visualization is a chart that displays a running total, with the initial and the final value columns starting on the horizontal axis while the intermediate values are floating columns. A combo visualization is a chart that combines a column chart and a line chart and can have one or two Y axes. A funnel visualization is a chart that has sequential connected stages, where items flow sequentially from one stage to the next. A scatter visualization is a chart with two value axes, with one set of numerical data along a horizontal axis and another set of numerical values along a vertical axis.
+
+Design Power BI reports - Training | Microsoft Learn
+
+Practice Assessment for Exam PL-300: Microsoft Power BI Data Analyst
+Question 19 of 50
+
+You plan to build a Power BI report and apply conditional formatting to the columns used by a visual.
+
+Which two visuals support conditional formatting functionality for the report? Each correct answer presents a complete solution.
+
+Select all answers that apply.
+
+gauge
+
+
+matrix
+
+
+scatter chart
+
+
+table
+
+
+treemap
+

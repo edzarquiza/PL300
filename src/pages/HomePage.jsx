@@ -9,6 +9,9 @@ import { getPoolCoverage, getTrackPool, getPrioritizeUnseen, setPrioritizeUnseen
 import { getTopWeakConcepts } from '../services/conceptCoverageService'
 import ReadinessWidget from '../components/ReadinessWidget'
 import allQuestions from '../data/questions.json'
+import microsoftQuestions from '../data/microsoftPracticeAssessment.json'
+
+const allCombinedQuestions = [...allQuestions, ...microsoftQuestions]
 
 const COUNT_OPTIONS = [10, 20, 30, 50]
 
@@ -37,14 +40,14 @@ export default function HomePage() {
   const trackCoverage = useMemo(() => {
     const out = {}
     for (const t of EXAM_TRACKS) {
-      const pool = getTrackPool(allQuestions, t)
+      const pool = getTrackPool(allQuestions, t, microsoftQuestions)
       out[t.id] = getPoolCoverage(pool)
     }
     return out
   }, [])
 
   // Top weak concepts for the insight panel
-  const weakConcepts = useMemo(() => getTopWeakConcepts(allQuestions, 6), [])
+  const weakConcepts = useMemo(() => getTopWeakConcepts(allCombinedQuestions, 6), [])
 
   function handleToggleUnseen() {
     const next = !prioritizeUnseen
@@ -55,7 +58,8 @@ export default function HomePage() {
   const track = EXAM_TRACKS.find(t => t.id === selectedTrack) ?? EXAM_TRACKS[0]
 
   // Estimate available questions for the selected track + difficulty
-  const filteredPool = getTrackPool(allQuestions, track).filter(q => {
+  const basePool = getTrackPool(allQuestions, track, microsoftQuestions)
+  const filteredPool = basePool.filter(q => {
     if (selectedDifficulties.length && !selectedDifficulties.includes(q.difficulty)) return false
     return true
   })
@@ -83,6 +87,7 @@ export default function HomePage() {
       track: selectedTrack,
       seed: seedInput.trim() || null,
       prioritizeUnseen,
+      sourceFilter: track.sourceFilter || null,
     })
     navigate('/exam')
   }
@@ -127,7 +132,7 @@ export default function HomePage() {
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-1">PL-300 Exam Simulator</h1>
           <p className="text-gray-400 text-sm">Microsoft Power BI Data Analyst · Passing score: 70%</p>
-          <div className="grid grid-cols-2 gap-2 mt-5 sm:grid-cols-3 lg:grid-cols-7">
+          <div className="grid grid-cols-2 gap-2 mt-5 sm:grid-cols-4 lg:grid-cols-8">
             <button
               onClick={() => navigate('/history')}
               className="flex flex-col items-center gap-1 px-3 py-3 rounded-xl bg-blue-50 border border-blue-100 hover:bg-blue-100 hover:border-blue-200 transition-colors"
@@ -176,6 +181,13 @@ export default function HomePage() {
             >
               <span className="text-sm font-semibold text-orange-700">Data Labs</span>
               <span className="text-xs text-orange-400">Power Query</span>
+            </button>
+            <button
+              onClick={() => navigate('/microsoft-dashboard')}
+              className="flex flex-col items-center gap-1 px-3 py-3 rounded-xl bg-amber-50 border border-amber-100 hover:bg-amber-100 hover:border-amber-200 transition-colors"
+            >
+              <span className="text-sm font-semibold text-amber-700">MS Assessment</span>
+              <span className="text-xs text-amber-400">Official questions</span>
             </button>
           </div>
         </div>

@@ -1,11 +1,14 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import allQuestions from '../data/questions.json'
+import microsoftQuestions from '../data/microsoftPracticeAssessment.json'
 import { EXAM_DOMAINS } from '../services/examBlueprint'
+import { getTrackById } from '../data/examTracks'
 import { generateExam, generateSeed, parseSeed, mulberry32, seededShuffle, shuffleQuestionChoices } from '../services/examGenerator'
 import { getCaseStudyQuestions } from '../services/caseStudyEngine'
 import { isAnswerEmpty } from '../utils/answerUtils'
 
 const allCaseStudyQuestions = getCaseStudyQuestions()
+const allCombinedQuestions = [...allQuestions, ...microsoftQuestions]
 
 const ExamContext = createContext(null)
 
@@ -58,21 +61,30 @@ export function ExamProvider({ children }) {
     0
   )
 
-  function startExam({ questionCount = 10, domains = [], difficulties = [], examMode = 'exam', track = 'full_pl300', seed = null, questionIds = null, prioritizeUnseen = true } = {}) {
+  function startExam({ questionCount = 10, domains = [], difficulties = [], examMode = 'exam', track = 'full_pl300', seed = null, questionIds = null, prioritizeUnseen = true, sourceFilter = null } = {}) {
     const finalSeed = parseSeed(seed) ?? generateSeed()
 
     let selected
     if (questionIds && questionIds.length > 0) {
       const idSet = new Set(questionIds.map(String))
       const pool  = [
-        ...allQuestions.filter(q => idSet.has(String(q.id))),
+        ...allCombinedQuestions.filter(q => idSet.has(String(q.id))),
         ...allCaseStudyQuestions.filter(q => idSet.has(String(q.id))),
       ]
       const rng = mulberry32(finalSeed)
       const shuffled = seededShuffle(pool, rng).map(q => shuffleQuestionChoices(q, finalSeed))
       selected = questionCount === Infinity ? shuffled : shuffled.slice(0, questionCount)
     } else {
-      selected = generateExam(allQuestions, {
+      // Determine question pool based on source filter or track
+      let questionPool = allQuestions
+      const trackObj = getTrackById(track)
+      if (trackObj?.sourceFilter === 'microsoft_practice' || sourceFilter === 'microsoft_practice') {
+        questionPool = microsoftQuestions
+      } else if (sourceFilter === 'all') {
+        questionPool = allCombinedQuestions
+      }
+
+      selected = generateExam(questionPool, {
         questionCount,
         trackId: track,
         domains,
@@ -183,7 +195,7 @@ export function ExamProvider({ children }) {
         answeredCount,
         allDomains: EXAM_DOMAINS,
         allDifficulties,
-        totalAvailable: allQuestions.length,
+        totalAvailable: allCombinedQuestions.length,
         startExam,
         restoreSession,
         discardSavedSession,

@@ -12,6 +12,7 @@ const WalkthroughsPage    = lazy(() => import('./pages/WalkthroughsPage'))
 const TerminologyPage     = lazy(() => import('./pages/TerminologyPage'))
 const RelationshipLabPage = lazy(() => import('./pages/RelationshipLabPage'))
 const DataLabsPage        = lazy(() => import('./pages/DataLabsPage'))
+const MicrosoftDashboardPage = lazy(() => import('./pages/MicrosoftDashboardPage'))
 
 function PageLoader() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
             <Route path="/terminology"       element={<TerminologyPage />} />
             <Route path="/relationship-lab" element={<RelationshipLabPage />} />
             <Route path="/data-labs"        element={<DataLabsPage />} />
+            <Route path="/microsoft-dashboard" element={<MicrosoftDashboardPage />} />
           </Routes>
         </Suspense>
       </BrowserRouter>
