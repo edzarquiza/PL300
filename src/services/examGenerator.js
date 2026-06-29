@@ -242,9 +242,14 @@ export function generateExam(allQuestions, {
   const activeDomains = domains.length > 0 ? domains : trackDomains
   const singleDomain  = activeDomains.length === 1
 
-  // Merge case study questions into the pool
-  const csQuestions = getCaseStudyQuestions()
-  let pool = [...allQuestions, ...csQuestions]
+  // Merge case study questions into the pool (skip for source-filtered tracks like Microsoft)
+  let pool
+  if (track.sourceFilter) {
+    pool = [...allQuestions]
+  } else {
+    const csQuestions = getCaseStudyQuestions()
+    pool = [...allQuestions, ...csQuestions]
+  }
 
   // Domain scope
   if (!singleDomain || domains.length > 0) {
