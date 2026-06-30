@@ -7,8 +7,12 @@
       "Read(//d/d/CLAUDE Projects/PL300/src/components/**)",
       "Read(//d/d/CLAUDE Projects/PL300/src/pages/**)",
       "Skill(code-review)",
-      "Skill(code-review:*)"
+      "Skill(code-review:*)",
+      "Bash(node -e ' *)",
+      "Bash(node scripts/parse-expansion-pack.cjs)",
+      "Bash(node scripts/merge-expansion-pack.cjs)"
     ],
+    "defaultMode": "bypassPermissions",
     "additionalDirectories": [
       "D:\\CLAUDE Projects\\PL300"
     ]

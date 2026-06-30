@@ -1,0 +1,1794 @@
+[
+  {
+    "id": 1,
+    "domainHeader": "Visualize and analyze the data",
+    "difficultyHeader": "Medium",
+    "question": "A finance manager wants to understand how the company’s operating profit changes throughout the fiscal year.\n\nThe report must display:\n- the opening balance,\n- individual monthly increases and decreases,\n- and the ending balance.\n\nWhich visualization should you use?",
+    "choices": [
+      "Clustered column chart",
+      "Line chart",
+      "Scatter chart",
+      "Waterfall chart"
+    ],
+    "correctAnswers": [
+      3
+    ],
+    "explanation": "A waterfall chart is designed to show how sequential positive and negative values contribute to a final total. A is incorrect because a column chart compares values but does not illustrate cumulative increases and decreases. B is incorrect because a line chart emphasizes trends over time. C is incorrect because a scatter chart analyzes relationships between two numeric measures."
+  },
+  {
+    "id": 2,
+    "domainHeader": "Visualize and analyze the data",
+    "difficultyHeader": "Medium",
+    "question": "A sales report must compare revenue across product categories.\n\nSeveral category names are long, and users must be able to read the labels without rotating text or scrolling.\n\nWhich visualization should you use?",
+    "choices": [
+      "Clustered column chart",
+      "Bar chart",
+      "Pie chart",
+      "Gauge"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Bar charts display category labels vertically, making long labels easier to read."
+  },
+  {
+    "id": 3,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report displays sales by Country and City.\n\nUsers need to expand and collapse levels while keeping values in a tabular layout.\n\nWhich visual should you use?",
+    "choices": [
+      "Card",
+      "Matrix",
+      "Treemap",
+      "KPI"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "A Matrix visual supports hierarchical rows and expand/collapse functionality."
+  },
+  {
+    "id": 4,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "Report consumers need to interactively filter every visual on the current report page by Sales Channel.\n\nThe report author should not need to edit filters each time users change their selection.\n\nWhat should you add?",
+    "choices": [
+      "Report-level filter",
+      "Page-level filter",
+      "Slicer",
+      "Bookmark"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "A slicer allows report consumers to change filters interactively."
+  },
+  {
+    "id": 5,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report must display only the current month’s total sales as a single prominent value.\n\nWhich visualization should you use?",
+    "choices": [
+      "Gauge",
+      "Card",
+      "Matrix",
+      "Scatter chart"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "A Card visual displays a single summarized value with minimal visual clutter."
+  },
+  {
+    "id": 6,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "Business users want to understand which factors have the greatest impact on customer churn.\n\nThey need Power BI to identify the strongest contributing attributes automatically.\n\nWhich visual should you use?",
+    "choices": [
+      "Key Influencers",
+      "Ribbon chart",
+      "Pie chart",
+      "Stacked column chart"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Key Influencers identifies factors that most influence a selected metric."
+  },
+  {
+    "id": 7,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "Users want to type questions such as:\n\nTotal sales by region this year\n\nand have Power BI automatically generate an appropriate visualization.\n\nWhich feature should you use?",
+    "choices": [
+      "Smart Narrative",
+      "Q&A visual",
+      "KPI",
+      "Tooltip"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "The Q&A visual allows users to ask questions in natural language and automatically generates visuals."
+  },
+  {
+    "id": 8,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A certified semantic model has already been published.\n\nYour organization has completed its governance review and wants users to immediately recognize it as the trusted, authoritative source for reporting.\n\nWhich endorsement should you apply?",
+    "choices": [
+      "Favorite",
+      "Shared",
+      "Promoted",
+      "Certified"
+    ],
+    "correctAnswers": [
+      3
+    ],
+    "explanation": "Certified endorsement indicates the organization’s authoritative and trusted semantic model. Promoted is intended for useful content that has not yet completed formal certification."
+  },
+  {
+    "id": 9,
+    "domainHeader": "Visualize and analyze the data",
+    "difficultyHeader": "Medium",
+    "question": "A report displays sales by product category. Users need to quickly identify which categories contribute the largest proportion of total sales while also viewing the hierarchy of Category and Subcategory.\n\nWhich visualization should you use?",
+    "choices": [
+      "Treemap",
+      "Pie chart",
+      "Clustered bar chart",
+      "Table"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Treemaps display hierarchical data using nested rectangles whose size represents values. Pie charts do not support hierarchies. Bar charts compare values but do not emphasize hierarchical proportions. Tables show detail but not proportional relationships."
+  },
+  {
+    "id": 10,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A sales manager wants to monitor how opportunities move through each stage of the sales pipeline. The visual should clearly show how many opportunities remain at each stage.\n\nWhich visualization should you use?",
+    "choices": [
+      "Funnel chart",
+      "Waterfall chart",
+      "Scatter chart",
+      "Ribbon chart"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Funnel charts are designed to visualize values across sequential process stages."
+  },
+  {
+    "id": 11,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report must identify whether advertising spend is related to total sales across stores.\n\nWhich visualization should you use?",
+    "choices": [
+      "Scatter chart",
+      "Card",
+      "Matrix",
+      "Gauge"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Scatter charts are used to analyze relationships between two numeric measures."
+  },
+  {
+    "id": 12,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report consumer needs to temporarily focus on one visual during a presentation without changing the report for other users.\n\nWhat should the presenter use?",
+    "choices": [
+      "Spotlight",
+      "Pin visual",
+      "Export data",
+      "Analyze in Excel"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Spotlight enlarges and emphasizes a visual during presentation without creating a dashboard tile."
+  },
+  {
+    "id": 13,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A dashboard contains an important visual that should always display the latest report data. The report already exists.\n\nWhat should you do?",
+    "choices": [
+      "Pin the visual to the dashboard",
+      "Export the visual as an image",
+      "Copy the visual into PowerPoint",
+      "Create a bookmark"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Pinning creates a live dashboard tile that stays connected to the report."
+  },
+  {
+    "id": 14,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "Users frequently ask business questions in meetings. They want Power BI to automatically create visuals from natural-language questions without report redesign.\n\nWhich feature should they use?",
+    "choices": [
+      "Q&A visual",
+      "Smart Narrative",
+      "Tooltip",
+      "KPI"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 15,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report already contains several visuals. Users need a written explanation summarizing key trends and important changes without manually writing text.\n\nWhich feature should you add?",
+    "choices": [
+      "Smart Narrative",
+      "Card",
+      "Table",
+      "Gauge"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Smart Narrative automatically generates textual summaries based on report data."
+  },
+  {
+    "id": 16,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report author wants to verify how a user assigned to a Row-Level Security (RLS) role will see the report before publishing.\n\nWhich feature should be used?",
+    "choices": [
+      "View As",
+      "Performance Analyzer",
+      "Export Data",
+      "Analyze in Excel"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "View As simulates the report experience for selected RLS roles before deployment."
+  },
+  {
+    "id": 17,
+    "domainHeader": "Visualize and analyze the data",
+    "difficultyHeader": "Medium",
+    "question": "A report contains multiple visuals. Selecting a bar in a column chart should highlight the related values in the other visuals instead of hiding unrelated data.\n\nWhich interaction should you configure?",
+    "choices": [
+      "Cross-highlighting",
+      "Cross-filtering",
+      "Drillthrough",
+      "Bookmark"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Cross-highlighting emphasizes related portions of other visuals while retaining the remaining data for comparison. Cross-filtering removes nonmatching data."
+  },
+  {
+    "id": 18,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report page contains several visuals. When users select a category in one visual, all other visuals should display only the matching data.\n\nWhich interaction should you configure?",
+    "choices": [
+      "Cross-filtering",
+      "Cross-highlighting",
+      "Sync slicers",
+      "Tooltip"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Cross-filtering filters related visuals to matching data only."
+  },
+  {
+    "id": 19,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "Users need additional details about a data point without adding more visuals to the report canvas.\n\nWhat should you configure?",
+    "choices": [
+      "Tooltip",
+      "Bookmark",
+      "Drillthrough",
+      "Page filter"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Tooltips display contextual information when users hover over a data point."
+  },
+  {
+    "id": 20,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report contains many visuals. Users frequently need to navigate from a sales summary to a detailed page for the selected customer while preserving filter context.\n\nWhich feature should you use?",
+    "choices": [
+      "Drillthrough",
+      "Bookmark",
+      "Spotlight",
+      "Analyze in Excel"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Drillthrough navigates to a detail page while passing the selected filter context."
+  },
+  {
+    "id": 21,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report author wants to save multiple report views, each with different slicer selections and visual visibility, so users can switch between them with a button.\n\nWhich feature should be used?",
+    "choices": [
+      "Bookmarks",
+      "Tooltips",
+      "Report-level filters",
+      "Perspectives"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Bookmarks capture the current report state, including filters, slicers, and visual visibility."
+  },
+  {
+    "id": 22,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report contains several visuals. Users complain that selecting values in one visual changes another visual unnecessarily.\n\nWhat should the report author modify?",
+    "choices": [
+      "Edit interactions",
+      "Performance Analyzer",
+      "Query reduction",
+      "Conditional formatting"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Edit interactions controls how visuals affect one another through cross-filtering and cross-highlighting."
+  },
+  {
+    "id": 23,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report must display sales values using different background colors based on performance thresholds to make high and low values easier to identify.\n\nWhich feature should you use?",
+    "choices": [
+      "Conditional formatting",
+      "Bookmarks",
+      "Drillthrough",
+      "Smart Narrative"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Conditional formatting dynamically formats values based on rules or measures."
+  },
+  {
+    "id": 24,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report consumer wants to identify performance trends without manually examining every value in a table.\n\nWhich feature provides a visual indication directly within the table cells?",
+    "choices": [
+      "Data bars using conditional formatting",
+      "Page-level filters",
+      "Report tooltips",
+      "Q&A"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Data bars are a conditional formatting option that visually compare values within table or matrix cells while preserving the numeric values."
+  },
+  {
+    "id": 25,
+    "domainHeader": "Prepare the data",
+    "difficultyHeader": "Medium",
+    "question": "A table contains one row per country and separate columns for each month’s sales. Report authors need to analyze sales trends over time.\n\nYou must transform the data so that all monthly sales values are stored in a single column, and another column identifies the month.\n\nWhich Power Query transformation should you use?",
+    "choices": [
+      "Pivot Columns",
+      "Unpivot Columns",
+      "Merge Queries",
+      "Group By"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Unpivot Columns converts multiple columns into attribute-value pairs, creating a Month column and a Sales column."
+  },
+  {
+    "id": 26,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A folder receives one Excel workbook every day. Each workbook has the same structure.\n\nYou need to import all files automatically whenever new workbooks are added to the folder while minimizing maintenance.\n\nWhich Power Query connector should you use?",
+    "choices": [
+      "Excel Workbook",
+      "Folder",
+      "SharePoint List",
+      "Web"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "The Folder connector combines files with the same structure and automatically includes new files during refresh."
+  },
+  {
+    "id": 27,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A data source contains duplicate customer records caused by repeated imports.\n\nBefore loading the data model, you need to keep only one record for each customer.\n\nWhich Power Query transformation should you use?",
+    "choices": [
+      "Group By",
+      "Remove Duplicates",
+      "Replace Values",
+      "Split Column"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 28,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A column named Full Name contains values such as “Maria Santos”.\n\nYou need to create separate First Name and Last Name columns.\n\nWhich transformation should you use?",
+    "choices": [
+      "Merge Columns",
+      "Split Column",
+      "Unpivot Columns",
+      "Fill Down"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 29,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "You have separate Customer and Sales queries. Both contain a CustomerID column.\n\nYou need to append customer details to each sales row.\n\nWhich Power Query operation should you use?",
+    "choices": [
+      "Append Queries",
+      "Merge Queries",
+      "Group By",
+      "Combine Files"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Merge Queries joins tables based on a common key. Append adds rows from similar tables."
+  },
+  {
+    "id": 30,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "Two quarterly sales tables have identical columns.\n\nYou need to create one table that contains all rows from both tables.\n\nWhich operation should you use?",
+    "choices": [
+      "Merge Queries",
+      "Append Queries",
+      "Pivot Columns",
+      "Split Column"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 31,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report uses Order Date values stored as text.\n\nYou need to ensure date calculations and time intelligence functions work correctly.\n\nWhat should you do in Power Query?",
+    "choices": [
+      "Change the column data type to Date",
+      "Rename the column",
+      "Remove duplicates",
+      "Promote headers"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 32,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "You need to understand the quality of imported data by viewing the percentage of valid, empty, and error values in each column.\n\nWhich feature should you enable?",
+    "choices": [
+      "Column distribution",
+      "Column quality",
+      "Column profile",
+      "Query dependencies"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Column Quality displays valid, empty, and error percentages for each column. Column Distribution shows uniqueness and frequency, while Column Profile provides detailed statistics."
+  },
+  {
+    "id": 33,
+    "domainHeader": "Prepare the data",
+    "difficultyHeader": "Medium",
+    "question": "A data source contains blank values in the Product Category column. Each blank value should inherit the most recent nonblank category above it.\n\nWhich Power Query transformation should you use?",
+    "choices": [
+      "Fill Up",
+      "Fill Down",
+      "Replace Values",
+      "Merge Columns"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Fill Down copies the last nonblank value into subsequent blank rows."
+  },
+  {
+    "id": 34,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A sales table contains separate Year and Month columns. You need a single column that combines them into one value before loading the model.\n\nWhich transformation should you use?",
+    "choices": [
+      "Merge Columns",
+      "Split Column",
+      "Group By",
+      "Pivot Column"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Merge Columns combines multiple columns into a single column."
+  },
+  {
+    "id": 35,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A query contains a Status column with values of “Y” and “N”. Business users require the values to appear as “Yes” and “No”.\n\nWhich transformation should you use?",
+    "choices": [
+      "Replace Values",
+      "Conditional Column",
+      "Duplicate Column",
+      "Remove Rows"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 36,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A table contains multiple transactions for each customer. You need one row per customer showing the total sales amount.\n\nWhich transformation should you use?",
+    "choices": [
+      "Remove Duplicates",
+      "Group By",
+      "Append Queries",
+      "Merge Queries"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Group By aggregates rows into summary values such as totals, counts, or averages."
+  },
+  {
+    "id": 37,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "You need to create a new column that classifies sales as “High” when SalesAmount is at least 10000 and “Standard” otherwise.\n\nWhich Power Query feature should you use?",
+    "choices": [
+      "Conditional Column",
+      "Replace Values",
+      "Custom Column",
+      "Column From Examples"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Conditional Column creates values based on IF/THEN logic without writing M code."
+  },
+  {
+    "id": 38,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "You need to review the frequency and uniqueness of values in a column before creating relationships.\n\nWhich data profiling feature should you use?",
+    "choices": [
+      "Column Quality",
+      "Column Distribution",
+      "Column Profile",
+      "Query Dependencies"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Column Distribution displays distinct, unique, and duplicate value information."
+  },
+  {
+    "id": 39,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "You need detailed statistics such as minimum, maximum, average, and value distribution for a selected column.\n\nWhich data profiling feature should you use?",
+    "choices": [
+      "Column Quality",
+      "Column Distribution",
+      "Column Profile",
+      "Keep Errors"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "Column Profile provides detailed profiling statistics for a selected column."
+  },
+  {
+    "id": 40,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A source system occasionally returns invalid values that generate errors during import.\n\nYou need to identify only the rows containing errors so they can be investigated.\n\nWhich transformation should you use?",
+    "choices": [
+      "Remove Errors",
+      "Keep Errors",
+      "Remove Blank Rows",
+      "Replace Errors"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "Keep Errors filters the query to only rows containing errors, making troubleshooting easier."
+  },
+  {
+    "id": 41,
+    "domainHeader": "Model the data",
+    "difficultyHeader": "Medium",
+    "question": "A sales model contains a large Sales table and separate Product, Customer, and Date tables.\n\nYou need to optimize the model for reporting performance while keeping it easy to understand and maintain.\n\nWhich model design should you use?",
+    "choices": [
+      "Third normal form (3NF)",
+      "Snowflake schema",
+      "Star schema",
+      "Single flat table"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "A star schema minimizes relationship complexity and is the recommended model design for Power BI."
+  },
+  {
+    "id": 42,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A Product table contains one row for each product, and a Sales table contains many transactions for each product.\n\nWhat relationship cardinality should you configure?",
+    "choices": [
+      "Many-to-many",
+      "One-to-many",
+      "One-to-one",
+      "Many-to-one from Product to Sales"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "One product can appear in many sales transactions, resulting in a one-to-many relationship from Product to Sales."
+  },
+  {
+    "id": 43,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "Two tables can be related using a unique ProductID column. You need to retrieve Product Name from the Product table into a Sales calculated column.\n\nWhich DAX function should you use?",
+    "choices": [
+      "LOOKUPVALUE",
+      "RELATED",
+      "VALUES",
+      "RELATEDTABLE"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "RELATED retrieves a value from the related table when an active relationship exists."
+  },
+  {
+    "id": 44,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A Sales table and a Manager table do not have a relationship. Both contain a ManagerID column.\n\nYou need to return the manager’s name in a Sales calculated column.\n\nWhich DAX function should you use?",
+    "choices": [
+      "RELATED",
+      "VALUES",
+      "LOOKUPVALUE",
+      "RELATEDTABLE"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "LOOKUPVALUE searches a table using matching columns and does not require a relationship."
+  },
+  {
+    "id": 45,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A Date table contains one row per date. The Sales table contains many transactions for each date.\n\nWhy should the Date table be modeled as a dimension table?",
+    "choices": [
+      "It contains descriptive attributes used for filtering and grouping.",
+      "It contains transaction-level measures.",
+      "It stores calculated measures.",
+      "It reduces the number of visuals required."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 46,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report must analyze sales by both Order Date and Ship Date stored in the same Date table.\n\nOnly one relationship can be active at a time.\n\nWhich DAX function is commonly used to temporarily activate the inactive relationship in a measure?",
+    "choices": [
+      "USERELATIONSHIP",
+      "RELATED",
+      "CROSSFILTER",
+      "TREATAS"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "USERELATIONSHIP activates an inactive relationship during the evaluation of a measure."
+  },
+  {
+    "id": 47,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report author notices ambiguous filter paths between tables.\n\nWhat is the best way to reduce ambiguity in the model?",
+    "choices": [
+      "Configure relationships as single-direction where appropriate.",
+      "Change all relationships to bidirectional.",
+      "Remove all dimension tables.",
+      "Duplicate every fact table."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Single-direction filtering helps avoid ambiguous filter paths and improves model clarity."
+  },
+  {
+    "id": 48,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A dimension table stores Product Category, Product Name, and Brand in the same table instead of splitting them into separate lookup tables.\n\nWhat type of dimension design is this?",
+    "choices": [
+      "Normalized",
+      "Snowflake",
+      "Denormalized",
+      "Bridge"
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "A denormalized dimension stores related descriptive attributes together, reducing joins and supporting the star schema approach."
+  },
+  {
+    "id": 49,
+    "domainHeader": "Model the data",
+    "difficultyHeader": "Medium",
+    "question": "A report contains a measure that returns total sales. Report users apply slicers for Year, Product, and Region.\n\nYou need a measure that always returns total sales for all years while continuing to respect the Product and Region slicers.\n\nWhich DAX function should you use?",
+    "choices": [
+      "FILTER",
+      "ALL(Date)",
+      "VALUES(Date[Year])",
+      "SUMX"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "ALL(Date) removes filters from the Date table while preserving filters from other tables."
+  },
+  {
+    "id": 50,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A measure must calculate Total Sales only for rows where Sales Amount is greater than 1,000.\n\nWhich DAX pattern should you use?",
+    "choices": [
+      "CALCULATE(SUM(Sales[SalesAmount]), FILTER(Sales, Sales[SalesAmount] > 1000))",
+      "SUMX(Sales, Sales[SalesAmount] > 1000)",
+      "VALUES(Sales[SalesAmount])",
+      "DISTINCT(Sales[SalesAmount])"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 51,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A measure needs to return the total number of sales transactions after applying a filter.\n\nWhich function should be used to count the rows?",
+    "choices": [
+      "COUNTROWS",
+      "DISTINCTCOUNT",
+      "COUNT",
+      "SUMX"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 52,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report author needs to return the currently selected Product Category from a slicer. If more than one category is selected, the measure should return Blank.\n\nWhich function should you use?",
+    "choices": [
+      "VALUES",
+      "SELECTEDVALUE",
+      "DISTINCT",
+      "RELATED"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 53,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A measure must calculate Quantity × Unit Price for each sales row before summing the results.\n\nWhich function should you use?",
+    "choices": [
+      "SUM",
+      "SUMX",
+      "COUNTROWS",
+      "CALCULATE"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "SUMX evaluates an expression for each row before aggregating the results."
+  },
+  {
+    "id": 54,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A calculated column needs to return the unique Product Name from a related Product table. An active relationship already exists.\n\nWhich function should you use?",
+    "choices": [
+      "LOOKUPVALUE",
+      "RELATED",
+      "VALUES",
+      "FILTER"
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 55,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A measure should ignore any filter applied to the Product table while respecting all remaining filters.\n\nWhich function should you use inside CALCULATE?",
+    "choices": [
+      "REMOVEFILTERS(Product)",
+      "VALUES(Product)",
+      "DISTINCT(Product[Product])",
+      "RELATED(Product[Product])"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 56,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report contains a Product slicer. A measure uses:\n\nCALCULATE( SUM(Sales[SalesAmount]), Product[Category] = “Bikes” )\n\nWhat happens when a user selects Accessories in the Product Category slicer?",
+    "choices": [
+      "The measure returns Blank.",
+      "The slicer overrides the measure.",
+      "The measure evaluates Bikes because CALCULATE replaces the filter on the same column.",
+      "The measure ignores every slicer on the report."
+    ],
+    "correctAnswers": [
+      2
+    ],
+    "explanation": "CALCULATE replaces existing filters on the same column while preserving filters on other columns unless explicitly removed."
+  },
+  {
+    "id": 57,
+    "domainHeader": "Model the data",
+    "difficultyHeader": "Medium",
+    "question": "A sales manager needs a visual that always shows Year-to-Date sales based on the current filter context.\n\nWhich DAX function is most appropriate?",
+    "choices": [
+      "TOTALYTD",
+      "SUMX",
+      "DATEADD",
+      "COUNTROWS"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "TOTALYTD calculates a cumulative value from the beginning of the year to the current date while respecting the existing filter context."
+  },
+  {
+    "id": 58,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report must compare this year’s sales with the same period last year.\n\nWhich function should you use?",
+    "choices": [
+      "SAMEPERIODLASTYEAR",
+      "VALUES",
+      "FILTER",
+      "DISTINCT"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "SAMEPERIODLASTYEAR shifts the current date context back one year."
+  },
+  {
+    "id": 59,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A measure needs to compare sales to the previous month.\n\nWhich function is commonly used to shift the current date context?",
+    "choices": [
+      "DATEADD",
+      "LOOKUPVALUE",
+      "RELATED",
+      "SUMX"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 60,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "You need to create a calendar table with a fixed start date of January 1, 2022 and an end date of December 31, 2030.\n\nWhich function should you use?",
+    "choices": [
+      "CALENDAR",
+      "CALENDARAUTO",
+      "DATEADD",
+      "DATESYTD"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "CALENDAR creates a date table between specified start and end dates."
+  },
+  {
+    "id": 61,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A model should automatically generate a date table based on the minimum and maximum dates found in the model.\n\nWhich function should you use?",
+    "choices": [
+      "CALENDARAUTO",
+      "CALENDAR",
+      "TODAY",
+      "NOW"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 62,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report contains Order Date and Ship Date relationships to the same Date table. Order Date is active.\n\nYou need a measure that calculates sales by Ship Date.\n\nWhich DAX function should be included?",
+    "choices": [
+      "USERELATIONSHIP",
+      "REMOVEFILTERS",
+      "RELATED",
+      "VALUES"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 63,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report should display cumulative sales for each month so that every month includes the total from previous months.\n\nWhat type of measure should you create?",
+    "choices": [
+      "Running Total",
+      "Distinct Count",
+      "Average",
+      "Median"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "A running total accumulates values across the selected date sequence."
+  },
+  {
+    "id": 64,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A developer creates a calculated column using TODAY() and expects it to change immediately when a report consumer changes a slicer.\n\nWhy does the value not change?",
+    "choices": [
+      "Calculated columns are evaluated during data refresh, not when slicers change.",
+      "TODAY() cannot be used in calculated columns.",
+      "Slicers affect calculated columns before measures.",
+      "TODAY() only works in DirectQuery."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Calculated columns are computed during data refresh. Measures respond to filter context created by slicers."
+  },
+  {
+    "id": 65,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "Deploy and maintain assets Medium\n\nA development team needs a collaborative location where report authors can publish, update, and manage Power BI content before it is shared with business users.\n\nWhich Power BI feature should they use?",
+    "choices": [
+      "Workspace",
+      "Dashboard",
+      "App",
+      "My Workspace"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "A workspace provides collaborative authoring and content management for teams. Dashboards and apps are consumer-facing, while My Workspace is intended for personal content."
+  },
+  {
+    "id": 66,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A finance department wants to distribute a curated collection of reports and dashboards to hundreds of users. Users should receive read-only access and should not modify the original content.\n\nWhich feature should you use?",
+    "choices": [
+      "Publish an app",
+      "Share individual reports",
+      "Export to PDF",
+      "Copy the workspace"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Apps provide a managed, read-only experience for large groups of consumers."
+  },
+  {
+    "id": 67,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report author publishes a new version of a report to a workspace. Business users should not see the changes until testing is complete.\n\nWhat should the report author do?",
+    "choices": [
+      "Republish the app after validation",
+      "Share the report immediately",
+      "Pin the report to a dashboard",
+      "Export the report"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 68,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "Several reports use the same semantic model. You need to update the data once and have every report reflect the latest information after refresh.\n\nWhat should the reports use?",
+    "choices": [
+      "A shared semantic model",
+      "Separate imported datasets",
+      "Individual Excel files",
+      "Local CSV files"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Multiple reports can connect to the same semantic model, ensuring consistent data and calculations."
+  },
+  {
+    "id": 69,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report consumer needs permission to create their own reports from an existing semantic model without changing the semantic model itself.\n\nWhich permission should be granted?",
+    "choices": [
+      "Build",
+      "Contributor",
+      "Member",
+      "Admin"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Build permission allows users to create new reports using an existing semantic model."
+  },
+  {
+    "id": 70,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report author wants to share a report with a single colleague for review rather than with an entire department.\n\nWhich option is most appropriate?",
+    "choices": [
+      "Share the report",
+      "Publish an app",
+      "Export to PowerPoint",
+      "Create a new workspace"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 71,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "Your organization wants users to easily discover trusted semantic models that have completed formal governance review.\n\nWhich endorsement should be applied?",
+    "choices": [
+      "Certified",
+      "Promoted",
+      "Shared",
+      "Favorite"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 72,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report has been pinned to a dashboard. The underlying report is refreshed with new data.\n\nHow does the dashboard behave?",
+    "choices": [
+      "The dashboard tile reflects the refreshed data.",
+      "The dashboard must be recreated.",
+      "The dashboard tile never changes.",
+      "Users must repin the visual after every refresh."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Pinned dashboard tiles remain connected to the source report and update after the semantic model refreshes."
+  },
+  {
+    "id": 73,
+    "domainHeader": "Deploy and maintain assets",
+    "difficultyHeader": "Medium",
+    "question": "Your Power BI semantic model uses an on-premises SQL Server database.\n\nYou need to configure scheduled refresh in the Power BI Service while minimizing changes to the existing environment.\n\nWhich component must you install?",
+    "choices": [
+      "On-premises data gateway",
+      "Power BI Desktop",
+      "Personal OneDrive gateway",
+      "Report Server"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "An on-premises data gateway securely transfers data between Power BI Service and on-premises data sources."
+  },
+  {
+    "id": 74,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A scheduled refresh fails after the SQL Server password is changed.\n\nWhat should you do first?",
+    "choices": [
+      "Update the data source credentials in the Power BI Service.",
+      "Republish the report.",
+      "Reinstall Power BI Desktop.",
+      "Recreate the workspace."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 75,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report must restrict each regional manager so they can view only data for their own sales region.\n\nWhich feature should you configure?",
+    "choices": [
+      "Row-Level Security (RLS)",
+      "Object-Level Security",
+      "Conditional formatting",
+      "Perspectives"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "RLS filters data for users based on defined security roles."
+  },
+  {
+    "id": 76,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "Before publishing a report, you need to verify how users assigned to an RLS role will see the data.\n\nWhich feature should you use?",
+    "choices": [
+      "View As",
+      "Analyze in Excel",
+      "Performance Analyzer",
+      "Export Data"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 77,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A semantic model uses Import storage mode.\n\nBusiness users require the latest data every morning at 7:00 AM.\n\nWhat should you configure?",
+    "choices": [
+      "Scheduled refresh",
+      "Live connection",
+      "Cross-highlighting",
+      "Drillthrough"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 78,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A semantic model connects to an Azure SQL Database by using DirectQuery.\n\nA sales transaction is committed to the source database.\n\nWhen will the report display the new value?",
+    "choices": [
+      "After the next scheduled refresh.",
+      "The next time the visual sends a query to the source.",
+      "Only after republishing the report.",
+      "Only after clearing the report cache."
+    ],
+    "correctAnswers": [
+      1
+    ],
+    "explanation": "DirectQuery retrieves data from the source when visuals are queried instead of storing imported data."
+  },
+  {
+    "id": 79,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A scheduled refresh succeeds for cloud data sources but fails for an on-premises SQL Server database.\n\nThe gateway is online.\n\nWhich configuration should you verify next?",
+    "choices": [
+      "The data source mapping and credentials in the gateway.",
+      "The report theme.",
+      "The visual interactions.",
+      "The bookmark settings."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 80,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report author wants to minimize the number of users who can edit reports while allowing most users to consume content.\n\nWhat is the recommended approach?",
+    "choices": [
+      "Publish an app for report consumers.",
+      "Make every user a workspace Member.",
+      "Give every user Build permission on the workspace.",
+      "Share the PBIX file."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Apps provide a controlled, read-only experience for consumers while limiting editing permissions to workspace collaborators."
+  },
+  {
+    "id": 81,
+    "domainHeader": "Deploy and maintain assets",
+    "difficultyHeader": "Medium",
+    "question": "A report takes several seconds to update each time users change a slicer.\n\nYou need to identify which visuals and DAX queries consume the most time during rendering.\n\nWhich feature should you use?",
+    "choices": [
+      "Performance Analyzer",
+      "View As",
+      "Query Dependencies",
+      "Column Profile"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Performance Analyzer records the duration of visual rendering, DAX queries, and other report activities to help identify bottlenecks."
+  },
+  {
+    "id": 82,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A semantic model is refreshed nightly. Business users rarely need data newer than the last refresh.\n\nYou need to maximize report query performance.\n\nWhich storage mode should you choose?",
+    "choices": [
+      "Import",
+      "DirectQuery",
+      "Live Connection",
+      "Dual"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Import mode stores data in memory, providing the fastest report performance for most analytical workloads."
+  },
+  {
+    "id": 83,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report must always display the latest data immediately after transactions are committed to the source system.\n\nWhich storage mode should you use?",
+    "choices": [
+      "DirectQuery",
+      "Import",
+      "Dual",
+      "Live Connection to Excel"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "DirectQuery retrieves data directly from the source each time visuals execute queries."
+  },
+  {
+    "id": 84,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A semantic model contains both frequently queried dimension tables and a large fact table that uses DirectQuery.\n\nWhich storage mode can improve performance for the dimension tables?",
+    "choices": [
+      "Dual",
+      "Import",
+      "DirectQuery",
+      "Live"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Dual mode allows dimension tables to behave as Import or DirectQuery depending on the query, improving composite model performance."
+  },
+  {
+    "id": 85,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A large fact table receives new sales records every day.\n\nHistorical data rarely changes.\n\nYou need to reduce refresh time while keeping recent data current.\n\nWhich feature should you configure?",
+    "choices": [
+      "Incremental refresh",
+      "Scheduled refresh",
+      "Query reduction",
+      "Automatic page refresh"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Incremental refresh refreshes only the configured recent partitions instead of reloading the entire table."
+  },
+  {
+    "id": 86,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "Before configuring incremental refresh, which requirement must the Power Query table satisfy?",
+    "choices": [
+      "It must contain a date or datetime column that can be filtered using RangeStart and RangeEnd parameters.",
+      "It must use DirectQuery storage mode.",
+      "It must contain only numeric columns.",
+      "It must have no relationships."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Incremental refresh requires Power Query parameters and a filter on a date/datetime column."
+  },
+  {
+    "id": 87,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report contains several slicers. Users frequently change multiple slicers before applying filters.\n\nYou need to reduce unnecessary queries sent while users make selections.\n\nWhich report option should you enable?",
+    "choices": [
+      "Add an Apply button to slicers (Query reduction)",
+      "Disable cross-filtering",
+      "Turn off Auto Date/Time",
+      "Enable drillthrough"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Query reduction allows users to apply multiple slicer changes together, reducing unnecessary queries."
+  },
+  {
+    "id": 88,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report author notices that one visual takes significantly longer to render than the others.\n\nWhat should be the first step before redesigning the report?",
+    "choices": [
+      "Use Performance Analyzer to identify the cause.",
+      "Delete the visual.",
+      "Change every measure to a calculated column.",
+      "Convert the semantic model to DirectQuery."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Performance Analyzer should be used first to identify the root cause before making optimization changes."
+  },
+  {
+    "id": 89,
+    "domainHeader": "Integrated Scenario",
+    "difficultyHeader": "Medium",
+    "question": "A retail company stores five years of sales history in an on-premises SQL Server database.\n\nBusiness users require:\n- the fastest possible report performance,\n- data refreshed every morning at 6:00 AM,\n- no requirement for real-time reporting.\n\nWhich combination best satisfies the requirements?",
+    "choices": [
+      "Import mode with a scheduled refresh through an on-premises data gateway.",
+      "DirectQuery with automatic page refresh.",
+      "Live connection to Excel.",
+      "Dual mode without a gateway."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Import mode provides the best query performance for analytical workloads. Because the source is on-premises, a gateway is required for scheduled refresh."
+  },
+  {
+    "id": 90,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A semantic model contains Sales, Product, Customer, and Date tables. Product attributes are stored in a separate Category table, creating additional relationships.\n\nYou need to improve report performance while simplifying the model.\n\nWhat should you do?",
+    "choices": [
+      "Convert the model to a star schema by denormalizing the Product dimension.",
+      "Create bidirectional relationships between all tables.",
+      "Replace dimensions with calculated tables.",
+      "Combine every table into one flat table."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 91,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report author needs to calculate sales using Ship Date instead of the active Order Date relationship.\n\nWhich approach should be used?",
+    "choices": [
+      "Create a measure using USERELATIONSHIP().",
+      "Replace the Date table.",
+      "Delete the active relationship.",
+      "Use RELATED() inside every visual."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 92,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report contains a Product slicer and a Region slicer.\n\nA measure must always calculate sales for the Bikes category while continuing to respect the selected Region.\n\nWhich DAX pattern is most appropriate?",
+    "choices": [
+      "CALCULATE([Total Sales], Product[Category]=“Bikes”)",
+      "ALL(Sales)",
+      "VALUES(Product[Category])",
+      "DISTINCT(Product[Category])"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 93,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "Users need to compare this year’s sales against the same period last year in a line chart.\n\nWhich DAX function is most appropriate?",
+    "choices": [
+      "SAMEPERIODLASTYEAR",
+      "COUNTROWS",
+      "LOOKUPVALUE",
+      "REMOVEFILTERS"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 94,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report contains many visuals. Users frequently modify three slicers before analyzing results.\n\nYou need to minimize unnecessary queries while users are making selections.\n\nWhat should you configure?",
+    "choices": [
+      "Query reduction by adding an Apply button to slicers.",
+      "Disable all visual interactions.",
+      "Convert every slicer into a page filter.",
+      "Replace slicers with bookmarks."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 95,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "Business users should receive a curated collection of reports without edit permissions.\n\nWhat should you publish?",
+    "choices": [
+      "Power BI app",
+      "Workspace",
+      "PBIX file",
+      "Dashboard copy"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 96,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report using Import storage mode must display newly loaded data every morning after the warehouse ETL process completes.\n\nWhat should you configure?",
+    "choices": [
+      "Scheduled refresh",
+      "Automatic page refresh",
+      "DirectQuery",
+      "Q&A visual"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Scheduled refresh reloads imported data after the source system has been updated."
+  },
+  {
+    "id": 97,
+    "domainHeader": "Integrated Scenario",
+    "difficultyHeader": "Medium",
+    "question": "A report uses an imported semantic model. Users complain that a table visual is slow to render.\n\nBefore changing the data model or DAX measures, what should you do first?",
+    "choices": [
+      "Use Performance Analyzer to identify the source of the delay.",
+      "Convert the model to DirectQuery.",
+      "Replace all measures with calculated columns.",
+      "Delete the visual."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Performance Analyzer should be used first to determine whether the delay is caused by DAX, visual rendering, or another factor."
+  },
+  {
+    "id": 98,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A sales report must allow users to filter data by Product Category on multiple report pages. When users move between pages, the same selection should remain applied.\n\nWhich feature should you configure?",
+    "choices": [
+      "Sync slicers",
+      "Bookmarks",
+      "Report-level filters",
+      "Drillthrough"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Sync slicers keeps slicer selections consistent across report pages."
+  },
+  {
+    "id": 99,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A semantic model contains Customer and Sales tables with an active relationship.\n\nA measure needs to count the number of customers that placed at least one order after report filters are applied.\n\nWhich DAX pattern is most appropriate?",
+    "choices": [
+      "COUNTROWS(VALUES(Customer[CustomerID]))",
+      "SUM(Customer[CustomerID])",
+      "RELATED(Customer[CustomerID])",
+      "DISTINCTCOUNT(Sales[SalesAmount])"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 100,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report consumer needs to compare sales by Region and Product Category while expanding and collapsing hierarchy levels.\n\nWhich visual should you use?",
+    "choices": [
+      "Matrix",
+      "Card",
+      "Gauge",
+      "Funnel"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 101,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "You need to combine monthly sales files that are automatically saved to the same network folder every day.\n\nThe solution should require no query changes when new files are added.\n\nWhich connector should you use?",
+    "choices": [
+      "Folder",
+      "Excel Workbook",
+      "CSV",
+      "Web"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 102,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A semantic model contains an inactive relationship between Sales and Date using Ship Date.\n\nMost measures use Order Date.\n\nOnly one measure should use Ship Date.\n\nWhich approach is best?",
+    "choices": [
+      "Use USERELATIONSHIP in the specific measure.",
+      "Make both relationships active.",
+      "Delete the Order Date relationship.",
+      "Duplicate the Sales table."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 103,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A finance report must always display the selected year’s revenue together with the previous year’s revenue.\n\nWhich DAX function is most appropriate for the previous-year calculation?",
+    "choices": [
+      "SAMEPERIODLASTYEAR",
+      "TODAY",
+      "RELATED",
+      "VALUES"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 104,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A department publishes reports for hundreds of users.\n\nThe content should be centrally managed, and report consumers should automatically receive updates after validation.\n\nWhat should the department publish?",
+    "choices": [
+      "Power BI app",
+      "Individual shared reports",
+      "PBIX files",
+      "Personal workspaces"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Publishing an app provides a managed distribution method for curated content while allowing authors to update content before republishing."
+  },
+  {
+    "id": 105,
+    "domainHeader": "Integrated Scenario",
+    "difficultyHeader": "Medium",
+    "question": "A sales report contains a Product table related to a Sales table.\n\nReport users need to compare sales by Product Category. The model should minimize storage, simplify DAX, and provide the best query performance.\n\nWhich design should you choose?",
+    "choices": [
+      "Create a star schema with Product as a dimension table.",
+      "Store Product information in the Sales fact table.",
+      "Create a many-to-many relationship between Product and Sales.",
+      "Split Product into multiple normalized lookup tables."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "A star schema with a separate Product dimension simplifies DAX, reduces redundancy in the fact table, and provides optimal performance."
+  },
+  {
+    "id": 106,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report contains a Year slicer. A measure must always display the grand total across all years while continuing to respect Product and Region filters.\n\nWhich DAX pattern should you use?",
+    "choices": [
+      "CALCULATE([Total Sales], ALL(‘Date’))",
+      "SUMX(ALL(Sales), Sales[SalesAmount])",
+      "VALUES(‘Date’[Year])",
+      "DISTINCT(‘Date’[Year])"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "ALL removes filters from the Date table only, preserving filters from unrelated dimensions."
+  },
+  {
+    "id": 107,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A company imports customer data from two source systems that use the same column structure.\n\nYou need one query containing every customer from both systems.\n\nWhich Power Query operation should you use?",
+    "choices": [
+      "Append Queries",
+      "Merge Queries",
+      "Group By",
+      "Pivot Columns"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 108,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "Business users want to identify products whose sales have increased or decreased compared to the previous year.\n\nWhich combination best satisfies the requirement?",
+    "choices": [
+      "Create a SAMEPERIODLASTYEAR measure and display it in a line or column chart.",
+      "Use a Card visual with Total Sales.",
+      "Use DISTINCTCOUNT on Product.",
+      "Use LOOKUPVALUE to retrieve last year’s sales."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 109,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A workspace contains reports under development. Only report authors should edit content, while business users should consume approved reports.\n\nWhat is the recommended deployment approach?",
+    "choices": [
+      "Develop in a workspace and publish a Power BI app for consumers.",
+      "Share the workspace with all business users as Members.",
+      "Send PBIX files to users after each update.",
+      "Publish reports to each author’s My Workspace."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Workspaces support collaboration, while apps provide controlled distribution to report consumers."
+  },
+  {
+    "id": 110,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A semantic model refreshes successfully, but users continue to see outdated values in a dashboard tile.\n\nWhat should you verify first?",
+    "choices": [
+      "The dashboard tile is pinned to the refreshed report and semantic model.",
+      "The workspace name.",
+      "The report theme.",
+      "The bookmark configuration."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Dashboard tiles remain live only when pinned to the correct report and semantic model."
+  },
+  {
+    "id": 111,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report contains several slicers. Users often change multiple selections before reviewing results.\n\nWhat feature minimizes unnecessary queries sent to the semantic model?",
+    "choices": [
+      "Query reduction using an Apply button",
+      "Automatic page refresh",
+      "Cross-highlighting",
+      "Drillthrough"
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": ""
+  },
+  {
+    "id": 112,
+    "domainHeader": null,
+    "difficultyHeader": null,
+    "question": "A report must display Total Sales, Year-to-Date Sales, and Previous Year Sales together.\n\nThe solution should reuse existing measures whenever possible.\n\nWhich approach is most appropriate?",
+    "choices": [
+      "Create separate measures that reference existing base measures and use time-intelligence functions.",
+      "Create calculated columns for each calculation.",
+      "Duplicate the Sales table.",
+      "Import the data multiple times."
+    ],
+    "correctAnswers": [
+      0
+    ],
+    "explanation": "Time-intelligence measures are reusable, dynamic, and respond to filter context, unlike calculated columns."
+  }
+]

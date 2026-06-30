@@ -1,0 +1,2027 @@
+PL-300 Microsoft Practice Assessment Expansion
+
+Batch 1A (Questions 1–8)
+
+  Design goal: These questions are derived from concepts and distractors
+  found in the Microsoft PL-300 Practice Assessment. They are new
+  questions, not rewrites, and follow Microsoft’s scenario-first style.
+
+------------------------------------------------------------------------
+
+Question 1
+
+Visualize and analyze the data
+Medium
+
+A finance manager wants to understand how the company’s operating profit
+changes throughout the fiscal year.
+
+The report must display: - the opening balance, - individual monthly
+increases and decreases, - and the ending balance.
+
+Which visualization should you use?
+
+A. Clustered column chart
+B. Line chart
+C. Scatter chart
+D. Waterfall chart
+
+Answer: D
+
+Explanation
+
+A waterfall chart is designed to show how sequential positive and
+negative values contribute to a final total.
+
+-   A is incorrect because a column chart compares values but does not
+    illustrate cumulative increases and decreases.
+-   B is incorrect because a line chart emphasizes trends over time.
+-   C is incorrect because a scatter chart analyzes relationships
+    between two numeric measures.
+
+------------------------------------------------------------------------
+
+Question 2
+
+Visualize and analyze the data
+Medium
+
+A sales report must compare revenue across product categories.
+
+Several category names are long, and users must be able to read the
+labels without rotating text or scrolling.
+
+Which visualization should you use?
+
+A. Clustered column chart
+B. Bar chart
+C. Pie chart
+D. Gauge
+
+Answer: B
+
+Explanation
+
+Bar charts display category labels vertically, making long labels easier
+to read.
+
+------------------------------------------------------------------------
+
+Question 3
+
+A report displays sales by Country and City.
+
+Users need to expand and collapse levels while keeping values in a
+tabular layout.
+
+Which visual should you use?
+
+A. Card
+B. Matrix
+C. Treemap
+D. KPI
+
+Answer: B
+
+Explanation
+
+A Matrix visual supports hierarchical rows and expand/collapse
+functionality.
+
+------------------------------------------------------------------------
+
+Question 4
+
+Report consumers need to interactively filter every visual on the
+current report page by Sales Channel.
+
+The report author should not need to edit filters each time users change
+their selection.
+
+What should you add?
+
+A. Report-level filter
+B. Page-level filter
+C. Slicer
+D. Bookmark
+
+Answer: C
+
+Explanation
+
+A slicer allows report consumers to change filters interactively.
+
+------------------------------------------------------------------------
+
+Question 5
+
+A report must display only the current month’s total sales as a single
+prominent value.
+
+Which visualization should you use?
+
+A. Gauge
+B. Card
+C. Matrix
+D. Scatter chart
+
+Answer: B
+
+Explanation
+
+A Card visual displays a single summarized value with minimal visual
+clutter.
+
+------------------------------------------------------------------------
+
+Question 6
+
+Business users want to understand which factors have the greatest impact
+on customer churn.
+
+They need Power BI to identify the strongest contributing attributes
+automatically.
+
+Which visual should you use?
+
+A. Key Influencers
+B. Ribbon chart
+C. Pie chart
+D. Stacked column chart
+
+Answer: A
+
+Explanation
+
+Key Influencers identifies factors that most influence a selected
+metric.
+
+------------------------------------------------------------------------
+
+Question 7
+
+Users want to type questions such as:
+
+  Total sales by region this year
+
+and have Power BI automatically generate an appropriate visualization.
+
+Which feature should you use?
+
+A. Smart Narrative
+B. Q&A visual
+C. KPI
+D. Tooltip
+
+Answer: B
+
+Explanation
+
+The Q&A visual allows users to ask questions in natural language and
+automatically generates visuals.
+
+------------------------------------------------------------------------
+
+Question 8
+
+A certified semantic model has already been published.
+
+Your organization has completed its governance review and wants users to
+immediately recognize it as the trusted, authoritative source for
+reporting.
+
+Which endorsement should you apply?
+
+A. Favorite
+B. Shared
+C. Promoted
+D. Certified
+
+Answer: D
+
+Explanation
+
+Certified endorsement indicates the organization’s authoritative and
+trusted semantic model.
+
+Promoted is intended for useful content that has not yet completed
+formal certification.
+
+
+
+PL-300 Microsoft Practice Assessment Expansion
+
+Batch 1B (Questions 9–16)
+
+Question 9
+
+Visualize and analyze the data
+Medium
+
+A report displays sales by product category. Users need to quickly
+identify which categories contribute the largest proportion of total
+sales while also viewing the hierarchy of Category and Subcategory.
+
+Which visualization should you use?
+
+A. Treemap B. Pie chart C. Clustered bar chart D. Table
+
+Answer: A
+
+Explanation Treemaps display hierarchical data using nested rectangles
+whose size represents values. - Pie charts do not support hierarchies. -
+Bar charts compare values but do not emphasize hierarchical
+proportions. - Tables show detail but not proportional relationships.
+
+------------------------------------------------------------------------
+
+Question 10
+
+A sales manager wants to monitor how opportunities move through each
+stage of the sales pipeline. The visual should clearly show how many
+opportunities remain at each stage.
+
+Which visualization should you use?
+
+A. Funnel chart B. Waterfall chart C. Scatter chart D. Ribbon chart
+
+Answer: A
+
+Explanation Funnel charts are designed to visualize values across
+sequential process stages.
+
+------------------------------------------------------------------------
+
+Question 11
+
+A report must identify whether advertising spend is related to total
+sales across stores.
+
+Which visualization should you use?
+
+A. Scatter chart B. Card C. Matrix D. Gauge
+
+Answer: A
+
+Explanation Scatter charts are used to analyze relationships between two
+numeric measures.
+
+------------------------------------------------------------------------
+
+Question 12
+
+A report consumer needs to temporarily focus on one visual during a
+presentation without changing the report for other users.
+
+What should the presenter use?
+
+A. Spotlight B. Pin visual C. Export data D. Analyze in Excel
+
+Answer: A
+
+Explanation Spotlight enlarges and emphasizes a visual during
+presentation without creating a dashboard tile.
+
+------------------------------------------------------------------------
+
+Question 13
+
+A dashboard contains an important visual that should always display the
+latest report data. The report already exists.
+
+What should you do?
+
+A. Pin the visual to the dashboard B. Export the visual as an image C.
+Copy the visual into PowerPoint D. Create a bookmark
+
+Answer: A
+
+Explanation Pinning creates a live dashboard tile that stays connected
+to the report.
+
+------------------------------------------------------------------------
+
+Question 14
+
+Users frequently ask business questions in meetings. They want Power BI
+to automatically create visuals from natural-language questions without
+report redesign.
+
+Which feature should they use?
+
+A. Q&A visual B. Smart Narrative C. Tooltip D. KPI
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 15
+
+A report already contains several visuals. Users need a written
+explanation summarizing key trends and important changes without
+manually writing text.
+
+Which feature should you add?
+
+A. Smart Narrative B. Card C. Table D. Gauge
+
+Answer: A
+
+Explanation Smart Narrative automatically generates textual summaries
+based on report data.
+
+------------------------------------------------------------------------
+
+Question 16
+
+A report author wants to verify how a user assigned to a Row-Level
+Security (RLS) role will see the report before publishing.
+
+Which feature should be used?
+
+A. View As B. Performance Analyzer C. Export Data D. Analyze in Excel
+
+Answer: A
+
+Explanation View As simulates the report experience for selected RLS
+roles before deployment.
+
+
+
+PL-300 Microsoft Practice Assessment Expansion
+
+Batch 1C (Questions 17–24)
+
+Question 17
+
+Visualize and analyze the data
+Medium
+
+A report contains multiple visuals. Selecting a bar in a column chart
+should highlight the related values in the other visuals instead of
+hiding unrelated data.
+
+Which interaction should you configure?
+
+A. Cross-highlighting B. Cross-filtering C. Drillthrough D. Bookmark
+
+Answer: A
+
+Explanation Cross-highlighting emphasizes related portions of other
+visuals while retaining the remaining data for comparison.
+Cross-filtering removes nonmatching data.
+
+------------------------------------------------------------------------
+
+Question 18
+
+A report page contains several visuals. When users select a category in
+one visual, all other visuals should display only the matching data.
+
+Which interaction should you configure?
+
+A. Cross-filtering B. Cross-highlighting C. Sync slicers D. Tooltip
+
+Answer: A
+
+Explanation Cross-filtering filters related visuals to matching data
+only.
+
+------------------------------------------------------------------------
+
+Question 19
+
+Users need additional details about a data point without adding more
+visuals to the report canvas.
+
+What should you configure?
+
+A. Tooltip B. Bookmark C. Drillthrough D. Page filter
+
+Answer: A
+
+Explanation Tooltips display contextual information when users hover
+over a data point.
+
+------------------------------------------------------------------------
+
+Question 20
+
+A report contains many visuals. Users frequently need to navigate from a
+sales summary to a detailed page for the selected customer while
+preserving filter context.
+
+Which feature should you use?
+
+A. Drillthrough B. Bookmark C. Spotlight D. Analyze in Excel
+
+Answer: A
+
+Explanation Drillthrough navigates to a detail page while passing the
+selected filter context.
+
+------------------------------------------------------------------------
+
+Question 21
+
+A report author wants to save multiple report views, each with different
+slicer selections and visual visibility, so users can switch between
+them with a button.
+
+Which feature should be used?
+
+A. Bookmarks B. Tooltips C. Report-level filters D. Perspectives
+
+Answer: A
+
+Explanation Bookmarks capture the current report state, including
+filters, slicers, and visual visibility.
+
+------------------------------------------------------------------------
+
+Question 22
+
+A report contains several visuals. Users complain that selecting values
+in one visual changes another visual unnecessarily.
+
+What should the report author modify?
+
+A. Edit interactions B. Performance Analyzer C. Query reduction D.
+Conditional formatting
+
+Answer: A
+
+Explanation Edit interactions controls how visuals affect one another
+through cross-filtering and cross-highlighting.
+
+------------------------------------------------------------------------
+
+Question 23
+
+A report must display sales values using different background colors
+based on performance thresholds to make high and low values easier to
+identify.
+
+Which feature should you use?
+
+A. Conditional formatting B. Bookmarks C. Drillthrough D. Smart
+Narrative
+
+Answer: A
+
+Explanation Conditional formatting dynamically formats values based on
+rules or measures.
+
+------------------------------------------------------------------------
+
+Question 24
+
+A report consumer wants to identify performance trends without manually
+examining every value in a table.
+
+Which feature provides a visual indication directly within the table
+cells?
+
+A. Data bars using conditional formatting B. Page-level filters C.
+Report tooltips D. Q&A
+
+Answer: A
+
+Explanation Data bars are a conditional formatting option that visually
+compare values within table or matrix cells while preserving the numeric
+values.
+
+
+PL-300 Microsoft Practice Assessment Expansion
+
+Batch 2A (Data Preparation & Power Query)
+
+Question 25
+
+Prepare the data
+Medium
+
+A table contains one row per country and separate columns for each
+month’s sales. Report authors need to analyze sales trends over time.
+
+You must transform the data so that all monthly sales values are stored
+in a single column, and another column identifies the month.
+
+Which Power Query transformation should you use?
+
+A. Pivot Columns B. Unpivot Columns C. Merge Queries D. Group By
+
+Answer: B
+
+Explanation Unpivot Columns converts multiple columns into
+attribute-value pairs, creating a Month column and a Sales column.
+
+------------------------------------------------------------------------
+
+Question 26
+
+A folder receives one Excel workbook every day. Each workbook has the
+same structure.
+
+You need to import all files automatically whenever new workbooks are
+added to the folder while minimizing maintenance.
+
+Which Power Query connector should you use?
+
+A. Excel Workbook B. Folder C. SharePoint List D. Web
+
+Answer: B
+
+Explanation The Folder connector combines files with the same structure
+and automatically includes new files during refresh.
+
+------------------------------------------------------------------------
+
+Question 27
+
+A data source contains duplicate customer records caused by repeated
+imports.
+
+Before loading the data model, you need to keep only one record for each
+customer.
+
+Which Power Query transformation should you use?
+
+A. Group By B. Remove Duplicates C. Replace Values D. Split Column
+
+Answer: B
+
+------------------------------------------------------------------------
+
+Question 28
+
+A column named Full Name contains values such as “Maria Santos”.
+
+You need to create separate First Name and Last Name columns.
+
+Which transformation should you use?
+
+A. Merge Columns B. Split Column C. Unpivot Columns D. Fill Down
+
+Answer: B
+
+------------------------------------------------------------------------
+
+Question 29
+
+You have separate Customer and Sales queries. Both contain a CustomerID
+column.
+
+You need to append customer details to each sales row.
+
+Which Power Query operation should you use?
+
+A. Append Queries B. Merge Queries C. Group By D. Combine Files
+
+Answer: B
+
+Explanation Merge Queries joins tables based on a common key. Append
+adds rows from similar tables.
+
+------------------------------------------------------------------------
+
+Question 30
+
+Two quarterly sales tables have identical columns.
+
+You need to create one table that contains all rows from both tables.
+
+Which operation should you use?
+
+A. Merge Queries B. Append Queries C. Pivot Columns D. Split Column
+
+Answer: B
+
+------------------------------------------------------------------------
+
+Question 31
+
+A report uses Order Date values stored as text.
+
+You need to ensure date calculations and time intelligence functions
+work correctly.
+
+What should you do in Power Query?
+
+A. Change the column data type to Date B. Rename the column C. Remove
+duplicates D. Promote headers
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 32
+
+You need to understand the quality of imported data by viewing the
+percentage of valid, empty, and error values in each column.
+
+Which feature should you enable?
+
+A. Column distribution B. Column quality C. Column profile D. Query
+dependencies
+
+Answer: B
+
+Explanation Column Quality displays valid, empty, and error percentages
+for each column. Column Distribution shows uniqueness and frequency,
+while Column Profile provides detailed statistics.
+
+
+PL-300 Microsoft Practice Assessment Expansion
+
+Batch 2B (Data Preparation & Power Query)
+
+Question 33
+
+Prepare the data
+Medium
+
+A data source contains blank values in the Product Category column. Each
+blank value should inherit the most recent nonblank category above it.
+
+Which Power Query transformation should you use?
+
+A. Fill Up B. Fill Down C. Replace Values D. Merge Columns
+
+Answer: B
+
+Explanation Fill Down copies the last nonblank value into subsequent
+blank rows.
+
+------------------------------------------------------------------------
+
+Question 34
+
+A sales table contains separate Year and Month columns. You need a
+single column that combines them into one value before loading the
+model.
+
+Which transformation should you use?
+
+A. Merge Columns B. Split Column C. Group By D. Pivot Column
+
+Answer: A
+
+Explanation Merge Columns combines multiple columns into a single
+column.
+
+------------------------------------------------------------------------
+
+Question 35
+
+A query contains a Status column with values of “Y” and “N”. Business
+users require the values to appear as “Yes” and “No”.
+
+Which transformation should you use?
+
+A. Replace Values B. Conditional Column C. Duplicate Column D. Remove
+Rows
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 36
+
+A table contains multiple transactions for each customer. You need one
+row per customer showing the total sales amount.
+
+Which transformation should you use?
+
+A. Remove Duplicates B. Group By C. Append Queries D. Merge Queries
+
+Answer: B
+
+Explanation Group By aggregates rows into summary values such as totals,
+counts, or averages.
+
+------------------------------------------------------------------------
+
+Question 37
+
+You need to create a new column that classifies sales as “High” when
+SalesAmount is at least 10000 and “Standard” otherwise.
+
+Which Power Query feature should you use?
+
+A. Conditional Column B. Replace Values C. Custom Column D. Column From
+Examples
+
+Answer: A
+
+Explanation Conditional Column creates values based on IF/THEN logic
+without writing M code.
+
+------------------------------------------------------------------------
+
+Question 38
+
+You need to review the frequency and uniqueness of values in a column
+before creating relationships.
+
+Which data profiling feature should you use?
+
+A. Column Quality B. Column Distribution C. Column Profile D. Query
+Dependencies
+
+Answer: B
+
+Explanation Column Distribution displays distinct, unique, and duplicate
+value information.
+
+------------------------------------------------------------------------
+
+Question 39
+
+You need detailed statistics such as minimum, maximum, average, and
+value distribution for a selected column.
+
+Which data profiling feature should you use?
+
+A. Column Quality B. Column Distribution C. Column Profile D. Keep
+Errors
+
+Answer: C
+
+Explanation Column Profile provides detailed profiling statistics for a
+selected column.
+
+------------------------------------------------------------------------
+
+Question 40
+
+A source system occasionally returns invalid values that generate errors
+during import.
+
+You need to identify only the rows containing errors so they can be
+investigated.
+
+Which transformation should you use?
+
+A. Remove Errors B. Keep Errors C. Remove Blank Rows D. Replace Errors
+
+Answer: B
+
+Explanation Keep Errors filters the query to only rows containing
+errors, making troubleshooting easier.
+
+
+
+PL-300 Microsoft Practice Assessment Expansion
+
+Batch 3A (Data Modeling & Relationships)
+
+Question 41
+
+Model the data
+Medium
+
+A sales model contains a large Sales table and separate Product,
+Customer, and Date tables.
+
+You need to optimize the model for reporting performance while keeping
+it easy to understand and maintain.
+
+Which model design should you use?
+
+A. Third normal form (3NF) B. Snowflake schema C. Star schema D. Single
+flat table
+
+Answer: C
+
+Explanation A star schema minimizes relationship complexity and is the
+recommended model design for Power BI.
+
+------------------------------------------------------------------------
+
+Question 42
+
+A Product table contains one row for each product, and a Sales table
+contains many transactions for each product.
+
+What relationship cardinality should you configure?
+
+A. Many-to-many B. One-to-many C. One-to-one D. Many-to-one from Product
+to Sales
+
+Answer: B
+
+Explanation One product can appear in many sales transactions, resulting
+in a one-to-many relationship from Product to Sales.
+
+------------------------------------------------------------------------
+
+Question 43
+
+Two tables can be related using a unique ProductID column. You need to
+retrieve Product Name from the Product table into a Sales calculated
+column.
+
+Which DAX function should you use?
+
+A. LOOKUPVALUE B. RELATED C. VALUES D. RELATEDTABLE
+
+Answer: B
+
+Explanation RELATED retrieves a value from the related table when an
+active relationship exists.
+
+------------------------------------------------------------------------
+
+Question 44
+
+A Sales table and a Manager table do not have a relationship. Both
+contain a ManagerID column.
+
+You need to return the manager’s name in a Sales calculated column.
+
+Which DAX function should you use?
+
+A. RELATED B. VALUES C. LOOKUPVALUE D. RELATEDTABLE
+
+Answer: C
+
+Explanation LOOKUPVALUE searches a table using matching columns and does
+not require a relationship.
+
+------------------------------------------------------------------------
+
+Question 45
+
+A Date table contains one row per date. The Sales table contains many
+transactions for each date.
+
+Why should the Date table be modeled as a dimension table?
+
+A. It contains descriptive attributes used for filtering and grouping.
+B. It contains transaction-level measures. C. It stores calculated
+measures. D. It reduces the number of visuals required.
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 46
+
+A report must analyze sales by both Order Date and Ship Date stored in
+the same Date table.
+
+Only one relationship can be active at a time.
+
+Which DAX function is commonly used to temporarily activate the inactive
+relationship in a measure?
+
+A. USERELATIONSHIP B. RELATED C. CROSSFILTER D. TREATAS
+
+Answer: A
+
+Explanation USERELATIONSHIP activates an inactive relationship during
+the evaluation of a measure.
+
+------------------------------------------------------------------------
+
+Question 47
+
+A report author notices ambiguous filter paths between tables.
+
+What is the best way to reduce ambiguity in the model?
+
+A. Configure relationships as single-direction where appropriate. B.
+Change all relationships to bidirectional. C. Remove all dimension
+tables. D. Duplicate every fact table.
+
+Answer: A
+
+Explanation Single-direction filtering helps avoid ambiguous filter
+paths and improves model clarity.
+
+------------------------------------------------------------------------
+
+Question 48
+
+A dimension table stores Product Category, Product Name, and Brand in
+the same table instead of splitting them into separate lookup tables.
+
+What type of dimension design is this?
+
+A. Normalized B. Snowflake C. Denormalized D. Bridge
+
+Answer: C
+
+Explanation A denormalized dimension stores related descriptive
+attributes together, reducing joins and supporting the star schema
+approach.
+
+PL-300 Microsoft Practice Assessment Expansion
+
+Batch 3B (Core DAX)
+
+Question 49
+
+Model the data
+Medium
+
+A report contains a measure that returns total sales. Report users apply
+slicers for Year, Product, and Region.
+
+You need a measure that always returns total sales for all years while
+continuing to respect the Product and Region slicers.
+
+Which DAX function should you use?
+
+A. FILTER B. ALL(Date) C. VALUES(Date[Year]) D. SUMX
+
+Answer: B
+
+Explanation ALL(Date) removes filters from the Date table while
+preserving filters from other tables.
+
+------------------------------------------------------------------------
+
+Question 50
+
+A measure must calculate Total Sales only for rows where Sales Amount is
+greater than 1,000.
+
+Which DAX pattern should you use?
+
+A. CALCULATE(SUM(Sales[SalesAmount]), FILTER(Sales, Sales[SalesAmount] >
+1000)) B. SUMX(Sales, Sales[SalesAmount] > 1000) C.
+VALUES(Sales[SalesAmount]) D. DISTINCT(Sales[SalesAmount])
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 51
+
+A measure needs to return the total number of sales transactions after
+applying a filter.
+
+Which function should be used to count the rows?
+
+A. COUNTROWS B. DISTINCTCOUNT C. COUNT D. SUMX
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 52
+
+A report author needs to return the currently selected Product Category
+from a slicer. If more than one category is selected, the measure should
+return Blank.
+
+Which function should you use?
+
+A. VALUES B. SELECTEDVALUE C. DISTINCT D. RELATED
+
+Answer: B
+
+------------------------------------------------------------------------
+
+Question 53
+
+A measure must calculate Quantity × Unit Price for each sales row before
+summing the results.
+
+Which function should you use?
+
+A. SUM B. SUMX C. COUNTROWS D. CALCULATE
+
+Answer: B
+
+Explanation SUMX evaluates an expression for each row before aggregating
+the results.
+
+------------------------------------------------------------------------
+
+Question 54
+
+A calculated column needs to return the unique Product Name from a
+related Product table. An active relationship already exists.
+
+Which function should you use?
+
+A. LOOKUPVALUE B. RELATED C. VALUES D. FILTER
+
+Answer: B
+
+------------------------------------------------------------------------
+
+Question 55
+
+A measure should ignore any filter applied to the Product table while
+respecting all remaining filters.
+
+Which function should you use inside CALCULATE?
+
+A. REMOVEFILTERS(Product) B. VALUES(Product) C.
+DISTINCT(Product[Product]) D. RELATED(Product[Product])
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 56
+
+A report contains a Product slicer. A measure uses:
+
+CALCULATE( SUM(Sales[SalesAmount]), Product[Category] = “Bikes” )
+
+What happens when a user selects Accessories in the Product Category
+slicer?
+
+A. The measure returns Blank. B. The slicer overrides the measure. C.
+The measure evaluates Bikes because CALCULATE replaces the filter on the
+same column. D. The measure ignores every slicer on the report.
+
+Answer: C
+
+Explanation CALCULATE replaces existing filters on the same column while
+preserving filters on other columns unless explicitly removed.
+
+
+
+PL-300 Microsoft Practice Assessment Expansion
+
+Batch 3C (Time Intelligence & Advanced DAX)
+
+Question 57
+
+Model the data
+Medium
+
+A sales manager needs a visual that always shows Year-to-Date sales
+based on the current filter context.
+
+Which DAX function is most appropriate?
+
+A. TOTALYTD B. SUMX C. DATEADD D. COUNTROWS
+
+Answer: A
+
+Explanation TOTALYTD calculates a cumulative value from the beginning of
+the year to the current date while respecting the existing filter
+context.
+
+------------------------------------------------------------------------
+
+Question 58
+
+A report must compare this year’s sales with the same period last year.
+
+Which function should you use?
+
+A. SAMEPERIODLASTYEAR B. VALUES C. FILTER D. DISTINCT
+
+Answer: A
+
+Explanation SAMEPERIODLASTYEAR shifts the current date context back one
+year.
+
+------------------------------------------------------------------------
+
+Question 59
+
+A measure needs to compare sales to the previous month.
+
+Which function is commonly used to shift the current date context?
+
+A. DATEADD B. LOOKUPVALUE C. RELATED D. SUMX
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 60
+
+You need to create a calendar table with a fixed start date of January
+1, 2022 and an end date of December 31, 2030.
+
+Which function should you use?
+
+A. CALENDAR B. CALENDARAUTO C. DATEADD D. DATESYTD
+
+Answer: A
+
+Explanation CALENDAR creates a date table between specified start and
+end dates.
+
+------------------------------------------------------------------------
+
+Question 61
+
+A model should automatically generate a date table based on the minimum
+and maximum dates found in the model.
+
+Which function should you use?
+
+A. CALENDARAUTO B. CALENDAR C. TODAY D. NOW
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 62
+
+A report contains Order Date and Ship Date relationships to the same
+Date table. Order Date is active.
+
+You need a measure that calculates sales by Ship Date.
+
+Which DAX function should be included?
+
+A. USERELATIONSHIP B. REMOVEFILTERS C. RELATED D. VALUES
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 63
+
+A report should display cumulative sales for each month so that every
+month includes the total from previous months.
+
+What type of measure should you create?
+
+A. Running Total B. Distinct Count C. Average D. Median
+
+Answer: A
+
+Explanation A running total accumulates values across the selected date
+sequence.
+
+------------------------------------------------------------------------
+
+Question 64
+
+A developer creates a calculated column using TODAY() and expects it to
+change immediately when a report consumer changes a slicer.
+
+Why does the value not change?
+
+A. Calculated columns are evaluated during data refresh, not when
+slicers change. B. TODAY() cannot be used in calculated columns. C.
+Slicers affect calculated columns before measures. D. TODAY() only works
+in DirectQuery.
+
+Answer: A
+
+Explanation Calculated columns are computed during data refresh.
+Measures respond to filter context created by slicers.
+
+
+PL-300 Microsoft Practice Assessment Expansion
+
+Batch 4A (Power BI Service, Workspaces & Collaboration)
+
+Question 65
+
+Deploy and maintain assets Medium
+
+A development team needs a collaborative location where report authors
+can publish, update, and manage Power BI content before it is shared
+with business users.
+
+Which Power BI feature should they use?
+
+A. Workspace B. Dashboard C. App D. My Workspace
+
+Answer: A
+
+Explanation A workspace provides collaborative authoring and content
+management for teams. Dashboards and apps are consumer-facing, while My
+Workspace is intended for personal content.
+
+------------------------------------------------------------------------
+
+Question 66
+
+A finance department wants to distribute a curated collection of reports
+and dashboards to hundreds of users. Users should receive read-only
+access and should not modify the original content.
+
+Which feature should you use?
+
+A. Publish an app B. Share individual reports C. Export to PDF D. Copy
+the workspace
+
+Answer: A
+
+Explanation Apps provide a managed, read-only experience for large
+groups of consumers.
+
+------------------------------------------------------------------------
+
+Question 67
+
+A report author publishes a new version of a report to a workspace.
+Business users should not see the changes until testing is complete.
+
+What should the report author do?
+
+A. Republish the app after validation B. Share the report immediately C.
+Pin the report to a dashboard D. Export the report
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 68
+
+Several reports use the same semantic model. You need to update the data
+once and have every report reflect the latest information after refresh.
+
+What should the reports use?
+
+A. A shared semantic model B. Separate imported datasets C. Individual
+Excel files D. Local CSV files
+
+Answer: A
+
+Explanation Multiple reports can connect to the same semantic model,
+ensuring consistent data and calculations.
+
+------------------------------------------------------------------------
+
+Question 69
+
+A report consumer needs permission to create their own reports from an
+existing semantic model without changing the semantic model itself.
+
+Which permission should be granted?
+
+A. Build B. Contributor C. Member D. Admin
+
+Answer: A
+
+Explanation Build permission allows users to create new reports using an
+existing semantic model.
+
+------------------------------------------------------------------------
+
+Question 70
+
+A report author wants to share a report with a single colleague for
+review rather than with an entire department.
+
+Which option is most appropriate?
+
+A. Share the report B. Publish an app C. Export to PowerPoint D. Create
+a new workspace
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 71
+
+Your organization wants users to easily discover trusted semantic models
+that have completed formal governance review.
+
+Which endorsement should be applied?
+
+A. Certified B. Promoted C. Shared D. Favorite
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 72
+
+A report has been pinned to a dashboard. The underlying report is
+refreshed with new data.
+
+How does the dashboard behave?
+
+A. The dashboard tile reflects the refreshed data. B. The dashboard must
+be recreated. C. The dashboard tile never changes. D. Users must repin
+the visual after every refresh.
+
+Answer: A
+
+Explanation Pinned dashboard tiles remain connected to the source report
+and update after the semantic model refreshes.
+
+
+
+PL-300 Microsoft Practice Assessment Expansion
+
+Batch 4B (Security, Refresh & Gateways)
+
+Question 73
+
+Deploy and maintain assets
+Medium
+
+Your Power BI semantic model uses an on-premises SQL Server database.
+
+You need to configure scheduled refresh in the Power BI Service while
+minimizing changes to the existing environment.
+
+Which component must you install?
+
+A. On-premises data gateway B. Power BI Desktop C. Personal OneDrive
+gateway D. Report Server
+
+Answer: A
+
+Explanation An on-premises data gateway securely transfers data between
+Power BI Service and on-premises data sources.
+
+------------------------------------------------------------------------
+
+Question 74
+
+A scheduled refresh fails after the SQL Server password is changed.
+
+What should you do first?
+
+A. Update the data source credentials in the Power BI Service. B.
+Republish the report. C. Reinstall Power BI Desktop. D. Recreate the
+workspace.
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 75
+
+A report must restrict each regional manager so they can view only data
+for their own sales region.
+
+Which feature should you configure?
+
+A. Row-Level Security (RLS) B. Object-Level Security C. Conditional
+formatting D. Perspectives
+
+Answer: A
+
+Explanation RLS filters data for users based on defined security roles.
+
+------------------------------------------------------------------------
+
+Question 76
+
+Before publishing a report, you need to verify how users assigned to an
+RLS role will see the data.
+
+Which feature should you use?
+
+A. View As B. Analyze in Excel C. Performance Analyzer D. Export Data
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 77
+
+A semantic model uses Import storage mode.
+
+Business users require the latest data every morning at 7:00 AM.
+
+What should you configure?
+
+A. Scheduled refresh B. Live connection C. Cross-highlighting D.
+Drillthrough
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 78
+
+A semantic model connects to an Azure SQL Database by using DirectQuery.
+
+A sales transaction is committed to the source database.
+
+When will the report display the new value?
+
+A. After the next scheduled refresh. B. The next time the visual sends a
+query to the source. C. Only after republishing the report. D. Only
+after clearing the report cache.
+
+Answer: B
+
+Explanation DirectQuery retrieves data from the source when visuals are
+queried instead of storing imported data.
+
+------------------------------------------------------------------------
+
+Question 79
+
+A scheduled refresh succeeds for cloud data sources but fails for an
+on-premises SQL Server database.
+
+The gateway is online.
+
+Which configuration should you verify next?
+
+A. The data source mapping and credentials in the gateway. B. The report
+theme. C. The visual interactions. D. The bookmark settings.
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 80
+
+A report author wants to minimize the number of users who can edit
+reports while allowing most users to consume content.
+
+What is the recommended approach?
+
+A. Publish an app for report consumers. B. Make every user a workspace
+Member. C. Give every user Build permission on the workspace. D. Share
+the PBIX file.
+
+Answer: A
+
+Explanation Apps provide a controlled, read-only experience for
+consumers while limiting editing permissions to workspace collaborators.
+
+PL-300 Microsoft Practice Assessment Expansion
+
+Batch 4C (Performance Optimization & Storage)
+
+Question 81
+
+Deploy and maintain assets
+Medium
+
+A report takes several seconds to update each time users change a
+slicer.
+
+You need to identify which visuals and DAX queries consume the most time
+during rendering.
+
+Which feature should you use?
+
+A. Performance Analyzer B. View As C. Query Dependencies D. Column
+Profile
+
+Answer: A
+
+Explanation Performance Analyzer records the duration of visual
+rendering, DAX queries, and other report activities to help identify
+bottlenecks.
+
+------------------------------------------------------------------------
+
+Question 82
+
+A semantic model is refreshed nightly. Business users rarely need data
+newer than the last refresh.
+
+You need to maximize report query performance.
+
+Which storage mode should you choose?
+
+A. Import B. DirectQuery C. Live Connection D. Dual
+
+Answer: A
+
+Explanation Import mode stores data in memory, providing the fastest
+report performance for most analytical workloads.
+
+------------------------------------------------------------------------
+
+Question 83
+
+A report must always display the latest data immediately after
+transactions are committed to the source system.
+
+Which storage mode should you use?
+
+A. DirectQuery B. Import C. Dual D. Live Connection to Excel
+
+Answer: A
+
+Explanation DirectQuery retrieves data directly from the source each
+time visuals execute queries.
+
+------------------------------------------------------------------------
+
+Question 84
+
+A semantic model contains both frequently queried dimension tables and a
+large fact table that uses DirectQuery.
+
+Which storage mode can improve performance for the dimension tables?
+
+A. Dual B. Import C. DirectQuery D. Live
+
+Answer: A
+
+Explanation Dual mode allows dimension tables to behave as Import or
+DirectQuery depending on the query, improving composite model
+performance.
+
+------------------------------------------------------------------------
+
+Question 85
+
+A large fact table receives new sales records every day.
+
+Historical data rarely changes.
+
+You need to reduce refresh time while keeping recent data current.
+
+Which feature should you configure?
+
+A. Incremental refresh B. Scheduled refresh C. Query reduction D.
+Automatic page refresh
+
+Answer: A
+
+Explanation Incremental refresh refreshes only the configured recent
+partitions instead of reloading the entire table.
+
+------------------------------------------------------------------------
+
+Question 86
+
+Before configuring incremental refresh, which requirement must the Power
+Query table satisfy?
+
+A. It must contain a date or datetime column that can be filtered using
+RangeStart and RangeEnd parameters. B. It must use DirectQuery storage
+mode. C. It must contain only numeric columns. D. It must have no
+relationships.
+
+Answer: A
+
+Explanation Incremental refresh requires Power Query parameters and a
+filter on a date/datetime column.
+
+------------------------------------------------------------------------
+
+Question 87
+
+A report contains several slicers. Users frequently change multiple
+slicers before applying filters.
+
+You need to reduce unnecessary queries sent while users make selections.
+
+Which report option should you enable?
+
+A. Add an Apply button to slicers (Query reduction) B. Disable
+cross-filtering C. Turn off Auto Date/Time D. Enable drillthrough
+
+Answer: A
+
+Explanation Query reduction allows users to apply multiple slicer
+changes together, reducing unnecessary queries.
+
+------------------------------------------------------------------------
+
+Question 88
+
+A report author notices that one visual takes significantly longer to
+render than the others.
+
+What should be the first step before redesigning the report?
+
+A. Use Performance Analyzer to identify the cause. B. Delete the visual.
+C. Change every measure to a calculated column. D. Convert the semantic
+model to DirectQuery.
+
+Answer: A
+
+Explanation Performance Analyzer should be used first to identify the
+root cause before making optimization changes.
+
+
+
+PL-300 Microsoft Practice Assessment Expansion
+
+Batch 5A (Integrated Decision Scenarios)
+
+Question 89
+
+Integrated Scenario
+Medium
+
+A retail company stores five years of sales history in an on-premises
+SQL Server database.
+
+Business users require: - the fastest possible report performance, -
+data refreshed every morning at 6:00 AM, - no requirement for real-time
+reporting.
+
+Which combination best satisfies the requirements?
+
+A. Import mode with a scheduled refresh through an on-premises data
+gateway. B. DirectQuery with automatic page refresh. C. Live connection
+to Excel. D. Dual mode without a gateway.
+
+Answer: A
+
+Explanation Import mode provides the best query performance for
+analytical workloads. Because the source is on-premises, a gateway is
+required for scheduled refresh.
+
+------------------------------------------------------------------------
+
+Question 90
+
+A semantic model contains Sales, Product, Customer, and Date tables.
+Product attributes are stored in a separate Category table, creating
+additional relationships.
+
+You need to improve report performance while simplifying the model.
+
+What should you do?
+
+A. Convert the model to a star schema by denormalizing the Product
+dimension. B. Create bidirectional relationships between all tables. C.
+Replace dimensions with calculated tables. D. Combine every table into
+one flat table.
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 91
+
+A report author needs to calculate sales using Ship Date instead of the
+active Order Date relationship.
+
+Which approach should be used?
+
+A. Create a measure using USERELATIONSHIP(). B. Replace the Date table.
+C. Delete the active relationship. D. Use RELATED() inside every visual.
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 92
+
+A report contains a Product slicer and a Region slicer.
+
+A measure must always calculate sales for the Bikes category while
+continuing to respect the selected Region.
+
+Which DAX pattern is most appropriate?
+
+A. CALCULATE([Total Sales], Product[Category]=“Bikes”) B. ALL(Sales) C.
+VALUES(Product[Category]) D. DISTINCT(Product[Category])
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 93
+
+Users need to compare this year’s sales against the same period last
+year in a line chart.
+
+Which DAX function is most appropriate?
+
+A. SAMEPERIODLASTYEAR B. COUNTROWS C. LOOKUPVALUE D. REMOVEFILTERS
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 94
+
+A report contains many visuals. Users frequently modify three slicers
+before analyzing results.
+
+You need to minimize unnecessary queries while users are making
+selections.
+
+What should you configure?
+
+A. Query reduction by adding an Apply button to slicers. B. Disable all
+visual interactions. C. Convert every slicer into a page filter. D.
+Replace slicers with bookmarks.
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 95
+
+Business users should receive a curated collection of reports without
+edit permissions.
+
+What should you publish?
+
+A. Power BI app B. Workspace C. PBIX file D. Dashboard copy
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 96
+
+A report using Import storage mode must display newly loaded data every
+morning after the warehouse ETL process completes.
+
+What should you configure?
+
+A. Scheduled refresh B. Automatic page refresh C. DirectQuery D. Q&A
+visual
+
+Answer: A
+
+Explanation Scheduled refresh reloads imported data after the source
+system has been updated.
+
+PL-300 Microsoft Practice Assessment Expansion
+
+Batch 5B (Integrated Decision Scenarios II)
+
+Question 97
+
+Integrated Scenario
+Medium
+
+A report uses an imported semantic model. Users complain that a table
+visual is slow to render.
+
+Before changing the data model or DAX measures, what should you do
+first?
+
+A. Use Performance Analyzer to identify the source of the delay. B.
+Convert the model to DirectQuery. C. Replace all measures with
+calculated columns. D. Delete the visual.
+
+Answer: A
+
+Explanation Performance Analyzer should be used first to determine
+whether the delay is caused by DAX, visual rendering, or another factor.
+
+------------------------------------------------------------------------
+
+Question 98
+
+A sales report must allow users to filter data by Product Category on
+multiple report pages. When users move between pages, the same selection
+should remain applied.
+
+Which feature should you configure?
+
+A. Sync slicers B. Bookmarks C. Report-level filters D. Drillthrough
+
+Answer: A
+
+Explanation Sync slicers keeps slicer selections consistent across
+report pages.
+
+------------------------------------------------------------------------
+
+Question 99
+
+A semantic model contains Customer and Sales tables with an active
+relationship.
+
+A measure needs to count the number of customers that placed at least
+one order after report filters are applied.
+
+Which DAX pattern is most appropriate?
+
+A. COUNTROWS(VALUES(Customer[CustomerID])) B. SUM(Customer[CustomerID])
+C. RELATED(Customer[CustomerID]) D. DISTINCTCOUNT(Sales[SalesAmount])
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 100
+
+A report consumer needs to compare sales by Region and Product Category
+while expanding and collapsing hierarchy levels.
+
+Which visual should you use?
+
+A. Matrix B. Card C. Gauge D. Funnel
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 101
+
+You need to combine monthly sales files that are automatically saved to
+the same network folder every day.
+
+The solution should require no query changes when new files are added.
+
+Which connector should you use?
+
+A. Folder B. Excel Workbook C. CSV D. Web
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 102
+
+A semantic model contains an inactive relationship between Sales and
+Date using Ship Date.
+
+Most measures use Order Date.
+
+Only one measure should use Ship Date.
+
+Which approach is best?
+
+A. Use USERELATIONSHIP in the specific measure. B. Make both
+relationships active. C. Delete the Order Date relationship. D.
+Duplicate the Sales table.
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 103
+
+A finance report must always display the selected year’s revenue
+together with the previous year’s revenue.
+
+Which DAX function is most appropriate for the previous-year
+calculation?
+
+A. SAMEPERIODLASTYEAR B. TODAY C. RELATED D. VALUES
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 104
+
+A department publishes reports for hundreds of users.
+
+The content should be centrally managed, and report consumers should
+automatically receive updates after validation.
+
+What should the department publish?
+
+A. Power BI app B. Individual shared reports C. PBIX files D. Personal
+workspaces
+
+Answer: A
+
+Explanation Publishing an app provides a managed distribution method for
+curated content while allowing authors to update content before
+republishing.
+
+
+PL-300 Microsoft Practice Assessment Expansion
+
+Batch 5C (Advanced Integrated Scenarios)
+
+Question 105
+
+Integrated Scenario
+Medium
+
+A sales report contains a Product table related to a Sales table.
+
+Report users need to compare sales by Product Category. The model should
+minimize storage, simplify DAX, and provide the best query performance.
+
+Which design should you choose?
+
+A. Create a star schema with Product as a dimension table. B. Store
+Product information in the Sales fact table. C. Create a many-to-many
+relationship between Product and Sales. D. Split Product into multiple
+normalized lookup tables.
+
+Answer: A
+
+Explanation A star schema with a separate Product dimension simplifies
+DAX, reduces redundancy in the fact table, and provides optimal
+performance.
+
+------------------------------------------------------------------------
+
+Question 106
+
+A report contains a Year slicer. A measure must always display the grand
+total across all years while continuing to respect Product and Region
+filters.
+
+Which DAX pattern should you use?
+
+A. CALCULATE([Total Sales], ALL(‘Date’)) B. SUMX(ALL(Sales),
+Sales[SalesAmount]) C. VALUES(‘Date’[Year]) D. DISTINCT(‘Date’[Year])
+
+Answer: A
+
+Explanation ALL removes filters from the Date table only, preserving
+filters from unrelated dimensions.
+
+------------------------------------------------------------------------
+
+Question 107
+
+A company imports customer data from two source systems that use the
+same column structure.
+
+You need one query containing every customer from both systems.
+
+Which Power Query operation should you use?
+
+A. Append Queries B. Merge Queries C. Group By D. Pivot Columns
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 108
+
+Business users want to identify products whose sales have increased or
+decreased compared to the previous year.
+
+Which combination best satisfies the requirement?
+
+A. Create a SAMEPERIODLASTYEAR measure and display it in a line or
+column chart. B. Use a Card visual with Total Sales. C. Use
+DISTINCTCOUNT on Product. D. Use LOOKUPVALUE to retrieve last year’s
+sales.
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 109
+
+A workspace contains reports under development. Only report authors
+should edit content, while business users should consume approved
+reports.
+
+What is the recommended deployment approach?
+
+A. Develop in a workspace and publish a Power BI app for consumers. B.
+Share the workspace with all business users as Members. C. Send PBIX
+files to users after each update. D. Publish reports to each author’s My
+Workspace.
+
+Answer: A
+
+Explanation Workspaces support collaboration, while apps provide
+controlled distribution to report consumers.
+
+------------------------------------------------------------------------
+
+Question 110
+
+A semantic model refreshes successfully, but users continue to see
+outdated values in a dashboard tile.
+
+What should you verify first?
+
+A. The dashboard tile is pinned to the refreshed report and semantic
+model. B. The workspace name. C. The report theme. D. The bookmark
+configuration.
+
+Answer: A
+
+Explanation Dashboard tiles remain live only when pinned to the correct
+report and semantic model.
+
+------------------------------------------------------------------------
+
+Question 111
+
+A report contains several slicers. Users often change multiple
+selections before reviewing results.
+
+What feature minimizes unnecessary queries sent to the semantic model?
+
+A. Query reduction using an Apply button B. Automatic page refresh C.
+Cross-highlighting D. Drillthrough
+
+Answer: A
+
+------------------------------------------------------------------------
+
+Question 112
+
+A report must display Total Sales, Year-to-Date Sales, and Previous Year
+Sales together.
+
+The solution should reuse existing measures whenever possible.
+
+Which approach is most appropriate?
+
+A. Create separate measures that reference existing base measures and
+use time-intelligence functions. B. Create calculated columns for each
+calculation. C. Duplicate the Sales table. D. Import the data multiple
+times.
+
+Answer: A
+
+Explanation Time-intelligence measures are reusable, dynamic, and
+respond to filter context, unlike calculated columns.
