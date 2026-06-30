@@ -6750,5 +6750,39 @@
     "originFile": "MS PL300 Exam wordings.txt",
     "questionGroupId": "ms_unique_10213",
     "variantId": "ms_pa_101"
+  },
+  {
+    "id": 10214,
+    "type": "multi",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Calculated Columns vs Measures",
+    "difficulty": "Medium",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "understanding",
+    "question": "You create a data model in Power BI Desktop that contains DAX calculated columns and measures. You now need to create a report.\n\nIn which two places can a DAX calculated column be used, but a DAX calculated measure cannot be used? Each correct answer presents a complete solution.",
+    "choices": [
+      "as a filter in the \"Filters on this page\" well of the Filters pane",
+      "as a filter in the \"Filters on this visual\" well of the Filters pane",
+      "as an item in the \"Add drill-through fields here\" well of the Visualizations pane",
+      "as an item in the Fields well of a slicer"
+    ],
+    "correctAnswers": [
+      0,
+      3
+    ],
+    "explanation": "Unlike a measure, a calculated column can be used in a slicer to place filter options on the report page. DAX measures cannot be placed in the \"Filters on this page\" well. They can only be placed per visual, in the \"Filters on this visual\" well of the Filters Pane. Both DAX columns and measures may be used as a visual-level filter. Both DAX columns and measures can be used in the drillthrough well.",
+    "estimatedTimeSeconds": 120,
+    "tags": [
+      "Calculated Columns",
+      "Measures",
+      "Filters Pane",
+      "Slicers"
+    ],
+    "source": "Microsoft Practice Assessment",
+    "officialStyle": true,
+    "isOfficialMicrosoft": true,
+    "originFile": "MS PL300 Exam wordings.txt",
+    "questionGroupId": "ms_unique_10214",
+    "variantId": "ms_pa_102"
   }
 ]
