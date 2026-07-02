@@ -86,6 +86,21 @@ export const EXAM_TRACKS = [
     defaultQuestionCount: 50,
     isOfficial: true,
   },
+  {
+    id: 'interactive_practice',
+    name: 'Interactive Practice',
+    description: 'Drag-and-drop matching and step-ordering questions only',
+    color: 'sky',
+    domainWeights: {
+      'Prepare the data': 0.25,
+      'Model the data': 0.25,
+      'Visualize and analyze the data': 0.25,
+      'Manage and secure Power BI': 0.25,
+    },
+    tagFilter: null,
+    typeFilter: ['drag_drop', 'rearrange_steps'],
+    defaultQuestionCount: 10,
+  },
 ]
 
 export const TRACK_COLORS = {
@@ -96,6 +111,7 @@ export const TRACK_COLORS = {
   teal:   { border: 'border-teal-500',   bg: 'bg-teal-50',   text: 'text-teal-700',   dot: 'bg-teal-500'   },
   red:    { border: 'border-red-500',    bg: 'bg-red-50',    text: 'text-red-700',    dot: 'bg-red-500'    },
   amber:  { border: 'border-amber-500', bg: 'bg-amber-50', text: 'text-amber-700', dot: 'bg-amber-500' },
+  sky:    { border: 'border-sky-500',   bg: 'bg-sky-50',   text: 'text-sky-700',   dot: 'bg-sky-500'   },
 }
 
 export function getTrackById(id) {

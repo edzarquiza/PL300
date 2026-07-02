@@ -10,7 +10,12 @@
       "Skill(code-review:*)",
       "Bash(node -e ' *)",
       "Bash(node scripts/parse-expansion-pack.cjs)",
-      "Bash(node scripts/merge-expansion-pack.cjs)"
+      "Bash(node scripts/merge-expansion-pack.cjs)",
+      "Bash(sed 's/\"id\": //')",
+      "Bash(npm run *)",
+      "Bash(curl -s http://localhost:5199)",
+      "Skill(update-config)",
+      "Skill(update-config:*)"
     ],
     "defaultMode": "bypassPermissions",
     "additionalDirectories": [

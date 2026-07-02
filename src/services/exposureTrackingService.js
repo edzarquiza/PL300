@@ -112,6 +112,9 @@ export function getTrackPool(allQuestions, track, msQuestions) {
   if (track.tagFilter && track.tagExclusive) {
     pool = pool.filter(q => q.tags?.some(t => track.tagFilter.includes(t)))
   }
+  if (track.typeFilter?.length > 0) {
+    pool = pool.filter(q => track.typeFilter.includes(q.type))
+  }
   return pool
 }
 

@@ -28818,5 +28818,410 @@
     ],
     "questionGroupId": "ms_distractor_alert_email",
     "variantId": "msd_alertemail_01"
+  },
+  {
+    "id": 583,
+    "type": "rearrange_steps",
+    "domain": "Prepare the data",
+    "subtopic": "Incremental refresh",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application",
+    "examObjective": "Prepare the data > Configure data loading for queries",
+    "commonTrap": "Creating the parameters after configuring incremental refresh in Model view, or forgetting to publish to a Premium/PPU workspace",
+    "trapType": "Incremental Refresh Setup Order",
+    "question": "A data engineer wants to configure incremental refresh on a large sales fact table. Arrange the following steps in the correct order.",
+    "steps": [
+      "Publish the report to a Power BI Premium or PPU workspace",
+      "Create RangeStart and RangeEnd parameters of type Date/Time in Power Query",
+      "Configure the incremental refresh policy in Model view (right-click the table)",
+      "Apply the parameters as filters in the Power Query date column",
+      "Verify the historical data range and incremental window settings are correct"
+    ],
+    "correctOrder": [
+      "Create RangeStart and RangeEnd parameters of type Date/Time in Power Query",
+      "Apply the parameters as filters in the Power Query date column",
+      "Configure the incremental refresh policy in Model view (right-click the table)",
+      "Verify the historical data range and incremental window settings are correct",
+      "Publish the report to a Power BI Premium or PPU workspace"
+    ],
+    "explanation": "Incremental refresh requires RangeStart and RangeEnd parameters to exist in Power Query before the policy can reference them. The parameters must be applied as date column filters so Power BI can fold them into the data source query. The policy is then configured in Model view, the settings are reviewed, and finally the file is published to a Premium or PPU workspace — incremental refresh only activates in those workspace tiers.",
+    "estimatedTimeSeconds": 110,
+    "tags": ["Incremental Refresh", "Power Query", "Parameters", "Workflow"],
+    "questionGroupId": "incremental_refresh_setup",
+    "variantId": "full_pl300_01"
+  },
+  {
+    "id": 584,
+    "type": "rearrange_steps",
+    "domain": "Model the data",
+    "subtopic": "Implement time intelligence measures",
+    "difficulty": "Medium",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application",
+    "examObjective": "Model the data > Create model calculations by using DAX",
+    "commonTrap": "Writing time intelligence measures before a marked date table exists, or marking the date table after measures have been written but before testing",
+    "trapType": "Time Intelligence Setup Order",
+    "question": "An analyst needs to add year-to-date (YTD) sales calculations to a data model. Arrange the following steps in the correct order.",
+    "steps": [
+      "Test the YTD measure with a date hierarchy slicer on a report page",
+      "Create a base measure for the metric (e.g., Total Sales = SUM(Sales[Amount]))",
+      "Verify the date table has no gaps and covers the full date range needed",
+      "Create the YTD measure using TOTALYTD referencing the base measure",
+      "Mark the date table using Mark as Date Table in Model view"
+    ],
+    "correctOrder": [
+      "Verify the date table has no gaps and covers the full date range needed",
+      "Mark the date table using Mark as Date Table in Model view",
+      "Create a base measure for the metric (e.g., Total Sales = SUM(Sales[Amount]))",
+      "Create the YTD measure using TOTALYTD referencing the base measure",
+      "Test the YTD measure with a date hierarchy slicer on a report page"
+    ],
+    "explanation": "Time intelligence functions require a properly marked date table. The date table should first be validated for completeness (no gaps, correct range), then marked so Power BI recognises it. A base measure is written next, as TOTALYTD and similar functions wrap an existing measure expression. The YTD measure is then created referencing the base measure, and finally validated with a date slicer on a report page to confirm correct cumulative behaviour.",
+    "estimatedTimeSeconds": 100,
+    "tags": ["Time Intelligence", "TOTALYTD", "Date Table", "Workflow", "DAX"],
+    "questionGroupId": "time_intelligence_setup",
+    "variantId": "full_pl300_01"
+  },
+  {
+    "id": 585,
+    "type": "rearrange_steps",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Configure drillthrough navigation",
+    "difficulty": "Medium",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application",
+    "examObjective": "Visualize and analyze the data > Configure drillthrough navigation",
+    "commonTrap": "Adding visuals to the target page before adding drillthrough fields, or forgetting the Back button so users cannot return",
+    "trapType": "Drillthrough Configuration Order",
+    "question": "A report author is setting up drillthrough navigation so users can right-click a product name on a summary page and navigate to a product detail page. Arrange the following steps in the correct order.",
+    "steps": [
+      "Add a Back button to the detail page using Insert > Buttons",
+      "Place relevant detail visuals on the target (product detail) page",
+      "Add the drillthrough field (e.g., ProductName) to the 'Add drill-through fields here' well on the detail page",
+      "Verify right-click drillthrough works correctly from the summary page",
+      "Create a new blank page to serve as the drillthrough target page"
+    ],
+    "correctOrder": [
+      "Create a new blank page to serve as the drillthrough target page",
+      "Add the drillthrough field (e.g., ProductName) to the 'Add drill-through fields here' well on the detail page",
+      "Place relevant detail visuals on the target (product detail) page",
+      "Add a Back button to the detail page using Insert > Buttons",
+      "Verify right-click drillthrough works correctly from the summary page"
+    ],
+    "explanation": "Drillthrough setup begins by creating the destination page, then registering which field triggers the drillthrough by adding it to the drillthrough well — this makes the right-click option appear on the source page. Visuals are placed on the detail page next, followed by a Back button so users can return to the summary. The flow is tested last to confirm the context filters carry through correctly.",
+    "estimatedTimeSeconds": 100,
+    "tags": ["Drillthrough", "Report Navigation", "Workflow", "Visualization"],
+    "questionGroupId": "drillthrough_setup",
+    "variantId": "full_pl300_01"
+  },
+  {
+    "id": 586,
+    "type": "rearrange_steps",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Configure and update an app",
+    "difficulty": "Easy",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application",
+    "examObjective": "Manage and secure Power BI > Create and manage workspaces and assets",
+    "commonTrap": "Distributing the app before configuring refresh, or publishing the app without validating the workspace content first",
+    "trapType": "Content Distribution",
+    "question": "A BI team needs to deliver a finished sales report to 300 business users. Arrange the following steps in the correct order.",
+    "steps": [
+      "Publish the app and share it with the target audience",
+      "Publish the .pbix file from Power BI Desktop to the workspace",
+      "Configure a data gateway and schedule a refresh in the workspace",
+      "Create an app from the workspace and configure navigation and permissions",
+      "Build and validate the report in Power BI Desktop"
+    ],
+    "correctOrder": [
+      "Build and validate the report in Power BI Desktop",
+      "Publish the .pbix file from Power BI Desktop to the workspace",
+      "Configure a data gateway and schedule a refresh in the workspace",
+      "Create an app from the workspace and configure navigation and permissions",
+      "Publish the app and share it with the target audience"
+    ],
+    "explanation": "The report is built and validated locally, then published to the workspace. Before users rely on it, the data gateway is configured for on-premises sources and a refresh schedule is set so data stays current. An app is then created from the workspace to package the content and control what users see. Only after all of this is the app published and distributed — skipping the refresh setup exposes stale data.",
+    "estimatedTimeSeconds": 90,
+    "tags": ["Apps", "Deployment", "Workflow", "Scheduled Refresh", "Gateway"],
+    "questionGroupId": "app_delivery_workflow",
+    "variantId": "full_pl300_01"
+  },
+  {
+    "id": 587,
+    "type": "rearrange_steps",
+    "domain": "Prepare the data",
+    "subtopic": "Merge and append queries",
+    "difficulty": "Easy",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application",
+    "examObjective": "Prepare the data > Merge and append queries",
+    "commonTrap": "Expanding the merged column before selecting the join type, or choosing Append when the goal is to add columns (not rows)",
+    "trapType": "Merge vs Append Confusion",
+    "question": "A data analyst needs to enrich a Sales table by adding a Region column from a Geography lookup table. Arrange the following Power Query steps in the correct order.",
+    "steps": [
+      "Select the matching key columns in both tables and choose the join type",
+      "Expand the merged column to include only the required Region column",
+      "Load both the Sales table and Geography table into Power Query",
+      "Use Merge Queries to combine them",
+      "Remove the original key column that is no longer needed after the merge"
+    ],
+    "correctOrder": [
+      "Load both the Sales table and Geography table into Power Query",
+      "Use Merge Queries to combine them",
+      "Select the matching key columns in both tables and choose the join type",
+      "Expand the merged column to include only the required Region column",
+      "Remove the original key column that is no longer needed after the merge"
+    ],
+    "explanation": "Both tables must be loaded into Power Query before they can be merged. Merge Queries is then invoked from the primary table, the key columns and join type are selected, and Power Query creates a new column containing the matched rows from the secondary table. This column is expanded to extract only the needed fields. Cleanup steps like removing unnecessary key columns come last to keep the query tidy.",
+    "estimatedTimeSeconds": 90,
+    "tags": ["Power Query", "Merge", "Workflow", "Join Types"],
+    "questionGroupId": "merge_query_workflow",
+    "variantId": "full_pl300_01"
+  },
+  {
+    "id": 588,
+    "type": "rearrange_steps",
+    "domain": "Model the data",
+    "subtopic": "Design and implement a data model",
+    "difficulty": "Medium",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "application",
+    "examObjective": "Model the data > Design and implement a data model",
+    "commonTrap": "Creating measures before relationships exist, or writing the DAX measure without verifying filter propagation first",
+    "trapType": "Schema Design",
+    "question": "An analyst is creating a new data model that joins a Sales fact table to Product and Date dimension tables. Arrange the following steps in the correct order.",
+    "steps": [
+      "Write DAX measures for key business KPIs using the established relationships",
+      "Load the Sales fact table and the Product and Date dimension tables into Power BI",
+      "Hide foreign key columns in the fact table that are not needed by report authors",
+      "Create one-to-many relationships from each dimension table to the fact table",
+      "Mark the Date table using Mark as Date Table"
+    ],
+    "correctOrder": [
+      "Load the Sales fact table and the Product and Date dimension tables into Power BI",
+      "Create one-to-many relationships from each dimension table to the fact table",
+      "Mark the Date table using Mark as Date Table",
+      "Write DAX measures for key business KPIs using the established relationships",
+      "Hide foreign key columns in the fact table that are not needed by report authors"
+    ],
+    "explanation": "Tables must exist in the model before relationships can be defined. Relationships are created next so filter propagation works correctly before any DAX is written. The date table is marked so time intelligence functions will work. Measures are written after the model structure is in place. Final housekeeping — hiding foreign keys and organising fields — makes the model easier for report authors to use.",
+    "estimatedTimeSeconds": 100,
+    "tags": ["Data Modeling", "Star Schema", "Relationships", "Workflow", "DAX"],
+    "questionGroupId": "star_schema_build_workflow",
+    "variantId": "full_pl300_01"
+  },
+  {
+    "id": 589,
+    "type": "drag_drop",
+    "domain": "Prepare the data",
+    "subtopic": "Choose between DirectLake, DirectQuery, and Import",
+    "difficulty": "Medium",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "understanding",
+    "examObjective": "Prepare the data > Get or connect to data",
+    "commonTrap": "Confusing DirectLake with DirectQuery, or choosing Import when near-real-time data is required",
+    "trapType": "Storage Mode Confusion",
+    "question": "A solutions architect is choosing a storage mode for three different reporting requirements. Match each requirement to the most appropriate storage mode.",
+    "prompts": [
+      "A report must reflect database changes within seconds. The source is a large on-premises SQL Server.",
+      "A Fabric Lakehouse holds petabytes of data. Queries must be fast without importing data into Power BI.",
+      "A finance report runs complex DAX and needs the fastest possible query performance. Data is refreshed nightly."
+    ],
+    "choices": [
+      "DirectQuery",
+      "DirectLake",
+      "Import"
+    ],
+    "correctMapping": {
+      "A report must reflect database changes within seconds. The source is a large on-premises SQL Server.": "DirectQuery",
+      "A Fabric Lakehouse holds petabytes of data. Queries must be fast without importing data into Power BI.": "DirectLake",
+      "A finance report runs complex DAX and needs the fastest possible query performance. Data is refreshed nightly.": "Import"
+    },
+    "explanation": "DirectQuery sends live queries to the source for near-real-time results, ideal for on-premises SQL sources where data changes frequently. DirectLake is a Fabric-native mode that reads data directly from OneLake Delta tables without importing it, delivering fast performance on large Lakehouse datasets. Import stores a compressed copy in the model's in-memory engine, providing the best DAX query performance for datasets that can tolerate scheduled refresh.",
+    "estimatedTimeSeconds": 90,
+    "tags": ["DirectQuery", "DirectLake", "Import", "Storage Modes"],
+    "questionGroupId": "storage_mode_matching",
+    "variantId": "full_pl300_01"
+  },
+  {
+    "id": 590,
+    "type": "drag_drop",
+    "domain": "Model the data",
+    "subtopic": "Implement time intelligence measures",
+    "difficulty": "Hard",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "understanding",
+    "examObjective": "Model the data > Create model calculations by using DAX",
+    "commonTrap": "Confusing ALL (removes all filters) with REMOVEFILTERS, or using DISTINCTCOUNT when COUNTROWS(VALUES()) is more appropriate in complex contexts",
+    "trapType": "DAX Function Confusion",
+    "question": "Match each DAX function to the description that best explains what it does.",
+    "prompts": [
+      "Calculates a running total from the start of the year to the current date, resetting each year",
+      "Removes all filters from all columns in the entire model when used without arguments",
+      "Returns the count of unique values currently visible in a column",
+      "Returns a table of all rows from a related table that match the current row context"
+    ],
+    "choices": [
+      "TOTALYTD",
+      "ALL",
+      "DISTINCTCOUNT",
+      "RELATEDTABLE"
+    ],
+    "correctMapping": {
+      "Calculates a running total from the start of the year to the current date, resetting each year": "TOTALYTD",
+      "Removes all filters from all columns in the entire model when used without arguments": "ALL",
+      "Returns the count of unique values currently visible in a column": "DISTINCTCOUNT",
+      "Returns a table of all rows from a related table that match the current row context": "RELATEDTABLE"
+    },
+    "explanation": "TOTALYTD wraps a measure and accumulates it from the year start to the current date context. ALL() with no arguments removes all filters from the entire model — a common technique in market share or percentage-of-total calculations. DISTINCTCOUNT counts unique non-blank values in a column under the current filter context. RELATEDTABLE returns the table of related rows from the many-side of a relationship when called from row context on the one-side.",
+    "estimatedTimeSeconds": 100,
+    "tags": ["DAX", "TOTALYTD", "ALL", "DISTINCTCOUNT", "RELATEDTABLE", "Time Intelligence"],
+    "questionGroupId": "dax_function_matching_advanced",
+    "variantId": "full_pl300_01"
+  },
+  {
+    "id": 591,
+    "type": "drag_drop",
+    "domain": "Visualize and analyze the data",
+    "subtopic": "Enhance reports for usability and storytelling",
+    "difficulty": "Easy",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "understanding",
+    "examObjective": "Visualize and analyze the data > Enhance reports for usability and storytelling",
+    "commonTrap": "Confusing bookmarks with drillthrough, or thinking tooltips require a separate page by default",
+    "trapType": "Visualization Selection",
+    "question": "Match each report feature to the description of what it does.",
+    "prompts": [
+      "Captures the state of a report page — selected filters, visual states, and slicers — so users can return to it with one click",
+      "Displays additional context in a small popup when a user hovers over a data point in a visual",
+      "Takes a user from a high-level visual to a separate report page filtered by the value they right-clicked",
+      "Lets end users add, remove, or swap fields in a visual without needing edit access to the report"
+    ],
+    "choices": [
+      "Bookmark",
+      "Tooltip",
+      "Drillthrough",
+      "Personalized visuals"
+    ],
+    "correctMapping": {
+      "Captures the state of a report page — selected filters, visual states, and slicers — so users can return to it with one click": "Bookmark",
+      "Displays additional context in a small popup when a user hovers over a data point in a visual": "Tooltip",
+      "Takes a user from a high-level visual to a separate report page filtered by the value they right-clicked": "Drillthrough",
+      "Lets end users add, remove, or swap fields in a visual without needing edit access to the report": "Personalized visuals"
+    },
+    "explanation": "Bookmarks save the full visual state of a page and are commonly used for navigation buttons or storytelling flows. Tooltips appear on hover and can use a dedicated tooltip page for richer detail. Drillthrough creates page-to-page navigation where the destination page is automatically filtered by the right-clicked value. Personalized visuals allow report consumers to customise visuals without edit permissions, controlled by the report author.",
+    "estimatedTimeSeconds": 90,
+    "tags": ["Bookmarks", "Tooltip", "Drillthrough", "Personalized Visuals", "Report Design"],
+    "questionGroupId": "report_feature_matching",
+    "variantId": "full_pl300_01"
+  },
+  {
+    "id": 592,
+    "type": "drag_drop",
+    "domain": "Manage and secure Power BI",
+    "subtopic": "Assign workspace roles",
+    "difficulty": "Medium",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "understanding",
+    "examObjective": "Manage and secure Power BI > Create and manage workspaces and assets",
+    "commonTrap": "Granting Member instead of Contributor when publish access is not needed, or confusing Admin and Member capabilities",
+    "trapType": "Workspace Role Confusion",
+    "question": "A Power BI administrator is assigning workspace roles. Match each access requirement to the correct workspace role.",
+    "prompts": [
+      "A developer needs to publish reports and edit content but must not change workspace settings or manage access",
+      "A stakeholder needs to view dashboards and reports but should not edit anything",
+      "A lead analyst needs full control, including deleting the workspace and managing all access",
+      "A senior analyst needs to publish content and manage workspace settings but not delete the workspace"
+    ],
+    "choices": [
+      "Contributor",
+      "Viewer",
+      "Admin",
+      "Member"
+    ],
+    "correctMapping": {
+      "A developer needs to publish reports and edit content but must not change workspace settings or manage access": "Contributor",
+      "A stakeholder needs to view dashboards and reports but should not edit anything": "Viewer",
+      "A lead analyst needs full control, including deleting the workspace and managing all access": "Admin",
+      "A senior analyst needs to publish content and manage workspace settings but not delete the workspace": "Member"
+    },
+    "explanation": "Contributor can publish and edit content but cannot change workspace settings or access control. Viewer has read-only access to content. Admin has full control including deleting the workspace and managing roles. Member can manage workspace settings and publish content but cannot delete the workspace — this distinguishes it from Admin.",
+    "estimatedTimeSeconds": 90,
+    "tags": ["Workspace Roles", "Security", "Admin", "Permissions"],
+    "questionGroupId": "workspace_role_matching",
+    "variantId": "full_pl300_01"
+  },
+  {
+    "id": 593,
+    "type": "drag_drop",
+    "domain": "Prepare the data",
+    "subtopic": "Merge and append queries",
+    "difficulty": "Medium",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "understanding",
+    "examObjective": "Prepare the data > Merge and append queries",
+    "commonTrap": "Confusing Left Anti (non-matching rows) with Left Outer, or using Full Outer when Inner is intended",
+    "trapType": "Join Type Confusion",
+    "question": "A data analyst is merging queries in Power Query. Match each join type to the description of rows it returns.",
+    "prompts": [
+      "Returns all rows from the left table, with null values for columns from the right table where no match exists",
+      "Returns only rows where a matching key value exists in both tables",
+      "Returns all rows from both tables, with nulls where no match exists on either side",
+      "Returns rows from the left table that have no matching row in the right table"
+    ],
+    "choices": [
+      "Left Outer",
+      "Inner",
+      "Full Outer",
+      "Left Anti"
+    ],
+    "correctMapping": {
+      "Returns all rows from the left table, with null values for columns from the right table where no match exists": "Left Outer",
+      "Returns only rows where a matching key value exists in both tables": "Inner",
+      "Returns all rows from both tables, with nulls where no match exists on either side": "Full Outer",
+      "Returns rows from the left table that have no matching row in the right table": "Left Anti"
+    },
+    "explanation": "Left Outer is the most common join type — it keeps all left-table rows and brings in matching right-table columns, filling with nulls when there is no match. Inner join returns the intersection — only rows present in both tables. Full Outer returns every row from both tables with nulls where no match exists. Left Anti is used to identify rows in the left table that are missing from the right table, which is useful for finding unmatched records.",
+    "estimatedTimeSeconds": 90,
+    "tags": ["Power Query", "Merge", "Join Types", "Left Outer", "Inner Join"],
+    "questionGroupId": "join_type_matching",
+    "variantId": "full_pl300_01"
+  },
+  {
+    "id": 594,
+    "type": "drag_drop",
+    "domain": "Model the data",
+    "subtopic": "Define a relationship's cardinality and cross-filter direction",
+    "difficulty": "Medium",
+    "questionStyle": "scenario",
+    "cognitiveLevel": "understanding",
+    "examObjective": "Model the data > Design and implement a data model",
+    "commonTrap": "Confusing 1:M with M:1 based on which table is on which side, or thinking M:M always requires a bridge table in modern Power BI",
+    "trapType": "Relationship Cardinality",
+    "question": "A data modeler is reviewing relationship cardinality. Match each relationship description to the correct cardinality type.",
+    "prompts": [
+      "The Products table has one row per product. The Sales table has many rows per product.",
+      "Each Employee record has exactly one corresponding record in the EmployeeDetails table.",
+      "Many students can enroll in many courses. A bridge table (Enrollments) handles the relationship.",
+      "The Sales fact table has a foreign key to the Date dimension, with many sales per date."
+    ],
+    "choices": [
+      "One-to-Many (1:M)",
+      "One-to-One (1:1)",
+      "Many-to-Many (M:M)",
+      "Many-to-One (M:1)"
+    ],
+    "correctMapping": {
+      "The Products table has one row per product. The Sales table has many rows per product.": "One-to-Many (1:M)",
+      "Each Employee record has exactly one corresponding record in the EmployeeDetails table.": "One-to-One (1:1)",
+      "Many students can enroll in many courses. A bridge table (Enrollments) handles the relationship.": "Many-to-Many (M:M)",
+      "The Sales fact table has a foreign key to the Date dimension, with many sales per date.": "Many-to-One (M:1)"
+    },
+    "explanation": "One-to-Many (1:M) describes a dimension-to-fact relationship where the dimension side has unique keys. One-to-One (1:1) occurs when both tables have a unique key — often used to split a wide table. Many-to-Many (M:M) arises when rows in both tables can match multiple rows in the other, requiring either a bridge table or the M:M relationship type in modern Power BI. Many-to-One (M:1) is the same as 1:M viewed from the fact table's perspective — the Sales table references many dates, each date existing once in the Date table.",
+    "estimatedTimeSeconds": 90,
+    "tags": ["Cardinality", "Relationships", "Data Modeling", "Star Schema"],
+    "questionGroupId": "cardinality_matching",
+    "variantId": "full_pl300_01"
   }
 ]

@@ -263,6 +263,11 @@ export function generateExam(allQuestions, {
     pool = pool.filter(q => difficulties.includes(q.difficulty))
   }
 
+  // Type filter: restrict pool to specific question types (e.g. drag_drop, rearrange_steps)
+  if (track.typeFilter?.length > 0) {
+    pool = pool.filter(q => track.typeFilter.includes(q.type))
+  }
+
   // Tag affinity for intensive tracks: triplicate tagged questions
   if (track.tagFilter?.length > 0) {
     const tagged   = pool.filter(q => q.tags?.some(t => track.tagFilter.includes(t)))
